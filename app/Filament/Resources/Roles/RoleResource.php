@@ -7,6 +7,7 @@ use App\Filament\Resources\Roles\Pages\EditRole;
 use App\Filament\Resources\Roles\Pages\ListRoles;
 use App\Filament\Resources\Roles\Schemas\RoleForm;
 use App\Filament\Resources\Roles\Tables\RolesTable;
+use App\Traits\HasResourcePermissions;
 use Spatie\Permission\Models\Role;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -15,14 +16,17 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class RoleResource extends Resource
 {
-    protected static ?string $model = Role::class;
-    
-    protected static ?int $navigationSort = 1;
+    use HasResourcePermissions;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $model = Role::class;
+
+    protected static ?int $navigationSort = 2;
+
+    protected static string|UnitEnum|null $navigationGroup = 'User Management';
 
     protected static ?string $recordTitleAttribute = 'Role';
 
@@ -55,5 +59,10 @@ class RoleResource extends Resource
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
         return parent::getRecordRouteBindingEloquentQuery();
+    }
+
+    protected static function getResourcePermissionName(): string
+    {
+        return 'role';
     }
 }

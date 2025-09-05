@@ -18,21 +18,21 @@ class PermissionsTable
                     ->label('Permission Name')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('guard_name')
                     ->label('Guard')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('roles_count')
                     ->counts('roles')
                     ->label('Roles Count'),
-                    
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

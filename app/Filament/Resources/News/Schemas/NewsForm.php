@@ -2,69 +2,78 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TagsInput;
+use App\Filament\Resources\Content\Schemas\WordPressStyleFormLayout;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class NewsForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
-                TextInput::make('slug')
-                    ->required()
-                    ->unique(ignoreRecord: true),
-                Textarea::make('excerpt')
-                    ->required()
-                    ->maxLength(500)
-                    ->columnSpanFull(),
-                RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull()
-                    ->toolbarButtons([
-                        'attachFiles',
-                        'blockquote',
-                        'bold',
-                        'bulletList',
-                        'codeBlock',
-                        'h2',
-                        'h3',
-                        'italic',
-                        'link',
-                        'orderedList',
-                        'redo',
-                        'strike',
-                        'underline',
-                        'undo',
-                    ]),
-                FileUpload::make('featured_image')
-                    ->image()
-                    ->imageEditor()
-                    ->columnSpanFull(),
-                TextInput::make('author_name')
-                    ->required()
-                    ->default('OSR Digital'),
-                TagsInput::make('tags')
-                    ->separator(',')
-                    ->placeholder('Add tags...')
-                    ->columnSpanFull(),
-                Select::make('status')
-                    ->options(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived'])
-                    ->default('draft')
-                    ->required(),
-                DateTimePicker::make('published_at')
-                    ->default(now()),
-            ]);
+        return WordPressStyleFormLayout::configure($schema, [
+            // Content Configuration
+            'title_label' => 'Article Title',
+            'title_placeholder' => 'Enter article title here...',
+            'slug_prefix' => '/news/',
+            'content_label' => 'Article Content',
+            'content_placeholder' => 'Start writing your article...',
+            'show_rich_editor' => true,
+            'show_excerpt' => true,
+            'excerpt_label' => 'Article Excerpt',
+            'excerpt_placeholder' => 'Write a brief summary of your article...',
+            'excerpt_hint' => 'This will be used for article previews and meta descriptions',
+
+            // Layout Configuration
+            'show_seo' => true,
+            'show_tags' => true,
+
+            // Publishing Configuration
+            'status_options' => [
+                'draft' => 'Draft',
+                'pending' => 'Pending Review',
+                'published' => 'Published',
+                'scheduled' => 'Scheduled',
+                'private' => 'Private',
+            ],
+            'status_default' => 'draft',
+            'show_featured' => true,
+            'show_visibility' => true,
+
+            // Media Configuration
+            'show_featured_image' => true,
+            'featured_image_label' => 'Featured Image',
+            'featured_image_hint' => 'Upload a featured image for this article',
+            'featured_image_required' => false,
+
+            // Categories Configuration
+            'show_categories' => true,
+            'categories_label' => 'Categories',
+            'categories_options' => [
+                1 => 'Uncategorized',
+                2 => 'Technology News',
+                3 => 'Business News',
+                4 => 'Entertainment',
+                5 => 'Sports',
+                6 => 'Health & Wellness',
+                7 => 'Politics',
+                8 => 'Science & Innovation',
+                9 => 'Local News',
+                10 => 'Breaking News',
+            ],
+            'categories_default' => 1,
+            'categories_required' => true,
+            'show_secondary_categories' => true,
+
+            // Author Configuration
+            'show_author' => true,
+            'author_label' => 'Author',
+            'author_default' => 'OSR Digital',
+            'author_email_hint' => 'Contact email for this article (optional)',
+
+            // Discussion Configuration
+            'show_discussion' => true,
+            'discussion_label' => 'Discussion',
+            'allow_comments_default' => true,
+            'allow_trackbacks_default' => false,
+        ]);
     }
 }

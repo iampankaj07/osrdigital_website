@@ -7,6 +7,7 @@ use App\Filament\Resources\Permissions\Pages\EditPermission;
 use App\Filament\Resources\Permissions\Pages\ListPermissions;
 use App\Filament\Resources\Permissions\Schemas\PermissionForm;
 use App\Filament\Resources\Permissions\Tables\PermissionsTable;
+use App\Traits\HasResourcePermissions;
 use Spatie\Permission\Models\Permission;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -14,14 +15,18 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class PermissionResource extends Resource
 {
-    protected static ?string $model = Permission::class;
-    
-    protected static ?int $navigationSort = 2;
+    use HasResourcePermissions;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-lock-closed';
+    protected static ?string $model = Permission::class;
+
+    protected static ?int $navigationSort = 3;
+
+    protected static string|UnitEnum|null $navigationGroup = 'User Management';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -54,5 +59,10 @@ class PermissionResource extends Resource
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
         return parent::getRecordRouteBindingEloquentQuery();
+    }
+
+    protected static function getResourcePermissionName(): string
+    {
+        return 'permission';
     }
 }

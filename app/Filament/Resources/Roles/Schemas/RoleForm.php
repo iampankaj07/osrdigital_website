@@ -17,12 +17,12 @@ class RoleForm
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->label('Role Name'),
-                    
+
                 TextInput::make('guard_name')
                     ->default('web')
                     ->required()
                     ->label('Guard Name'),
-                    
+
                 CheckboxList::make('permissions')
                     ->relationship('permissions', 'name')
                     ->label('Permissions')

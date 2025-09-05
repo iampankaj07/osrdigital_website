@@ -10,18 +10,19 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use BackedEnum;
+use UnitEnum;
 
 class ContactResource extends Resource
 {
     protected static ?string $model = Contact::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
+    protected static string|UnitEnum|null $navigationGroup = 'Communication';
 
     protected static ?string $navigationLabel = 'Contact Messages';
 
     protected static ?string $recordTitleAttribute = 'subject';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 1;
 
     // Make it read-only by disabling create and edit
     public static function canCreate(): bool

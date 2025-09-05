@@ -22,43 +22,43 @@ class RolePermissionSeeder extends Seeder
             'users.create',
             'users.edit',
             'users.delete',
-            
+
             // Role management
             'roles.view',
             'roles.create',
             'roles.edit',
             'roles.delete',
-            
+
             // Permission management
             'permissions.view',
             'permissions.create',
             'permissions.edit',
             'permissions.delete',
-            
+
             // Portfolio management
             'portfolios.view',
             'portfolios.create',
             'portfolios.edit',
             'portfolios.delete',
-            
+
             // News management
             'news.view',
             'news.create',
             'news.edit',
             'news.delete',
-            
+
             // Pages management
             'pages.view',
             'pages.create',
             'pages.edit',
             'pages.delete',
-            
+
             // Partners management
             'partners.view',
             'partners.create',
             'partners.edit',
             'partners.delete',
-            
+
             // Contact management
             'contacts.view',
             'contacts.edit',
@@ -77,7 +77,7 @@ class RolePermissionSeeder extends Seeder
 
         // Assign permissions to roles
         $superAdminRole->givePermissionTo(Permission::all());
-        
+
         $adminRole->givePermissionTo([
             'users.view', 'users.create', 'users.edit',
             'portfolios.view', 'portfolios.create', 'portfolios.edit', 'portfolios.delete',
@@ -86,7 +86,7 @@ class RolePermissionSeeder extends Seeder
             'partners.view', 'partners.create', 'partners.edit', 'partners.delete',
             'contacts.view', 'contacts.edit', 'contacts.delete',
         ]);
-        
+
         $editorRole->givePermissionTo([
             'portfolios.view', 'portfolios.create', 'portfolios.edit',
             'news.view', 'news.create', 'news.edit',
@@ -94,7 +94,7 @@ class RolePermissionSeeder extends Seeder
             'partners.view', 'partners.create', 'partners.edit',
             'contacts.view',
         ]);
-        
+
         $viewerRole->givePermissionTo([
             'portfolios.view',
             'news.view',
@@ -111,7 +111,7 @@ class RolePermissionSeeder extends Seeder
                 'password' => bcrypt('password'),
             ]
         );
-        
+
         $adminUser->assignRole('Super Admin');
     }
 }

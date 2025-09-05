@@ -18,25 +18,25 @@ class RolesTable
                     ->label('Role Name')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('guard_name')
                     ->label('Guard')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('permissions_count')
                     ->counts('permissions')
                     ->label('Permissions Count'),
-                    
+
                 TextColumn::make('users_count')
                     ->counts('users')
                     ->label('Users Count'),
-                    
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

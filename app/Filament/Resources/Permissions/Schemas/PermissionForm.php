@@ -17,7 +17,7 @@ class PermissionForm
                     ->unique(ignoreRecord: true)
                     ->label('Permission Name')
                     ->helperText('Use dot notation for nested permissions (e.g., users.create, posts.edit)'),
-                    
+
                 TextInput::make('guard_name')
                     ->default('web')
                     ->required()

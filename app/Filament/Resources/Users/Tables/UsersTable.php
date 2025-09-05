@@ -17,27 +17,27 @@ class UsersTable
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('roles.name')
                     ->badge()
                     ->label('Roles')
                     ->formatStateUsing(fn ($state): string => ucwords(str_replace('_', ' ', $state))),
-                    
+
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

@@ -1,0 +1,202 @@
+/* WordPress-Style Admin Layout */
+.wp-editor-title-section .fi-fo-field-wrp-label {
+    display: none !important;
+}
+
+.wp-editor-title-section input {
+    font-size: 1.75rem !important;
+    line-height: 2.25rem !important;
+    font-weight: 700 !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.wp-editor-title-section input:focus {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.wp-editor-content-section .fi-fo-field-wrp-label {
+    display: none !important;
+}
+
+.wp-sidebar-section {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    margin-bottom: 16px !important;
+}
+
+.wp-sidebar-section .fi-section-header {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    background: #f9f9f9 !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.wp-sidebar-section .fi-section-content {
+    padding: 16px !important;
+}
+
+.wp-sidebar-section h3 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    color: #23282d !important;
+}
+
+/* WordPress-like form styling */
+.wp-sidebar-section .fi-fo-field-wrp {
+    margin-bottom: 12px !important;
+}
+
+.wp-sidebar-section .fi-fo-field-wrp:last-child {
+    margin-bottom: 0 !important;
+}
+
+.wp-sidebar-section label {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #646970 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.wp-sidebar-section input,
+.wp-sidebar-section select,
+.wp-sidebar-section textarea {
+    font-size: 13px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+}
+
+.wp-sidebar-section input:focus,
+.wp-sidebar-section select:focus,
+.wp-sidebar-section textarea:focus {
+    border-color: #2271b1 !important;
+    box-shadow: 0 0 0 1px #2271b1 !important;
+}
+
+/* Toggle switches in sidebar */
+.wp-sidebar-section .fi-toggle {
+    margin: 8px 0 !important;
+}
+
+.wp-sidebar-section .fi-toggle-label {
+    font-size: 13px !important;
+    font-weight: normal !important;
+    color: #23282d !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+/* Rich editor styling */
+.wp-editor-content-section .ProseMirror {
+    min-height: 400px !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: #23282d !important;
+}
+
+.wp-editor-content-section .tiptap-editor {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Excerpt section */
+.wp-excerpt-section .fi-section-content {
+    padding: 16px !important;
+}
+
+/* SEO section */
+.wp-seo-section .fi-section-content {
+    padding: 16px !important;
+}
+
+/* Main layout responsiveness */
+@media (max-width: 1024px) {
+    .fi-fo-grid[data-cols="10"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    .fi-fo-grid[data-cols="10"] > .fi-fo-grid-ctn:first-child {
+        order: 1;
+    }
+
+    .fi-fo-grid[data-cols="10"] > .fi-fo-grid-ctn:last-child {
+        order: 0;
+        margin-bottom: 24px;
+    }
+}
+
+/* Compact sidebar sections */
+.wp-sidebar-section.fi-section-compact .fi-section-header {
+    padding: 8px 12px !important;
+}
+
+.wp-sidebar-section.fi-section-compact .fi-section-content {
+    padding: 12px !important;
+}
+
+/* File upload in sidebar */
+.wp-sidebar-section .fi-fo-file-upload {
+    text-align: center;
+}
+
+.wp-sidebar-section .fi-fo-file-upload .fi-fo-file-upload-ctn {
+    border: 2px dashed #ddd !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    background: #f9f9f9 !important;
+}
+
+.wp-sidebar-section .fi-fo-file-upload .fi-fo-file-upload-ctn:hover {
+    border-color: #2271b1 !important;
+    background: #f0f6fc !important;
+}
+
+/* Date time picker styling */
+.wp-sidebar-section .fi-input-datetime {
+    font-size: 13px !important;
+}
+
+/* Multi-select styling */
+.wp-sidebar-section .fi-select-multiple {
+    min-height: 80px !important;
+}
+
+/* Tags input styling */
+.wp-seo-section .fi-fo-tags-input {
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    padding: 8px !important;
+}
+
+.wp-seo-section .fi-fo-tags-input-tag {
+    background: #f0f6fc !important;
+    color: #2271b1 !important;
+    border: 1px solid #c3ddfd !important;
+    font-size: 12px !important;
+}
+
+/* Collapsible sections */
+.wp-sidebar-section.fi-collapsed .fi-section-header {
+    border-bottom: none !important;
+    border-radius: 8px !important;
+}
+
+/* WordPress color scheme */
+:root {
+    --wp-blue: #2271b1;
+    --wp-blue-hover: #135e96;
+    --wp-gray: #646970;
+    --wp-light-gray: #f0f0f0;
+    --wp-border: #ddd;
+    --wp-bg: #f9f9f9;
+    --wp-text: #23282d;
+}

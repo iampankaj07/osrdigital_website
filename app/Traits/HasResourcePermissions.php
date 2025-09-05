@@ -12,7 +12,7 @@ trait HasResourcePermissions
     public static function canViewAny(): bool
     {
         $user = Filament::auth()->user();
-        
+
         if (!$user) {
             return false;
         }
@@ -31,7 +31,7 @@ trait HasResourcePermissions
     public static function canCreate(): bool
     {
         $user = Filament::auth()->user();
-        
+
         if (!$user) {
             return false;
         }
@@ -50,7 +50,7 @@ trait HasResourcePermissions
     public static function canEdit($record): bool
     {
         $user = Filament::auth()->user();
-        
+
         if (!$user) {
             return false;
         }
@@ -69,7 +69,7 @@ trait HasResourcePermissions
     public static function canDelete($record): bool
     {
         $user = Filament::auth()->user();
-        
+
         if (!$user) {
             return false;
         }
