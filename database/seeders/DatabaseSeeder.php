@@ -13,14 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@osrdigitalmedia.com',
-        ]);
-
         // Run all seeders
         $this->call([
+            RolePermissionSeeder::class,
             PageSeeder::class,
             PortfolioSeeder::class,
             PartnerSeeder::class,
