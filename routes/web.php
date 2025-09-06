@@ -1,9 +1,34 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TeamController;
+
 
 Route::get('/', function () {
-    return view('app');
+    return view('app'); // This should load your React app
+});
+
+// Team Routes - these could be handled by React or Laravel
+Route::get('/team', [TeamController::class, 'index'])->name('team.index');
+Route::get('/team/{team:slug}', [TeamController::class, 'show'])->name('team.show');
+
+// News Routes - if you want React to handle these, remove these routes
+Route::get('/news', function () {
+    return view('app'); // Let React handle this route
+});
+
+Route::get('/news/{slug}', function ($slug) {
+    // If you want Laravel to handle individual news items, keep this
+    // Otherwise, let React handle it and remove this route
+    $news = \App\Models\News::where('slug', $slug)
+        ->where('status', 'published')
+        ->where('published_at', '<=', now())
+        ->firstOrFail();
+
+    // Optionally increment view count
+    $news->increment('views');
+
+    return view('news.show', compact('news'));
 });
 
 // API Routes for React (add these as you develop features)
@@ -84,9 +109,46 @@ Route::prefix('api')->group(function () {
         return response()->json(\App\Models\Partner::active()->get());
     });
 
+    // Teams API
+    Route::get('/team', function () {
+        return response()->json(\App\Models\Team::active()->ordered()->get()->map(function($team) {
+            return [
+                'id' => $team->id,
+                'name' => $team->name,
+                'slug' => $team->slug,
+                'position' => $team->position,
+                'description' => $team->description,
+                'email' => $team->email,
+                'phone' => $team->phone,
+                'image' => $team->image,
+                'social_links' => $team->social_links,
+                'sort_order' => $team->sort_order,
+            ];
+        }));
+    });
+
+    Route::get('/team/{slug}', function ($slug) {
+        $team = \App\Models\Team::where('slug', $slug)->where('is_active', true)->first();
+        if (!$team) {
+            return response()->json(['error' => 'Team member not found'], 404);
+        }
+        return response()->json($team);
+    });
+
     // News API
     Route::get('/news', function () {
         return response()->json(\App\Models\News::published()->recent()->get());
+    });
+
+    // Single News Post API
+    Route::get('/news/{slug}', function ($slug) {
+        $news = \App\Models\News::where('slug', $slug)->where('status', 'published')->where('published_at', '<=', now())->first();
+        if (!$news) {
+            return response()->json(['error' => 'News post not found'], 404);
+        }
+        // Optionally increment view count
+        $news->increment('views');
+        return response()->json($news);
     });
 
     // Contact form submission
@@ -123,3 +185,8 @@ Route::prefix('api')->group(function () {
         return response()->json($page);
     });
 });
+
+// Catch-all route for React SPA (place this at the end)
+Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '.*');

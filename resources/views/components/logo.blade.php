@@ -1,4 +1,4 @@
-@props(['type' => 'auto', 'class' => ''])
+@props(['type' => 'auto', 'class' => '', 'width' => null, 'height' => null])
 
 @php
     $logoLight = \App\Helpers\SettingsHelper::get('logo_light');
@@ -26,6 +26,21 @@
         // Auto mode - show appropriate logo for theme
         $logo = null;
     }
+
+    // Build style attribute for dimensions
+    $style = '';
+    if ($width) {
+        $style .= "width: {$width}px; ";
+    }
+    if ($height) {
+        $style .= "height: {$height}px; ";
+    }
+
+    // Default classes for sizing
+    $defaultClass = 'h-8 w-auto';
+    if ($width || $height) {
+        $defaultClass = 'w-auto'; // Remove default height if custom dimensions are set
+    }
 @endphp
 
 <div class="logo {{ $class }}">
@@ -33,18 +48,22 @@
         <!-- Show different logos for light/dark themes -->
         <img src="{{ Storage::url($logoLight) }}"
              alt="{{ $siteName }}"
-             class="h-8 w-auto block dark:hidden">
+             class="{{ $defaultClass }} block dark:hidden"
+             @if($style) style="{{ $style }}" @endif>
         <img src="{{ Storage::url($logoDark) }}"
              alt="{{ $siteName }}"
-             class="h-8 w-auto hidden dark:block">
+             class="{{ $defaultClass }} hidden dark:block"
+             @if($style) style="{{ $style }}" @endif>
     @elseif($logo)
         <!-- Single logo -->
         <img src="{{ Storage::url($logo) }}"
              alt="{{ $siteName }}"
-             class="h-8 w-auto">
+             class="{{ $defaultClass }}"
+             @if($style) style="{{ $style }}" @endif>
     @else
         <!-- Fallback to text -->
-        <span class="text-xl font-bold text-gray-900 dark:text-white">
+        <span class="text-xl font-bold text-gray-900 dark:text-white"
+              @if($style) style="{{ $style }}" @endif>
             {{ $siteName }}
         </span>
     @endif

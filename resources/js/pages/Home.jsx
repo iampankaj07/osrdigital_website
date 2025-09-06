@@ -6,12 +6,12 @@ import CallToAction from '../components/sections/CallToAction';
 
 function Home() {
     return (
-        <>
+        <div className="min-h-screen">
             <Hero />
             <DynamicStats />
             <DynamicFeaturedContent />
             <CallToAction />
-        </>
+        </div>
     );
 }
 

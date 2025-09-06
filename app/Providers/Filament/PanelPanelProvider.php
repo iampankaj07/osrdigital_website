@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\CheckFilamentPermissions;
+use App\Helpers\SettingsHelper;
 
 class PanelPanelProvider extends PanelProvider
 {
@@ -29,6 +30,8 @@ class PanelPanelProvider extends PanelProvider
             ->id('panel')
             ->path('panel')
             ->login()
+            ->brandLogo(fn () => SettingsHelper::getAdminLogo() ? asset('storage/' . SettingsHelper::getAdminLogo()) : asset('storage/logos/osrdigital-seeklogo.svg'))
+            ->brandName(SettingsHelper::getSiteTitle())
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -40,7 +43,6 @@ class PanelPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
