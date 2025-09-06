@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('team', function (Blueprint $table) {
+         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('designation')->nullable();
@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('linkedIn')->nullable();
             $table->string('github')->nullable();
             $table->string('email')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
