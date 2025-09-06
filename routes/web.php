@@ -83,6 +83,10 @@ Route::prefix('api')->group(function () {
     Route::get('/partners', function () {
         return response()->json(\App\Models\Partner::active()->get());
     });
+  // Teams API
+    Route::get('/teams', function () {
+        return response()->json(\App\Models\Teams::active()->get());
+    });
 
     // News API
     Route::get('/news', function () {

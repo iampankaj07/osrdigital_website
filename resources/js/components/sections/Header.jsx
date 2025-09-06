@@ -22,51 +22,55 @@ function Header() {
                         <div className="ml-10 flex items-baseline space-x-8">
                             <Link
                                 to="/about"
-                                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                                    isActive('/about')
-                                        ? 'text-red-400 border-b-2 border-red-400'
-                                        : 'text-gray-300 hover:text-white'
-                                }`}
+                                className={`px-3 py-2 text-sm font-medium transition-colors ${isActive('/about')
+                                    ? 'text-red-400 border-b-2 border-red-400'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
                             >
                                 About Us
                             </Link>
                             <Link
                                 to="/business"
-                                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                                    isActive('/business')
-                                        ? 'text-red-400 border-b-2 border-red-400'
-                                        : 'text-gray-300 hover:text-white'
-                                }`}
+                                className={`px-3 py-2 text-sm font-medium transition-colors ${isActive('/business')
+                                    ? 'text-red-400 border-b-2 border-red-400'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
                             >
                                 Our Business
                             </Link>
                             <Link
                                 to="/portfolio"
-                                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                                    isActive('/portfolio')
-                                        ? 'text-red-400 border-b-2 border-red-400'
-                                        : 'text-gray-300 hover:text-white'
-                                }`}
+                                className={`px-3 py-2 text-sm font-medium transition-colors ${isActive('/portfolio')
+                                    ? 'text-red-400 border-b-2 border-red-400'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
                             >
                                 Portfolio
                             </Link>
                             <Link
                                 to="/partners"
-                                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                                    isActive('/partners')
-                                        ? 'text-red-400 border-b-2 border-red-400'
-                                        : 'text-gray-300 hover:text-white'
-                                }`}
+                                className={`px-3 py-2 text-sm font-medium transition-colors ${isActive('/partners')
+                                    ? 'text-red-400 border-b-2 border-red-400'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
                             >
                                 Partners
                             </Link>
                             <Link
+                                to="/teams"
+                                className={`px-3 py-2 text-sm font-medium transition-colors ${isActive('/teams')
+                                    ? 'text-red-400 border-b-2 border-red-400'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
+                            >
+                                Our Team
+                            </Link>
+                            <Link
                                 to="/news"
-                                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                                    isActive('/news')
-                                        ? 'text-red-400 border-b-2 border-red-400'
-                                        : 'text-gray-300 hover:text-white'
-                                }`}
+                                className={`px-3 py-2 text-sm font-medium transition-colors ${isActive('/news')
+                                    ? 'text-red-400 border-b-2 border-red-400'
+                                    : 'text-gray-300 hover:text-white'
+                                    }`}
                             >
                                 News
                             </Link>

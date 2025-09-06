@@ -10,6 +10,8 @@ import PortfolioItem from '../pages/PortfolioItem';
 import Partners from '../pages/Partners';
 import News from '../pages/News';
 import Contact from '../pages/Contact';
+import Team from '../pages/Team';
+import Teams from '../pages/Team';
 
 function App() {
     return (
@@ -23,6 +25,7 @@ function App() {
                     <Route path="/portfolio" element={<Portfolio />} />
                     <Route path="/portfolio/:slug" element={<PortfolioItem />} />
                     <Route path="/partners" element={<Partners />} />
+                    <Route path="/teams" element={<Teams />} />
                     <Route path="/news" element={<News />} />
                     <Route path="/contact" element={<Contact />} />
                 </Routes>
