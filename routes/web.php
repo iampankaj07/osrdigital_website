@@ -8,10 +8,6 @@ Route::get('/', function () {
     return view('app'); // This should load your React app
 });
 
-// Team Routes - these could be handled by React or Laravel
-Route::get('/team', [TeamController::class, 'index'])->name('team.index');
-Route::get('/team/{team:slug}', [TeamController::class, 'show'])->name('team.show');
-
 // News Routes - if you want React to handle these, remove these routes
 Route::get('/news', function () {
     return view('app'); // Let React handle this route
@@ -41,7 +37,7 @@ Route::prefix('api')->group(function () {
                 'title' => $item->title,
                 'type' => ucfirst($item->type),
                 'views' => number_format($item->views) . ' views',
-                'image' => $item->image_url,
+                'image' => $item->image_url, // This will use the accessor we created
                 'category' => $item->category,
                 'description' => $item->description
             ];
@@ -68,7 +64,7 @@ Route::prefix('api')->group(function () {
                 'type' => $item->type,
                 'category' => $item->category,
                 'views' => $item->views,
-                'image' => $item->image_url ?: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=800',
+                'image' => $item->image_url, // This will use the accessor we created
                 'is_featured' => $item->is_featured,
                 'created_at' => $item->created_at,
             ];
@@ -91,7 +87,7 @@ Route::prefix('api')->group(function () {
             'slug' => $portfolio->slug,
             'description' => $portfolio->description,
             'content' => $portfolio->content,
-            'image' => $portfolio->image_url ?: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'image' => $portfolio->image_url, // This will use the accessor we created
             'video_url' => $portfolio->video_url,
             'type' => $portfolio->type,
             'category' => $portfolio->category,
@@ -120,7 +116,7 @@ Route::prefix('api')->group(function () {
                 'description' => $team->description,
                 'email' => $team->email,
                 'phone' => $team->phone,
-                'image' => $team->image,
+                'image' => $team->image_url,
                 'social_links' => $team->social_links,
                 'sort_order' => $team->sort_order,
             ];
@@ -132,7 +128,19 @@ Route::prefix('api')->group(function () {
         if (!$team) {
             return response()->json(['error' => 'Team member not found'], 404);
         }
-        return response()->json($team);
+
+        return response()->json([
+            'id' => $team->id,
+            'name' => $team->name,
+            'slug' => $team->slug,
+            'position' => $team->position,
+            'description' => $team->description,
+            'email' => $team->email,
+            'phone' => $team->phone,
+            'image' => $team->image_url,
+            'social_links' => $team->social_links,
+            'sort_order' => $team->sort_order,
+        ]);
     });
 
     // News API
@@ -170,7 +178,29 @@ Route::prefix('api')->group(function () {
             'message' => 'Thank you for your message! We will get back to you within 24 hours.',
             'status' => 'success'
         ]);
-    });    // Pages API (for dynamic content)
+    });
+
+    // Logo API
+    Route::get('/logo/{type?}', function ($type = 'default') {
+        $logoMap = [
+            'default' => 'osrdigital-seeklogo.svg',
+            'seeklogo' => 'osrdigital-seeklogo.svg',
+            'main' => 'osrdigital-logo.svg',
+            'dark' => 'osrdigital-logo-dark.svg',
+            'mobile' => 'osrdigital-logo-mobile.svg',
+            'admin' => 'osrdigital-logo-admin.svg'
+        ];
+
+        $logoFile = $logoMap[$type] ?? $logoMap['default'];
+
+        return response()->json([
+            'url' => \Illuminate\Support\Facades\Storage::url('logos/' . $logoFile),
+            'type' => $type,
+            'filename' => $logoFile
+        ]);
+    });
+
+    // Pages API (for dynamic content)
     Route::get('/pages', function () {
         return response()->json(\App\Models\Page::published()->get());
     });

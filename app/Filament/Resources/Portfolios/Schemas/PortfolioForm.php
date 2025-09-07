@@ -47,9 +47,10 @@ class PortfolioForm
 
             // Media Configuration
             'show_featured_image' => true,
+            'featured_image_field' => 'featured_image',
             'featured_image_label' => 'Featured Image',
             'featured_image_hint' => 'Main image for this portfolio item',
-            'featured_image_required' => true,
+            'featured_image_required' => false,
 
             // Categories Configuration
             'show_categories' => true,
@@ -133,6 +134,8 @@ class PortfolioForm
                         FileUpload::make('gallery_images')
                             ->label('Project Images')
                             ->image()
+                            ->disk('public')
+                            ->directory('portfolio/gallery')
                             ->multiple()
                             ->imageEditor()
                             ->imageResizeMode('cover')

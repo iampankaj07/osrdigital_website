@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\TeamController;
+use App\Http\Controllers\Api\SettingsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,12 @@ Route::get('teams-active', function () {
         'data' => \App\Models\Team::active()->ordered()->get(),
         'message' => 'Active teams retrieved successfully'
     ]);
+});
+
+// Settings API routes
+Route::prefix('settings')->group(function () {
+    Route::get('/', [SettingsController::class, 'index']);
+    Route::get('/flat', [SettingsController::class, 'flat']);
+    Route::get('/group/{group}', [SettingsController::class, 'getByGroup']);
+    Route::get('/{key}', [SettingsController::class, 'show']);
 });

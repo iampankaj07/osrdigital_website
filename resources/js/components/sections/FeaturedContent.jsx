@@ -1,6 +1,9 @@
-import React from 'react';
+
+
+import { useTheme } from '../../contexts/ThemeContext';
 
 function FeaturedContent() {
+    const { isDark } = useTheme();
     const featuredItems = [
         {
             title: 'Epic Action Thriller',
@@ -26,13 +29,13 @@ function FeaturedContent() {
     ];
 
     return (
-        <section className="py-20 bg-black">
+        <section className={`py-20 ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                    <h2 className={`text-4xl md:text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>
                         Featured Content
                     </h2>
-                    <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                    <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         Discover our latest acquisitions and most popular releases across movies, music,
                         and short films.
                     </p>
@@ -41,7 +44,7 @@ function FeaturedContent() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {featuredItems.map((item, index) => (
                         <div key={index} className="group cursor-pointer">
-                            <div className="relative overflow-hidden rounded-lg bg-gray-800 aspect-video mb-4">
+                            <div className={`relative overflow-hidden rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video mb-4`}>
                                 <img
                                     src={item.image}
                                     alt={item.title}
@@ -67,10 +70,10 @@ function FeaturedContent() {
                             </div>
 
                             <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-white group-hover:text-red-400 transition-colors">
+                                <h3 className={`text-xl font-semibold ${isDark ? 'text-white group-hover:text-red-400' : 'text-gray-900 group-hover:text-red-600'} transition-colors`}>
                                     {item.title}
                                 </h3>
-                                <p className="text-gray-400">
+                                <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                     {item.views}
                                 </p>
                             </div>

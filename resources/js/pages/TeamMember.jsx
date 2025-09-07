@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 
 function TeamMember() {
@@ -145,7 +145,7 @@ function TeamMember() {
                         <div className="md:w-1/3">
                             {member.image ? (
                                 <img
-                                    src={`/storage/${member.image}`}
+                                    src={member.image}
                                     alt={member.name}
                                     className="w-full h-80 md:h-full object-cover"
                                 />

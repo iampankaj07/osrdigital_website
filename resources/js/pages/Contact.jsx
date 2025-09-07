@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Contact() {
+    const { isDark } = useTheme();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -65,12 +67,12 @@ function Contact() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-900 pt-20">
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold text-white mb-8">Get In Touch</h1>
-                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Get In Touch</h1>
+                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         Ready to start your content distribution journey? Have questions about our services?
                         We're here to help you succeed in the digital content landscape.
                     </p>
@@ -78,12 +80,12 @@ function Contact() {
             </section>
 
             {/* Contact Form & Info */}
-            <section className="py-20 bg-black">
+            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16">
                         {/* Contact Form */}
                         <div>
-                            <h2 className="text-3xl font-bold text-white mb-8">Send us a message</h2>
+                            <h2 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Send us a message</h2>
 
                             {submitStatus === 'success' && (
                                 <div className="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded-lg mb-6">

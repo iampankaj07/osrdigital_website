@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Team extends Model
 {
@@ -28,6 +29,10 @@ class Team extends Model
         'is_active' => 'boolean',
     ];
 
+    protected $appends = [
+        'image_url',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -43,6 +48,15 @@ class Team extends Model
                 $team->slug = Str::slug($team->name);
             }
         });
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        return Storage::url($this->image);
     }
 
     public function getRouteKeyName()

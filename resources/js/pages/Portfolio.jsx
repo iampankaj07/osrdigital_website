@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Portfolio() {
+    const { isDark } = useTheme();
     const [portfolioItems, setPortfolioItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
@@ -53,14 +55,14 @@ function Portfolio() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-900 pt-20">
+            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                     <div className="text-center mb-16">
-                        <h1 className="text-5xl font-bold text-white mb-8">Our Portfolio</h1>
+                        <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Portfolio</h1>
                         <div className="animate-pulse">
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {[1, 2, 3, 4, 5, 6].map(i => (
-                                    <div key={i} className="bg-gray-800 aspect-video rounded-lg"></div>
+                                    <div key={i} className={`${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video rounded-lg`}></div>
                                 ))}
                             </div>
                         </div>
@@ -71,12 +73,12 @@ function Portfolio() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 pt-20">
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold text-white mb-8">Our Portfolio</h1>
-                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Portfolio</h1>
+                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         Discover our curated collection of movies, music, and short films that have captivated
                         audiences worldwide through strategic YouTube distribution.
                     </p>
@@ -84,7 +86,7 @@ function Portfolio() {
             </section>
 
             {/* Filter Section */}
-            <section className="py-8 bg-black border-b border-gray-800">
+            <section className={`py-8 ${isDark ? 'bg-black border-b border-gray-800' : 'bg-white border-b border-gray-200'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap justify-center gap-4">
                         <button
@@ -92,7 +94,9 @@ function Portfolio() {
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'all'
                                     ? 'bg-red-600 text-white'
-                                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : isDark
+                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                         >
                             All Content
@@ -102,7 +106,9 @@ function Portfolio() {
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'movie'
                                     ? 'bg-red-600 text-white'
-                                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : isDark
+                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                         >
                             Movies
@@ -112,7 +118,9 @@ function Portfolio() {
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'music'
                                     ? 'bg-red-600 text-white'
-                                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : isDark
+                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                         >
                             Music
@@ -122,7 +130,9 @@ function Portfolio() {
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'short_film'
                                     ? 'bg-red-600 text-white'
-                                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : isDark
+                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                         >
                             Short Films
@@ -132,11 +142,11 @@ function Portfolio() {
             </section>
 
             {/* Portfolio Grid */}
-            <section className="py-20 bg-black">
+            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {filteredItems.length === 0 ? (
                         <div className="text-center py-20">
-                            <p className="text-xl text-gray-400">No content found for the selected filter.</p>
+                            <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>No content found for the selected filter.</p>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -146,7 +156,7 @@ function Portfolio() {
                                     to={`/portfolio/${item.slug}`}
                                     className="group cursor-pointer block"
                                 >
-                                    <div className="relative overflow-hidden rounded-lg bg-gray-800 aspect-video mb-4">
+                                    <div className={`relative overflow-hidden rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video mb-4`}>
                                         <img
                                             src={item.image}
                                             alt={item.title}
@@ -179,11 +189,15 @@ function Portfolio() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h3 className="text-xl font-semibold text-white group-hover:text-red-400 transition-colors">
+                                        <h3 className={`text-xl font-semibold transition-colors ${
+                                            isDark
+                                                ? 'text-white group-hover:text-red-400'
+                                                : 'text-gray-900 group-hover:text-red-600'
+                                        }`}>
                                             {item.title}
                                         </h3>
                                         {item.category && (
-                                            <p className="text-gray-400">
+                                            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                                 {item.category}
                                             </p>
                                         )}
@@ -196,21 +210,21 @@ function Portfolio() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 bg-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl font-bold text-white mb-12">Portfolio Impact</h2>
+                    <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-12`}>Portfolio Impact</h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         <div>
                             <div className="text-4xl font-bold text-red-500 mb-2">50M+</div>
-                            <div className="text-gray-400">Total Views Across Portfolio</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total Views Across Portfolio</div>
                         </div>
                         <div>
                             <div className="text-4xl font-bold text-red-500 mb-2">1,300+</div>
-                            <div className="text-gray-400">Pieces of Content Published</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Pieces of Content Published</div>
                         </div>
                         <div>
                             <div className="text-4xl font-bold text-red-500 mb-2">150+</div>
-                            <div className="text-gray-400">Creator Partnerships</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Creator Partnerships</div>
                         </div>
                     </div>
                 </div>

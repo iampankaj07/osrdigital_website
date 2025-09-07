@@ -1,5 +1,5 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
 import Header from './sections/Header';
 import Footer from './sections/Footer';
 import Home from '../pages/Home';
@@ -13,9 +13,13 @@ import Contact from '../pages/Contact';
 import Team from '../pages/Team';
 import TeamMember from '../pages/TeamMember';
 
-function App() {
+function AppContent() {
+    const { isDark } = useTheme();
+
     return (
-        <div className="min-h-screen bg-gray-900">
+        <div className={`min-h-screen transition-colors duration-300 ${
+            isDark ? 'bg-gray-900' : 'bg-white'
+        }`}>
             <Header />
             <main>
                 <Routes>
@@ -33,6 +37,14 @@ function App() {
             </main>
             <Footer />
         </div>
+    );
+}
+
+function App() {
+    return (
+        <ThemeProvider>
+            <AppContent />
+        </ThemeProvider>
     );
 }
 

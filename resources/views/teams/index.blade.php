@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Team - OSR Digital</title>
     <meta name="description" content="Meet the talented team behind OSR Digital's success">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen">

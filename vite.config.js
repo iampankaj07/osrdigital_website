@@ -9,7 +9,23 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
         }),
-        react(),
+        react({
+            jsxRuntime: 'automatic',
+            jsxImportSource: 'react',
+            babel: {
+                presets: [['@babel/preset-react', { runtime: 'automatic' }]],
+            },
+        }),
         tailwindcss(),
     ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+        },
+    },
+    server: {
+        hmr: {
+            host: 'localhost',
+        },
+    },
 });

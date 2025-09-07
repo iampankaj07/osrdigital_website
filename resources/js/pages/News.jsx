@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function News() {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const { isDark } = useTheme();
 
     useEffect(() => {
         // Fetch news from API
@@ -84,12 +86,12 @@ function News() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 pt-20">
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold text-white mb-8">Latest News</h1>
-                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Latest News</h1>
+                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         Stay updated with the latest developments in digital content distribution,
                         industry trends, and company announcements from OSR Digital Media.
                     </p>
@@ -97,7 +99,7 @@ function News() {
             </section>
 
             {/* News Categories */}
-            <section className="py-10 bg-black">
+            <section className={`py-10 ${isDark ? 'bg-black' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap justify-center gap-4 mb-12">
                         {categories.map((category) => (
@@ -107,7 +109,7 @@ function News() {
                                 className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
                                     selectedCategory === category.id
                                         ? 'bg-red-600 text-white'
-                                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                        : isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                 }`}
                             >
                                 {category.name}
@@ -119,9 +121,9 @@ function News() {
 
             {/* Featured Article */}
             {filteredArticles.length > 0 && (
-                <section className="py-10 bg-black">
+                <section className={`py-10 ${isDark ? 'bg-black' : 'bg-white'}`}>
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="bg-gray-800 rounded-lg overflow-hidden mb-16">
+                        <div className={`${isDark ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg overflow-hidden mb-16`}>
                             <div className="lg:flex">
                                 <div className="lg:w-1/2">
                                     <img
@@ -135,18 +137,18 @@ function News() {
                                         <span className="text-red-400 text-sm font-medium uppercase tracking-wider">
                                             {filteredArticles[0].category}
                                         </span>
-                                        <span className="text-gray-400 text-sm ml-4">
+                                        <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm ml-4`}>
                                             {new Date(filteredArticles[0].published_at).toLocaleDateString()}
                                         </span>
                                     </div>
-                                    <h2 className="text-3xl font-bold text-white mb-4">
+                                    <h2 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
                                         {filteredArticles[0].title}
                                     </h2>
-                                    <p className="text-gray-300 text-lg mb-6">
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} text-lg mb-6`}>
                                         {filteredArticles[0].excerpt}
                                     </p>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-400 text-sm">
+                                        <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-sm`}>
                                             By {filteredArticles[0].author}
                                         </span>
                                         <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors">
@@ -161,12 +163,12 @@ function News() {
             )}
 
             {/* Articles Grid */}
-            <section className="py-20 bg-black">
+            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {filteredArticles.length > 1 ? (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredArticles.slice(1).map((article) => (
-                                <article key={article.id} className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors group">
+                                <article key={article.id} className={`${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-50'} rounded-lg overflow-hidden transition-colors group shadow-md`}>
                                     <img
                                         src={article.image}
                                         alt={article.title}
@@ -177,18 +179,18 @@ function News() {
                                             <span className="text-red-400 text-xs font-medium uppercase tracking-wider">
                                                 {article.category}
                                             </span>
-                                            <span className="text-gray-500 text-xs ml-3">
+                                            <span className={`${isDark ? 'text-gray-500' : 'text-gray-600'} text-xs ml-3`}>
                                                 {new Date(article.published_at).toLocaleDateString()}
                                             </span>
                                         </div>
-                                        <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-red-400 transition-colors">
+                                        <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-3 group-hover:text-red-400 transition-colors`}>
                                             {article.title}
                                         </h3>
-                                        <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} text-sm mb-4 line-clamp-3`}>
                                             {article.excerpt}
                                         </p>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-gray-400 text-xs">
+                                            <span className={`${isDark ? 'text-gray-400' : 'text-gray-600'} text-xs`}>
                                                 By {article.author}
                                             </span>
                                             <button className="text-red-400 hover:text-red-300 text-sm font-medium">
@@ -201,8 +203,8 @@ function News() {
                         </div>
                     ) : filteredArticles.length === 0 ? (
                         <div className="text-center py-20">
-                            <h3 className="text-2xl font-semibold text-white mb-4">No articles found</h3>
-                            <p className="text-gray-400">No articles available in this category.</p>
+                            <h3 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>No articles found</h3>
+                            <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>No articles available in this category.</p>
                         </div>
                     ) : null}
                 </div>

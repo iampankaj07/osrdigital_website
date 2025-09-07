@@ -50,6 +50,7 @@ class TeamForm
                 FileUpload::make('image')
                     ->image()
                     ->directory('teams')
+                    ->disk('public')
                     ->maxSize(2048)
                     ->imageEditor(),
 

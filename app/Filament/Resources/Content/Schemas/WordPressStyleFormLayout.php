@@ -295,6 +295,8 @@ class WordPressStyleFormLayout
                                     FileUpload::make($config['featured_image_field'])
                                         ->label('')
                                         ->image()
+                                        ->disk('public')
+                                        ->directory('portfolio')
                                         ->imageEditor()
                                         ->imageEditorAspectRatios($config['image_aspect_ratios'])
                                         ->imageResizeMode('cover')

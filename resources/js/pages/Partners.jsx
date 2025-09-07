@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Partners() {
+    const { isDark } = useTheme();
     const [partners, setPartners] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -70,12 +72,12 @@ function Partners() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 pt-20">
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold text-white mb-8">Our Partners</h1>
-                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Partners</h1>
+                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         We collaborate with exceptional creators, studios, and distributors worldwide to bring
                         diverse, high-quality content to global audiences through strategic partnerships.
                     </p>
@@ -83,45 +85,45 @@ function Partners() {
             </section>
 
             {/* Partnership Types */}
-            <section className="py-20 bg-black">
+            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-white mb-6">Partnership Categories</h2>
-                        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                        <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>Partnership Categories</h2>
+                        <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                             We work with different types of partners to create a comprehensive content ecosystem
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-                        <div className="text-center bg-gray-800 p-6 rounded-lg">
+                        <div className={`text-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'} p-6 rounded-lg`}>
                             <div className="text-4xl mb-4">🎬</div>
-                            <h3 className="text-xl font-semibold text-white mb-2">Studios</h3>
-                            <p className="text-gray-300">Production companies and film studios creating original content</p>
+                            <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Studios</h3>
+                            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Production companies and film studios creating original content</p>
                         </div>
 
-                        <div className="text-center bg-gray-800 p-6 rounded-lg">
+                        <div className={`text-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'} p-6 rounded-lg`}>
                             <div className="text-4xl mb-4">🎨</div>
-                            <h3 className="text-xl font-semibold text-white mb-2">Creators</h3>
-                            <p className="text-gray-300">Independent filmmakers, musicians, and content creators</p>
+                            <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Creators</h3>
+                            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Independent filmmakers, musicians, and content creators</p>
                         </div>
 
-                        <div className="text-center bg-gray-800 p-6 rounded-lg">
+                        <div className={`text-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'} p-6 rounded-lg`}>
                             <div className="text-4xl mb-4">📡</div>
-                            <h3 className="text-xl font-semibold text-white mb-2">Distributors</h3>
-                            <p className="text-gray-300">Distribution networks and platform aggregators</p>
+                            <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Distributors</h3>
+                            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Distribution networks and platform aggregators</p>
                         </div>
 
-                        <div className="text-center bg-gray-800 p-6 rounded-lg">
+                        <div className={`text-center ${isDark ? 'bg-gray-800' : 'bg-gray-100'} p-6 rounded-lg`}>
                             <div className="text-4xl mb-4">📱</div>
-                            <h3 className="text-xl font-semibold text-white mb-2">Platforms</h3>
-                            <p className="text-gray-300">Streaming platforms and digital media companies</p>
+                            <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Platforms</h3>
+                            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Streaming platforms and digital media companies</p>
                         </div>
                     </div>
 
                     {/* Partner Listings */}
                     {Object.entries(partnersByType).map(([type, typePartners]) => (
                         <div key={type} className="mb-16">
-                            <h3 className="text-3xl font-bold text-white mb-8 capitalize">
+                            <h3 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8 capitalize`}>
                                 {type === 'creator' ? 'Content Creators' :
                                  type === 'studio' ? 'Production Studios' :
                                  type === 'distributor' ? 'Distribution Partners' :
@@ -130,19 +132,19 @@ function Partners() {
 
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {typePartners.map((partner) => (
-                                    <div key={partner.id} className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+                                    <div key={partner.id} className={`${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'} rounded-lg p-6 transition-colors shadow-md`}>
                                         <div className="flex items-center mb-4">
                                             <img
                                                 src={partner.logo}
                                                 alt={partner.name}
-                                                className="w-16 h-16 rounded-lg mr-4 bg-gray-600"
+                                                className={`w-16 h-16 rounded-lg mr-4 ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}
                                             />
                                             <div>
-                                                <h4 className="text-xl font-semibold text-white">{partner.name}</h4>
+                                                <h4 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{partner.name}</h4>
                                                 <span className="text-red-400 text-sm capitalize">{partner.type}</span>
                                             </div>
                                         </div>
-                                        <p className="text-gray-300">{partner.description}</p>
+                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{partner.description}</p>
                                     </div>
                                 ))}
                             </div>
@@ -152,11 +154,11 @@ function Partners() {
             </section>
 
             {/* Partnership Benefits */}
-            <section className="py-20 bg-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-white mb-6">Why Partner With Us?</h2>
-                        <p className="text-xl text-gray-400">
+                        <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>Why Partner With Us?</h2>
+                        <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                             Join our network and unlock the potential of your content
                         </p>
                     </div>
@@ -170,8 +172,8 @@ function Partners() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white mb-2">Global Distribution</h3>
-                                    <p className="text-gray-300">Access to worldwide audiences through our strategic YouTube network</p>
+                                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Global Distribution</h3>
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Access to worldwide audiences through our strategic YouTube network</p>
                                 </div>
                             </div>
 
@@ -182,8 +184,8 @@ function Partners() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white mb-2">Revenue Optimization</h3>
-                                    <p className="text-gray-300">Maximize monetization through expert optimization and strategic placement</p>
+                                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Revenue Optimization</h3>
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Maximize monetization through expert optimization and strategic placement</p>
                                 </div>
                             </div>
 
@@ -194,8 +196,8 @@ function Partners() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white mb-2">Marketing Support</h3>
-                                    <p className="text-gray-300">Comprehensive promotional campaigns and social media marketing</p>
+                                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Marketing Support</h3>
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Comprehensive promotional campaigns and social media marketing</p>
                                 </div>
                             </div>
                         </div>
@@ -208,8 +210,8 @@ function Partners() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white mb-2">Analytics & Insights</h3>
-                                    <p className="text-gray-300">Detailed performance analytics and actionable insights for growth</p>
+                                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Analytics & Insights</h3>
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Detailed performance analytics and actionable insights for growth</p>
                                 </div>
                             </div>
 
@@ -220,8 +222,8 @@ function Partners() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white mb-2">Fair Partnerships</h3>
-                                    <p className="text-gray-300">Transparent agreements that protect creator rights and ensure fair compensation</p>
+                                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Fair Partnerships</h3>
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Transparent agreements that protect creator rights and ensure fair compensation</p>
                                 </div>
                             </div>
 
@@ -232,8 +234,8 @@ function Partners() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-white mb-2">Ongoing Support</h3>
-                                    <p className="text-gray-300">Dedicated support team to help partners succeed and grow their audience</p>
+                                    <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Ongoing Support</h3>
+                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Dedicated support team to help partners succeed and grow their audience</p>
                                 </div>
                             </div>
                         </div>

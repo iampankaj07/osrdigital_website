@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $team->name }} - {{ $team->position }} - OSR Digital</title>
     <meta name="description" content="{{ $team->description ?: 'Learn more about ' . $team->name . ', ' . $team->position . ' at OSR Digital' }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen">

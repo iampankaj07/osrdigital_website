@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
 
 function DynamicFeaturedContent() {
+    const { isDark } = useTheme();
     const [content, setContent] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -21,13 +23,13 @@ function DynamicFeaturedContent() {
 
     if (loading) {
         return (
-            <section className="py-20 bg-black">
+            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                        <h2 className={`text-4xl md:text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>
                             Featured Content
                         </h2>
-                        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                        <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                             Discover our latest acquisitions and most popular releases across movies, music,
                             and short films.
                         </p>
@@ -36,9 +38,9 @@ function DynamicFeaturedContent() {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="animate-pulse">
-                                <div className="bg-gray-800 aspect-video rounded-lg mb-4"></div>
-                                <div className="h-6 bg-gray-800 rounded mb-2"></div>
-                                <div className="h-4 bg-gray-800 rounded w-1/2"></div>
+                                <div className={`${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video rounded-lg mb-4`}></div>
+                                <div className={`h-6 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded mb-2`}></div>
+                                <div className={`h-4 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded w-1/2`}></div>
                             </div>
                         ))}
                     </div>
@@ -48,13 +50,13 @@ function DynamicFeaturedContent() {
     }
 
     return (
-        <section className="py-20 bg-black">
+        <section className={`py-20 ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                    <h2 className={`text-4xl md:text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>
                         Featured Content
                     </h2>
-                    <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                    <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         Discover our latest acquisitions and most popular releases across movies, music,
                         and short films.
                     </p>
@@ -67,7 +69,7 @@ function DynamicFeaturedContent() {
                             to={`/portfolio/${item.slug}`}
                             className="group cursor-pointer block"
                         >
-                            <div className="relative overflow-hidden rounded-lg bg-gray-800 aspect-video mb-4">
+                            <div className={`relative overflow-hidden rounded-lg ${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video mb-4`}>
                                 <img
                                     src={item.image}
                                     alt={item.title}
@@ -93,10 +95,10 @@ function DynamicFeaturedContent() {
                             </div>
 
                             <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-white group-hover:text-red-400 transition-colors">
+                                <h3 className={`text-xl font-semibold ${isDark ? 'text-white group-hover:text-red-400' : 'text-gray-900 group-hover:text-red-600'} transition-colors`}>
                                     {item.title}
                                 </h3>
-                                <p className="text-gray-400">
+                                <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                     {item.views}
                                 </p>
                             </div>

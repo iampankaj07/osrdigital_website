@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('teams', function (Blueprint $table) {
-            $table->string('slug')->unique()->after('name');
+        Schema::table('portfolios', function (Blueprint $table) {
+            $table->json('gallery_images')->nullable()->after('featured_image');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('teams', function (Blueprint $table) {
-            $table->dropColumn('slug');
+        Schema::table('portfolios', function (Blueprint $table) {
+            $table->dropColumn('gallery_images');
         });
     }
 };

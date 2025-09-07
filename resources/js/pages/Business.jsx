@@ -1,13 +1,17 @@
-import React from 'react';
+
+
+import { useTheme } from '../contexts/ThemeContext';
 
 function Business() {
+    const { isDark } = useTheme();
+
     return (
-        <div className="min-h-screen bg-gray-900 pt-20">
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold text-white mb-8">Our Business Model</h1>
-                    <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Business Model</h1>
+                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         OSR Digital operates at the intersection of content creation and digital distribution,
                         providing comprehensive solutions for content monetization and audience growth.
                     </p>
@@ -15,29 +19,29 @@ function Business() {
             </section>
 
             {/* Services Section */}
-            <section className="py-20 bg-black">
+            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-white mb-6">What We Do</h2>
-                        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                        <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-6`}>What We Do</h2>
+                        <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                             Our comprehensive suite of services covers every aspect of digital content distribution
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition-colors">
+                        <div className={`${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-50 hover:bg-gray-100'} p-8 rounded-lg transition-colors shadow-lg`}>
                             <div className="text-4xl mb-4">🎬</div>
-                            <h3 className="text-2xl font-semibold text-white mb-4">Rights Acquisition</h3>
-                            <p className="text-gray-300">
+                            <h3 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>Rights Acquisition</h3>
+                            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                                 We identify and acquire distribution rights to exceptional movies, music, and short films
                                 from creators worldwide, ensuring fair compensation and global reach.
                             </p>
                         </div>
 
-                        <div className="bg-gray-800 p-8 rounded-lg hover:bg-gray-700 transition-colors">
+                        <div className={`${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-50 hover:bg-gray-100'} p-8 rounded-lg transition-colors shadow-lg`}>
                             <div className="text-4xl mb-4">📺</div>
-                            <h3 className="text-2xl font-semibold text-white mb-4">YouTube Publishing</h3>
-                            <p className="text-gray-300">
+                            <h3 className={`text-2xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>YouTube Publishing</h3>
+                            <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                                 Strategic publishing on YouTube with optimized metadata, thumbnails, and scheduling
                                 to maximize viewership and engagement across different time zones and audiences.
                             </p>
