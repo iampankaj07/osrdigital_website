@@ -161,6 +161,7 @@ class ThemeHelper
                 'support_phone' => static::get('support_phone'),
                 'seo_title' => static::get('seo_title'),
                 'seo_keywords' => static::get('seo_keywords'),
+                'google_analytics_id' => static::get('google_analytics_id'),
             ];
 
             // Add logo and favicon URLs
@@ -168,7 +169,7 @@ class ThemeHelper
             if ($logoPath) {
                 $result['site_logo'] = Storage::url($logoPath);
             }
-            
+
             $faviconPath = static::get('site_favicon');
             if ($faviconPath) {
                 $result['site_favicon'] = Storage::url($faviconPath);
@@ -181,6 +182,16 @@ class ThemeHelper
                     $result['social_network'] = json_decode($socialNetwork, true);
                 } else {
                     $result['social_network'] = $socialNetwork;
+                }
+            }
+
+            // Add SEO metadata
+            $seoMetadata = static::get('seo_metadata');
+            if ($seoMetadata) {
+                if (is_string($seoMetadata)) {
+                    $result['seo_metadata'] = json_decode($seoMetadata, true);
+                } else {
+                    $result['seo_metadata'] = $seoMetadata;
                 }
             }
 
