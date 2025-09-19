@@ -70,6 +70,36 @@ function Partners() {
             </div>
         );
     }
+    const associates = [
+        {
+            name: "OSR Digital",
+            tagline: "Entertaining the Nation",
+            logo: "https://osr-image-link/osr-digital.png",
+            buttonText: "Visit Youtube",
+            link: "https://youtube.com/osrdigital",
+        },
+        {
+            name: "OSR Connect",
+            tagline: "",
+            logo: "https://osr-image-link/osr-connect.png",
+            buttonText: "Visit Site",
+            link: "https://osrconnect.com",
+        },
+        {
+            name: "OSR Reality",
+            tagline: "",
+            logo: "https://osr-image-link/osr-reality.png",
+            buttonText: "Visit Youtube",
+            link: "https://youtube.com/osrreality",
+        },
+        {
+            name: "OSR Sports",
+            tagline: "",
+            logo: "https://osr-image-link/osr-sports.png",
+            buttonText: "Visit Youtube",
+            link: "https://youtube.com/osrsports",
+        },
+    ];
 
     return (
         <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
@@ -119,15 +149,53 @@ function Partners() {
                             <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Streaming platforms and digital media companies</p>
                         </div>
                     </div>
+                    {/* Associates Section */}
+                    <section className="py-20 bg-gray-50">
+                        <div className="max-w-7xl mx-auto px-4 text-center">
+                            {/* Heading */}
+                            <h2 className="text-4xl font-bold text-gray-800 mb-12">
+                                Our Associates
+                            </h2>
 
+                            {/* Grid */}
+                            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+                                {associates.map((associate, index) => (
+                                    <div
+                                        key={index}
+                                        className="bg-white shadow-sm rounded-lg p-8 flex flex-col items-center justify-center hover:shadow-md transition"
+                                    >
+                                        <img
+                                            src={associate.logo}
+                                            alt={associate.name}
+                                            className="h-20 mb-4 object-contain"
+                                        />
+                                        <h3 className="text-xl font-semibold text-gray-800">
+                                            {associate.name}
+                                        </h3>
+                                        {associate.tagline && (
+                                            <p className="text-gray-500 text-sm mb-4">{associate.tagline}</p>
+                                        )}
+                                        <a
+                                            href={associate.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="mt-auto inline-block px-6 py-2 border border-orange-500 text-orange-500 rounded-md hover:bg-orange-500 hover:text-white transition-colors"
+                                        >
+                                            {associate.buttonText}
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
                     {/* Partner Listings */}
                     {Object.entries(partnersByType).map(([type, typePartners]) => (
                         <div key={type} className="mb-16">
                             <h3 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8 capitalize`}>
                                 {type === 'creator' ? 'Content Creators' :
-                                 type === 'studio' ? 'Production Studios' :
-                                 type === 'distributor' ? 'Distribution Partners' :
-                                 type === 'platform' ? 'Platform Partners' : type}
+                                    type === 'studio' ? 'Production Studios' :
+                                        type === 'distributor' ? 'Distribution Partners' :
+                                            type === 'platform' ? 'Platform Partners' : type}
                             </h3>
 
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
