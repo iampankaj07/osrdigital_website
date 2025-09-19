@@ -35,13 +35,13 @@ class WebAssetsController extends Controller
     {
         $map = [
             'light' => 'logo_light',
-            'dark' => 'logo_dark',
-            'admin' => 'logo_admin',
-            'mobile' => 'logo_mobile',
-            'footer' => 'logo_footer',
-            'email' => 'logo_email',
-            // default fallback key
+            'dark' => 'logo_light', // Use same logo for consistency
+            'admin' => 'logo_light', // Use same logo for consistency  
+            'mobile' => 'logo_light', // Use same logo for consistency
+            'footer' => 'logo_light', // Use same logo for consistency
+            'email' => 'logo_light', // Use same logo for consistency
             'seeklogo' => 'logo_light',
+            'default' => 'logo_light',
         ];
 
         $key = $map[$type] ?? 'logo_light';
