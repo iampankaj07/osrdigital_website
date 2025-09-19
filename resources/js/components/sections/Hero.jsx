@@ -46,12 +46,12 @@ function Hero() {
                 <div className="mb-6">
                     <div className="inline-flex items-center px-4 py-2 bg-[#ec681b]/20 border border-[#ec681b]/30 rounded-full text-[#ec681b] text-sm font-medium mb-6"
                          style={{
-                             backgroundColor: `${getSetting('brand_primary_color', '#ec681b')}20`,
-                             borderColor: `${getSetting('brand_primary_color', '#ec681b')}30`,
-                             color: getSetting('brand_primary_color', '#ec681b')
+                             backgroundColor: '#ec681b20',
+                             borderColor: '#ec681b30',
+                             color: '#ec681b'
                          }}>
                         <span className="w-2 h-2 rounded-full mr-2"
-                              style={{ backgroundColor: getSetting('brand_primary_color', '#ec681b') }}></span>
+                              style={{ backgroundColor: '#ec681b' }}></span>
                         {getSetting('hero_badge_text', 'Digital Media Excellence')}
                     </div>
                 </div>
@@ -60,7 +60,7 @@ function Hero() {
                     isDark ? 'text-white' : 'text-gray-900'
                 }`}>
                     {getSetting('hero_main_title', 'Bringing Stories to')}{' '}
-                    <span style={{ color: getSetting('brand_primary_color', '#ec681b') }}>
+                    <span style={{ color: '#ec681b' }}>
                         {getSetting('hero_highlighted_title', 'Global Screens')}
                     </span>
                 </h1>
@@ -75,7 +75,7 @@ function Hero() {
                     <Link
                         to="/contact"
                         className="hover:opacity-90 text-white px-8 py-3 rounded-lg text-base font-semibold transition-all flex items-center gap-2"
-                        style={{ backgroundColor: getSetting('brand_primary_color', '#ec681b') }}
+                        style={{ backgroundColor: '#ec681b' }}
                     >
                         <span>{getSetting('hero_primary_button_text', 'Partner With Us')}</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@ function Hero() {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
                     <div className="group">
                         <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': getSetting('brand_primary_color', '#ec681b') }}>
+                             style={{ '--hover-color': '#ec681b' }}>
                             {getSetting('stats_movies_count', '500+')}
                         </div>
                         <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -111,7 +111,7 @@ function Hero() {
                     </div>
                     <div className="group">
                         <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': getSetting('brand_primary_color', '#ec681b') }}>
+                             style={{ '--hover-color': '#ec681b' }}>
                             {getSetting('stats_songs_count', '2K+')}
                         </div>
                         <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -120,7 +120,7 @@ function Hero() {
                     </div>
                     <div className="group">
                         <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': getSetting('brand_primary_color', '#ec681b') }}>
+                             style={{ '--hover-color': '#ec681b' }}>
                             {getSetting('stats_films_count', '800+')}
                         </div>
                         <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>

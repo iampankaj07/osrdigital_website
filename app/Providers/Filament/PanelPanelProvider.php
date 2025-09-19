@@ -30,7 +30,7 @@ class PanelPanelProvider extends PanelProvider
             ->id('panel')
             ->path('panel')
             ->login()
-            ->brandLogo(fn () => SettingsHelper::getAdminLogo() ? asset('storage/' . SettingsHelper::getAdminLogo()) : asset('storage/logos/osrdigital-seeklogo.svg'))
+            ->brandLogo(fn () => SettingsHelper::getAdminLogoPath() ? asset('storage/' . SettingsHelper::getAdminLogoPath()) : asset('storage/logos/osrdigital-seeklogo.svg'))
             ->brandName(SettingsHelper::getSiteTitle())
             ->colors([
                 'primary' => Color::Amber,
@@ -43,6 +43,9 @@ class PanelPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
+            ])
+            ->plugins([
+                // DB Config settings pages will be automatically discovered
             ])
             ->middleware([
                 EncryptCookies::class,

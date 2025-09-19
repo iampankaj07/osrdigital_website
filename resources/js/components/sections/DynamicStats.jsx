@@ -76,7 +76,7 @@ function DynamicStats() {
         );
     }
 
-    const primaryColor = getSetting('brand_primary_color', '#ec681b');
+    const primaryColor = '#ec681b'; // OSR Digital brand orange
 
     return (
         <section className={`py-24 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>

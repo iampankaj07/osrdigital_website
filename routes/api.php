@@ -26,6 +26,7 @@ Route::get('teams-active', function () {
 Route::prefix('settings')->group(function () {
     Route::get('/', [SettingsController::class, 'index']);
     Route::get('/flat', [SettingsController::class, 'flat']);
+    Route::get('/theme', [SettingsController::class, 'theme']);
     Route::get('/group/{group}', [SettingsController::class, 'getByGroup']);
     Route::get('/{key}', [SettingsController::class, 'show']);
 });

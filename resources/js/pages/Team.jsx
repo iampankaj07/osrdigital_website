@@ -7,10 +7,9 @@ function Team() {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { getSetting } = useAllSettings();
     const { isDark } = useTheme();
 
-    const primaryColor = getSetting('brand_primary_color', '#ec681b');
+    const primaryColor = '#ec681b'; // OSR Digital brand orange
 
     useEffect(() => {
         const fetchTeams = async () => {

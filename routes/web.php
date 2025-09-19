@@ -8,6 +8,11 @@ Route::get('/', function () {
     return view('app'); // This should load your React app
 });
 
+// Theme Settings Test Route (for development)
+Route::get('/theme-test', function () {
+    return view('theme-test');
+});
+
 // News Routes - if you want React to handle these, remove these routes
 Route::get('/news', function () {
     return view('app'); // Let React handle this route
@@ -192,24 +197,35 @@ Route::prefix('api')->group(function () {
 
     // Logo API
     Route::get('/logo/{type?}', function ($type = 'default') {
-        $logoMap = [
-            'default' => 'osrdigital-seeklogo.svg',
-            'seeklogo' => 'osrdigital-seeklogo.svg',
-            'main' => 'osrdigital-seeklogo.svg',
-            'dark' => 'osrdigital-seeklogo.svg',
-            'mobile' => 'osrdigital-seeklogo.svg',
-            'admin' => 'osrdigital-seeklogo.svg',
-            'light' => 'osrdigital-seeklogo.svg',
-            'footer' => 'osrdigital-seeklogo.svg',
-            'email' => 'osrdigital-seeklogo.svg'
+        $settingKeyMap = [
+            'default' => 'site_logo',
+            'seeklogo' => 'site_logo',
+            'main' => 'site_logo',
+            'dark' => 'logo_dark',
+            'mobile' => 'logo_mobile',
+            'admin' => 'logo_admin',
+            'light' => 'logo_light',
+            'footer' => 'logo_footer',
+            'email' => 'logo_email'
         ];
 
-        $logoFile = $logoMap[$type] ?? $logoMap['default'];
+        $settingKey = $settingKeyMap[$type] ?? 'site_logo';
+        $logoPath = \App\Helpers\SettingsHelper::get($settingKey);
+
+        if ($logoPath) {
+            $url = \Illuminate\Support\Facades\Storage::url($logoPath);
+            $filename = basename($logoPath);
+        } else {
+            // Fallback to default logo
+            $fallbackFile = 'osrdigital-seeklogo.svg';
+            $url = \Illuminate\Support\Facades\Storage::url('logos/' . $fallbackFile);
+            $filename = $fallbackFile;
+        }
 
         return response()->json([
-            'url' => \Illuminate\Support\Facades\Storage::url('logos/' . $logoFile),
+            'url' => $url,
             'type' => $type,
-            'filename' => $logoFile
+            'filename' => $filename
         ]);
     });
 
