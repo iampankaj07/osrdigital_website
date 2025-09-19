@@ -36,7 +36,7 @@ class WebAssetsController extends Controller
         $map = [
             'light' => 'logo_light',
             'dark' => 'logo_light', // Use same logo for consistency
-            'admin' => 'logo_light', // Use same logo for consistency  
+            'admin' => 'logo_light', // Use same logo for consistency
             'mobile' => 'logo_light', // Use same logo for consistency
             'footer' => 'logo_light', // Use same logo for consistency
             'email' => 'logo_light', // Use same logo for consistency
