@@ -16,10 +16,32 @@ class Page extends Model
         'meta_description',
         'is_published',
         'featured_image',
+        'template_type',
+        // About template fields
+        'about_mission',
+        'about_mission_title',
+        'about_vision',
+        'about_vision_title',
+        'about_what_we_do_title',
+        'about_what_we_do_description',
+        'about_youtube_link',
+        'about_services',
+        'about_stat_1_value',
+        'about_stat_1_label',
+        'about_stat_2_value',
+        'about_stat_2_label',
+        'about_stat_3_value',
+        'about_stat_3_label',
+        'about_stat_4_value',
+        'about_stat_4_label',
+        'about_primary_button_text',
+        'about_secondary_button_text',
+        'about_hero_badge_text',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'about_services' => 'array',
     ];
 
     protected static function boot()

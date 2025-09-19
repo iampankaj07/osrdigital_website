@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import PageHeader from '../components/PageHeader';
 
 function Partners() {
     const { isDark } = useTheme();
@@ -102,17 +103,12 @@ function Partners() {
     ];
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
-            {/* Hero Section */}
-            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Partners</h1>
-                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
-                        We collaborate with exceptional creators, studios, and distributors worldwide to bring
-                        diverse, high-quality content to global audiences through strategic partnerships.
-                    </p>
-                </div>
-            </section>
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <PageHeader
+                badge="Our Network"
+                title="Strategic Content Partners"
+                description="We collaborate with exceptional creators, studios, and distributors worldwide to bring diverse, high-quality content to global audiences through strategic partnerships."
+            />
 
             {/* Partnership Types */}
             <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>

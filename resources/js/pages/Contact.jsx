@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import PageHeader from '../components/PageHeader';
 
 function Contact() {
     const { isDark } = useTheme();
@@ -67,17 +68,12 @@ function Contact() {
     ];
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
-            {/* Hero Section */}
-            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Get In Touch</h1>
-                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
-                        Ready to start your content distribution journey? Have questions about our services?
-                        We're here to help you succeed in the digital content landscape.
-                    </p>
-                </div>
-            </section>
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <PageHeader
+                badge="Get In Touch"
+                title="Contact Our Success Team"
+                description="Ready to start your content distribution journey? Have questions about our services? We're here to help you succeed in the digital content landscape."
+            />
 
             {/* Contact Form & Info */}
             <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
