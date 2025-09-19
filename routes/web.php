@@ -182,7 +182,7 @@ Route::prefix('api')->group(function () {
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Contact form submission failed: ' . $e->getMessage());
-            
+
             return response()->json([
                 'message' => 'Sorry, there was an error sending your message. Please try again later.',
                 'status' => 'error'
