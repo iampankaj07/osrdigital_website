@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class Setting extends Model
 {
@@ -17,6 +18,7 @@ class Setting extends Model
         'group',
         'description',
         'is_public',
+        'file_path',
     ];
 
     protected $casts = [
@@ -104,5 +106,28 @@ class Setting extends Model
             Cache::forget("setting_{$setting->key}");
         }
         Cache::forget('public_settings');
+    }
+
+    /**
+     * Get file URL for file-type settings
+     */
+    public function getFileUrlAttribute()
+    {
+        if ($this->type === 'file' && $this->file_path) {
+            return Storage::url($this->file_path);
+        }
+        return null;
+    }
+
+    /**
+     * Get theme settings grouped by category
+     */
+    public static function getThemeSettings()
+    {
+        return Cache::remember('theme_settings', 3600, function () {
+            return static::whereIn('group', ['branding', 'theme', 'general', 'footer', 'header'])
+                ->get()
+                ->groupBy('group');
+        });
     }
 }

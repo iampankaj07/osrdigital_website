@@ -13,7 +13,7 @@ function Header() {
     const { isDark } = useTheme();
 
     const isActive = (path) => location.pathname === path;
-    const primaryColor = getSetting('brand_primary_color', '#ec681b');
+    const primaryColor = '#ec681b'; // OSR Digital brand orange
     // const companyName = getSetting('company_name', 'OSR Digital');
     const primaryButtonText = getSetting('hero_primary_button_text', 'Partner With Us');
 

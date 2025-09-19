@@ -209,7 +209,7 @@ function Partners() {
                                             />
                                             <div>
                                                 <h4 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{partner.name}</h4>
-                                                <span className="text-red-400 text-sm capitalize">{partner.type}</span>
+                                                <span className="text-sm capitalize" style={{ color: '#ec681b' }}>{partner.type}</span>
                                             </div>
                                         </div>
                                         <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{partner.description}</p>
@@ -234,7 +234,7 @@ function Partners() {
                     <div className="grid md:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <div className="flex items-start space-x-4">
-                                <div className="flex-shrink-0 w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ec681b' }}>
                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -246,7 +246,7 @@ function Partners() {
                             </div>
 
                             <div className="flex items-start space-x-4">
-                                <div className="flex-shrink-0 w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ec681b' }}>
                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -258,7 +258,7 @@ function Partners() {
                             </div>
 
                             <div className="flex items-start space-x-4">
-                                <div className="flex-shrink-0 w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ec681b' }}>
                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -272,7 +272,7 @@ function Partners() {
 
                         <div className="space-y-6">
                             <div className="flex items-start space-x-4">
-                                <div className="flex-shrink-0 w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ec681b' }}>
                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -284,7 +284,7 @@ function Partners() {
                             </div>
 
                             <div className="flex items-start space-x-4">
-                                <div className="flex-shrink-0 w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ec681b' }}>
                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -296,7 +296,7 @@ function Partners() {
                             </div>
 
                             <div className="flex items-start space-x-4">
-                                <div className="flex-shrink-0 w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#ec681b' }}>
                                     <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
@@ -312,13 +312,23 @@ function Partners() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-red-900 via-red-800 to-red-900">
+            <section
+                className="py-20"
+                style={{
+                    background: 'linear-gradient(to right, #d35a15, #ec681b, #d35a15)'
+                }}
+            >
                 <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                     <h2 className="text-4xl font-bold text-white mb-6">Ready to Partner With Us?</h2>
-                    <p className="text-xl text-red-100 mb-8 max-w-2xl mx-auto">
+                    <p className="text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
                         Join our network of successful partners and unlock the global potential of your content.
                     </p>
-                    <button className="bg-white text-red-800 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                    <button
+                        className="bg-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
+                        style={{ color: '#ec681b' }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                    >
                         Become a Partner
                     </button>
                 </div>

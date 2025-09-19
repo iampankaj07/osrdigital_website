@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class SettingsHelper
 {
@@ -12,32 +12,14 @@ class SettingsHelper
      */
     public static function get(string $key, $default = null)
     {
-        return Cache::remember("public_setting_{$key}", 3600, function () use ($key, $default) {
-            $setting = Setting::where('key', $key)
-                             ->where('is_public', true)
-                             ->first();
-
-            if (!$setting) {
-                return $default;
-            }
-
-            // Convert value based on type
-            $value = $setting->value;
-
-            if ($setting->type === 'boolean') {
-                return (bool) $value;
-            }
-
-            if ($setting->type === 'json') {
-                return json_decode($value, true);
-            }
-
-            if ($setting->type === 'integer') {
-                return (int) $value;
-            }
-
-            return $value;
-        });
+        $value = ThemeHelper::get($key, $default);
+        
+        // Provide fallbacks for logo keys to use site_logo if specific logos aren't set
+        if (is_null($value) && in_array($key, ['logo_light', 'logo_dark', 'logo_admin', 'logo_mobile', 'logo_footer', 'logo_email'])) {
+            $value = ThemeHelper::get('site_logo', $default);
+        }
+        
+        return $value;
     }
 
     /**
@@ -45,9 +27,7 @@ class SettingsHelper
      */
     public static function all(): array
     {
-        return Cache::remember('all_public_settings', 3600, function () {
-            return Setting::getPublicSettings();
-        });
+        return ThemeHelper::allForFrontend();
     }
 
     /**
@@ -58,10 +38,10 @@ class SettingsHelper
         $theme = $theme ?? self::get('default_theme', 'light');
 
         if ($theme === 'dark') {
-            return self::get('logo_dark') ?? self::get('logo_light');
+            return self::get('logo_dark') ?? self::get('logo_light') ?? self::get('site_logo');
         }
 
-        return self::get('logo_light') ?? self::get('logo_dark');
+        return self::get('logo_light') ?? self::get('logo_dark') ?? self::get('site_logo');
     }
 
     /**
@@ -69,7 +49,15 @@ class SettingsHelper
      */
     public static function getAdminLogo(): ?string
     {
-        return self::get('logo_admin') ?? self::getLogo();
+        return ThemeHelper::logo() ?? self::getLogo();
+    }
+
+    /**
+     * Get admin logo path (without Storage::url)
+     */
+    public static function getAdminLogoPath(): ?string
+    {
+        return self::get('logo_admin') ?? self::get('logo_light') ?? self::get('site_logo');
     }
 
     /**
@@ -109,7 +97,8 @@ class SettingsHelper
      */
     public static function getSiteTitle(): string
     {
-        return self::get('site_title', config('app.name', 'OSR Digital'));
+        $company = ThemeHelper::company();
+        return $company['name'] ?? config('app.name', 'OSR Digital');
     }
 
     /**
