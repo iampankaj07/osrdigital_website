@@ -195,10 +195,13 @@ Route::prefix('api')->group(function () {
         $logoMap = [
             'default' => 'osrdigital-seeklogo.svg',
             'seeklogo' => 'osrdigital-seeklogo.svg',
-            'main' => 'osrdigital-logo.svg',
-            'dark' => 'osrdigital-logo-dark.svg',
-            'mobile' => 'osrdigital-logo-mobile.svg',
-            'admin' => 'osrdigital-logo-admin.svg'
+            'main' => 'osrdigital-seeklogo.svg',
+            'dark' => 'osrdigital-seeklogo.svg',
+            'mobile' => 'osrdigital-seeklogo.svg',
+            'admin' => 'osrdigital-seeklogo.svg',
+            'light' => 'osrdigital-seeklogo.svg',
+            'footer' => 'osrdigital-seeklogo.svg',
+            'email' => 'osrdigital-seeklogo.svg'
         ];
 
         $logoFile = $logoMap[$type] ?? $logoMap['default'];
