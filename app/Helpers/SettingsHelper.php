@@ -194,4 +194,74 @@ class SettingsHelper
     {
         Cache::flush();
     }
+
+    /**
+     * Get footer logo settings
+     */
+    public static function getFooterLogoSettings(): array
+    {
+        return [
+            'height' => (int) self::get('footer_logo_height', 48),
+            'width' => (int) self::get('footer_logo_width', 120),
+            'opacity' => (float) self::get('footer_logo_opacity', 0.9),
+            'show' => (bool) self::get('footer_show_logo', true),
+        ];
+    }
+
+    /**
+     * Get footer company information
+     */
+    public static function getFooterCompanyInfo(): array
+    {
+        return [
+            'name' => self::get('footer_company_name', 'OSR Digital'),
+            'description' => self::get('footer_description', 'Bringing stories to screens worldwide through strategic content acquisition and YouTube publishing.'),
+        ];
+    }
+
+    /**
+     * Get footer contact information
+     */
+    public static function getFooterContactInfo(): array
+    {
+        return [
+            'email' => self::get('footer_contact_email', 'hello@osrdigital.com'),
+            'phone' => self::get('footer_contact_phone', '+1 (555) 123-4567'),
+            'address' => self::get('footer_contact_address', 'Los Angeles, CA'),
+        ];
+    }
+
+    /**
+     * Get footer quick links
+     */
+    public static function getFooterQuickLinks(): array
+    {
+        return self::get('footer_quick_links', [
+            ['text' => 'About Us', 'url' => '#about'],
+            ['text' => 'Our Business', 'url' => '#business'],
+            ['text' => 'Portfolio', 'url' => '#portfolio'],
+            ['text' => 'Partners', 'url' => '#partners'],
+        ]);
+    }
+
+    /**
+     * Get footer services
+     */
+    public static function getFooterServices(): array
+    {
+        return self::get('footer_services', [
+            'Movie Rights Acquisition',
+            'Music Publishing',
+            'Short Film Distribution',
+            'Content Strategy',
+        ]);
+    }
+
+    /**
+     * Get footer copyright text
+     */
+    public static function getFooterCopyrightText(): string
+    {
+        return self::get('footer_copyright_text', '© 2025 OSR Digital. All rights reserved.');
+    }
 }

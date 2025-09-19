@@ -171,13 +171,23 @@ Route::prefix('api')->group(function () {
             'type' => 'required|string|in:general,partnership,content,support,media'
         ]);
 
-        // Save to database
-        \App\Models\Contact::create($validated);
+        try {
+            // Send email directly using Laravel Mail
+            \Illuminate\Support\Facades\Mail::to(config('mail.from.address'))
+                ->send(new \App\Mail\ContactFormSubmission($validated));
 
-        return response()->json([
-            'message' => 'Thank you for your message! We will get back to you within 24 hours.',
-            'status' => 'success'
-        ]);
+            return response()->json([
+                'message' => 'Thank you for your message! We will get back to you within 24 hours.',
+                'status' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Contact form submission failed: ' . $e->getMessage());
+            
+            return response()->json([
+                'message' => 'Sorry, there was an error sending your message. Please try again later.',
+                'status' => 'error'
+            ], 500);
+        }
     });
 
     // Logo API

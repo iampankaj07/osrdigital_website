@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\TeamController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\WebAssetsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,3 +29,7 @@ Route::prefix('settings')->group(function () {
     Route::get('/group/{group}', [SettingsController::class, 'getByGroup']);
     Route::get('/{key}', [SettingsController::class, 'show']);
 });
+
+// Web assets (footer, logo) routes for frontend
+Route::get('/settings/footer', [WebAssetsController::class, 'footer']);
+Route::get('/logo/{type}', [WebAssetsController::class, 'logo']);
