@@ -13,12 +13,12 @@ class SettingsHelper
     public static function get(string $key, $default = null)
     {
         $value = ThemeHelper::get($key, $default);
-        
+
         // Provide fallbacks for logo keys to use site_logo if specific logos aren't set
         if (is_null($value) && in_array($key, ['logo_light', 'logo_dark', 'logo_admin', 'logo_mobile', 'logo_footer', 'logo_email'])) {
             $value = ThemeHelper::get('site_logo', $default);
         }
-        
+
         return $value;
     }
 

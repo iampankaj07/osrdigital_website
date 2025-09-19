@@ -13,6 +13,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\KeyValue;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Illuminate\Support\Facades\DB;
 
 class GeneralSettings extends AbstractPageSettings
@@ -85,110 +86,132 @@ class GeneralSettings extends AbstractPageSettings
     {
         return $schema
             ->components([
-                Section::make('General Information')
-                    ->schema([
-                        TextInput::make('site_name')
-                            ->label('Site Name')
-                            ->required()
-                            ->maxLength(255),
-                        Textarea::make('site_description')
-                            ->label('Site Description')
-                            ->rows(3)
-                            ->maxLength(500),
-                        ColorPicker::make('theme_color')
-                            ->label('Theme Color')
-                            ->default('#3b82f6'),
+                Tabs::make('Settings')
+                    ->tabs([
+                        Tabs\Tab::make('General')
+                            ->icon('heroicon-m-cog-6-tooth')
+                            ->schema([
+                                TextInput::make('site_name')
+                                    ->label('Site Name')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                                Textarea::make('site_description')
+                                    ->label('Site Description')
+                                    ->rows(3)
+                                    ->maxLength(500)
+                                    ->columnSpanFull(),
+                                ColorPicker::make('theme_color')
+                                    ->label('Theme Color')
+                                    ->default('#3b82f6'),
+                            ])
+                            ->columns(2),
+
+                        Tabs\Tab::make('Media')
+                            ->icon('heroicon-m-photo')
+                            ->schema([
+                                FileUpload::make('site_logo')
+                                    ->label('Site Logo')
+                                    ->image()
+                                    ->disk('public')
+                                    ->directory('logos')
+                                    ->visibility('public')
+                                    ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/svg+xml'])
+                                    ->maxSize(2048)
+                                    ->columnSpanFull(),
+                                FileUpload::make('site_favicon')
+                                    ->label('Site Favicon')
+                                    ->image()
+                                    ->disk('public')
+                                    ->directory('favicons')
+                                    ->visibility('public')
+                                    ->acceptedFileTypes(['image/x-icon', 'image/png'])
+                                    ->maxSize(1024)
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2),
+
+                        Tabs\Tab::make('Contact')
+                            ->icon('heroicon-m-envelope')
+                            ->schema([
+                                TextInput::make('support_email')
+                                    ->label('Support Email')
+                                    ->email()
+                                    ->maxLength(255),
+                                TextInput::make('support_phone')
+                                    ->label('Support Phone')
+                                    ->tel()
+                                    ->maxLength(50),
+                                TextInput::make('email_from_address')
+                                    ->label('Email From Address')
+                                    ->email()
+                                    ->maxLength(255),
+                                TextInput::make('email_from_name')
+                                    ->label('Email From Name')
+                                    ->maxLength(255),
+                            ])
+                            ->columns(2),
+
+                        Tabs\Tab::make('SEO')
+                            ->icon('heroicon-m-magnifying-glass')
+                            ->schema([
+                                TextInput::make('seo_title')
+                                    ->label('SEO Title')
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                                TextInput::make('seo_keywords')
+                                    ->label('SEO Keywords')
+                                    ->maxLength(500)
+                                    ->columnSpanFull(),
+                                KeyValue::make('seo_metadata')
+                                    ->label('SEO Metadata')
+                                    ->keyLabel('Meta Property')
+                                    ->valueLabel('Content')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2),
+
+                        Tabs\Tab::make('Analytics')
+                            ->icon('heroicon-m-chart-bar')
+                            ->schema([
+                                TextInput::make('google_analytics_id')
+                                    ->label('Google Analytics ID')
+                                    ->placeholder('G-XXXXXXXXXX')
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                                Textarea::make('posthog_html_snippet')
+                                    ->label('PostHog HTML Snippet')
+                                    ->rows(4)
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2),
+
+                        Tabs\Tab::make('Social')
+                            ->icon('heroicon-m-share')
+                            ->schema([
+                                KeyValue::make('social_network')
+                                    ->label('Social Network Links')
+                                    ->keyLabel('Platform')
+                                    ->valueLabel('URL')
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Tabs\Tab::make('Advanced')
+                            ->icon('heroicon-m-wrench-screwdriver')
+                            ->schema([
+                                KeyValue::make('email_settings')
+                                    ->label('Email Settings')
+                                    ->keyLabel('Setting')
+                                    ->valueLabel('Value')
+                                    ->columnSpanFull(),
+                                KeyValue::make('more_configs')
+                                    ->label('Additional Configurations')
+                                    ->keyLabel('Config Key')
+                                    ->valueLabel('Config Value')
+                                    ->columnSpanFull(),
+                            ]),
                     ])
-                    ->columns(2),
-                
-                Section::make('Media')
-                    ->schema([
-                        FileUpload::make('site_logo')
-                            ->label('Site Logo')
-                            ->image()
-                            ->disk('public')
-                            ->directory('logos')
-                            ->visibility('public')
-                            ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/svg+xml'])
-                            ->maxSize(2048),
-                        FileUpload::make('site_favicon')
-                            ->label('Site Favicon')
-                            ->image()
-                            ->disk('public')
-                            ->directory('favicons')
-                            ->visibility('public')
-                            ->acceptedFileTypes(['image/x-icon', 'image/png'])
-                            ->maxSize(1024),
-                    ])
-                    ->columns(2),
-                
-                Section::make('Contact Information')
-                    ->schema([
-                        TextInput::make('support_email')
-                            ->label('Support Email')
-                            ->email()
-                            ->maxLength(255),
-                        TextInput::make('support_phone')
-                            ->label('Support Phone')
-                            ->tel()
-                            ->maxLength(50),
-                        TextInput::make('email_from_address')
-                            ->label('Email From Address')
-                            ->email()
-                            ->maxLength(255),
-                        TextInput::make('email_from_name')
-                            ->label('Email From Name')
-                            ->maxLength(255),
-                    ])
-                    ->columns(2),
-                
-                Section::make('SEO Settings')
-                    ->schema([
-                        TextInput::make('seo_title')
-                            ->label('SEO Title')
-                            ->maxLength(255),
-                        TextInput::make('seo_keywords')
-                            ->label('SEO Keywords')
-                            ->maxLength(500),
-                        KeyValue::make('seo_metadata')
-                            ->label('SEO Metadata')
-                            ->keyLabel('Meta Property')
-                            ->valueLabel('Content'),
-                    ])
-                    ->columns(2),
-                
-                Section::make('Analytics')
-                    ->schema([
-                        TextInput::make('google_analytics_id')
-                            ->label('Google Analytics ID')
-                            ->maxLength(255),
-                        Textarea::make('posthog_html_snippet')
-                            ->label('PostHog HTML Snippet')
-                            ->rows(4),
-                    ])
-                    ->columns(2),
-                
-                Section::make('Social Networks')
-                    ->schema([
-                        KeyValue::make('social_network')
-                            ->label('Social Network Links')
-                            ->keyLabel('Platform')
-                            ->valueLabel('URL'),
-                    ]),
-                
-                Section::make('Advanced Settings')
-                    ->schema([
-                        KeyValue::make('email_settings')
-                            ->label('Email Settings')
-                            ->keyLabel('Setting')
-                            ->valueLabel('Value'),
-                        KeyValue::make('more_configs')
-                            ->label('Additional Configurations')
-                            ->keyLabel('Config Key')
-                            ->valueLabel('Config Value'),
-                    ])
-                    ->collapsible()
-                    ->collapsed(true),
+                    ->columnSpanFull(),
             ])
             ->statePath('data');
     }
