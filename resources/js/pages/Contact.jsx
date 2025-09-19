@@ -14,6 +14,22 @@ function Contact() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null);
+    const [openFAQ, setOpenFAQ] = useState(null);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    const handleFAQToggle = (index) => {
+        setOpenFAQ(openFAQ === index ? null : index);
+    };
+
+    const handleMouseMove = (e, cardRef) => {
+        if (cardRef) {
+            const rect = cardRef.getBoundingClientRect();
+            setMousePosition({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            });
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -98,7 +114,7 @@ function Contact() {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                                        <label htmlFor="name" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                             Full Name *
                                         </label>
                                         <input
@@ -108,13 +124,17 @@ function Contact() {
                                             value={formData.name}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-red-600 transition-colors"
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
+                                                isDark
+                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
+                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                            }`}
                                             placeholder="Your full name"
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                                        <label htmlFor="email" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                             Email Address *
                                         </label>
                                         <input
@@ -124,7 +144,11 @@ function Contact() {
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-red-600 transition-colors"
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
+                                                isDark
+                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
+                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                            }`}
                                             placeholder="your@email.com"
                                         />
                                     </div>
@@ -132,7 +156,7 @@ function Contact() {
 
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
+                                        <label htmlFor="company" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                             Company/Organization
                                         </label>
                                         <input
@@ -141,13 +165,17 @@ function Contact() {
                                             name="company"
                                             value={formData.company}
                                             onChange={handleInputChange}
-                                            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-red-600 transition-colors"
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
+                                                isDark
+                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
+                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                            }`}
                                             placeholder="Your company name"
                                         />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="type" className="block text-sm font-medium text-gray-300 mb-2">
+                                        <label htmlFor="type" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                             Inquiry Type *
                                         </label>
                                         <select
@@ -156,10 +184,14 @@ function Contact() {
                                             value={formData.type}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-red-600 transition-colors"
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
+                                                isDark
+                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
+                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                            }`}
                                         >
                                             {contactTypes.map(type => (
-                                                <option key={type.value} value={type.value}>
+                                                <option key={type.value} value={type.value} className={isDark ? 'bg-gray-800' : 'bg-white'}>
                                                     {type.label}
                                                 </option>
                                             ))}
@@ -168,7 +200,7 @@ function Contact() {
                                 </div>
 
                                 <div>
-                                    <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="subject" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                         Subject *
                                     </label>
                                     <input
@@ -178,13 +210,17 @@ function Contact() {
                                         value={formData.subject}
                                         onChange={handleInputChange}
                                         required
-                                        className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-red-600 transition-colors"
+                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
+                                            isDark
+                                                ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
+                                                : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                        }`}
                                         placeholder="Brief description of your inquiry"
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="message" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                         Message *
                                     </label>
                                     <textarea
@@ -194,7 +230,11 @@ function Contact() {
                                         onChange={handleInputChange}
                                         required
                                         rows={6}
-                                        className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:outline-none focus:border-red-600 transition-colors resize-vertical"
+                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors resize-vertical ${
+                                            isDark
+                                                ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
+                                                : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                        }`}
                                         placeholder="Tell us more about your inquiry..."
                                     />
                                 </div>
@@ -202,7 +242,8 @@ function Contact() {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white py-4 rounded-lg text-lg font-semibold transition-colors flex items-center justify-center"
+                                    className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 text-white py-4 rounded-lg text-lg font-semibold transition-colors flex items-center justify-center"
+                                    style={{ backgroundColor: isSubmitting ? undefined : '#ff6b35' }}
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -220,89 +261,149 @@ function Contact() {
                         </div>
 
                         {/* Contact Information */}
-                        <div>
-                            <h2 className="text-3xl font-bold text-white mb-8">Contact Information</h2>
+                        <div className="relative">
+                            {/* Glass morphism container */}
+                            <div className={`rounded-2xl p-8 backdrop-blur-sm border ${
+                                isDark
+                                    ? 'bg-white/5 border-white/10 shadow-2xl'
+                                    : 'bg-black/5 border-black/10 shadow-2xl'
+                            }`}
+                            style={{
+                                backdropFilter: 'blur(20px)',
+                                WebkitBackdropFilter: 'blur(20px)',
+                            }}>
+                                <h2 className={`text-3xl font-bold mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>Get In Touch</h2>
 
-                            <div className="space-y-8">
-                                <div className="flex items-start space-x-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
+                                <div className="space-y-6">
+                                    {/* Email Card */}
+                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
+                                        isDark
+                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
+                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
+                                    }`}>
+                                        <div className="flex items-start space-x-4">
+                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+                                                 style={{ backgroundColor: '#ff6b35' }}>
+                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Us</h3>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} hover:text-orange-500 transition-colors cursor-pointer`}>
+                                                    info@osrdigitalmedia.com
+                                                </p>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} hover:text-orange-500 transition-colors cursor-pointer`}>
+                                                    partnerships@osrdigitalmedia.com
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
-                                        <p className="text-gray-300">info@osrdigitalmedia.com</p>
-                                        <p className="text-gray-300">partnerships@osrdigitalmedia.com</p>
+
+                                    {/* Phone Card */}
+                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
+                                        isDark
+                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
+                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
+                                    }`}>
+                                        <div className="flex items-start space-x-4">
+                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+                                                 style={{ backgroundColor: '#ff6b35' }}>
+                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Call Us</h3>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} hover:text-orange-500 transition-colors cursor-pointer`}>
+                                                    +1 (555) 123-4567
+                                                </p>
+                                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                    Mon-Fri, 9:00 AM - 6:00 PM EST
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Office Card */}
+                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
+                                        isDark
+                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
+                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
+                                    }`}>
+                                        <div className="flex items-start space-x-4">
+                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+                                                 style={{ backgroundColor: '#ff6b35' }}>
+                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Visit Us</h3>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>123 Digital Avenue</p>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Media City, MC 12345</p>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>United States</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Response Time Card */}
+                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
+                                        isDark
+                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
+                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
+                                    }`}>
+                                        <div className="flex items-start space-x-4">
+                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+                                                 style={{ backgroundColor: '#ff6b35' }}>
+                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Response Time</h3>
+                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Within 24 hours</p>
+                                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                    We respond to all inquiries promptly
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-start space-x-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                        </svg>
+                                {/* Social Media */}
+                                <div className="mt-8">
+                                    <h3 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Connect With Us</h3>
+                                    <div className="flex space-x-4">
+                                        <a href="#" className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
+                                            isDark
+                                                ? 'bg-gray-800/50 hover:bg-orange-600'
+                                                : 'bg-white/70 hover:bg-orange-600'
+                                        }`}>
+                                            <svg className="w-6 h-6 text-current" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                            </svg>
+                                        </a>
+                                        <a href="#" className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
+                                            isDark
+                                                ? 'bg-gray-800/50 hover:bg-orange-600'
+                                                : 'bg-white/70 hover:bg-orange-600'
+                                        }`}>
+                                            <svg className="w-6 h-6 text-current" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                            </svg>
+                                        </a>
+                                        <a href="#" className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
+                                            isDark
+                                                ? 'bg-gray-800/50 hover:bg-orange-600'
+                                                : 'bg-white/70 hover:bg-orange-600'
+                                        }`}>
+                                            <svg className="w-6 h-6 text-current" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                            </svg>
+                                        </a>
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-white mb-2">Phone</h3>
-                                        <p className="text-gray-300">+1 (555) 123-4567</p>
-                                        <p className="text-gray-300 text-sm">Mon-Fri, 9:00 AM - 6:00 PM EST</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start space-x-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-white mb-2">Office</h3>
-                                        <p className="text-gray-300">123 Digital Avenue</p>
-                                        <p className="text-gray-300">Media City, MC 12345</p>
-                                        <p className="text-gray-300">United States</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start space-x-4">
-                                    <div className="flex-shrink-0 w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-semibold text-white mb-2">Response Time</h3>
-                                        <p className="text-gray-300">Within 24 hours</p>
-                                        <p className="text-gray-300 text-sm">We respond to all inquiries promptly</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Social Media */}
-                            <div className="mt-12">
-                                <h3 className="text-xl font-semibold text-white mb-6">Follow Us</h3>
-                                <div className="flex space-x-4">
-                                    <a href="#" className="bg-gray-800 hover:bg-red-600 p-3 rounded-lg transition-colors">
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                                        </svg>
-                                    </a>
-                                    <a href="#" className="bg-gray-800 hover:bg-red-600 p-3 rounded-lg transition-colors">
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
-                                        </svg>
-                                    </a>
-                                    <a href="#" className="bg-gray-800 hover:bg-red-600 p-3 rounded-lg transition-colors">
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                                        </svg>
-                                    </a>
-                                    <a href="#" className="bg-gray-800 hover:bg-red-600 p-3 rounded-lg transition-colors">
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                        </svg>
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -311,35 +412,100 @@ function Contact() {
             </section>
 
             {/* FAQ Section */}
-            <section className="py-20 bg-gray-900">
+            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-white mb-6">Frequently Asked Questions</h2>
-                        <p className="text-xl text-gray-400">
+                        <h2 className={`text-4xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            Frequently Asked Questions
+                        </h2>
+                        <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                             Find answers to common questions about our services
                         </p>
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="bg-gray-800 rounded-lg p-6">
-                            <h3 className="text-lg font-semibold text-white mb-3">How do I submit my content for distribution?</h3>
-                            <p className="text-gray-300">You can submit your content through our partnership form or by contacting us directly. We'll review your submission and get back to you within 48 hours.</p>
-                        </div>
+                    <div className="space-y-4">
+                        {[
+                            {
+                                question: "How do I submit my content for distribution?",
+                                answer: "You can submit your content through our partnership form or by contacting us directly. We'll review your submission and get back to you within 48 hours with a detailed assessment and next steps."
+                            },
+                            {
+                                question: "What types of content do you distribute?",
+                                answer: "We distribute a wide range of content including movies, music videos, short films, documentaries, web series, and other digital media content across our global YouTube network and digital platforms."
+                            },
+                            {
+                                question: "How long does the partnership process take?",
+                                answer: "The partnership process typically takes 5-7 business days from initial contact to content launch, depending on the complexity and scope of your project. Rush services are available for time-sensitive content."
+                            },
+                            {
+                                question: "Do you provide analytics and reporting?",
+                                answer: "Yes, we provide comprehensive analytics and reporting through our partner dashboard, including real-time viewership data, revenue reports, audience demographics, and performance insights with monthly detailed reports."
+                            },
+                            {
+                                question: "What are your revenue sharing terms?",
+                                answer: "We offer competitive revenue sharing models tailored to each partnership. Our terms are transparent and fair, with detailed breakdowns provided during the onboarding process. Contact us for specific rates."
+                            }
+                        ].map((faq, index) => (
+                            <div
+                                key={index}
+                                className={`relative rounded-2xl overflow-hidden transition-all duration-300 ${
+                                    isDark
+                                        ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
+                                        : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
+                                }`}
+                                style={{
+                                    backdropFilter: 'blur(20px)',
+                                    WebkitBackdropFilter: 'blur(20px)',
+                                }}
+                                onMouseMove={(e) => handleMouseMove(e, e.currentTarget)}
+                            >
+                                {/* Glass morphism gradient effect */}
+                                <div
+                                    className="absolute inset-0 opacity-20 transition-all duration-300"
+                                    style={{
+                                        background: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px,
+                                            ${isDark
+                                                ? 'rgba(236, 104, 27, 0.2), rgba(255, 107, 53, 0.1), transparent'
+                                                : 'rgba(236, 104, 27, 0.15), rgba(255, 107, 53, 0.08), transparent'
+                                            })`
+                                    }}
+                                />
 
-                        <div className="bg-gray-800 rounded-lg p-6">
-                            <h3 className="text-lg font-semibold text-white mb-3">What types of content do you distribute?</h3>
-                            <p className="text-gray-300">We distribute a wide range of content including movies, music videos, short films, documentaries, and other digital media content across our YouTube network.</p>
-                        </div>
+                                <button
+                                    onClick={() => handleFAQToggle(index)}
+                                    className="w-full text-left p-6 focus:outline-none"
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <h3 className={`text-lg font-semibold pr-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                            {faq.question}
+                                        </h3>
+                                        <div className={`flex-shrink-0 transition-transform duration-300 ${
+                                            openFAQ === index ? 'rotate-180' : ''
+                                        }`}>
+                                            <svg
+                                                className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </button>
 
-                        <div className="bg-gray-800 rounded-lg p-6">
-                            <h3 className="text-lg font-semibold text-white mb-3">How long does the partnership process take?</h3>
-                            <p className="text-gray-300">The partnership process typically takes 5-7 business days from initial contact to content launch, depending on the complexity and scope of your project.</p>
-                        </div>
-
-                        <div className="bg-gray-800 rounded-lg p-6">
-                            <h3 className="text-lg font-semibold text-white mb-3">Do you provide analytics and reporting?</h3>
-                            <p className="text-gray-300">Yes, we provide comprehensive analytics and reporting on content performance, including viewership data, revenue reports, and audience insights.</p>
-                        </div>
+                                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                                    openFAQ === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                                }`}>
+                                    <div className="px-6 pb-6">
+                                        <div className={`w-full h-px mb-4 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
+                                        <p className={`leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                            {faq.answer}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

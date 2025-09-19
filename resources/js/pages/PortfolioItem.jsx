@@ -51,9 +51,9 @@ function PortfolioItem() {
                     <Link
                         to="/portfolio"
                         className="text-white px-6 py-3 rounded-lg font-medium transition-colors"
-                        style={{ backgroundColor: '#ec681b' }}
+                        style={{ backgroundColor: '#ff6b35' }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#d35a15'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#ec681b'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b35'}
                     >
                         Back to Portfolio
                     </Link>
@@ -139,7 +139,7 @@ function PortfolioItem() {
                     <div>
                         <div className="mb-6">
                             <div className="flex items-center gap-4 mb-4">
-                                <span className="text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#ec681b' }}>
+                                <span className="text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#ff6b35' }}>
                                     {item.type}
                                 </span>
                                 <span className="text-gray-400">
@@ -167,9 +167,9 @@ function PortfolioItem() {
                                 <button
                                     onClick={() => window.open(item.video_url, '_blank')}
                                     className="w-full text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                                    style={{ backgroundColor: '#ec681b' }}
+                                    style={{ backgroundColor: '#ff6b35' }}
                                     onMouseEnter={(e) => e.target.style.backgroundColor = '#d35a15'}
-                                    onMouseLeave={(e) => e.target.style.backgroundColor = '#ec681b'}
+                                    onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6b35'}
                                 >
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M8 5v14l11-7z"/>

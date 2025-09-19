@@ -1,11 +1,32 @@
 
 import { Link } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import { useAllSettings } from '../../hooks/useSettings';
 import { useTheme } from '../../contexts/ThemeContext';
 
 function Hero() {
     const { getSetting, loading, error } = useAllSettings();
     const { isDark } = useTheme();
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const heroRef = useRef(null);
+
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            if (heroRef.current) {
+                const rect = heroRef.current.getBoundingClientRect();
+                setMousePosition({
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                });
+            }
+        };
+
+        const heroElement = heroRef.current;
+        if (heroElement) {
+            heroElement.addEventListener('mousemove', handleMouseMove);
+            return () => heroElement.removeEventListener('mousemove', handleMouseMove);
+        }
+    }, []);
 
     // Show loading skeleton while settings are being fetched
     if (loading) {
@@ -35,32 +56,136 @@ function Hero() {
     }
 
     return (
-        <section className="relative h-[100vh] flex items-center justify-center overflow-hidden pt-24">
-            {/* Simple Background */}
-            <div className={`absolute inset-0 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
-                <div className={`absolute inset-0 ${isDark ? 'bg-black/30' : 'bg-white/30'}`}></div>
+        <section
+            ref={heroRef}
+            className="relative h-[100vh] flex items-center justify-center overflow-hidden pt-24"
+        >
+            {/* Modern Animated Background */}
+            <div className={`absolute inset-0 ${isDark ? 'bg-black' : 'bg-white'}`}>
+                {/* Base Gradient */}
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: isDark
+                            ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%)'
+                            : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%, #f8fafc 100%)',
+                        backgroundSize: '400% 400%',
+                        animation: 'gradientShift 20s ease infinite'
+                    }}
+                />
+
+                {/* Animated Mesh Gradient Blobs */}
+                <div className="absolute inset-0 overflow-hidden">
+                    {/* Large Primary Blob */}
+                    <div
+                        className="absolute -top-1/2 -right-1/2 w-full h-full rounded-full animate-blob1"
+                        style={{
+                            background: isDark
+                                ? 'radial-gradient(circle, rgba(255,107,53,0.15) 0%, rgba(255,107,53,0.05) 50%, transparent 100%)'
+                                : 'radial-gradient(circle, rgba(255,107,53,0.08) 0%, rgba(255,107,53,0.03) 50%, transparent 100%)',
+                            filter: 'blur(60px)',
+                            transform: 'scale(1.2)',
+                        }}
+                    />
+
+                    {/* Secondary Blob */}
+                    <div
+                        className="absolute -bottom-1/2 -left-1/2 w-3/4 h-3/4 rounded-full animate-blob2"
+                        style={{
+                            background: isDark
+                                ? 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, rgba(59,130,246,0.04) 50%, transparent 100%)'
+                                : 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, rgba(59,130,246,0.02) 50%, transparent 100%)',
+                            filter: 'blur(50px)',
+                            animationDelay: '5s'
+                        }}
+                    />
+
+                    {/* Third Blob */}
+                    <div
+                        className="absolute top-1/4 left-1/3 w-1/2 h-1/2 rounded-full animate-blob3"
+                        style={{
+                            background: isDark
+                                ? 'radial-gradient(circle, rgba(147,51,234,0.1) 0%, rgba(147,51,234,0.03) 50%, transparent 100%)'
+                                : 'radial-gradient(circle, rgba(147,51,234,0.05) 0%, rgba(147,51,234,0.015) 50%, transparent 100%)',
+                            filter: 'blur(40px)',
+                            animationDelay: '10s'
+                        }}
+                    />
+                </div>
+
+                {/* Subtle Grid Pattern */}
+                <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                        backgroundImage: `linear-gradient(${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'} 1px, transparent 1px), linear-gradient(90deg, ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'} 1px, transparent 1px)`,
+                        backgroundSize: '100px 100px',
+                    }}
+                />
+
+                {/* Interactive Mouse Gradient */}
+                <div
+                    className="absolute inset-0 transition-all duration-300 ease-out"
+                    style={{
+                        background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px,
+                            ${isDark
+                                ? 'rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05), rgba(59, 130, 246, 0.03), transparent'
+                                : 'rgba(255, 107, 53, 0.06), rgba(255, 107, 53, 0.03), rgba(59, 130, 246, 0.02), transparent'
+                            })`,
+                        opacity: 0.7
+                    }}
+                />
+
+                {/* Floating Particles */}
+                <div className="absolute inset-0 overflow-hidden">
+                    {[...Array(20)].map((_, i) => (
+                        <div
+                            key={i}
+                            className={`absolute w-1 h-1 rounded-full animate-float-particle ${
+                                isDark ? 'bg-white/20' : 'bg-black/10'
+                            }`}
+                            style={{
+                                left: `${Math.random() * 100}%`,
+                                top: `${Math.random() * 100}%`,
+                                animationDelay: `${Math.random() * 20}s`,
+                                animationDuration: `${20 + Math.random() * 20}s`
+                            }}
+                        />
+                    ))}
+                </div>
+
+                {/* Radial Vignette */}
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background: isDark
+                            ? 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%)'
+                            : 'radial-gradient(ellipse at center, transparent 0%, rgba(255,255,255,0.3) 100%)'
+                    }}
+                />
             </div>
 
             {/* Content */}
             <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-                <div className="mb-6">
-                    <div className="inline-flex items-center px-4 py-2 bg-[#ec681b]/20 border border-[#ec681b]/30 rounded-full text-[#ec681b] text-sm font-medium mb-6"
-                         style={{
-                             backgroundColor: '#ec681b20',
-                             borderColor: '#ec681b30',
-                             color: '#ec681b'
-                         }}>
-                        <span className="w-2 h-2 rounded-full mr-2"
-                              style={{ backgroundColor: '#ec681b' }}></span>
-                        {getSetting('hero_badge_text', 'Digital Media Excellence')}
+                {/* Clean Container without backdrop blur */}
+                <div className="relative p-4">
+                    <div className="relative">
+                    <div className="mb-6">
+                        <div className="inline-flex items-center px-4 py-2 rounded-full text-[#ff6b35] text-sm font-medium mb-6"
+                             style={{
+                                 backgroundColor: isDark ? 'rgba(255, 107, 53, 0.15)' : 'rgba(255, 107, 53, 0.1)',
+                                 color: '#ff6b35'
+                             }}>
+                            <span className="w-2 h-2 rounded-full mr-2"
+                                  style={{ backgroundColor: '#ff6b35' }}></span>
+                            {getSetting('hero_badge_text', 'Digital Media Excellence')}
+                        </div>
                     </div>
-                </div>
 
                 <h1 className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight ${
                     isDark ? 'text-white' : 'text-gray-900'
                 }`}>
                     {getSetting('hero_main_title', 'Bringing Stories to')}{' '}
-                    <span style={{ color: '#ec681b' }}>
+                    <span style={{ color: '#ff6b35' }}>
                         {getSetting('hero_highlighted_title', 'Global Screens')}
                     </span>
                 </h1>
@@ -75,7 +200,7 @@ function Hero() {
                     <Link
                         to="/contact"
                         className="hover:opacity-90 text-white px-8 py-3 rounded-lg text-base font-semibold transition-all flex items-center gap-2"
-                        style={{ backgroundColor: '#ec681b' }}
+                        style={{ backgroundColor: '#ff6b35' }}
                     >
                         <span>{getSetting('hero_primary_button_text', 'Partner With Us')}</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,10 +210,10 @@ function Hero() {
 
                     <Link
                         to="/portfolio"
-                        className={`border px-8 py-3 rounded-lg text-base font-semibold transition-all flex items-center gap-2 ${
+                        className={`px-8 py-3 rounded-lg text-base font-semibold transition-all flex items-center gap-2 ${
                             isDark
-                                ? 'border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500'
-                                : 'border-gray-400 text-gray-700 hover:bg-gray-100 hover:border-gray-500'
+                                ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-black/5'
                         }`}
                     >
                         <svg className={`w-4 h-4 ${isDark ? 'text-white' : 'text-gray-700'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,52 +222,18 @@ function Hero() {
                         <span>{getSetting('hero_secondary_button_text', 'Explore Portfolio')}</span>
                     </Link>
                 </div>
-
-                {/* Stats Preview */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-                    <div className="group">
-                        <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': '#ec681b' }}>
-                            {getSetting('stats_movies_count', '500+')}
-                        </div>
-                        <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {getSetting('stats_movies_label', 'Movies Published')}
-                        </div>
-                    </div>
-                    <div className="group">
-                        <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': '#ec681b' }}>
-                            {getSetting('stats_songs_count', '2K+')}
-                        </div>
-                        <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {getSetting('stats_songs_label', 'Songs Released')}
-                        </div>
-                    </div>
-                    <div className="group">
-                        <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': '#ec681b' }}>
-                            {getSetting('stats_films_count', '800+')}
-                        </div>
-                        <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {getSetting('stats_films_label', 'Short Films')}
-                        </div>
-                    </div>
-                    <div className="group">
-                        <div className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} group-hover:text-[#ec681b] transition-colors`}
-                             style={{ '--hover-color': getSetting('brand_primary_color', '#ec681b') }}>
-                            {getSetting('stats_views_count', '50M+')}
-                        </div>
-                        <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {getSetting('stats_views_label', 'Total Views')}
-                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Scroll Indicator */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-                    <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
+                <div className={`w-6 h-10 rounded-full flex justify-center ${
+                    isDark ? 'bg-white/10' : 'bg-black/10'
+                }`}>
+                    <div className={`w-1 h-3 rounded-full mt-2 animate-pulse ${
+                        isDark ? 'bg-white/60' : 'bg-black/60'
+                    }`}></div>
                 </div>
             </div>
         </section>

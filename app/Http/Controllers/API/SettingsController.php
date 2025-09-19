@@ -78,7 +78,9 @@ class SettingsController extends Controller
                 'analytics' => ThemeHelper::analytics(),
                 'header' => ThemeHelper::header(),
                 'footer' => ThemeHelper::footer(),
-                default => []
+                'partners' => $this->getPartnerSettings(),
+                'business' => $this->getBusinessSettings(),
+                default => $this->getGroupFromDatabase($group)
             };
 
             return response()->json([
@@ -201,5 +203,77 @@ class SettingsController extends Controller
         }
 
         return $customSettings;
+    }
+
+    /**
+     * Get partner settings from database
+     */
+    private function getPartnerSettings(): array
+    {
+        $partnerSettings = DB::table('settings')
+            ->where('group', 'partners')
+            ->where('is_public', true)
+            ->get()
+            ->keyBy('key')
+            ->map(function ($setting) {
+                return match ($setting->type) {
+                    'boolean' => (bool) $setting->value,
+                    'json' => json_decode($setting->value, true),
+                    'integer' => (int) $setting->value,
+                    'float' => (double) $setting->value,
+                    default => $setting->value,
+                };
+            })
+            ->toArray();
+
+        return $partnerSettings;
+    }
+
+    /**
+     * Get business settings from database
+     */
+    private function getBusinessSettings(): array
+    {
+        $businessSettings = DB::table('settings')
+            ->where('group', 'business')
+            ->where('is_public', true)
+            ->get()
+            ->keyBy('key')
+            ->map(function ($setting) {
+                return match ($setting->type) {
+                    'boolean' => (bool) $setting->value,
+                    'json' => json_decode($setting->value, true),
+                    'integer' => (int) $setting->value,
+                    'float' => (double) $setting->value,
+                    default => $setting->value,
+                };
+            })
+            ->toArray();
+
+        return $businessSettings;
+    }
+
+    /**
+     * Get settings by group from database
+     */
+    private function getGroupFromDatabase(string $group): array
+    {
+        $settings = DB::table('settings')
+            ->where('group', $group)
+            ->where('is_public', true)
+            ->get()
+            ->keyBy('key')
+            ->map(function ($setting) {
+                return match ($setting->type) {
+                    'boolean' => (bool) $setting->value,
+                    'json' => json_decode($setting->value, true),
+                    'integer' => (int) $setting->value,
+                    'float' => (double) $setting->value,
+                    default => $setting->value,
+                };
+            })
+            ->toArray();
+
+        return $settings;
     }
 }
