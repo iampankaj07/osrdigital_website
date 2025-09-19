@@ -10,11 +10,134 @@
 @layer utilities {
     @keyframes float {
         0%, 100% {
-            transform: translateY(0px);
+            transform: translateY(0px) translateX(0px) rotate(0deg);
+        }
+        33% {
+            transform: translateY(-20px) translateX(10px) rotate(1deg);
+        }
+        66% {
+            transform: translateY(10px) translateX(-5px) rotate(-1deg);
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% {
+            opacity: 0.5;
+            transform: scale(1);
         }
         50% {
-            transform: translateY(-20px);
+            opacity: 1;
+            transform: scale(1.05);
         }
+    }
+
+    @keyframes gradient-shift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @keyframes gradientShift {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @keyframes blob1 {
+        0%, 100% {
+            transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+        33% {
+            transform: translate(30px, -50px) scale(1.1) rotate(120deg);
+        }
+        66% {
+            transform: translate(-20px, 20px) scale(0.9) rotate(240deg);
+        }
+    }
+
+    @keyframes blob2 {
+        0%, 100% {
+            transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+        33% {
+            transform: translate(-30px, 50px) scale(1.2) rotate(-120deg);
+        }
+        66% {
+            transform: translate(20px, -20px) scale(0.8) rotate(-240deg);
+        }
+    }
+
+    @keyframes blob3 {
+        0%, 100% {
+            transform: translate(0px, 0px) scale(1) rotate(0deg);
+        }
+        33% {
+            transform: translate(50px, 30px) scale(1.15) rotate(90deg);
+        }
+        66% {
+            transform: translate(-30px, -40px) scale(0.85) rotate(180deg);
+        }
+    }
+
+    @keyframes float-particle {
+        0%, 100% {
+            transform: translateY(0px) translateX(0px) rotate(0deg);
+            opacity: 0.1;
+        }
+        25% {
+            opacity: 0.3;
+        }
+        50% {
+            transform: translateY(-100px) translateX(50px) rotate(180deg);
+            opacity: 0.6;
+        }
+        75% {
+            opacity: 0.3;
+        }
+    }
+
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient-shift 8s ease infinite;
+    }
+
+    .animate-blob1 {
+        animation: blob1 25s ease-in-out infinite;
+    }
+
+    .animate-blob2 {
+        animation: blob2 30s ease-in-out infinite;
+    }
+
+    .animate-blob3 {
+        animation: blob3 35s ease-in-out infinite;
+    }
+
+    .animate-float-particle {
+        animation: float-particle 20s linear infinite;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 }
 

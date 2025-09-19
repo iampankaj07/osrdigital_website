@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import PageHeader from '../components/PageHeader';
 
 function Portfolio() {
     const { isDark } = useTheme();
@@ -74,12 +73,37 @@ function Portfolio() {
     }
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-            <PageHeader
-                badge="Our Work"
-                title="Featured Portfolio Collection"
-                description="Discover our curated collection of movies, music, and short films that have captivated audiences worldwide through strategic YouTube distribution."
-            />
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+            {/* Hero Section */}
+            <section className={`relative overflow-hidden ${isDark ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' : 'bg-gradient-to-br from-white via-orange-50 to-orange-100'}`}>
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20"></div>
+                    <div className="absolute top-0 left-0 w-full h-full">
+                        {[...Array(50)].map((_, i) => (
+                            <div
+                                key={i}
+                                className={`absolute rounded-full animate-pulse ${isDark ? 'bg-orange-400' : 'bg-orange-300'}`}
+                                style={{
+                                    width: Math.random() * 4 + 1 + 'px',
+                                    height: Math.random() * 4 + 1 + 'px',
+                                    top: Math.random() * 100 + '%',
+                                    left: Math.random() * 100 + '%',
+                                    animationDelay: Math.random() * 5 + 's',
+                                }}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 text-center">
+                    <h1 className={`text-5xl md:text-6xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Portfolio</h1>
+                    <p className={`text-xl md:text-2xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto leading-relaxed`}>
+                        Discover our curated collection of movies, music, and short films that have captivated audiences
+                        worldwide through strategic YouTube distribution and innovative content partnerships.
+                    </p>
+                </div>
+            </section>
 
             {/* Filter Section */}
             <section className={`py-8 ${isDark ? 'bg-black border-b border-gray-800' : 'bg-white border-b border-gray-200'}`}>
@@ -89,11 +113,12 @@ function Portfolio() {
                             onClick={() => setFilter('all')}
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'all'
-                                    ? 'bg-red-600 text-white'
+                                    ? 'text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
+                            style={filter === 'all' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             All Content
                         </button>
@@ -101,11 +126,12 @@ function Portfolio() {
                             onClick={() => setFilter('movie')}
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'movie'
-                                    ? 'bg-red-600 text-white'
+                                    ? 'text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
+                            style={filter === 'movie' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             Movies
                         </button>
@@ -113,11 +139,12 @@ function Portfolio() {
                             onClick={() => setFilter('music')}
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'music'
-                                    ? 'bg-red-600 text-white'
+                                    ? 'text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
+                            style={filter === 'music' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             Music
                         </button>
@@ -125,11 +152,12 @@ function Portfolio() {
                             onClick={() => setFilter('short_film')}
                             className={`px-6 py-2 rounded-full font-medium transition-colors ${
                                 filter === 'short_film'
-                                    ? 'bg-red-600 text-white'
+                                    ? 'text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
+                            style={filter === 'short_film' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             Short Films
                         </button>
@@ -162,7 +190,7 @@ function Portfolio() {
 
                                         {/* Play Button */}
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                            <div className="w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: '#ff6b35' }}>
                                                 <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M8 5v14l11-7z"/>
                                                 </svg>
@@ -171,7 +199,7 @@ function Portfolio() {
 
                                         {/* Type Badge */}
                                         <div className="absolute top-4 left-4">
-                                            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium capitalize">
+                                            <span className="text-white px-3 py-1 rounded-full text-sm font-medium capitalize" style={{ backgroundColor: '#ff6b35' }}>
                                                 {item.type?.replace('_', ' ') || 'Content'}
                                             </span>
                                         </div>
@@ -187,9 +215,15 @@ function Portfolio() {
                                     <div className="space-y-2">
                                         <h3 className={`text-xl font-semibold transition-colors ${
                                             isDark
-                                                ? 'text-white group-hover:text-red-400'
-                                                : 'text-gray-900 group-hover:text-red-600'
-                                        }`}>
+                                                ? 'text-white'
+                                                : 'text-gray-900'
+                                        }`}
+                                            style={{
+                                                '--hover-color': '#ff6b35'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.color = '#ff6b35'}
+                                            onMouseLeave={(e) => e.target.style.color = isDark ? 'white' : '#111827'}
+                                        >
                                             {item.title}
                                         </h3>
                                         {item.category && (
@@ -207,20 +241,28 @@ function Portfolio() {
 
             {/* Stats Section */}
             <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-12`}>Portfolio Impact</h2>
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div>
-                            <div className="text-4xl font-bold text-red-500 mb-2">50M+</div>
-                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total Views Across Portfolio</div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div className="text-center">
+                            <div className="text-4xl mb-4">🎬</div>
+                            <div className="text-4xl font-bold mb-2" style={{ color: '#ff6b35' }}>500+</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Movies Published</div>
                         </div>
-                        <div>
-                            <div className="text-4xl font-bold text-red-500 mb-2">1,300+</div>
-                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Pieces of Content Published</div>
+                        <div className="text-center">
+                            <div className="text-4xl mb-4">🎵</div>
+                            <div className="text-4xl font-bold mb-2" style={{ color: '#ff6b35' }}>2,000+</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Songs Released</div>
                         </div>
-                        <div>
-                            <div className="text-4xl font-bold text-red-500 mb-2">150+</div>
-                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Creator Partnerships</div>
+                        <div className="text-center">
+                            <div className="text-4xl mb-4">🎥</div>
+                            <div className="text-4xl font-bold mb-2" style={{ color: '#ff6b35' }}>800+</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Short Films</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-4xl mb-4">👁️</div>
+                            <div className="text-4xl font-bold mb-2" style={{ color: '#ff6b35' }}>50M+</div>
+                            <div className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Total Views</div>
                         </div>
                     </div>
                 </div>

@@ -12,6 +12,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Repeater;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Illuminate\Support\Facades\DB;
@@ -79,6 +80,145 @@ class GeneralSettings extends AbstractPageSettings
             'site_name' => 'OSR Digital',
             'site_description' => 'Your digital partner',
             'theme_color' => '#3b82f6',
+            // Partners page defaults
+            'partners_badge' => 'Our Network',
+            'partners_title' => 'Strategic Content Partners',
+            'partners_description' => 'We collaborate with exceptional creators, studios, and distributors worldwide to bring diverse, high-quality content to global audiences through strategic partnerships.',
+            'partnership_categories_title' => 'Partnership Categories',
+            'partnership_categories_subtitle' => 'We work with different types of partners to create a comprehensive content ecosystem',
+            'studios_title' => 'Studios',
+            'studios_description' => 'Creative powerhouses that bring stories to life through exceptional production quality.',
+            'studios_count' => '25+',
+            'creators_title' => 'Creators',
+            'creators_description' => 'Visionary artists and content creators who shape the future of entertainment.',
+            'creators_count' => '150+',
+            'distributors_title' => 'Distributors',
+            'distributors_description' => 'Strategic partners ensuring content reaches audiences across multiple platforms.',
+            'distributors_count' => '40+',
+            'platforms_title' => 'Platforms',
+            'platforms_description' => 'Digital and traditional platforms that amplify our content worldwide.',
+            'platforms_count' => '20+',
+            'associates_title' => 'Our Associates',
+            // Repeater field defaults
+            'partnership_categories_items' => [
+                [
+                    'title' => 'Studios',
+                    'description' => 'Creative powerhouses that bring stories to life through exceptional production quality.',
+                    'count_display' => '25+',
+                    'icon' => '🎬',
+                    'image' => null,
+                ],
+                [
+                    'title' => 'Creators',
+                    'description' => 'Visionary artists and content creators who shape the future of entertainment.',
+                    'count_display' => '150+',
+                    'icon' => '🎨',
+                    'image' => null,
+                ],
+                [
+                    'title' => 'Distributors',
+                    'description' => 'Strategic partners ensuring content reaches audiences across multiple platforms.',
+                    'count_display' => '40+',
+                    'icon' => '🌍',
+                    'image' => null,
+                ],
+                [
+                    'title' => 'Platforms',
+                    'description' => 'Digital and traditional platforms that amplify our content worldwide.',
+                    'count_display' => '20+',
+                    'icon' => '📺',
+                    'image' => null,
+                ],
+            ],
+            'associates_items' => [
+                [
+                    'name' => 'TechCorp Productions',
+                    'description' => 'Leading technology solutions for media production',
+                    'category' => 'Technology',
+                    'website' => 'https://techcorp.com',
+                    'logo' => null,
+                ],
+                [
+                    'name' => 'Creative Studios Alliance',
+                    'description' => 'Network of independent creative studios',
+                    'category' => 'Creative',
+                    'website' => 'https://creativestudios.com',
+                    'logo' => null,
+                ],
+                [
+                    'name' => 'Global Distribution Network',
+                    'description' => 'Worldwide content distribution platform',
+                    'category' => 'Distribution',
+                    'website' => 'https://globaldist.com',
+                    'logo' => null,
+                ],
+            ],
+            // Business page defaults
+            'business_page_title' => 'Our Business Model',
+            'business_page_description' => 'OSR Digital operates at the intersection of content creation and digital distribution, providing comprehensive solutions for content monetization and audience growth.',
+            'business_what_we_do_title' => 'What We Do',
+            'business_what_we_do_subtitle' => 'Our comprehensive suite of services covers every aspect of digital content distribution',
+            'business_process_title' => 'Our Process',
+            'business_process_subtitle' => 'From discovery to distribution, we handle every step of the content journey',
+            'business_what_we_do_items' => json_encode([
+                [
+                    'icon' => '🎬',
+                    'title' => 'Rights Acquisition',
+                    'description' => 'We identify and acquire distribution rights to exceptional movies, music, and short films from creators worldwide, ensuring fair compensation and global reach.'
+                ],
+                [
+                    'icon' => '📺',
+                    'title' => 'YouTube Publishing',
+                    'description' => 'Strategic publishing on YouTube with optimized metadata, thumbnails, and scheduling to maximize viewership and engagement across different time zones and audiences.'
+                ],
+                [
+                    'icon' => '📊',
+                    'title' => 'Analytics & Optimization',
+                    'description' => 'Comprehensive analytics tracking and performance optimization to ensure maximum revenue generation and audience growth for all distributed content.'
+                ],
+                [
+                    'icon' => '🎵',
+                    'title' => 'Music Distribution',
+                    'description' => 'Specialized music publishing services including playlist placement, social media promotion, and cross-platform distribution strategies.'
+                ],
+                [
+                    'icon' => '🤝',
+                    'title' => 'Creator Partnerships',
+                    'description' => 'Long-term partnerships with content creators, providing ongoing support, marketing assistance, and revenue optimization strategies.'
+                ],
+                [
+                    'icon' => '🌍',
+                    'title' => 'Global Reach',
+                    'description' => 'Leveraging our network and expertise to distribute content to global audiences, breaking geographical barriers and cultural boundaries.'
+                ]
+            ]),
+            'business_process_items' => json_encode([
+                [
+                    'step' => 1,
+                    'title' => 'Content Discovery & Evaluation',
+                    'description' => 'Our team actively scouts for exceptional content across various platforms and networks, evaluating potential based on quality, audience appeal, and market viability.'
+                ],
+                [
+                    'step' => 2,
+                    'title' => 'Rights Negotiation & Acquisition',
+                    'description' => 'We work directly with creators, studios, and rights holders to negotiate fair and beneficial distribution agreements that protect creator interests while maximizing reach.'
+                ],
+                [
+                    'step' => 3,
+                    'title' => 'Content Optimization & Strategy',
+                    'description' => 'Each piece of content undergoes strategic optimization including metadata enhancement, thumbnail design, and audience targeting to ensure maximum engagement.'
+                ],
+                [
+                    'step' => 4,
+                    'title' => 'Publication & Promotion',
+                    'description' => 'Strategic publishing across our network of channels with coordinated promotional campaigns across social media platforms and industry networks.'
+                ],
+                [
+                    'step' => 5,
+                    'title' => 'Performance Monitoring & Revenue Sharing',
+                    'description' => 'Continuous monitoring of performance metrics with transparent reporting and fair revenue sharing based on predetermined agreements.'
+                ]
+            ]),
         ];
     }
 
@@ -193,6 +333,209 @@ class GeneralSettings extends AbstractPageSettings
                                     ->label('Social Network Links')
                                     ->keyLabel('Platform')
                                     ->valueLabel('URL')
+                                    ->columnSpanFull(),
+                            ]),
+
+                        Tabs\Tab::make('Business')
+                            ->icon('heroicon-m-briefcase')
+                            ->schema([
+                                Section::make('Page Header')
+                                    ->schema([
+                                        TextInput::make('business_page_title')
+                                            ->label('Page Title')
+                                            ->default('Our Business Model')
+                                            ->maxLength(255),
+                                        Textarea::make('business_page_description')
+                                            ->label('Page Description')
+                                            ->default('OSR Digital operates at the intersection of content creation and digital distribution, providing comprehensive solutions for content monetization and audience growth.')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                        TextInput::make('business_what_we_do_title')
+                                            ->label('What We Do Section Title')
+                                            ->default('What We Do')
+                                            ->maxLength(255),
+                                        Textarea::make('business_what_we_do_subtitle')
+                                            ->label('What We Do Section Subtitle')
+                                            ->default('Our comprehensive suite of services covers every aspect of digital content distribution')
+                                            ->rows(2)
+                                            ->columnSpanFull(),
+                                        TextInput::make('business_process_title')
+                                            ->label('Process Section Title')
+                                            ->default('Our Process')
+                                            ->maxLength(255),
+                                        Textarea::make('business_process_subtitle')
+                                            ->label('Process Section Subtitle')
+                                            ->default('From discovery to distribution, we handle every step of the content journey')
+                                            ->rows(2)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(2),
+                                Section::make('What We Do Items')
+                                    ->schema([
+                                        Textarea::make('business_what_we_do_items')
+                                            ->label('What We Do Items (JSON)')
+                                            ->placeholder('Enter JSON data for What We Do items')
+                                            ->rows(15)
+                                            ->columnSpanFull()
+                                            ->helperText('Format: [{"icon": "🎬", "title": "Title", "description": "Description"}]'),
+                                    ]),
+                                Section::make('Process Items')
+                                    ->schema([
+                                        Textarea::make('business_process_items')
+                                            ->label('Process Items (JSON)')
+                                            ->placeholder('Enter JSON data for Process items')
+                                            ->rows(15)
+                                            ->columnSpanFull()
+                                            ->helperText('Format: [{"step": 1, "title": "Title", "description": "Description"}]'),
+                                    ]),
+                            ]),
+
+                        Tabs\Tab::make('Partners')
+                            ->icon('heroicon-m-building-office-2')
+                            ->schema([
+                                Tabs::make('Partners Content')
+                                    ->tabs([
+                                        Tabs\Tab::make('Page Settings')
+                                            ->icon('heroicon-m-document-text')
+                                            ->schema([
+                                                Section::make('Page Content')
+                                                    ->schema([
+                                                        TextInput::make('partners_badge')
+                                                            ->label('Partners Badge')
+                                                            ->default('Our Network')
+                                                            ->maxLength(255),
+                                                        TextInput::make('partners_title')
+                                                            ->label('Partners Title')
+                                                            ->default('Strategic Content Partners')
+                                                            ->maxLength(255),
+                                                        Textarea::make('partners_description')
+                                                            ->label('Partners Description')
+                                                            ->default('We collaborate with exceptional creators, studios, and distributors worldwide to bring diverse, high-quality content to global audiences through strategic partnerships.')
+                                                            ->rows(3)
+                                                            ->columnSpanFull(),
+                                                    ])
+                                                    ->columns(2),
+                                            ]),
+
+                                        Tabs\Tab::make('Partnership Categories')
+                                            ->icon('heroicon-m-squares-2x2')
+                                            ->schema([
+                                                Section::make('Categories Section')
+                                                    ->schema([
+                                                        TextInput::make('partnership_categories_title')
+                                                            ->label('Categories Section Title')
+                                                            ->default('Partnership Categories')
+                                                            ->maxLength(255),
+                                                        Textarea::make('partnership_categories_subtitle')
+                                                            ->label('Categories Section Subtitle')
+                                                            ->default('We work with different types of partners to create a comprehensive content ecosystem')
+                                                            ->rows(2)
+                                                            ->columnSpanFull(),
+                                                    ])
+                                                    ->columns(2),
+                                                Section::make('Partnership Categories')
+                                                    ->schema([
+                                                        Repeater::make('partnership_categories_items')
+                                                            ->label('Partnership Categories')
+                                                            ->schema([
+                                                                FileUpload::make('image')
+                                                                    ->label('Category Image')
+                                                                    ->image()
+                                                                    ->disk('public')
+                                                                    ->directory('partners/categories')
+                                                                    ->visibility('public')
+                                                                    ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/svg+xml'])
+                                                                    ->maxSize(2048)
+                                                                    ->columnSpan(1),
+                                                                TextInput::make('icon')
+                                                                    ->label('Icon (Emoji or Icon Class)')
+                                                                    ->maxLength(50)
+                                                                    ->placeholder('🎬 or heroicon-o-film')
+                                                                    ->columnSpan(1),
+                                                                TextInput::make('title')
+                                                                    ->label('Category Title')
+                                                                    ->required()
+                                                                    ->maxLength(255)
+                                                                    ->columnSpan(1),
+                                                                TextInput::make('count_display')
+                                                                    ->label('Count Display')
+                                                                    ->placeholder('25+')
+                                                                    ->maxLength(20)
+                                                                    ->columnSpan(1),
+                                                                Textarea::make('description')
+                                                                    ->label('Category Description')
+                                                                    ->required()
+                                                                    ->rows(3)
+                                                                    ->columnSpanFull(),
+                                                            ])
+                                                            ->columns(2)
+                                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                                                            ->collapsed()
+                                                            ->cloneable()
+                                                            ->reorderable()
+                                                            ->columnSpanFull()
+                                                            ->minItems(1)
+                                                            ->maxItems(8),
+                                                    ]),
+                                            ]),
+
+                                        Tabs\Tab::make('Our Associates')
+                                            ->icon('heroicon-m-user-group')
+                                            ->schema([
+                                                Section::make('Associates Section')
+                                                    ->schema([
+                                                        TextInput::make('associates_title')
+                                                            ->label('Associates Title')
+                                                            ->default('Our Associates')
+                                                            ->maxLength(255)
+                                                            ->columnSpanFull(),
+                                                    ]),
+                                                Section::make('Associates')
+                                                    ->schema([
+                                                        Repeater::make('associates_items')
+                                                            ->label('Associates')
+                                                            ->schema([
+                                                                FileUpload::make('logo')
+                                                                    ->label('Company Logo')
+                                                                    ->image()
+                                                                    ->disk('public')
+                                                                    ->directory('partners/associates')
+                                                                    ->visibility('public')
+                                                                    ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/svg+xml'])
+                                                                    ->maxSize(2048)
+                                                                    ->columnSpan(1),
+                                                                TextInput::make('name')
+                                                                    ->label('Company Name')
+                                                                    ->required()
+                                                                    ->maxLength(255)
+                                                                    ->columnSpan(1),
+                                                                TextInput::make('category')
+                                                                    ->label('Category')
+                                                                    ->placeholder('Technology, Creative, Distribution, etc.')
+                                                                    ->maxLength(100)
+                                                                    ->columnSpan(1),
+                                                                TextInput::make('website')
+                                                                    ->label('Website URL')
+                                                                    ->url()
+                                                                    ->placeholder('https://example.com')
+                                                                    ->columnSpan(1),
+                                                                Textarea::make('description')
+                                                                    ->label('Description')
+                                                                    ->required()
+                                                                    ->rows(3)
+                                                                    ->columnSpanFull(),
+                                                            ])
+                                                            ->columns(2)
+                                                            ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
+                                                            ->collapsed()
+                                                            ->cloneable()
+                                                            ->reorderable()
+                                                            ->columnSpanFull()
+                                                            ->minItems(1)
+                                                            ->maxItems(20),
+                                                    ]),
+                                            ]),
+                                    ])
                                     ->columnSpanFull(),
                             ]),
 

@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             AboutPageSeeder::class,
             PortfolioSeeder::class,
             PartnerSeeder::class,
+            PartnerSettingsSeeder::class,
+            BusinessSettingsSeeder::class,
             NewsSeeder::class,
             TeamSeeder::class,
         ]);

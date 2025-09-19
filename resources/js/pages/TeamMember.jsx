@@ -98,7 +98,7 @@ function TeamMember() {
         return (
             <div className="min-h-screen bg-gray-900 pt-20 flex items-center justify-center">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4" style={{ color: '#ec681b' }}>{error}</h1>
+                    <h1 className="text-2xl font-bold mb-4" style={{ color: '#ff6b35' }}>{error}</h1>
                     <div className="space-x-4">
                         <Link
                             to="/team"

@@ -100,6 +100,73 @@ export const useBrandingSettings = () => {
     return useSettings('branding');
 };
 
+// Hook specifically for partners settings
+export function usePartnersSettings() {
+    const [settings, setSettings] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/settings/group/partners');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch partners settings');
+                }
+                const data = await response.json();
+                setSettings(data.data || {});
+            } catch (err) {
+                setError(err.message);
+                console.error('Error fetching partners settings:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSettings();
+    }, []);
+
+    const getSetting = (key, defaultValue = null) => {
+        return settings[key] !== undefined ? settings[key] : defaultValue;
+    };
+
+    return { settings, getSetting, loading, error };
+}
+
+export function useBusinessSettings() {
+    const [settings, setSettings] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/settings/group/business');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch business settings');
+                }
+                const data = await response.json();
+                setSettings(data.data || {});
+            } catch (err) {
+                setError(err.message);
+                console.error('Error fetching business settings:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSettings();
+    }, []);
+
+    const getSetting = (key, defaultValue = null) => {
+        return settings[key] !== undefined ? settings[key] : defaultValue;
+    };
+
+    return { settings, getSetting, loading, error };
+}
+
 // Hook for all public settings (flat structure)
 export const useAllSettings = () => {
     return useSettings();
