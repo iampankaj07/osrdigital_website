@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAllSettings } from '../hooks/useSettings';
 import { useTheme } from '../contexts/ThemeContext';
+import PageHeader from '../components/PageHeader';
 
 function Team() {
     const [teams, setTeams] = useState([]);
@@ -93,38 +94,12 @@ function Team() {
     }
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
-            {/* Hero Section */}
-            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-                <div className="max-w-4xl mx-auto px-4 text-center">
-                    <div className="mb-6">
-                        <div
-                            className="inline-flex items-center px-4 py-2 border rounded-full text-sm font-medium mb-6"
-                            style={{
-                                backgroundColor: `${primaryColor}20`,
-                                borderColor: `${primaryColor}30`,
-                                color: primaryColor
-                            }}
-                        >
-                            <span
-                                className="w-2 h-2 rounded-full mr-2"
-                                style={{ backgroundColor: primaryColor }}
-                            ></span>
-                            Meet Our Experts
-                        </div>
-                    </div>
-                    <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8 leading-tight`}>
-                        The Team Behind{' '}
-                        <span style={{ color: primaryColor }}>
-                            Our Success
-                        </span>
-                    </h1>
-                    <p className={`text-lg md:text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto leading-relaxed`}>
-                        Our diverse team of developers, designers, and strategists work together
-                        to deliver exceptional entertainment content and strategic distribution solutions.
-                    </p>
-                </div>
-            </section>
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <PageHeader
+                badge="Meet Our Experts"
+                title="The Team Behind Our Success"
+                description="Our diverse team of developers, designers, and strategists work together to deliver exceptional entertainment content and strategic distribution solutions."
+            />
 
             {/* Team Grid */}
             <section className={`py-20 ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>

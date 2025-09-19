@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\TeamController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\WebAssetsController;
+use App\Http\Controllers\Api\PageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,3 +35,10 @@ Route::prefix('settings')->group(function () {
 // Web assets (footer, logo) routes for frontend
 Route::get('/settings/footer', [WebAssetsController::class, 'footer']);
 Route::get('/logo/{type}', [WebAssetsController::class, 'logo']);
+
+// Pages API routes
+Route::prefix('pages')->group(function () {
+    Route::get('/', [PageController::class, 'index']);
+    Route::get('/slug/{slug}', [PageController::class, 'getBySlug']);
+    Route::get('/{slug}', [PageController::class, 'show']);
+});

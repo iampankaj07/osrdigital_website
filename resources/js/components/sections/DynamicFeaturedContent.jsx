@@ -32,8 +32,9 @@ function DynamicFeaturedContent() {
             <section className={`py-20 ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-pulse" style={{ color: '#ff6b35' }}>
-                            Featured Content
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-pulse">
+                            <span className={isDark ? 'text-white' : 'text-gray-900'}>Featured</span>{' '}
+                            <span style={{ color: '#ff6b35' }}>Content</span>
                         </h2>
                         <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                             Discover our latest acquisitions and most popular releases across movies, music,
@@ -59,8 +60,9 @@ function DynamicFeaturedContent() {
         <section className={`py-20 ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: '#ff6b35' }}>
-                        Featured Content
+                    <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                        <span className={isDark ? 'text-white' : 'text-gray-900'}>Featured</span>{' '}
+                        <span style={{ color: '#ff6b35' }}>Content</span>
                     </h2>
                     <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto`}>
                         Discover our latest acquisitions and most popular releases across movies, music,

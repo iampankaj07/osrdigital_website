@@ -27,10 +27,16 @@ export const useSettings = (group = null) => {
 
                 const result = await response.json();
 
-                if (result.success) {
-                    setSettings(result.data);
+                // Handle both flat settings response and wrapped response
+                if (typeof result === 'object' && result.success !== undefined) {
+                    if (result.success) {
+                        setSettings(result.data);
+                    } else {
+                        throw new Error(result.message || 'Failed to fetch settings');
+                    }
                 } else {
-                    throw new Error(result.message || 'Failed to fetch settings');
+                    // Direct settings object (flat response)
+                    setSettings(result);
                 }
             } catch (err) {
                 console.error('Error fetching settings:', err);

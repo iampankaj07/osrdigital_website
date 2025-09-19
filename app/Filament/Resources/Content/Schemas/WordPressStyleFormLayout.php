@@ -208,6 +208,9 @@ class WordPressStyleFormLayout
                                 ]),
                         ] : []),
 
+                        // Custom Content Sections (after excerpt)
+                        ...(isset($config['custom_content_sections']) ? $config['custom_content_sections'] : []),
+
                         // SEO Section (if enabled)
                         ...($config['show_seo'] ? [
                             Section::make('SEO Settings')
@@ -323,6 +326,7 @@ class WordPressStyleFormLayout
                                         ->default($config['categories_default'])
                                         ->required($config['categories_required'])
                                         ->native(false)
+                                        ->live()
                                         ->columnSpanFull(),
 
                                     ...($config['show_secondary_categories'] ? [
@@ -392,6 +396,8 @@ class WordPressStyleFormLayout
                                     'style' => 'background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 16px;'
                                 ]),
                         ] : []),
+
+
                     ]),
             ]);
     }

@@ -243,6 +243,12 @@ Route::prefix('api')->group(function () {
 
         return response()->json($page);
     });
+
+    // Settings API
+    Route::get('/settings/flat', function () {
+        $settings = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
+        return response()->json($settings);
+    });
 });
 
 // Catch-all route for React SPA (place this at the end)

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import PageHeader from '../components/PageHeader';
 
 function News() {
     const [articles, setArticles] = useState([]);
@@ -86,17 +87,12 @@ function News() {
     }
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
-            {/* Hero Section */}
-            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Latest News</h1>
-                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
-                        Stay updated with the latest developments in digital content distribution,
-                        industry trends, and company announcements from OSR Digital Media.
-                    </p>
-                </div>
-            </section>
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <PageHeader
+                badge="Stay Updated"
+                title="Latest Industry News"
+                description="Stay updated with the latest developments in digital content distribution, industry trends, and company announcements from OSR Digital Media."
+            />
 
             {/* News Categories */}
             <section className={`py-10 ${isDark ? 'bg-black' : 'bg-white'}`}>

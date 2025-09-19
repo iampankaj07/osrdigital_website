@@ -27,6 +27,7 @@ function Header() {
     }, []);
 
     const navItems = [
+        { to: '/', label: 'Home' },
         { to: '/about', label: 'About Us' },
         { to: '/business', label: 'Our Business' },
         { to: '/portfolio', label: 'Portfolio' },
