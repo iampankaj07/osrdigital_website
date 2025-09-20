@@ -39,28 +39,43 @@ class SettingsHelper
      */
     public static function logo(?string $type = null): ?string
     {
-        if (!Schema::hasTable('general_settings')) {
-            return null;
+        // Map logo types to ThemeHelper keys
+        $keyMap = [
+            null => 'logo_light',        // Default logo
+            'light' => 'logo_light',
+            'dark' => 'logo_dark',
+            'admin' => 'logo_admin',
+            'mobile' => 'logo_mobile',
+            'footer' => 'logo_footer',
+            'email' => 'logo_email',
+        ];
+
+        $settingKey = $keyMap[$type] ?? 'logo_light';
+
+        // Use ThemeHelper to get the logo path from more_configs
+        $logoPath = ThemeHelper::get($settingKey);
+
+        if (!$logoPath) {
+            // Fallback to site_logo if no specific logo type is set
+            $logoPath = ThemeHelper::get('site_logo');
         }
 
-        $logoField = 'logo';
-        if ($type) {
-            $logoField .= '_' . $type;
+        if (!$logoPath) {
+            return asset('images/logo-placeholder.svg');
         }
 
-        $setting = GeneralSetting::first();
-        if (!$setting || !$setting->{$logoField}) {
-            return asset('images/logo-placeholder.svg'); // Fallback to a placeholder
+        // Check if the path is already a full URL
+        if (str_starts_with($logoPath, 'http')) {
+            return $logoPath;
         }
 
-        $logoPath = $setting->{$logoField};
-
+        // Check if file exists in storage
         if (Storage::disk('public')->exists($logoPath)) {
             return asset('storage/' . $logoPath);
         }
 
         Log::warning('Logo file not found in storage: ' . $logoPath);
-        return asset('images/logo-placeholder.svg'); // Fallback to a placeholder
+        return asset('images/logo-placeholder.svg');
     }
 
     /**
