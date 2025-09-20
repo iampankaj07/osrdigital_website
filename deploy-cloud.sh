@@ -27,6 +27,13 @@ echo "🔐 Setting storage permissions..."
 chmod -R 775 storage/
 chmod -R 775 bootstrap/cache/
 
+# Run database migrations and seeders
+echo "🗄️ Running database migrations..."
+php artisan migrate --force
+
+echo "👥 Setting up admin user and permissions..."
+php artisan admin:setup --force
+
 # Test storage configuration
 echo "🧪 Testing storage configuration..."
 php artisan storage:test
