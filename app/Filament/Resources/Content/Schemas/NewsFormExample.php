@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\News\Schemas;
+namespace App\Filament\Resources\Content\Schemas;
 
 use App\Filament\Resources\Content\Schemas\ContentFormLayout;
 use Filament\Schemas\Schema;
