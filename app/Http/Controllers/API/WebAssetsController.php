@@ -23,6 +23,8 @@ class WebAssetsController extends Controller
                 'contact' => SettingsHelper::getFooterContactInfo(),
                 'quick_links' => SettingsHelper::getFooterQuickLinks(),
                 'services' => SettingsHelper::getFooterServices(),
+                'social_links' => SettingsHelper::getFooterSocialLinks(),
+                'legal_links' => SettingsHelper::getFooterLegalLinks(),
                 'copyright_text' => SettingsHelper::getFooterCopyrightText(),
             ],
         ]);

@@ -33,6 +33,7 @@ Route::prefix('settings')->group(function () {
 });
 
 // Web assets (footer, logo) routes for frontend
+Route::get('/footer', [WebAssetsController::class, 'footer']);
 Route::get('/settings/footer', [WebAssetsController::class, 'footer']);
 Route::get('/logo/{type}', [WebAssetsController::class, 'logo']);
 
