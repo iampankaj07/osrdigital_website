@@ -15,6 +15,7 @@
 /node_modules
 /public/hot
 /storage/pail
+/vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
