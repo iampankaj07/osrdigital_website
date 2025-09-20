@@ -7,10 +7,17 @@ function Logo({ type = 'seeklogo', className = '', width = 'auto', height = '40'
     useEffect(() => {
         const fetchLogo = async () => {
             try {
-                const response = await fetch(`/api/logo/${type}`);
+                // Add cache-busting parameter to ensure fresh data
+                const cacheBuster = Date.now();
+                const url = `/api/logo/${type}?t=${cacheBuster}`;
+                console.log('Fetching logo from:', url);
+                const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('Logo data received:', data);
                     setLogoUrl(data.url);
+                } else {
+                    console.error('Logo fetch failed:', response.status, response.statusText);
                 }
             } catch (error) {
                 console.error('Failed to fetch logo:', error);
