@@ -197,29 +197,36 @@ Route::prefix('api')->group(function () {
 
     // Logo API
     Route::get('/logo/{type?}', function ($type = 'default') {
-        $settingKeyMap = [
-            'default' => 'site_logo',
-            'seeklogo' => 'site_logo',
-            'main' => 'site_logo',
-            'dark' => 'logo_dark',
-            'mobile' => 'logo_mobile',
-            'admin' => 'logo_admin',
-            'light' => 'logo_light',
-            'footer' => 'logo_footer',
-            'email' => 'logo_email'
-        ];
-
-        $settingKey = $settingKeyMap[$type] ?? 'site_logo';
-        $logoPath = \App\Helpers\SettingsHelper::get($settingKey);
-
-        if ($logoPath) {
-            $url = \Illuminate\Support\Facades\Storage::url($logoPath);
-            $filename = basename($logoPath);
+        // Always use static logo for cloud deployment reliability
+        if (file_exists(public_path('images/logo.png'))) {
+            $url = asset('images/logo.png');
+            $filename = 'logo.png';
         } else {
-            // Fallback to default logo
-            $fallbackFile = 'osrdigital-seeklogo.svg';
-            $url = \Illuminate\Support\Facades\Storage::url('logos/' . $fallbackFile);
-            $filename = $fallbackFile;
+            // Fallback to database settings if static file doesn't exist
+            $settingKeyMap = [
+                'default' => 'site_logo',
+                'seeklogo' => 'site_logo',
+                'main' => 'site_logo',
+                'dark' => 'logo_dark',
+                'mobile' => 'logo_mobile',
+                'admin' => 'logo_admin',
+                'light' => 'logo_light',
+                'footer' => 'logo_footer',
+                'email' => 'logo_email'
+            ];
+
+            $settingKey = $settingKeyMap[$type] ?? 'site_logo';
+            $logoPath = \App\Helpers\SettingsHelper::get($settingKey);
+
+            if ($logoPath) {
+                $url = \Illuminate\Support\Facades\Storage::url($logoPath);
+                $filename = basename($logoPath);
+            } else {
+                // Fallback to default logo
+                $fallbackFile = 'osrdigital-seeklogo.svg';
+                $url = \Illuminate\Support\Facades\Storage::url('logos/' . $fallbackFile);
+                $filename = $fallbackFile;
+            }
         }
 
         return response()->json([
