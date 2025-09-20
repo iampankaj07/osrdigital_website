@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 class ThemeHelper
 {
@@ -12,6 +13,11 @@ class ThemeHelper
      */
     public static function get(string $key, $default = null)
     {
+        // If db_config function doesn't exist OR table doesn't exist → fallback
+        if (!function_exists('db_config') || !Schema::hasTable('db_config')) {
+            return config("general.{$key}", $default);
+        }
+
         return db_config("general.{$key}", $default);
     }
 
