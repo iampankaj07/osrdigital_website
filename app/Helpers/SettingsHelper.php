@@ -4,6 +4,10 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Models\GeneralSetting;
 
 class SettingsHelper
 {
@@ -33,15 +37,30 @@ class SettingsHelper
     /**
      * Get logo based on theme
      */
-    public static function getLogo(?string $theme = null): ?string
+    public static function logo(?string $type = null): ?string
     {
-        $theme = $theme ?? self::get('default_theme', 'light');
-
-        if ($theme === 'dark') {
-            return self::get('logo_dark') ?? self::get('logo_light') ?? self::get('site_logo');
+        if (!Schema::hasTable('general_settings')) {
+            return null;
         }
 
-        return self::get('logo_light') ?? self::get('logo_dark') ?? self::get('site_logo');
+        $logoField = 'logo';
+        if ($type) {
+            $logoField .= '_' . $type;
+        }
+
+        $setting = GeneralSetting::first();
+        if (!$setting || !$setting->{$logoField}) {
+            return asset('images/logo-placeholder.svg'); // Fallback to a placeholder
+        }
+
+        $logoPath = $setting->{$logoField};
+
+        if (Storage::disk('public')->exists($logoPath)) {
+            return asset('storage/' . $logoPath);
+        }
+
+        Log::warning('Logo file not found in storage: ' . $logoPath);
+        return asset('images/logo-placeholder.svg'); // Fallback to a placeholder
     }
 
     /**
@@ -49,7 +68,16 @@ class SettingsHelper
      */
     public static function getAdminLogo(): ?string
     {
-        return ThemeHelper::logo() ?? self::getLogo();
+        $logoPath = self::getAdminLogoPath();
+        if ($logoPath) {
+            // Handle both relative and absolute paths
+            if (str_starts_with($logoPath, 'http')) {
+                return $logoPath;
+            }
+            // Generate the correct storage URL
+            return asset('storage/' . $logoPath);
+        }
+        return self::logo();
     }
 
     /**
@@ -65,7 +93,7 @@ class SettingsHelper
      */
     public static function getMobileLogo(): ?string
     {
-        return self::get('logo_mobile') ?? self::getLogo();
+        return self::get('logo_mobile') ?? self::logo();
     }
 
     /**
@@ -73,7 +101,7 @@ class SettingsHelper
      */
     public static function getFooterLogo(): ?string
     {
-        return self::get('logo_footer') ?? self::getLogo();
+        return self::get('logo_footer') ?? self::logo();
     }
 
     /**
@@ -81,7 +109,7 @@ class SettingsHelper
      */
     public static function getEmailLogo(): ?string
     {
-        return self::get('logo_email') ?? self::getLogo();
+        return self::get('logo_email') ?? self::logo();
     }
 
     /**

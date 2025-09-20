@@ -105,7 +105,7 @@ class RolePermissionSeeder extends Seeder
 
         // Create default admin user and assign super admin role
         $adminUser = User::firstOrCreate(
-            ['email' => 'admin@osrdigital.com'],
+            ['email' => 'admin@osr.com'],
             [
                 'name' => 'Super Admin',
                 'password' => bcrypt('password'),

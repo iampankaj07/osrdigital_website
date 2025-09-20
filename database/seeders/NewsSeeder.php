@@ -111,7 +111,10 @@ class NewsSeeder extends Seeder
         ];
 
         foreach ($newsArticles as $article) {
-            News::create($article);
+            News::updateOrCreate(
+                ['slug' => $article['slug']], // Find by slug
+                $article // Update or create with these values
+            );
         }
     }
 }

@@ -23,7 +23,7 @@ class PageResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Management';
 
-    protected static ?string $recordTitleAttribute = 'Page';
+    protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
     {

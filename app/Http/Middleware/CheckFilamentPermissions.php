@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Log;
 
 class CheckFilamentPermissions
 {
@@ -24,6 +25,7 @@ class CheckFilamentPermissions
 
         // Allow super admin access to everything
         if ($user->hasRole('Super Admin')) {
+            Log::info('Super Admin user accessing: ' . $request->route()->getName(), ['user' => $user->email]);
             return $next($request);
         }
 
@@ -31,7 +33,13 @@ class CheckFilamentPermissions
         $route = $request->route();
         $routeName = $route->getName();
 
-        if (str_contains($routeName, 'filament.admin.resources')) {
+        // Allow access to general panel pages (dashboard, settings, etc.)
+        if (str_contains($routeName, 'filament.panel.pages')) {
+            return $next($request);
+        }
+
+        // Check resource-specific permissions
+        if (str_contains($routeName, 'filament.panel.resources')) {
             $permission = $this->getPermissionFromRoute($routeName);
 
             if ($permission && !$user->can($permission)) {
@@ -49,12 +57,12 @@ class CheckFilamentPermissions
     {
         $routeParts = explode('.', $routeName);
 
-        if (count($routeParts) < 5) {
+        if (count($routeParts) < 4) {
             return null;
         }
 
-        $resourceName = $routeParts[4]; // Extract resource name
-        $action = $routeParts[5] ?? 'view'; // Extract action (index, create, edit, etc.)
+        $resourceName = $routeParts[3]; // Extract resource name (filament.panel.resources.portfolios)
+        $action = $routeParts[4] ?? 'index'; // Extract action (index, create, edit, etc.)
 
         // Map actions to permissions
         $actionMap = [
