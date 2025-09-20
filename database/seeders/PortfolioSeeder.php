@@ -132,7 +132,10 @@ class PortfolioSeeder extends Seeder
         ];
 
         foreach ($portfolioItems as $item) {
-            Portfolio::create($item);
+            Portfolio::updateOrCreate(
+                ['slug' => $item['slug']], // Find by slug
+                $item // Update or create with these values
+            );
         }
     }
 }
