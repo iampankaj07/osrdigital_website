@@ -23,7 +23,7 @@ class PortfolioResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Content Management';
 
-    protected static ?string $recordTitleAttribute = 'Portfolio';
+    protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
     {

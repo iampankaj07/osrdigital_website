@@ -5,6 +5,7 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class ThemeHelper
 {
@@ -28,8 +29,22 @@ class ThemeHelper
     {
         $logoPath = static::get('site_logo');
         if ($logoPath) {
-            return Storage::url($logoPath);
+            // Handle both relative and absolute paths
+            if (str_starts_with($logoPath, 'http')) {
+                return $logoPath;
+            }
+
+            // Check if file exists and generate appropriate URL
+            $fullPath = storage_path('app/public/' . $logoPath);
+            if (file_exists($fullPath)) {
+                return asset('storage/' . $logoPath);
+            }
+
+            // Log missing file for debugging
+                        Log::warning('Logo file not found: ' . $fullPath);
         }
+
+        // Return a placeholder or null if no default logo exists
         return null;
     }
 
@@ -40,7 +55,12 @@ class ThemeHelper
     {
         $faviconPath = static::get('site_favicon');
         if ($faviconPath) {
-            return Storage::url($faviconPath);
+            // Handle both relative and absolute paths
+            if (str_starts_with($faviconPath, 'http')) {
+                return $faviconPath;
+            }
+            // Generate the correct storage URL
+            return asset('storage/' . $faviconPath);
         }
         return null;
     }
