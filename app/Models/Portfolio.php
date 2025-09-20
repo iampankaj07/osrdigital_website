@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class Portfolio extends Model
 {
@@ -57,6 +58,16 @@ class Portfolio extends Model
                 $portfolio->slug = Str::slug($portfolio->title);
             }
         });
+
+        static::saved(function ($portfolio) {
+            Cache::forget('portfolio.featured.*');
+            Cache::forget('portfolio.published.*');
+        });
+
+        static::deleted(function ($portfolio) {
+            Cache::forget('portfolio.featured.*');
+            Cache::forget('portfolio.published.*');
+        });
     }
 
     public function getRouteKeyName()
@@ -93,5 +104,28 @@ class Portfolio extends Model
 
         // Default fallback image
         return 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=800';
+    }
+
+    // Cache methods for performance
+    public static function getFeaturedPortfolios($limit = 6)
+    {
+        return Cache::remember('portfolio.featured.' . $limit, 3600, function () use ($limit) {
+            return static::featured()
+                ->published()
+                ->limit($limit)
+                ->select(['id', 'title', 'slug', 'description', 'featured_image', 'type', 'client_name'])
+                ->get();
+        });
+    }
+
+    public static function getPublishedPortfolios($limit = 12)
+    {
+        return Cache::remember('portfolio.published.' . $limit, 3600, function () use ($limit) {
+            return static::published()
+                ->orderBy('created_at', 'desc')
+                ->limit($limit)
+                ->select(['id', 'title', 'slug', 'description', 'featured_image', 'type'])
+                ->get();
+        });
     }
 }
