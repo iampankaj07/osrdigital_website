@@ -27,6 +27,12 @@ class ThemeHelper
      */
     public static function logo(): ?string
     {
+        // Always use static logo file for cloud deployment reliability
+        if (file_exists(public_path('images/logo.png'))) {
+            return asset('images/logo.png');
+        }
+
+        // Fallback to database settings if static file doesn't exist
         $logoPath = static::get('site_logo');
         if ($logoPath) {
             // Handle both relative and absolute paths
@@ -41,7 +47,7 @@ class ThemeHelper
             }
 
             // Log missing file for debugging
-                        Log::warning('Logo file not found: ' . $fullPath);
+            Log::warning('Logo file not found: ' . $fullPath);
         }
 
         // Return a placeholder or null if no default logo exists

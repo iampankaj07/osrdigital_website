@@ -39,6 +39,12 @@ class SettingsHelper
      */
     public static function logo(?string $type = null): ?string
     {
+        // Always use static logo file for cloud deployment reliability
+        if (file_exists(public_path('images/logo.png'))) {
+            return asset('images/logo.png');
+        }
+
+        // Fallback to database settings if static file doesn't exist
         // Map logo types to ThemeHelper keys
         $keyMap = [
             null => 'logo_light',        // Default logo
