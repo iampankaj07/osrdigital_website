@@ -233,7 +233,6 @@ class GeneralSettings extends AbstractPageSettings
                             ->schema([
                                 TextInput::make('site_name')
                                     ->label('Site Name')
-                                    ->required()
                                     ->maxLength(255)
                                     ->columnSpanFull(),
                                 Textarea::make('site_description')
@@ -253,7 +252,7 @@ class GeneralSettings extends AbstractPageSettings
                                 FileUpload::make('site_logo')
                                     ->label('Site Logo')
                                     ->image()
-                                    ->disk(env('UPLOAD_DISK', 'public'))
+                                    ->disk('public')
                                     ->directory('logos')
                                     ->visibility('public')
                                     ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg', 'image/svg+xml'])
@@ -266,7 +265,7 @@ class GeneralSettings extends AbstractPageSettings
                                 FileUpload::make('site_favicon')
                                     ->label('Site Favicon')
                                     ->image()
-                                    ->disk(env('UPLOAD_DISK', 'public'))
+                                    ->disk('public')
                                     ->directory('favicons')
                                     ->visibility('public')
                                     ->acceptedFileTypes(['image/x-icon', 'image/png'])
@@ -462,7 +461,6 @@ class GeneralSettings extends AbstractPageSettings
                                                                     ->columnSpan(1),
                                                                 TextInput::make('title')
                                                                     ->label('Category Title')
-                                                                    ->required()
                                                                     ->maxLength(255)
                                                                     ->columnSpan(1),
                                                                 TextInput::make('count_display')
@@ -472,7 +470,6 @@ class GeneralSettings extends AbstractPageSettings
                                                                     ->columnSpan(1),
                                                                 Textarea::make('description')
                                                                     ->label('Category Description')
-                                                                    ->required()
                                                                     ->rows(3)
                                                                     ->columnSpanFull(),
                                                             ])
@@ -514,7 +511,6 @@ class GeneralSettings extends AbstractPageSettings
                                                                     ->columnSpan(1),
                                                                 TextInput::make('name')
                                                                     ->label('Company Name')
-                                                                    ->required()
                                                                     ->maxLength(255)
                                                                     ->columnSpan(1),
                                                                 TextInput::make('category')
@@ -529,7 +525,6 @@ class GeneralSettings extends AbstractPageSettings
                                                                     ->columnSpan(1),
                                                                 Textarea::make('description')
                                                                     ->label('Description')
-                                                                    ->required()
                                                                     ->rows(3)
                                                                     ->columnSpanFull(),
                                                             ])
@@ -545,6 +540,147 @@ class GeneralSettings extends AbstractPageSettings
                                             ]),
                                     ])
                                     ->columnSpanFull(),
+                            ]),
+
+                        Tabs\Tab::make('Footer')
+                            ->icon('heroicon-m-view-columns')
+                            ->schema([
+                                Section::make('Company Information')
+                                    ->schema([
+                                        TextInput::make('footer_company_name')
+                                            ->label('Company Name')
+                                            ->default('OSR Digital')
+                                            ->maxLength(255),
+                                        Textarea::make('footer_description')
+                                            ->label('Company Description')
+                                            ->default('Bringing stories to screens worldwide through strategic content acquisition and YouTube publishing.')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(2),
+
+                                Section::make('Contact Information')
+                                    ->schema([
+                                        TextInput::make('footer_contact_email')
+                                            ->label('Contact Email')
+                                            ->email()
+                                            ->default('hello@osrdigital.com')
+                                            ->maxLength(255),
+                                        TextInput::make('footer_contact_phone')
+                                            ->label('Contact Phone')
+                                            ->tel()
+                                            ->default('+1 (555) 123-4567')
+                                            ->maxLength(50),
+                                        TextInput::make('footer_contact_address')
+                                            ->label('Contact Address')
+                                            ->default('Los Angeles, CA')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->columns(2),
+
+                                Section::make('Quick Links')
+                                    ->schema([
+                                        Repeater::make('footer_quick_links')
+                                            ->label('Quick Navigation Links')
+                                            ->schema([
+                                                TextInput::make('text')
+                                                    ->label('Link Text')
+                                                    ->maxLength(100),
+                                                TextInput::make('url')
+                                                    ->label('Link URL')
+                                                    ->maxLength(255)
+                                                    ->placeholder('/about, #section, https://example.com'),
+                                            ])
+                                            ->columns(2)
+                                            ->itemLabel(fn(array $state): ?string => $state['text'] ?? null)
+                                            ->collapsed()
+                                            ->cloneable()
+                                            ->reorderable()
+                                            ->columnSpanFull()
+                                            ->minItems(1)
+                                            ->maxItems(10)
+                                            ->default([
+                                                ['text' => 'About Us', 'url' => '/about'],
+                                                ['text' => 'Our Business', 'url' => '/business'],
+                                                ['text' => 'Portfolio', 'url' => '/portfolio'],
+                                                ['text' => 'Partners', 'url' => '/partners'],
+                                            ]),
+                                    ]),
+
+                                Section::make('Services')
+                                    ->schema([
+                                        Repeater::make('footer_services')
+                                            ->label('Services List')
+                                            ->schema([
+                                                TextInput::make('service')
+                                                    ->label('Service Name')
+                                                    ->maxLength(100)
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->itemLabel(fn(array $state): ?string => $state['service'] ?? null)
+                                            ->collapsed()
+                                            ->cloneable()
+                                            ->reorderable()
+                                            ->columnSpanFull()
+                                            ->minItems(1)
+                                            ->maxItems(10)
+                                            ->default([
+                                                ['service' => 'Content Acquisition'],
+                                                ['service' => 'YouTube Publishing'],
+                                                ['service' => 'Digital Distribution'],
+                                                ['service' => 'Rights Management'],
+                                                ['service' => 'Content Strategy'],
+                                            ]),
+                                    ]),
+
+                                Section::make('Social Media')
+                                    ->schema([
+                                        KeyValue::make('footer_social_links')
+                                            ->label('Social Media Links')
+                                            ->keyLabel('Platform')
+                                            ->valueLabel('URL')
+                                            ->columnSpanFull()
+                                            ->default([
+                                                'youtube' => 'https://youtube.com/@osrdigital',
+                                                'twitter' => 'https://twitter.com/osrdigital',
+                                                'linkedin' => 'https://linkedin.com/company/osrdigital',
+                                                'instagram' => 'https://instagram.com/osrdigital',
+                                            ]),
+                                    ]),
+
+                                Section::make('Legal & Copyright')
+                                    ->schema([
+                                        TextInput::make('footer_copyright_text')
+                                            ->label('Copyright Text')
+                                            ->default('© 2025 OSR Digital. All rights reserved.')
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Repeater::make('footer_legal_links')
+                                            ->label('Legal Links')
+                                            ->schema([
+                                                TextInput::make('text')
+                                                    ->label('Link Text')
+                                                    ->maxLength(100),
+                                                TextInput::make('url')
+                                                    ->label('Link URL')
+                                                    ->maxLength(255)
+                                                    ->placeholder('/privacy, /terms, etc.'),
+                                            ])
+                                            ->columns(2)
+                                            ->itemLabel(fn(array $state): ?string => $state['text'] ?? null)
+                                            ->collapsed()
+                                            ->cloneable()
+                                            ->reorderable()
+                                            ->columnSpanFull()
+                                            ->minItems(0)
+                                            ->maxItems(5)
+                                            ->default([
+                                                ['text' => 'Privacy Policy', 'url' => '/privacy'],
+                                                ['text' => 'Terms of Service', 'url' => '/terms'],
+                                                ['text' => 'Cookie Policy', 'url' => '/cookies'],
+                                            ]),
+                                    ]),
                             ]),
 
                         Tabs\Tab::make('Advanced')

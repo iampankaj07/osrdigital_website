@@ -287,12 +287,27 @@ class SettingsHelper
      */
     public static function getFooterServices(): array
     {
-        return self::get('footer_services', [
-            'Movie Rights Acquisition',
-            'Music Publishing',
-            'Short Film Distribution',
-            'Content Strategy',
+        $services = self::get('footer_services', [
+            ['service' => 'Content Acquisition'],
+            ['service' => 'YouTube Publishing'],
+            ['service' => 'Digital Distribution'],
+            ['service' => 'Rights Management'],
+            ['service' => 'Content Strategy'],
         ]);
+
+        // Convert from repeater format to simple array
+        if (is_array($services) && isset($services[0]['service'])) {
+            return array_map(fn($item) => $item['service'], $services);
+        }
+
+        // Fallback for legacy format
+        return $services ?: [
+            'Content Acquisition',
+            'YouTube Publishing',
+            'Digital Distribution',
+            'Rights Management',
+            'Content Strategy',
+        ];
     }
 
     /**
@@ -301,5 +316,30 @@ class SettingsHelper
     public static function getFooterCopyrightText(): string
     {
         return self::get('footer_copyright_text', '© 2025 OSR Digital. All rights reserved.');
+    }
+
+    /**
+     * Get footer social links
+     */
+    public static function getFooterSocialLinks(): array
+    {
+        return self::get('footer_social_links', [
+            'youtube' => 'https://youtube.com/@osrdigital',
+            'twitter' => 'https://twitter.com/osrdigital',
+            'linkedin' => 'https://linkedin.com/company/osrdigital',
+            'instagram' => 'https://instagram.com/osrdigital',
+        ]);
+    }
+
+    /**
+     * Get footer legal links
+     */
+    public static function getFooterLegalLinks(): array
+    {
+        return self::get('footer_legal_links', [
+            ['text' => 'Privacy Policy', 'url' => '/privacy'],
+            ['text' => 'Terms of Service', 'url' => '/terms'],
+            ['text' => 'Cookie Policy', 'url' => '/cookies'],
+        ]);
     }
 }
