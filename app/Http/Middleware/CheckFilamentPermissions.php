@@ -19,7 +19,7 @@ class CheckFilamentPermissions
         $user = Filament::auth()->user();
 
         if (!$user) {
-            return redirect()->route('filament.admin.auth.login');
+            return redirect()->route('filament.panel.auth.login');
         }
 
         // Allow super admin access to everything
