@@ -33,24 +33,22 @@ class WebAssetsController extends Controller
      */
     public function logo(string $type): JsonResponse
     {
-        $map = [
-            'light' => 'logo_light',
-            'dark' => 'logo_light', // Use same logo for consistency
-            'admin' => 'logo_light', // Use same logo for consistency
-            'mobile' => 'logo_light', // Use same logo for consistency
-            'footer' => 'logo_light', // Use same logo for consistency
-            'email' => 'logo_light', // Use same logo for consistency
-            'seeklogo' => 'logo_light',
-            'default' => 'logo_light',
+        // Map frontend logo types to our logo method parameters
+        $typeMap = [
+            'light' => null,        // Default logo
+            'dark' => 'dark',
+            'admin' => 'admin',
+            'mobile' => 'mobile',
+            'footer' => 'footer',
+            'email' => 'email',
+            'seeklogo' => null,     // Default logo
+            'default' => null,      // Default logo
         ];
 
-        $key = $map[$type] ?? 'logo_light';
-        $url = SettingsHelper::get($key);
+        $logoType = $typeMap[$type] ?? null;
 
-        // Fallback: try theme-aware logo
-        if (!$url) {
-            $url = SettingsHelper::getLogo();
-        }
+        // Get the logo URL using the SettingsHelper logo method
+        $url = SettingsHelper::logo($logoType);
 
         return response()->json([
             'success' => (bool) $url,
