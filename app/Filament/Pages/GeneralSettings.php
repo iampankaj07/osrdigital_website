@@ -26,7 +26,7 @@ class GeneralSettings extends AbstractPageSettings
 
     protected static ?string $title = 'General Settings';
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
     protected static string|UnitEnum|null $navigationGroup = 'Settings';
 
@@ -469,7 +469,7 @@ class GeneralSettings extends AbstractPageSettings
                                                                     ->columnSpanFull(),
                                                             ])
                                                             ->columns(2)
-                                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                                                            ->itemLabel(fn(array $state): ?string => $state['title'] ?? null)
                                                             ->collapsed()
                                                             ->cloneable()
                                                             ->reorderable()
@@ -526,7 +526,7 @@ class GeneralSettings extends AbstractPageSettings
                                                                     ->columnSpanFull(),
                                                             ])
                                                             ->columns(2)
-                                                            ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
+                                                            ->itemLabel(fn(array $state): ?string => $state['name'] ?? null)
                                                             ->collapsed()
                                                             ->cloneable()
                                                             ->reorderable()
