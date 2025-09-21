@@ -43,3 +43,8 @@ Route::prefix('pages')->group(function () {
     Route::get('/slug/{slug}', [PageController::class, 'getBySlug']);
     Route::get('/{slug}', [PageController::class, 'show']);
 });
+Route::get('/test', function () {
+    return class_exists(\App\Http\Controllers\Api\WebAssetsController::class)
+        ? 'Controller exists'
+        : 'Controller NOT found';
+});
