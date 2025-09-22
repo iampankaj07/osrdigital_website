@@ -54,22 +54,26 @@ function Portfolio() {
         : portfolioItems.filter(item => item.type === filter);
 
     if (loading) {
-        return (
-            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="text-center mb-16">
-                        <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Our Portfolio</h1>
-                        <div className="animate-pulse">
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {[1, 2, 3, 4, 5, 6].map(i => (
-                                    <div key={i} className={`${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video rounded-lg`}></div>
-                                ))}
-                            </div>
+        return <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div className="text-center mb-16">
+                    <h1 className={`text-5xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>
+                        Our Partners
+                    </h1>
+                    <div className="animate-pulse">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div
+                                    key={i}
+                                    className={`${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video rounded-lg`}
+                                ></div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
-        );
+        </div>
+
     }
 
     return (
@@ -111,52 +115,48 @@ function Portfolio() {
                     <div className="flex flex-wrap justify-center gap-4">
                         <button
                             onClick={() => setFilter('all')}
-                            className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                                filter === 'all'
-                                    ? 'text-white'
-                                    : isDark
-                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
+                            className={`px-6 py-2 rounded-full font-medium transition-colors ${filter === 'all'
+                                ? 'text-white'
+                                : isDark
+                                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
                             style={filter === 'all' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             All Content
                         </button>
                         <button
                             onClick={() => setFilter('movie')}
-                            className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                                filter === 'movie'
-                                    ? 'text-white'
-                                    : isDark
-                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
+                            className={`px-6 py-2 rounded-full font-medium transition-colors ${filter === 'movie'
+                                ? 'text-white'
+                                : isDark
+                                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
                             style={filter === 'movie' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             Movies
                         </button>
                         <button
                             onClick={() => setFilter('music')}
-                            className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                                filter === 'music'
-                                    ? 'text-white'
-                                    : isDark
-                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
+                            className={`px-6 py-2 rounded-full font-medium transition-colors ${filter === 'music'
+                                ? 'text-white'
+                                : isDark
+                                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
                             style={filter === 'music' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             Music
                         </button>
                         <button
                             onClick={() => setFilter('short_film')}
-                            className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                                filter === 'short_film'
-                                    ? 'text-white'
-                                    : isDark
-                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
+                            className={`px-6 py-2 rounded-full font-medium transition-colors ${filter === 'short_film'
+                                ? 'text-white'
+                                : isDark
+                                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
                             style={filter === 'short_film' ? { backgroundColor: '#ff6b35' } : {}}
                         >
                             Short Films
@@ -192,7 +192,7 @@ function Portfolio() {
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <div className="w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: '#ff6b35' }}>
                                                 <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M8 5v14l11-7z"/>
+                                                    <path d="M8 5v14l11-7z" />
                                                 </svg>
                                             </div>
                                         </div>
@@ -213,11 +213,10 @@ function Portfolio() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h3 className={`text-xl font-semibold transition-colors ${
-                                            isDark
-                                                ? 'text-white'
-                                                : 'text-gray-900'
-                                        }`}
+                                        <h3 className={`text-xl font-semibold transition-colors ${isDark
+                                            ? 'text-white'
+                                            : 'text-gray-900'
+                                            }`}
                                             style={{
                                                 '--hover-color': '#ff6b35'
                                             }}
