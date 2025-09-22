@@ -182,6 +182,49 @@ function About() {
                 </div>
             </section>
 
+            {/* Dynamic Content Section */}
+            {content.content && (
+                <section
+                    className={`relative py-24 ${isDark ? "bg-gray-950" : "bg-gradient-to-b from-gray-50 via-white to-gray-100"
+                        }`}
+                >
+                    {/* Decorative background accents */}
+                    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full bg-orange-500/10 blur-3xl" />
+                        <div className="absolute bottom-0 right-1/3 w-[30rem] h-[30rem] rounded-full bg-pink-500/10 blur-3xl" />
+                    </div>
+
+                    <div className="relative max-w-4xl mx-auto px-6 sm:px-8 lg:px-10">
+                        <div
+                            className={`prose prose-lg max-w-none transition-all duration-500 ${isDark ? "prose-invert" : ""
+                                }`}
+                            dangerouslySetInnerHTML={{ __html: content.content }}
+                            style={{
+                                // Headings
+                                "--tw-prose-headings": isDark ? "#ffffff" : "#111827",
+                                "--tw-prose-h1": isDark ? "#f9fafb" : "#111827",
+                                "--tw-prose-h2": isDark ? "#e5e7eb" : "#1f2937",
+                                "--tw-prose-h3": isDark ? "#d1d5db" : "#374151",
+                                "--tw-prose-h1-font-size": "2.75rem",
+                                "--tw-prose-h2-font-size": "2rem",
+                                "--tw-prose-h3-font-size": "1.5rem",
+
+                                // Body
+                                "--tw-prose-body": isDark ? "#d1d5db" : "#374151",
+                                "--tw-prose-bold": isDark ? "#ffffff" : "#111827",
+                                "--tw-prose-links": "#f97316",
+
+                                // Alignment & spacing
+                                textAlign: "justify",
+                                lineHeight: "1.8",
+                                fontFamily: "'Inter', system-ui, sans-serif",
+                                letterSpacing: "0.01em",
+                            }}
+                        />
+                    </div>
+                </section>
+            )}
+
             {/* Stats Section */}
             <section className={`py-16 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -221,25 +264,6 @@ function About() {
                     </div>
                 </div>
             </section>
-
-            {/* Dynamic Content Section */}
-            {content.content && (
-                <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div
-                            className={`prose prose-lg max-w-none ${isDark ? 'prose-invert' : ''}`}
-                            dangerouslySetInnerHTML={{ __html: content.content }}
-                            style={{
-                                '--tw-prose-headings': isDark ? '#ffffff' : '#111827',
-                                '--tw-prose-body': isDark ? '#d1d5db' : '#374151',
-                                '--tw-prose-links': '#ff6b35',
-                                '--tw-prose-bold': isDark ? '#ffffff' : '#111827',
-                            }}
-                        />
-                    </div>
-                </section>
-            )}
-
             {/* Mission & Vision Section */}
             <section className={`py-20 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
