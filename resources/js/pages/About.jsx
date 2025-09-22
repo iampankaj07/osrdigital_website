@@ -107,10 +107,35 @@ function About() {
 
     if (loading) {
         return (
-            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'} flex items-center justify-center`}>
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 mx-auto mb-4" style={{ borderColor: '#ff6b35' }}></div>
-                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading...</p>
+            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                    <div className="text-center mb-16">
+                        {/* Heading Skeleton */}
+                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        {/* Subheading/paragraph Skeleton */}
+                        <div className="space-y-4 animate-pulse">
+                            <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                            <div className={`h-4 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                            <div className={`h-4 w-1/2 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                        </div>
+                    </div>
+
+                    {/* Optional image or cards */}
+                    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
+                        {[1, 2, 3].map((i) => (
+                            <div
+                                key={i}
+                                className={`flex flex-col items-center ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg p-6`}
+                            >
+                                {/* Image Skeleton */}
+                                <div className="w-full h-48 rounded mb-4" style={{ backgroundColor: isDark ? '#2d2d2d' : '#e5e5e5' }}></div>
+                                {/* Name/Title Skeleton */}
+                                <div className={`h-5 w-32 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                                {/* Role/Description Skeleton */}
+                                <div className={`h-4 w-20 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
@@ -224,7 +249,7 @@ function About() {
                                 <div className="flex items-center mb-6">
                                     <div className="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style={{ backgroundColor: '#ff6b35' }}>
                                         <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                         </svg>
                                     </div>
                                     <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -240,7 +265,7 @@ function About() {
                                 <div className="flex items-center mb-6">
                                     <div className="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style={{ backgroundColor: '#ff6b35' }}>
                                         <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
                                         </svg>
                                     </div>
                                     <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -265,7 +290,7 @@ function About() {
                                 >
                                     <div className="text-center p-8">
                                         <svg className="w-16 h-16 mx-auto mb-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
+                                            <path d="M8 5v14l11-7z" />
                                         </svg>
                                         <p className={`text-lg font-semibold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                             Watch Our Story
@@ -326,52 +351,52 @@ function About() {
                                     </div>
                                 );
                             })
-                        : (
-                            // Default services if no repeater data
-                            <>
-                                <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                    <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                                        </svg>
+                            : (
+                                // Default services if no repeater data
+                                <>
+                                    <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
+                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
+                                            Content Acquisition
+                                        </h3>
+                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+                                            We identify and acquire rights to exceptional movies, music, and short films from creators worldwide, building a diverse portfolio of premium content.
+                                        </p>
                                     </div>
-                                    <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                                        Content Acquisition
-                                    </h3>
-                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                        We identify and acquire rights to exceptional movies, music, and short films from creators worldwide, building a diverse portfolio of premium content.
-                                    </p>
-                                </div>
 
-                                <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                    <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-                                        </svg>
+                                    <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
+                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
+                                            Strategic Distribution
+                                        </h3>
+                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+                                            Our expert team develops and executes strategic YouTube publishing campaigns to maximize reach, engagement, and revenue potential for every piece of content.
+                                        </p>
                                     </div>
-                                    <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                                        Strategic Distribution
-                                    </h3>
-                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                        Our expert team develops and executes strategic YouTube publishing campaigns to maximize reach, engagement, and revenue potential for every piece of content.
-                                    </p>
-                                </div>
 
-                                <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                    <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                                        </svg>
+                                    <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
+                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
+                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                                            </svg>
+                                        </div>
+                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
+                                            Global Reach
+                                        </h3>
+                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+                                            We connect content with audiences across different cultures and regions, creating opportunities for cross-cultural appreciation and global success.
+                                        </p>
                                     </div>
-                                    <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                                        Global Reach
-                                    </h3>
-                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                        We connect content with audiences across different cultures and regions, creating opportunities for cross-cultural appreciation and global success.
-                                    </p>
-                                </div>
-                            </>
-                        )}
+                                </>
+                            )}
                     </div>
                 </div>
             </section>

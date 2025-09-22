@@ -69,17 +69,37 @@ function News() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-900 pt-20">
+            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="text-center mb-16">
-                        <h1 className="text-5xl font-bold text-white mb-8">Latest News</h1>
-                        <div className="animate-pulse">
-                            <div className="grid lg:grid-cols-3 gap-8">
-                                {[1, 2, 3, 4, 5, 6].map(i => (
-                                    <div key={i} className="bg-gray-800 h-64 rounded-lg"></div>
-                                ))}
-                            </div>
+                    {/* Heading Skeleton */}
+                    <div className="text-center mb-12">
+                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className="space-y-4 animate-pulse">
+                            <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                            <div className={`h-4 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
                         </div>
+                    </div>
+
+                    {/* News Cards Skeleton */}
+                    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div
+                                key={i}
+                                className={`flex flex-col rounded-lg overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
+                            >
+                                {/* Thumbnail Skeleton */}
+                                <div className={`h-48 w-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                                <div className="p-4 space-y-2">
+                                    {/* Title Skeleton */}
+                                    <div className={`h-5 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                                    {/* Date Skeleton */}
+                                    <div className={`h-3 w-1/4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                                    {/* Short description Skeleton */}
+                                    <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                                    <div className={`h-4 w-5/6 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -102,11 +122,10 @@ function News() {
                             <button
                                 key={category.id}
                                 onClick={() => setSelectedCategory(category.id)}
-                                className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
-                                    selectedCategory === category.id
+                                className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.id
                                         ? 'bg-red-600 text-white'
                                         : isDark ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                }`}
+                                    }`}
                             >
                                 {category.name}
                             </button>
