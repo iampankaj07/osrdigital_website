@@ -153,6 +153,18 @@ function Footer() {
                                         // Platform-specific icons
                                         const getIcon = (platform) => {
                                             switch (platform.toLowerCase()) {
+                                                case 'facebook':
+                                                    return (
+                                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.2 1.8.2v2h-1c-1 0-1.3.6-1.3 1.2V12h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12" />
+                                                        </svg>
+                                                    );
+                                                case 'tiktok':
+                                                    return (
+                                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12.5 2h3.1c.1 1.1.5 2.1 1.2 2.9.8.8 1.8 1.2 2.9 1.3v3.1c-1.8 0-3.4-.6-4.8-1.6v7.5c0 2.9-2.3 5.2-5.2 5.2S4.5 18.1 4.5 15.2c0-2.8 2.2-5.1 5-5.2v3.2c-1 .1-1.8 1-1.8 2s.8 2 1.8 2c1 0 1.8-.8 1.8-1.8V2z" />
+                                                        </svg>
+                                                    );
                                                 case 'youtube':
                                                     return (
                                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
