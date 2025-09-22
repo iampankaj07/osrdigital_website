@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\API\TeamController;
-use App\Http\Controllers\Api\SettingsController;
-use App\Http\Controllers\Api\WebAssetsController;
-use App\Http\Controllers\Api\PageController;
+use App\Http\Controllers\API\SettingsController;
+use App\Http\Controllers\API\WebAssetsController;
+use App\Http\Controllers\API\PageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,9 +42,4 @@ Route::prefix('pages')->group(function () {
     Route::get('/', [PageController::class, 'index']);
     Route::get('/slug/{slug}', [PageController::class, 'getBySlug']);
     Route::get('/{slug}', [PageController::class, 'show']);
-});
-Route::get('/test', function () {
-    return class_exists(\App\Http\Controllers\Api\WebAssetsController::class)
-        ? 'Controller exists'
-        : 'Controller NOT found';
 });
