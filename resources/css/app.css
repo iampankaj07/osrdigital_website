@@ -53,8 +53,29 @@
         0%, 100% {
             background-position: 0% 50%;
         }
+        25% {
+            background-position: 100% 0%;
+        }
         50% {
-            background-position: 100% 50%;
+            background-position: 100% 100%;
+        }
+        75% {
+            background-position: 0% 100%;
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) translateX(0px) rotate(0deg);
+        }
+        25% {
+            transform: translateY(-10px) translateX(5px) rotate(1deg);
+        }
+        50% {
+            transform: translateY(-20px) translateX(-5px) rotate(-1deg);
+        }
+        75% {
+            transform: translateY(-5px) translateX(10px) rotate(0.5deg);
         }
     }
 

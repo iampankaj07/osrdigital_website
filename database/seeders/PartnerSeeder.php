@@ -127,7 +127,10 @@ class PartnerSeeder extends Seeder
         ];
 
         foreach ($partners as $partner) {
-            Partner::create($partner);
+            Partner::updateOrCreate(
+                ['slug' => $partner['slug']],
+                $partner
+            );
         }
     }
 }

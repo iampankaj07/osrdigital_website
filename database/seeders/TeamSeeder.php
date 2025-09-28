@@ -80,7 +80,10 @@ class TeamSeeder extends Seeder
         ];
 
         foreach ($teams as $team) {
-            \App\Models\Team::create($team);
+            \App\Models\Team::updateOrCreate(
+                ['slug' => \Illuminate\Support\Str::slug($team['name'])],
+                $team
+            );
         }
     }
 }
