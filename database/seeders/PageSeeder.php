@@ -13,9 +13,10 @@ class PageSeeder extends Seeder
      */
     public function run(): void
     {
-        Page::create([
+        Page::updateOrCreate(
+            ['slug' => 'about'],
+            [
             'title' => 'About OSR Digital Media',
-            'slug' => 'about',
             'content' => '<h2>About OSR Digital Media</h2>
             <p>OSR Digital Media is a leading content distribution company specializing in YouTube network management and digital media distribution. We help creators and content owners maximize their reach and revenue through strategic partnerships and advanced optimization techniques.</p>
 
@@ -36,11 +37,13 @@ class PageSeeder extends Seeder
             'meta_description' => 'Learn about OSR Digital Media, a leading content distribution company specializing in YouTube network management and digital media distribution.',
             'is_published' => true,
             'featured_image' => 'https://images.pexels.com/photos/3153204/pexels-photo-3153204.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        ]);
+            ]
+        );
 
-        Page::create([
+        Page::updateOrCreate(
+            ['slug' => 'business'],
+            [
             'title' => 'Our Business Model',
-            'slug' => 'business',
             'content' => '<h2>How We Help Content Creators Succeed</h2>
             <p>Our business model is built around empowering content creators and media companies through comprehensive distribution and optimization services.</p>
 
@@ -68,11 +71,13 @@ class PageSeeder extends Seeder
             'meta_description' => 'Discover OSR Digital Media\'s business model and how we help content creators succeed through transparent partnerships and comprehensive support.',
             'is_published' => true,
             'featured_image' => 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200',
-        ]);
+            ]
+        );
 
-        Page::create([
+        Page::updateOrCreate(
+            ['slug' => 'privacy'],
+            [
             'title' => 'Privacy Policy',
-            'slug' => 'privacy',
             'content' => '<h2>Privacy Policy</h2>
             <p>Last updated: ' . now()->format('F j, Y') . '</p>
 
@@ -92,11 +97,13 @@ class PageSeeder extends Seeder
             <p>If you have any questions about this Privacy Policy, please contact us at privacy@osrdigitalmedia.com</p>',
             'meta_description' => 'OSR Digital Media Privacy Policy - Learn how we collect, use, and protect your personal information.',
             'is_published' => true,
-        ]);
+            ]
+        );
 
-        Page::create([
+        Page::updateOrCreate(
+            ['slug' => 'terms'],
+            [
             'title' => 'Terms of Service',
-            'slug' => 'terms',
             'content' => '<h2>Terms of Service</h2>
             <p>Last updated: ' . now()->format('F j, Y') . '</p>
 
@@ -116,6 +123,7 @@ class PageSeeder extends Seeder
             <p>Either party may terminate the agreement with appropriate notice as specified in individual partnership contracts.</p>',
             'meta_description' => 'OSR Digital Media Terms of Service - Review our terms and conditions for using our content distribution services.',
             'is_published' => true,
-        ]);
+            ]
+        );
     }
 }
