@@ -72,33 +72,41 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // Create roles
-        $superAdminRole = Role::create([
-            'name' => 'Super Admin',
-            'description' => 'Full access to all features and settings',
-            'guard_name' => 'web'
-        ]);
+        $superAdminRole = Role::firstOrCreate(
+            ['name' => 'Super Admin', 'guard_name' => 'web'],
+            [
+                'description' => 'Full access to all features and settings',
+                'guard_name' => 'web'
+            ]
+        );
 
-        $adminRole = Role::create([
-            'name' => 'Admin',
-            'description' => 'Administrative access to most features',
-            'guard_name' => 'web'
-        ]);
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'Admin', 'guard_name' => 'web'],
+            [
+                'description' => 'Administrative access to most features',
+                'guard_name' => 'web'
+            ]
+        );
 
-        $editorRole = Role::create([
-            'name' => 'Editor',
-            'description' => 'Can edit content but not manage users or system settings',
-            'guard_name' => 'web'
-        ]);
+        $editorRole = Role::firstOrCreate(
+            ['name' => 'Editor', 'guard_name' => 'web'],
+            [
+                'description' => 'Can edit content but not manage users or system settings',
+                'guard_name' => 'web'
+            ]
+        );
 
-        $viewerRole = Role::create([
-            'name' => 'Viewer',
-            'description' => 'Read-only access to the admin panel',
-            'guard_name' => 'web'
-        ]);
+        $viewerRole = Role::firstOrCreate(
+            ['name' => 'Viewer', 'guard_name' => 'web'],
+            [
+                'description' => 'Read-only access to the admin panel',
+                'guard_name' => 'web'
+            ]
+        );
 
         // Assign permissions to roles
         $superAdminRole->givePermissionTo(Permission::all());
