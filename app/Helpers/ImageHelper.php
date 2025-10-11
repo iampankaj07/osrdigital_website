@@ -64,8 +64,13 @@ class ImageHelper
      */
     public static function getStorageUrl(string $path, string $disk = 'public'): string
     {
-        // Always use custom image controller for consistent handling
-        // This ensures images work properly on Laravel Cloud
+        // For production environments, use storage URL directly
+        // For local development, use custom image controller
+        if (app()->environment('production') || app()->environment('staging')) {
+            return Storage::disk($disk)->url($path);
+        }
+        
+        // Use custom image controller for local development
         return url('/images/' . ltrim($path, '/'));
     }
 
