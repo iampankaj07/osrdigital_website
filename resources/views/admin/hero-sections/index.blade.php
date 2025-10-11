@@ -6,9 +6,23 @@
 <div class="p-6">
     <!-- Header -->
     <div class="mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900">Hero Sections Management</h1>
-            <p class="text-gray-600 mt-2">Manage hero sections for all pages</p>
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Hero Sections Management</h1>
+                <p class="text-gray-600 mt-2">Manage hero sections for all pages</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('admin.hero-sections.create') }}" 
+                   class="inline-flex items-center px-4 py-2 bg-purple-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create New
+                </a>
+                <a href="{{ route('admin.hero-sections.index') }}" 
+                   class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <i class="fas fa-sync mr-2"></i>
+                    Refresh
+                </a>
+            </div>
         </div>
     </div>
 
@@ -100,7 +114,12 @@
                 <i class="fas fa-star text-6xl"></i>
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-2">No Hero Sections Found</h3>
-            <p class="text-gray-500">Hero sections are managed through the seeder or database directly.</p>
+            <p class="text-gray-500 mb-6">Get started by creating your first hero section for your pages.</p>
+            <a href="{{ route('admin.hero-sections.create') }}" 
+               class="inline-flex items-center px-6 py-3 bg-purple-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <i class="fas fa-plus mr-2"></i>
+                Create Your First Hero Section
+            </a>
         </div>
     @endif
 </div>

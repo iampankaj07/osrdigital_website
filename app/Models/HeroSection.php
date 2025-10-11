@@ -37,7 +37,10 @@ class HeroSection extends Model
             'about' => 'About',
             'partners' => 'Partners',
             'team' => 'Team',
-            'news' => 'News'
+            'news' => 'News',
+            'portfolio' => 'Portfolio',
+            'contact' => 'Contact',
+            'business' => 'Business'
         ];
     }
 
