@@ -10,37 +10,7 @@ Route::get('/', function () {
     return view('app'); // This should load your React app
 });
 
-// File upload routes for FilePond
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::post('/admin/film-portfolios/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmImage'])->name('admin.film-portfolios.upload');
-    Route::post('/admin/testimonials/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialAvatar'])->name('admin.testimonials.upload');
-    Route::post('/upload/general-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralLogo']);
-    Route::post('/upload/general-favicon', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralFavicon']);
-    Route::post('/upload/associate-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadAssociateImage']);
-    Route::post('/upload/associate-image-cloud', [App\Http\Controllers\Admin\CloudFileUploadController::class, 'uploadAssociateImage']);
-    Route::post('/upload/associate-image-production', [App\Http\Controllers\Admin\ProductionFileUploadController::class, 'uploadAssociateImage']);
-    Route::get('/debug/cloud-storage', [App\Http\Controllers\Admin\CloudDebugController::class, 'debugStorage']);
-    Route::get('/debug/image-serving', [App\Http\Controllers\ImageTestController::class, 'testImageServing']);
-    Route::get('/test-image/{filename}', [App\Http\Controllers\ImageTestController::class, 'serveTestImage']);
-    Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
-    Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
-    Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
-    Route::post('/upload/testimonial-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialImage']);
-    Route::post('/upload/news-featured-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadNewsFeaturedImage']);
-});
-
-
-// Theme Settings Test Route (for development)
-Route::get('/theme-test', function () {
-    return view('theme-test');
-});
-
-// News Routes - if you want React to handle these, remove these routes
-Route::get('/news', function () {
-    return view('app'); // Let React handle this route
-});
-
-// Image serving routes
+// Image serving routes - MUST be before catch-all route
 Route::get('/images/{path}', [ImageController::class, 'serve'])->where('path', '.*');
 Route::get('/images/optimized/{width}x{height}/{path}', [ImageController::class, 'optimized'])->where('path', '.*');
 Route::get('/placeholder/{width}x{height}', [ImageController::class, 'placeholder'])->where(['width' => '[0-9]+', 'height' => '[0-9]+']);
@@ -74,6 +44,37 @@ Route::get('/debug-storage', function() {
         'test_exists' => file_exists($associatesPath . '/60fb5eec-00e1-4742-9eb2-ba5fb93c7ec3.png')
     ]);
 });
+
+// File upload routes for FilePond
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::post('/admin/film-portfolios/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmImage'])->name('admin.film-portfolios.upload');
+    Route::post('/admin/testimonials/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialAvatar'])->name('admin.testimonials.upload');
+    Route::post('/upload/general-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralLogo']);
+    Route::post('/upload/general-favicon', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralFavicon']);
+    Route::post('/upload/associate-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadAssociateImage']);
+    Route::post('/upload/associate-image-cloud', [App\Http\Controllers\Admin\CloudFileUploadController::class, 'uploadAssociateImage']);
+    Route::post('/upload/associate-image-production', [App\Http\Controllers\Admin\ProductionFileUploadController::class, 'uploadAssociateImage']);
+    Route::get('/debug/cloud-storage', [App\Http\Controllers\Admin\CloudDebugController::class, 'debugStorage']);
+    Route::get('/debug/image-serving', [App\Http\Controllers\ImageTestController::class, 'testImageServing']);
+    Route::get('/test-image/{filename}', [App\Http\Controllers\ImageTestController::class, 'serveTestImage']);
+    Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
+    Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
+    Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
+    Route::post('/upload/testimonial-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialImage']);
+    Route::post('/upload/news-featured-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadNewsFeaturedImage']);
+});
+
+
+// Theme Settings Test Route (for development)
+Route::get('/theme-test', function () {
+    return view('theme-test');
+});
+
+// News Routes - if you want React to handle these, remove these routes
+Route::get('/news', function () {
+    return view('app'); // Let React handle this route
+});
+
 
 Route::get('/news/{slug}', function ($slug) {
     // If you want Laravel to handle individual news items, keep this
