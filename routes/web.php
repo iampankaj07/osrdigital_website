@@ -57,6 +57,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/debug/cloud-storage', [App\Http\Controllers\Admin\CloudDebugController::class, 'debugStorage']);
     Route::get('/debug/image-serving', [App\Http\Controllers\ImageTestController::class, 'testImageServing']);
     Route::get('/test-image/{filename}', [App\Http\Controllers\ImageTestController::class, 'serveTestImage']);
+    
+    // Media Library Routes
+    Route::resource('media', App\Http\Controllers\Admin\MediaController::class);
+    Route::post('/media/bulk-delete', [App\Http\Controllers\Admin\MediaController::class, 'bulkDelete'])->name('media.bulk-delete');
+    Route::get('/media-api', [App\Http\Controllers\Admin\MediaController::class, 'api'])->name('media.api');
     Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
     Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
     Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
