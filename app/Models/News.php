@@ -17,11 +17,14 @@ class News extends Model
         'author_name',
         'tags',
         'status',
+        'featured',
+        'category_id',
         'published_at',
     ];
 
     protected $casts = [
         'tags' => 'array',
+        'featured' => 'boolean',
         'published_at' => 'datetime',
     ];
 
@@ -52,6 +55,11 @@ class News extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(NewsCategory::class, 'category_id');
     }
 
     public function scopePublished($query)

@@ -12,6 +12,7 @@ import News from '../pages/News';
 import Contact from '../pages/Contact';
 import Team from '../pages/Team';
 import TeamMember from '../pages/TeamMember';
+import DynamicPage from '../pages/DynamicPage';
 
 function AppContent() {
     const { isDark } = useTheme();
@@ -33,6 +34,7 @@ function AppContent() {
                     <Route path="/team/:slug" element={<TeamMember />} />
                     <Route path="/news" element={<News />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/page/:slug" element={<DynamicPage />} />
                 </Routes>
             </main>
             <Footer />

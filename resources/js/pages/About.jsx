@@ -1,449 +1,397 @@
-
-
-import { useTheme } from '../contexts/ThemeContext';
 import { useState, useEffect } from 'react';
-import PageHeader from '../components/PageHeader';
+import { Link } from 'react-router-dom';
+import { useTheme } from '../contexts/ThemeContext';
+import DynamicHero from '../components/sections/DynamicHero';
 
 function About() {
     const { isDark } = useTheme();
-    const [pageData, setPageData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState({
-        contentPieces: 0,
-        globalReach: 0,
-        partnerships: 0,
-        yearsExperience: 0
-    });
-    const [settings, setSettings] = useState({});
-
-    useEffect(() => {
-        // Fetch page data and settings
-        const fetchData = async () => {
-            try {
-                const [pageResponse, settingsResponse] = await Promise.all([
-                    fetch('/api/pages/about'),
-                    fetch('/api/settings/flat')
-                ]);
-
-                if (pageResponse.ok) {
-                    const pageResult = await pageResponse.json();
-                    setPageData(pageResult);
-                }
-
-                if (settingsResponse.ok) {
-                    const settingsResult = await settingsResponse.json();
-                    setSettings(settingsResult);
-                }
-
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        if (!loading) {
-            // Default content if no page data found
-            const defaultContent = {
-                title: 'About OSR Digital',
-                excerpt: 'Leading the future of digital content distribution, connecting exceptional entertainment with global audiences through strategic YouTube publishing and innovative media solutions.',
-                content: '',
-                featured_image: null,
-                meta_title: 'About OSR Digital',
-                meta_description: 'Learn about OSR Digital, a leading digital content distribution company connecting exceptional entertainment with global audiences.'
-            };
-
-            const content = pageData || defaultContent;
-
-            // Update document title and meta tags
-            if (content && content.meta_title) {
-                document.title = content.meta_title;
-            } else if (content && content.title) {
-                document.title = `${content.title} - OSR Digital`;
-            }
-
-            if (content && content.meta_description) {
-                let metaDescription = document.querySelector('meta[name="description"]');
-                if (metaDescription) {
-                    metaDescription.setAttribute('content', content.meta_description);
-                } else {
-                    metaDescription = document.createElement('meta');
-                    metaDescription.name = 'description';
-                    metaDescription.content = content.meta_description;
-                    document.getElementsByTagName('head')[0].appendChild(metaDescription);
-                }
-            }
-
-            // Animate counter numbers using page template data
-            const targets = {
-                contentPieces: parseInt(pageData?.about_stat_1_value) || parseInt(settings.about_content_pieces) || 1200,
-                globalReach: parseInt(pageData?.about_stat_2_value) || parseInt(settings.about_global_reach) || 50,
-                partnerships: parseInt(pageData?.about_stat_3_value) || parseInt(settings.about_partnerships) || 300,
-                yearsExperience: parseInt(pageData?.about_stat_4_value) || parseInt(settings.about_years_experience) || 8
-            };
-
-            const animateCounter = (key, target) => {
-                let current = 0;
-                const increment = target / 100;
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    setStats(prev => ({ ...prev, [key]: Math.floor(current) }));
-                }, 20);
-            };
-
-            Object.entries(targets).forEach(([key, target]) => {
-                setTimeout(() => animateCounter(key, target), 500);
-            });
+    const [isVisible, setIsVisible] = useState(false);
+    const [missionVision, setMissionVision] = useState({
+        is_active: true,
+        mission: {
+            title: 'Our Mission',
+            description: 'To bridge the gap between content creators and global audiences by acquiring rights to exceptional movies, songs, and short films, and distributing them through strategic YouTube publishing. We believe in the power of storytelling to connect cultures and inspire communities worldwide.',
+            icon: 'fas fa-bullseye'
+        },
+        vision: {
+            title: 'Our Vision',
+            description: 'To become the premier digital media company that brings diverse, high-quality entertainment content to screens worldwide, fostering cultural exchange and creative appreciation. We envision a world where great content knows no boundaries.',
+            icon: 'fas fa-rocket'
         }
-    }, [loading, settings, pageData]);
+    });
+    const [coreValues, setCoreValues] = useState({
+        is_active: true,
+        values: [
+            {
+                title: 'Innovation',
+                description: 'We constantly explore new technologies and platforms to maximize content reach and engagement.',
+                icon: 'fas fa-lightbulb'
+            },
+            {
+                title: 'Quality',
+                description: 'We maintain the highest standards in content curation and distribution strategies.',
+                icon: 'fas fa-star'
+            },
+            {
+                title: 'Partnership',
+                description: 'We build lasting relationships with creators, platforms, and audiences worldwide.',
+                icon: 'fas fa-handshake'
+            },
+            {
+                title: 'Impact',
+                description: 'We measure success by the positive impact our content has on global audiences.',
+                icon: 'fas fa-chart-line'
+            }
+        ]
+    });
+    const [services, setServices] = useState({
+        is_active: true,
+        services: [
+            {
+                title: 'Content Acquisition',
+                description: 'Strategic identification and acquisition of exceptional movies, music, and short films from creators worldwide.',
+                icon: 'fas fa-bullseye'
+            },
+            {
+                title: 'YouTube Publishing',
+                description: 'Expert execution of strategic YouTube publishing campaigns to maximize reach and engagement.',
+                icon: 'fas fa-play-circle'
+            },
+            {
+                title: 'Global Distribution',
+                description: 'Worldwide content distribution across multiple platforms and cultural markets.',
+                icon: 'fas fa-globe'
+            },
+            {
+                title: 'Creator Support',
+                description: 'Comprehensive support for content creators throughout the entire distribution process.',
+                icon: 'fas fa-palette'
+            }
+        ]
+    });
+    const [isLoading, setIsLoading] = useState(true);
 
-    if (loading) {
-        return (
-            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'} pt-20`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="text-center mb-16">
-                        {/* Heading Skeleton */}
-                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                        {/* Subheading/paragraph Skeleton */}
-                        <div className="space-y-4 animate-pulse">
-                            <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
-                            <div className={`h-4 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
-                            <div className={`h-4 w-1/2 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-200'}`}></div>
-                        </div>
-                    </div>
+    const fetchServices = async () => {
+        try {
+            console.log('Fetching services data...');
+            
+            // Create AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-                    {/* Optional image or cards */}
-                    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
-                        {[1, 2, 3].map((i) => (
-                            <div
-                                key={i}
-                                className={`flex flex-col items-center ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg p-6`}
-                            >
-                                {/* Image Skeleton */}
-                                <div className="w-full h-48 rounded mb-4" style={{ backgroundColor: isDark ? '#2d2d2d' : '#e5e5e5' }}></div>
-                                {/* Name/Title Skeleton */}
-                                <div className={`h-5 w-32 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
-                                {/* Role/Description Skeleton */}
-                                <div className={`h-4 w-20 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
-    }
+            const response = await fetch('/api/services', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                signal: controller.signal
+            });
 
-    // Default content if no page data found
-    const defaultContent = {
-        title: 'About OSR Digital',
-        excerpt: 'Leading the future of digital content distribution, connecting exceptional entertainment with global audiences through strategic YouTube publishing and innovative media solutions.',
-        content: '',
-        featured_image: null
+            clearTimeout(timeoutId);
+            console.log('Services response status:', response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Services data received:', data);
+                setServices(data);
+                console.log('Services state updated successfully!');
+            } else {
+                console.error('Failed to fetch services data:', response.status);
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.error('Services request timed out');
+            } else {
+                console.error('Error fetching services:', error);
+            }
+        }
     };
 
-    const content = pageData || defaultContent;
+    const fetchCoreValues = async () => {
+        try {
+            console.log('Fetching core values data...');
+            
+            // Create AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+            const response = await fetch('/api/core-values', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+            console.log('Core Values response status:', response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Core Values data received:', data);
+                setCoreValues(data);
+                console.log('Core Values state updated successfully!');
+            } else {
+                console.error('Failed to fetch core values data:', response.status);
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.error('Core Values request timed out');
+            } else {
+                console.error('Error fetching core values:', error);
+            }
+        }
+    };
+
+    const fetchMissionVision = async () => {
+        try {
+            console.log('Fetching mission & vision data...');
+            setIsLoading(true);
+            
+            // Create AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            const response = await fetch('/api/mission-vision', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Mission & Vision data received:', data);
+                setMissionVision(data);
+                console.log('Mission & Vision state updated successfully!');
+            } else {
+                console.error('Failed to fetch mission & vision data:', response.status);
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.error('Request timed out');
+            } else {
+                console.error('Error fetching mission & vision:', error);
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        setIsVisible(true);
+        document.title = 'About OSR Digital - Leading Content Distribution Company';
+        
+        // Fetch Mission & Vision data
+        fetchMissionVision();
+        
+        // Fetch Core Values data
+        fetchCoreValues();
+        
+        // Fetch Services data
+        fetchServices();
+    }, []);
+
+
+
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+        <div className={`min-h-screen transition-colors duration-300 ${
+            isDark ? 'bg-gray-900' : 'bg-white'
+        }`}>
             {/* Hero Section */}
-            <section className={`relative pt-24 pb-20 overflow-hidden ${isDark ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'}`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10"></div>
-                <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className={`text-5xl lg:text-6xl font-bold mb-6`}>
-                        <span className={isDark ? 'text-white' : 'text-gray-900'}>
-                            {content.title.split(' ').slice(0, -2).join(' ')}
-                        </span>{' '}
-                        <span style={{ color: '#ff6b35' }}>
-                            {content.title.split(' ').slice(-2).join(' ')}
-                        </span>
-                    </h1>
-                    <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} mb-8 leading-relaxed max-w-3xl mx-auto`}>
-                        {content.excerpt || settings.about_hero_description || 'Leading the future of digital content distribution, connecting exceptional entertainment with global audiences through strategic YouTube publishing and innovative media solutions.'}
-                    </p>
-                    <div className="flex flex-wrap gap-4 justify-center">
-                        <button
-                            className="px-8 py-3 rounded-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                            style={{ backgroundColor: '#ff6b35' }}
-                        >
-                            {pageData?.about_primary_button_text || settings.about_primary_button_text || 'Our Story'}
-                        </button>
-                        <button className={`px-8 py-3 rounded-lg font-semibold border-2 transition-all duration-300 hover:scale-105 ${isDark ? 'border-gray-600 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}>
-                            {pageData?.about_secondary_button_text || settings.about_secondary_button_text || 'Watch Video'}
-                        </button>
-                    </div>
-                </div>
-            </section>
+            <DynamicHero page="about" />
 
-            {/* Dynamic Content Section */}
-            {content.content && (
-                <section
-                    className={`relative py-24 ${isDark ? "bg-gray-950" : "bg-gradient-to-b from-gray-50 via-white to-gray-100"
-                        }`}
-                >
-                    {/* Decorative background accents */}
-                    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full bg-orange-500/10 blur-3xl" />
-                        <div className="absolute bottom-0 right-1/3 w-[30rem] h-[30rem] rounded-full bg-pink-500/10 blur-3xl" />
-                    </div>
 
-                    <div className="relative max-w-4xl mx-auto px-6 sm:px-8 lg:px-10">
-                        <div
-                            className={`prose prose-lg max-w-none transition-all duration-500 ${isDark ? "prose-invert" : ""
-                                }`}
-                            dangerouslySetInnerHTML={{ __html: content.content }}
-                            style={{
-                                // Headings
-                                "--tw-prose-headings": isDark ? "#ffffff" : "#111827",
-                                "--tw-prose-h1": isDark ? "#f9fafb" : "#111827",
-                                "--tw-prose-h2": isDark ? "#e5e7eb" : "#1f2937",
-                                "--tw-prose-h3": isDark ? "#d1d5db" : "#374151",
-                                "--tw-prose-h1-font-size": "2.75rem",
-                                "--tw-prose-h2-font-size": "2rem",
-                                "--tw-prose-h3-font-size": "1.5rem",
+            {/* Mission & Vision Section */}
+            {missionVision.is_active && (
+                <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+                    <div className="container-minimal">
+                        
+                        {isLoading ? (
+                            <div className="text-center py-20">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                                <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading Mission & Vision...</p>
+                            </div>
+                        ) : (
+                            <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        {/* Mission */}
+                        <div className={`transform transition-all duration-1000 ${
+                            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+                        }`}>
+                            <div className="mb-6">
+                                <div className="text-4xl mb-4" style={{color: '#EC681D'}}>
+                                    <i className={missionVision.mission.icon}></i>
+                                </div>
+                                <h2 className={`text-4xl font-bold mb-6 ${
+                                    isDark ? 'text-white' : 'text-gray-900'
+                                }`}>
+                                    {missionVision.mission.title}
+                                </h2>
+                            </div>
+                            <p className={`text-lg leading-relaxed ${
+                                isDark ? 'text-gray-300' : 'text-gray-600'
+                            }`}>
+                                {missionVision.mission.description}
+                            </p>
+                        </div>
 
-                                // Body
-                                "--tw-prose-body": isDark ? "#d1d5db" : "#374151",
-                                "--tw-prose-bold": isDark ? "#ffffff" : "#111827",
-                                "--tw-prose-links": "#f97316",
-
-                                // Alignment & spacing
-                                textAlign: "justify",
-                                lineHeight: "1.8",
-                                fontFamily: "'Inter', system-ui, sans-serif",
-                                letterSpacing: "0.01em",
-                            }}
-                        />
+                        {/* Vision */}
+                        <div className={`transform transition-all duration-1000 delay-300 ${
+                            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
+                        }`}>
+                            <div className="mb-6">
+                                <div className="text-4xl mb-4" style={{color: '#EC681D'}}>
+                                    <i className={missionVision.vision.icon}></i>
+                                </div>
+                                <h2 className={`text-4xl font-bold mb-6 ${
+                                    isDark ? 'text-white' : 'text-gray-900'
+                                }`}>
+                                    {missionVision.vision.title}
+                                </h2>
+                            </div>
+                            <p className={`text-lg leading-relaxed ${
+                                isDark ? 'text-gray-300' : 'text-gray-600'
+                            }`}>
+                                {missionVision.vision.description}
+                            </p>
+                        </div>
+                        </div>
+                    )}
                     </div>
                 </section>
             )}
 
-            {/* Stats Section */}
-            <section className={`py-16 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div className="text-center">
-                            <div className="text-4xl lg:text-5xl font-bold mb-2" style={{ color: '#ff6b35' }}>
-                                {stats.contentPieces.toLocaleString()}+
-                            </div>
-                            <p className={`text-lg font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                {pageData?.about_stat_1_label || settings.about_stat_1_label || 'Content Pieces'}
-                            </p>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-4xl lg:text-5xl font-bold mb-2" style={{ color: '#ff6b35' }}>
-                                {stats.globalReach}M+
-                            </div>
-                            <p className={`text-lg font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                {pageData?.about_stat_2_label || settings.about_stat_2_label || 'Global Reach'}
-                            </p>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-4xl lg:text-5xl font-bold mb-2" style={{ color: '#ff6b35' }}>
-                                {stats.partnerships}+
-                            </div>
-                            <p className={`text-lg font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                {pageData?.about_stat_3_label || settings.about_stat_3_label || 'Partnerships'}
-                            </p>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-4xl lg:text-5xl font-bold mb-2" style={{ color: '#ff6b35' }}>
-                                {stats.yearsExperience}+
-                            </div>
-                            <p className={`text-lg font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                {pageData?.about_stat_4_label || settings.about_stat_4_label || 'Years Experience'}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* Mission & Vision Section */}
+            {/* Values Section */}
             <section className={`py-20 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-16">
-                        <div className="space-y-8">
-                            <div>
-                                <div className="flex items-center mb-6">
-                                    <div className="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style={{ backgroundColor: '#ff6b35' }}>
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                        </svg>
-                                    </div>
-                                    <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                        {pageData?.about_mission_title || settings.about_mission_title || 'Our Mission'}
-                                    </h2>
+                <div className="container-minimal">
+                    <div className="text-center mb-16">
+                        <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            Our Core Values
+                        </h2>
+                        <p className={`text-xl ${
+                            isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
+                            The principles that guide everything we do
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {coreValues.values.map((value, index) => (
+                            <div key={index} className={`transform transition-all duration-1000 delay-${index * 200} ${
+                                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                            } text-center p-6 rounded-2xl ${
+                                isDark ? 'bg-gray-700/50 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'
+                            } transition-all duration-300`}>
+                                <div className="text-4xl mb-4" style={{color: '#EC681D'}}>
+                                    <i className={value.icon}></i>
                                 </div>
-                                <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                    {pageData?.about_mission || settings.about_mission || 'To bridge the gap between content creators and global audiences by acquiring rights to exceptional movies, songs, and short films, and distributing them through strategic YouTube publishing. We believe in the power of storytelling to connect cultures and inspire communities worldwide.'}
+                                <h3 className={`text-xl font-bold mb-4 ${
+                                    isDark ? 'text-white' : 'text-gray-900'
+                                }`}>
+                                    {value.title}
+                                </h3>
+                                <p className={`text-sm leading-relaxed ${
+                                    isDark ? 'text-gray-300' : 'text-gray-600'
+                                }`}>
+                                    {value.description}
                                 </p>
                             </div>
-
-                            <div>
-                                <div className="flex items-center mb-6">
-                                    <div className="w-12 h-12 rounded-lg flex items-center justify-center mr-4" style={{ backgroundColor: '#ff6b35' }}>
-                                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                                        </svg>
-                                    </div>
-                                    <h2 className={`text-4xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                        {pageData?.about_vision_title || settings.about_vision_title || 'Our Vision'}
-                                    </h2>
-                                </div>
-                                <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                    {pageData?.about_vision || settings.about_vision || 'To become the premier digital media company that brings diverse, high-quality entertainment content to screens worldwide, fostering cultural exchange and creative appreciation. We envision a world where great content knows no boundaries.'}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="relative">
-                            <div className="aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-orange-400 to-red-500 p-1">
-                                <div
-                                    className={`w-full h-full rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-gray-100'} flex items-center justify-center ${pageData?.about_youtube_link ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''}`}
-                                    onClick={() => {
-                                        if (pageData?.about_youtube_link) {
-                                            window.open(pageData.about_youtube_link, '_blank');
-                                        }
-                                    }}
-                                >
-                                    <div className="text-center p-8">
-                                        <svg className="w-16 h-16 mx-auto mb-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                        <p className={`text-lg font-semibold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                            Watch Our Story
-                                        </p>
-                                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2`}>
-                                            {pageData?.about_youtube_link ? 'Click to watch on YouTube' : 'Discover how we\'re transforming digital content distribution'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* Services Section */}
-            <section className={`py-20 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+                <div className="container-minimal">
                     <div className="text-center mb-16">
-                        <h2 className={`text-4xl lg:text-5xl font-bold mb-6`}>
-                            <span className={isDark ? 'text-white' : 'text-gray-900'}>
-                                {(pageData?.about_what_we_do_title || settings.about_what_we_do_title || 'What We Do').split(' ').slice(0, -1).join(' ')}
-                            </span>{' '}
-                            <span style={{ color: '#ff6b35' }}>
-                                {(pageData?.about_what_we_do_title || settings.about_what_we_do_title || 'What We Do').split(' ').slice(-1)}
-                            </span>
+                        <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            What We Do
                         </h2>
-                        <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'} max-w-3xl mx-auto`}>
-                            {pageData?.about_what_we_do_description || settings.about_what_we_do_description || 'We provide comprehensive digital content solutions that connect creators with global audiences'}
+                        <p className={`text-xl ${
+                            isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
+                            Comprehensive solutions for content creators and distributors
                         </p>
                     </div>
 
-                    <div className={`grid gap-8 ${pageData?.about_services?.length ? `lg:grid-cols-${Math.min(pageData.about_services.length, 4)}` : 'lg:grid-cols-3'}`}>
-                        {pageData?.about_services?.length > 0 ?
-                            pageData.about_services.map((service, index) => {
-                                const icons = [
-                                    "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z",
-                                    "M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z",
-                                    "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z",
-                                    "M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z",
-                                    "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
-                                    "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6L12 10.5 8.5 8 12 5.5 15.5 8zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
-                                ];
-
-                                return (
-                                    <div key={index} className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d={icons[index % icons.length]} />
-                                            </svg>
-                                        </div>
-                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {services.services.map((service, index) => (
+                            <div key={index} className={`transform transition-all duration-1000 delay-${index * 200} ${
+                                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                            } p-8 rounded-2xl border ${
+                                isDark ? 'bg-gray-800 border-gray-700 hover:border-brand-orange-500/30' : 'bg-gray-50 border-gray-200 hover:border-brand-orange-200'
+                            } transition-all duration-300`}>
+                                <div className="flex items-start space-x-4">
+                                    <div className="text-3xl" style={{color: '#EC681D'}}>
+                                        <i className={service.icon}></i>
+                                    </div>
+                                    <div>
+                                        <h3 className={`text-xl font-bold mb-3 ${
+                                            isDark ? 'text-white' : 'text-gray-900'
+                                        }`}>
                                             {service.title}
                                         </h3>
-                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+                                        <p className={`leading-relaxed ${
+                                            isDark ? 'text-gray-300' : 'text-gray-600'
+                                        }`}>
                                             {service.description}
                                         </p>
                                     </div>
-                                );
-                            })
-                            : (
-                                // Default services if no repeater data
-                                <>
-                                    <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-                                            </svg>
-                                        </div>
-                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                                            Content Acquisition
-                                        </h3>
-                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                            We identify and acquire rights to exceptional movies, music, and short films from creators worldwide, building a diverse portfolio of premium content.
-                                        </p>
-                                    </div>
-
-                                    <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-                                            </svg>
-                                        </div>
-                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                                            Strategic Distribution
-                                        </h3>
-                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                            Our expert team develops and executes strategic YouTube publishing campaigns to maximize reach, engagement, and revenue potential for every piece of content.
-                                        </p>
-                                    </div>
-
-                                    <div className={`${isDark ? 'bg-gray-900' : 'bg-white'} p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                        <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#ff6b35' }}>
-                                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                                            </svg>
-                                        </div>
-                                        <h3 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-4`}>
-                                            Global Reach
-                                        </h3>
-                                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                                            We connect content with audiences across different cultures and regions, creating opportunities for cross-cultural appreciation and global success.
-                                        </p>
-                                    </div>
-                                </>
-                            )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* CTA Section */}
-            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-900 to-gray-800' : 'bg-gradient-to-r from-gray-900 to-gray-800'}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                        {settings.about_cta_title || 'Ready to Work With Us?'}
-                    </h2>
-                    <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                        {settings.about_cta_description || 'Join hundreds of content creators who trust OSR Digital to bring their work to global audiences. Let\'s create something amazing together.'}
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button
-                            className="px-8 py-4 rounded-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg text-lg"
-                            style={{ backgroundColor: '#ff6b35' }}
-                        >
-                            {settings.about_cta_primary_button_text || 'Start Partnership'}
-                        </button>
-                        <button className="px-8 py-4 rounded-lg font-semibold border-2 border-gray-300 text-gray-300 hover:bg-gray-800 transition-all duration-300 hover:scale-105 text-lg">
-                            {settings.about_cta_secondary_button_text || 'View Portfolio'}
-                        </button>
+            <section className={`py-20 ${isDark ? 'bg-gradient-to-r from-gray-800 to-gray-900' : 'bg-gradient-to-r from-gray-100 to-gray-200'}`}>
+                <div className="container-minimal">
+                    <div className="text-center max-w-4xl mx-auto">
+                        <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            Ready to Share Your Story?
+                        </h2>
+                        <p className={`text-xl mb-10 ${
+                            isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
+                            Join our network of creators and let us help you reach global audiences with your exceptional content.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Link
+                                to="/contact"
+                                className="btn-minimal text-lg px-8 py-4"
+                            >
+                                Start Your Journey
+                            </Link>
+                            <Link
+                                to="/partners"
+                                className="btn-minimal-outline text-lg px-8 py-4"
+                            >
+                                View Our Partners
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>

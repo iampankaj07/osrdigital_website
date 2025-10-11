@@ -1,35 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import PageHeader from '../components/PageHeader';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faPhone, faMapMarkerAlt, faClock, faUser, faMessage, faPaperPlane, faHeadset, faGlobe, faBuilding, faChevronRight, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faLinkedin, faTwitter, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 function Contact() {
     const { isDark } = useTheme();
+    const [isVisible, setIsVisible] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         company: '',
+        phone: '',
         subject: '',
         message: '',
-        type: 'general'
+        inquiryType: 'general'
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null);
-    const [openFAQ, setOpenFAQ] = useState(null);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-    const handleFAQToggle = (index) => {
-        setOpenFAQ(openFAQ === index ? null : index);
-    };
-
-    const handleMouseMove = (e, cardRef) => {
-        if (cardRef) {
-            const rect = cardRef.getBoundingClientRect();
-            setMousePosition({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            });
+    useEffect(() => {
+        setIsVisible(true);
+        document.title = "Contact Us - OSR Digital";
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.name = 'description';
+            document.getElementsByTagName('head')[0].appendChild(metaDescription);
         }
-    };
+        metaDescription.content = "Get in touch with OSR Digital. Contact our team for content distribution, partnership opportunities, and media inquiries. We're here to help bring your content to global audiences.";
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -45,364 +46,465 @@ function Contact() {
         setSubmitStatus(null);
 
         try {
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                },
-                body: JSON.stringify(formData)
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Reset form
+            setFormData({
+                name: '',
+                email: '',
+                company: '',
+                phone: '',
+                subject: '',
+                message: '',
+                inquiryType: 'general'
             });
-
-            if (response.ok) {
-                setSubmitStatus('success');
-                setFormData({
-                    name: '',
-                    email: '',
-                    company: '',
-                    subject: '',
-                    message: '',
-                    type: 'general'
-                });
-            } else {
-                setSubmitStatus('error');
-            }
+            
+            setSubmitStatus('success');
         } catch (error) {
-            console.error('Error submitting form:', error);
             setSubmitStatus('error');
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    const contactTypes = [
+    const contactInfo = [
+        {
+            icon: faEnvelope,
+            title: "Email Us",
+            details: "hello@osrdigital.com",
+            description: "Send us an email anytime",
+            action: "mailto:hello@osrdigital.com"
+        },
+        {
+            icon: faPhone,
+            title: "Call Us",
+            details: "+1 (555) 123-4567",
+            description: "Mon-Fri 9AM-6PM PST",
+            action: "tel:+15551234567"
+        },
+        {
+            icon: faMapMarkerAlt,
+            title: "Visit Us",
+            details: "Los Angeles, CA",
+            description: "Schedule a meeting",
+            action: "#"
+        },
+        {
+            icon: faClock,
+            title: "Response Time",
+            details: "Within 24 hours",
+            description: "We'll get back to you quickly",
+            action: "#"
+        }
+    ];
+
+    const inquiryTypes = [
         { value: 'general', label: 'General Inquiry' },
-        { value: 'partnership', label: 'Partnership' },
-        { value: 'content', label: 'Content Submission' },
+        { value: 'partnership', label: 'Partnership Opportunity' },
+        { value: 'content', label: 'Content Distribution' },
+        { value: 'media', label: 'Media Inquiry' },
         { value: 'support', label: 'Technical Support' },
-        { value: 'media', label: 'Media & Press' }
+        { value: 'careers', label: 'Career Opportunities' }
+    ];
+
+    const offices = [
+        {
+            city: "Los Angeles",
+            country: "United States",
+            address: "1234 Sunset Boulevard, Suite 100",
+            cityState: "Los Angeles, CA 90028",
+            phone: "+1 (555) 123-4567",
+            email: "la@osrdigital.com",
+            hours: "Mon-Fri: 9AM-6PM PST"
+        },
+        {
+            city: "New York",
+            country: "United States", 
+            address: "567 Broadway, Floor 15",
+            cityState: "New York, NY 10012",
+            phone: "+1 (555) 987-6543",
+            email: "ny@osrdigital.com",
+            hours: "Mon-Fri: 9AM-6PM EST"
+        },
+        {
+            city: "London",
+            country: "United Kingdom",
+            address: "89 Piccadilly, Office 200",
+            cityState: "London W1J 0LL",
+            phone: "+44 20 7123 4567",
+            email: "london@osrdigital.com",
+            hours: "Mon-Fri: 9AM-6PM GMT"
+        }
+    ];
+
+    const socialLinks = [
+        { platform: 'LinkedIn', icon: faLinkedin, url: 'https://linkedin.com/company/osrdigital' },
+        { platform: 'Twitter', icon: faTwitter, url: 'https://twitter.com/osrdigital' },
+        { platform: 'Instagram', icon: faInstagram, url: 'https://instagram.com/osrdigital' },
+        { platform: 'YouTube', icon: faYoutube, url: 'https://youtube.com/@osrdigital' }
     ];
 
     return (
-        <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-            <PageHeader
-                badge="Get In Touch"
-                title="Contact Our Success Team"
-                description="Ready to start your content distribution journey? Have questions about our services? We're here to help you succeed in the digital content landscape."
-            />
-
-            {/* Contact Form & Info */}
-            <section className={`py-20 ${isDark ? 'bg-black' : 'bg-white'}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-16">
-                        {/* Contact Form */}
-                        <div>
-                            <h2 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-8`}>Send us a message</h2>
-
-                            {submitStatus === 'success' && (
-                                <div className="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded-lg mb-6">
-                                    Thank you for your message! We'll get back to you within 24 hours.
+        <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+            {/* Hero Section */}
+            <section className={`min-h-screen flex items-center justify-center pt-16 md:pt-20 lg:pt-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+                <div className="container-minimal">
+                    <div className="text-center max-w-4xl mx-auto">
+                        <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                            {/* Badge */}
+                            <div className="mb-8">
+                                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+                                    isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'
+                                }`}>
+                                    <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
+                                    Get In Touch
                                 </div>
-                            )}
+                            </div>
 
-                            {submitStatus === 'error' && (
-                                <div className="bg-red-900 border border-red-700 text-red-100 px-4 py-3 rounded-lg mb-6">
-                                    There was an error sending your message. Please try again.
+                            {/* Main Content */}
+                            <div className="mb-12">
+                                <h1 className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight text-minimal-bold ${
+                                    isDark ? 'text-white' : 'text-gray-900'
+                                }`}>
+                                    Let's
+                                    <span className={`block bg-gradient-to-r from-brand-orange-500 to-red-600 bg-clip-text text-transparent`}>
+                                        Connect
+                                    </span>
+                                </h1>
+                                <p className={`text-xl md:text-2xl mb-10 leading-relaxed text-minimal ${
+                                    isDark ? 'text-gray-300' : 'text-gray-600'
+                                }`}>
+                                    Ready to bring your content to global audiences? Get in touch with our team and let's discuss how we can help you achieve your distribution goals.
+                                </p>
+                            </div>
+
+                            {/* CTA Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                <a
+                                    href="#contact-form"
+                                    className="btn-minimal"
+                                >
+                                    Send Message
+                                </a>
+                                <a
+                                    href="tel:+15551234567"
+                                    className="btn-minimal-outline"
+                                >
+                                    Call Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Contact Information Cards */}
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <div className="container-minimal">
+                    <div className="text-center mb-16">
+                        <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            Get In Touch
+                        </h2>
+                        <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                            Choose the best way to reach us
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {contactInfo.map((info, index) => (
+                            <a
+                                key={index}
+                                href={info.action}
+                                className={`p-8 rounded-xl text-center transition-all duration-300 hover:shadow-lg ${
+                                    isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
+                                }`}
+                            >
+                                <div className={`text-4xl mb-4 ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`}>
+                                    <FontAwesomeIcon icon={info.icon} />
                                 </div>
-                            )}
+                                <h3 className={`text-xl font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    {info.title}
+                                </h3>
+                                <p className={`text-lg font-medium mb-2 ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`}>
+                                    {info.details}
+                                </p>
+                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    {info.description}
+                                </p>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label htmlFor="name" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                            Full Name *
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleInputChange}
-                                            required
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
-                                                isDark
-                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
-                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
-                                            }`}
-                                            placeholder="Your full name"
-                                        />
+            {/* Contact Form Section */}
+            <section id="contact-form" className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
+                <div className="container-minimal">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="text-center mb-16">
+                            <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                Send us a Message
+                            </h2>
+                            <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                Fill out the form below and we'll get back to you within 24 hours
+                            </p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            {/* Contact Form */}
+                            <div className={`p-8 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                Full Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={handleInputChange}
+                                                required
+                                                className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
+                                                    isDark 
+                                                        ? 'bg-gray-700 border-gray-600 text-white' 
+                                                        : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
+                                                placeholder="Your full name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                Email Address *
+                                            </label>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                required
+                                                className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
+                                                    isDark 
+                                                        ? 'bg-gray-700 border-gray-600 text-white' 
+                                                        : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
+                                                placeholder="your@email.com"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                Company
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="company"
+                                                value={formData.company}
+                                                onChange={handleInputChange}
+                                                className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
+                                                    isDark 
+                                                        ? 'bg-gray-700 border-gray-600 text-white' 
+                                                        : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
+                                                placeholder="Your company name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                Phone Number
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleInputChange}
+                                                className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
+                                                    isDark 
+                                                        ? 'bg-gray-700 border-gray-600 text-white' 
+                                                        : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
+                                                placeholder="+1 (555) 123-4567"
+                                            />
+                                        </div>
                                     </div>
 
                                     <div>
-                                        <label htmlFor="email" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                            Email Address *
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            required
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
-                                                isDark
-                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
-                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
-                                            }`}
-                                            placeholder="your@email.com"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label htmlFor="company" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                            Company/Organization
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="company"
-                                            name="company"
-                                            value={formData.company}
-                                            onChange={handleInputChange}
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
-                                                isDark
-                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
-                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
-                                            }`}
-                                            placeholder="Your company name"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="type" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                             Inquiry Type *
                                         </label>
                                         <select
-                                            id="type"
-                                            name="type"
-                                            value={formData.type}
+                                            name="inquiryType"
+                                            value={formData.inquiryType}
                                             onChange={handleInputChange}
                                             required
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
-                                                isDark
-                                                    ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
-                                                    : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
+                                                isDark 
+                                                    ? 'bg-gray-700 border-gray-600 text-white' 
+                                                    : 'bg-white border-gray-300 text-gray-900'
                                             }`}
                                         >
-                                            {contactTypes.map(type => (
-                                                <option key={type.value} value={type.value} className={isDark ? 'bg-gray-800' : 'bg-white'}>
+                                            {inquiryTypes.map((type) => (
+                                                <option key={type.value} value={type.value}>
                                                     {type.label}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
-                                </div>
 
-                                <div>
-                                    <label htmlFor="subject" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                        Subject *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="subject"
-                                        name="subject"
-                                        value={formData.subject}
-                                        onChange={handleInputChange}
-                                        required
-                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors ${
-                                            isDark
-                                                ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
-                                                : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
-                                        }`}
-                                        placeholder="Brief description of your inquiry"
-                                    />
-                                </div>
+                                    <div>
+                                        <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            Subject *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="subject"
+                                            value={formData.subject}
+                                            onChange={handleInputChange}
+                                            required
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
+                                                isDark 
+                                                    ? 'bg-gray-700 border-gray-600 text-white' 
+                                                    : 'bg-white border-gray-300 text-gray-900'
+                                            }`}
+                                            placeholder="What's this about?"
+                                        />
+                                    </div>
 
-                                <div>
-                                    <label htmlFor="message" className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                                        Message *
-                                    </label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        value={formData.message}
-                                        onChange={handleInputChange}
-                                        required
-                                        rows={6}
-                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors resize-vertical ${
-                                            isDark
-                                                ? 'bg-gray-800 text-white border-gray-700 focus:border-orange-500'
-                                                : 'bg-white text-gray-900 border-gray-300 focus:border-orange-500'
-                                        }`}
-                                        placeholder="Tell us more about your inquiry..."
-                                    />
-                                </div>
+                                    <div>
+                                        <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            Message *
+                                        </label>
+                                        <textarea
+                                            name="message"
+                                            value={formData.message}
+                                            onChange={handleInputChange}
+                                            required
+                                            rows={6}
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 resize-none ${
+                                                isDark 
+                                                    ? 'bg-gray-700 border-gray-600 text-white' 
+                                                    : 'bg-white border-gray-300 text-gray-900'
+                                            }`}
+                                            placeholder="Tell us more about your project or inquiry..."
+                                        />
+                                    </div>
 
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 text-white py-4 rounded-lg text-lg font-semibold transition-colors flex items-center justify-center"
-                                    style={{ backgroundColor: isSubmitting ? undefined : '#ff6b35' }}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            Sending...
-                                        </>
-                                    ) : (
-                                        'Send Message'
+                                    {submitStatus === 'success' && (
+                                        <div className="flex items-center p-4 bg-green-100 text-green-700 rounded-lg">
+                                            <FontAwesomeIcon icon={faCheckCircle} className="mr-2" />
+                                            Message sent successfully! We'll get back to you soon.
+                                        </div>
                                     )}
-                                </button>
-                            </form>
-                        </div>
 
-                        {/* Contact Information */}
-                        <div className="relative">
-                            {/* Glass morphism container */}
-                            <div className={`rounded-2xl p-8 backdrop-blur-sm border ${
-                                isDark
-                                    ? 'bg-white/5 border-white/10 shadow-2xl'
-                                    : 'bg-black/5 border-black/10 shadow-2xl'
-                            }`}
-                            style={{
-                                backdropFilter: 'blur(20px)',
-                                WebkitBackdropFilter: 'blur(20px)',
-                            }}>
-                                <h2 className={`text-3xl font-bold mb-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>Get In Touch</h2>
+                                    {submitStatus === 'error' && (
+                                        <div className="flex items-center p-4 bg-red-100 text-red-700 rounded-lg">
+                                            <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" />
+                                            There was an error sending your message. Please try again.
+                                        </div>
+                                    )}
 
-                                <div className="space-y-6">
-                                    {/* Email Card */}
-                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
-                                        isDark
-                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
-                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
-                                    }`}>
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                                                 style={{ backgroundColor: '#ff6b35' }}>
-                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                </svg>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 flex items-center justify-center ${
+                                            isSubmitting
+                                                ? 'bg-gray-400 cursor-not-allowed'
+                                                : 'bg-brand-orange-500 hover:bg-brand-orange-600'
+                                        }`}
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
+                                                Send Message
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </div>
+
+                            {/* Contact Information */}
+                            <div className="space-y-8">
+                                <div className={`p-8 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                                    <h3 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                        Why Choose OSR Digital?
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <div className="flex items-start">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
+                                                isDark ? 'bg-brand-orange-500/20' : 'bg-brand-orange-100'
+                                            }`}>
+                                                <FontAwesomeIcon icon={faGlobe} className={`text-sm ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`} />
                                             </div>
                                             <div>
-                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Email Us</h3>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} hover:text-orange-500 transition-colors cursor-pointer`}>
-                                                    info@osrdigitalmedia.com
-                                                </p>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} hover:text-orange-500 transition-colors cursor-pointer`}>
-                                                    partnerships@osrdigitalmedia.com
+                                                <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                                    Global Reach
+                                                </h4>
+                                                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                    Distribute content to 200+ countries worldwide
                                                 </p>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Phone Card */}
-                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
-                                        isDark
-                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
-                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
-                                    }`}>
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                                                 style={{ backgroundColor: '#ff6b35' }}>
-                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                </svg>
+                                        <div className="flex items-start">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
+                                                isDark ? 'bg-brand-orange-500/20' : 'bg-brand-orange-100'
+                                            }`}>
+                                                <FontAwesomeIcon icon={faHeadset} className={`text-sm ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`} />
                                             </div>
                                             <div>
-                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Call Us</h3>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} hover:text-orange-500 transition-colors cursor-pointer`}>
-                                                    +1 (555) 123-4567
-                                                </p>
-                                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                                    Mon-Fri, 9:00 AM - 6:00 PM EST
+                                                <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                                    Expert Support
+                                                </h4>
+                                                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                    Dedicated team to help you succeed
                                                 </p>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Office Card */}
-                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
-                                        isDark
-                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
-                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
-                                    }`}>
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                                                 style={{ backgroundColor: '#ff6b35' }}>
-                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
+                                        <div className="flex items-start">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
+                                                isDark ? 'bg-brand-orange-500/20' : 'bg-brand-orange-100'
+                                            }`}>
+                                                <FontAwesomeIcon icon={faBuilding} className={`text-sm ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`} />
                                             </div>
                                             <div>
-                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Visit Us</h3>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>123 Digital Avenue</p>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Media City, MC 12345</p>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>United States</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Response Time Card */}
-                                    <div className={`rounded-xl p-6 transition-all duration-300 hover:scale-105 ${
-                                        isDark
-                                            ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
-                                            : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
-                                    }`}>
-                                        <div className="flex items-start space-x-4">
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                                                 style={{ backgroundColor: '#ff6b35' }}>
-                                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>Response Time</h3>
-                                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Within 24 hours</p>
-                                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                                    We respond to all inquiries promptly
+                                                <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                                    Industry Experience
+                                                </h4>
+                                                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                    Years of expertise in content distribution
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Social Media */}
-                                <div className="mt-8">
-                                    <h3 className={`text-xl font-semibold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>Connect With Us</h3>
+                                <div className={`p-8 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                                    <h3 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                        Follow Us
+                                    </h3>
                                     <div className="flex space-x-4">
-                                        <a href="#" className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
-                                            isDark
-                                                ? 'bg-gray-800/50 hover:bg-orange-600'
-                                                : 'bg-white/70 hover:bg-orange-600'
-                                        }`}>
-                                            <svg className="w-6 h-6 text-current" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                                            </svg>
-                                        </a>
-                                        <a href="#" className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
-                                            isDark
-                                                ? 'bg-gray-800/50 hover:bg-orange-600'
-                                                : 'bg-white/70 hover:bg-orange-600'
-                                        }`}>
-                                            <svg className="w-6 h-6 text-current" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                                            </svg>
-                                        </a>
-                                        <a href="#" className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
-                                            isDark
-                                                ? 'bg-gray-800/50 hover:bg-orange-600'
-                                                : 'bg-white/70 hover:bg-orange-600'
-                                        }`}>
-                                            <svg className="w-6 h-6 text-current" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                            </svg>
-                                        </a>
+                                        {socialLinks.map((social, index) => (
+                                            <a
+                                                key={index}
+                                                href={social.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
+                                                    isDark 
+                                                        ? 'bg-gray-700 text-gray-300 hover:bg-brand-orange-500 hover:text-white' 
+                                                        : 'bg-gray-200 text-gray-600 hover:bg-brand-orange-500 hover:text-white'
+                                                }`}
+                                            >
+                                                <FontAwesomeIcon icon={social.icon} />
+                                            </a>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -411,101 +513,90 @@ function Contact() {
                 </div>
             </section>
 
-            {/* FAQ Section */}
-            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-100'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Office Locations */}
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <div className="container-minimal">
                     <div className="text-center mb-16">
-                        <h2 className={`text-4xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            Frequently Asked Questions
+                        <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                            Our Offices
                         </h2>
-                        <p className={`text-xl ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Find answers to common questions about our services
+                        <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                            Visit us at any of our global locations
                         </p>
                     </div>
 
-                    <div className="space-y-4">
-                        {[
-                            {
-                                question: "How do I submit my content for distribution?",
-                                answer: "You can submit your content through our partnership form or by contacting us directly. We'll review your submission and get back to you within 48 hours with a detailed assessment and next steps."
-                            },
-                            {
-                                question: "What types of content do you distribute?",
-                                answer: "We distribute a wide range of content including movies, music videos, short films, documentaries, web series, and other digital media content across our global YouTube network and digital platforms."
-                            },
-                            {
-                                question: "How long does the partnership process take?",
-                                answer: "The partnership process typically takes 5-7 business days from initial contact to content launch, depending on the complexity and scope of your project. Rush services are available for time-sensitive content."
-                            },
-                            {
-                                question: "Do you provide analytics and reporting?",
-                                answer: "Yes, we provide comprehensive analytics and reporting through our partner dashboard, including real-time viewership data, revenue reports, audience demographics, and performance insights with monthly detailed reports."
-                            },
-                            {
-                                question: "What are your revenue sharing terms?",
-                                answer: "We offer competitive revenue sharing models tailored to each partnership. Our terms are transparent and fair, with detailed breakdowns provided during the onboarding process. Contact us for specific rates."
-                            }
-                        ].map((faq, index) => (
-                            <div
-                                key={index}
-                                className={`relative rounded-2xl overflow-hidden transition-all duration-300 ${
-                                    isDark
-                                        ? 'bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50'
-                                        : 'bg-white/70 hover:bg-white/90 border border-gray-200/50'
-                                }`}
-                                style={{
-                                    backdropFilter: 'blur(20px)',
-                                    WebkitBackdropFilter: 'blur(20px)',
-                                }}
-                                onMouseMove={(e) => handleMouseMove(e, e.currentTarget)}
-                            >
-                                {/* Glass morphism gradient effect */}
-                                <div
-                                    className="absolute inset-0 opacity-20 transition-all duration-300"
-                                    style={{
-                                        background: `radial-gradient(300px circle at ${mousePosition.x}px ${mousePosition.y}px,
-                                            ${isDark
-                                                ? 'rgba(236, 104, 27, 0.2), rgba(255, 107, 53, 0.1), transparent'
-                                                : 'rgba(236, 104, 27, 0.15), rgba(255, 107, 53, 0.08), transparent'
-                                            })`
-                                    }}
-                                />
-
-                                <button
-                                    onClick={() => handleFAQToggle(index)}
-                                    className="w-full text-left p-6 focus:outline-none"
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <h3 className={`text-lg font-semibold pr-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                            {faq.question}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {offices.map((office, index) => (
+                            <div key={index} className={`p-8 rounded-2xl ${isDark ? 'bg-gray-700' : 'bg-white'}`}>
+                                <div className="flex items-center mb-6">
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${
+                                        isDark ? 'bg-brand-orange-500/20' : 'bg-brand-orange-100'
+                                    }`}>
+                                        <FontAwesomeIcon icon={faMapMarkerAlt} className={`text-xl ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`} />
+                                    </div>
+                                    <div>
+                                        <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                            {office.city}
                                         </h3>
-                                        <div className={`flex-shrink-0 transition-transform duration-300 ${
-                                            openFAQ === index ? 'rotate-180' : ''
-                                        }`}>
-                                            <svg
-                                                className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                            </svg>
+                                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {office.country}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex items-start">
+                                        <FontAwesomeIcon icon={faMapMarkerAlt} className={`w-4 h-4 mt-1 mr-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+                                        <div>
+                                            <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                {office.address}
+                                            </p>
+                                            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                {office.cityState}
+                                            </p>
                                         </div>
                                     </div>
-                                </button>
-
-                                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                                    openFAQ === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                                }`}>
-                                    <div className="px-6 pb-6">
-                                        <div className={`w-full h-px mb-4 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
-                                        <p className={`leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                            {faq.answer}
+                                    <div className="flex items-center">
+                                        <FontAwesomeIcon icon={faPhone} className={`w-4 h-4 mr-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+                                        <a href={`tel:${office.phone}`} className={`text-sm hover:text-brand-orange-500 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            {office.phone}
+                                        </a>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <FontAwesomeIcon icon={faEnvelope} className={`w-4 h-4 mr-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+                                        <a href={`mailto:${office.email}`} className={`text-sm hover:text-brand-orange-500 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            {office.email}
+                                        </a>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <FontAwesomeIcon icon={faClock} className={`w-4 h-4 mr-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+                                        <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            {office.hours}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className={`py-16 md:py-24 bg-gradient-to-br ${isDark ? 'from-gray-900 to-gray-800' : 'from-brand-orange-500 to-red-600'}`}>
+                <div className="container-minimal text-center max-w-4xl mx-auto">
+                    <h2 className={`text-4xl font-extrabold mb-6 ${isDark ? 'text-white' : 'text-white'}`}>
+                        Ready to Get Started?
+                    </h2>
+                    <p className={`text-xl mb-10 ${isDark ? 'text-gray-300' : 'text-brand-orange-100'}`}>
+                        Join hundreds of content creators and distributors who trust OSR Digital to bring their content to global audiences.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <a href="#contact-form" className="btn-minimal">
+                            Start Your Journey
+                        </a>
+                        <Link to="/about" className="btn-minimal-outline">
+                            Learn More About Us
+                        </Link>
                     </div>
                 </div>
             </section>

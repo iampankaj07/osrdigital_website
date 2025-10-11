@@ -288,26 +288,65 @@ class SettingsHelper
     public static function getFooterServices(): array
     {
         $services = self::get('footer_services', [
-            ['service' => 'Content Acquisition'],
-            ['service' => 'YouTube Publishing'],
-            ['service' => 'Digital Distribution'],
-            ['service' => 'Rights Management'],
-            ['service' => 'Content Strategy'],
+            'Movie Rights Acquisition',
+            'Music Publishing',
+            'Short Film Distribution',
+            'Content Strategy',
         ]);
 
-        // Convert from repeater format to simple array
+        // Convert from simple array to objects with text and icon properties
+        // Map service names to appropriate FontAwesome icons
+        $iconMap = [
+            'Movie Rights Acquisition' => 'faHandshake',
+            'Music Publishing' => 'faMusic',
+            'Short Film Distribution' => 'faFilm',
+            'Content Strategy' => 'faChartLine',
+            'Digital Distribution' => 'faPlay',
+            'YouTube Publishing' => 'faYoutube',
+            'Rights Management' => 'faShieldAlt',
+            'Content Acquisition' => 'faShoppingCart',
+            'Global Distribution' => 'faGlobeAmericas',
+            'Marketing Strategy' => 'faChartLine',
+            'Theatrical Release' => 'faTv',
+            'Digital Streaming' => 'faPlay',
+        ];
+
+        // If services is already an array of strings, convert to objects
+        if (is_array($services) && !empty($services) && is_string($services[0])) {
+            return array_map(function($service) use ($iconMap) {
+                return [
+                    'text' => $service,
+                    'icon' => $iconMap[$service] ?? 'faCircle' // Default icon if not found
+                ];
+            }, $services);
+        }
+
+        // If services is in repeater format, convert it
         if (is_array($services) && isset($services[0]['service'])) {
-            return array_map(fn($item) => $item['service'], $services);
+            return array_map(function($item) use ($iconMap) {
+                $service = $item['service'];
+                return [
+                    'text' => $service,
+                    'icon' => $iconMap[$service] ?? 'faCircle'
+                ];
+            }, $services);
         }
 
         // Fallback for legacy format
-        return $services ?: [
+        $fallbackServices = [
             'Content Acquisition',
             'YouTube Publishing',
             'Digital Distribution',
             'Rights Management',
             'Content Strategy',
         ];
+
+        return array_map(function($service) use ($iconMap) {
+            return [
+                'text' => $service,
+                'icon' => $iconMap[$service] ?? 'faCircle'
+            ];
+        }, $fallbackServices);
     }
 
     /**

@@ -25,7 +25,7 @@ class MaintenanceMode
         // Check if maintenance mode is enabled
         if (SettingsHelper::isMaintenanceMode()) {
             // Allow access for authenticated admin users
-            if (Auth::check() && Auth::user()->hasRole('Admin')) {
+            if (Auth::check() && (Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Super Admin'))) {
                 return $next($request);
             }
 
