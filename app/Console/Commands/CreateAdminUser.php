@@ -76,10 +76,20 @@ class CreateAdminUser extends Command
             'email_verified_at' => now(),
         ]);
 
+        // Map role names to actual role names in database
+        $roleMapping = [
+            'superadmin' => 'Super Admin',
+            'admin' => 'Admin',
+            'editor' => 'Editor',
+            'viewer' => 'Viewer'
+        ];
+        
+        $actualRoleName = $roleMapping[$roleName] ?? $roleName;
+        
         // Assign role
-        $role = Role::where('name', ucfirst($roleName))->first();
+        $role = Role::where('name', $actualRoleName)->first();
         if (!$role) {
-            $this->error("Role '{$roleName}' not found. Please run the RolePermissionSeeder first.");
+            $this->error("Role '{$actualRoleName}' not found. Please run the RolePermissionSeeder first.");
             return 1;
         }
 
