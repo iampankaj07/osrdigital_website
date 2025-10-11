@@ -77,35 +77,19 @@ class RolePermissionSeeder extends Seeder
 
         // Create roles
         $superAdminRole = Role::firstOrCreate(
-            ['name' => 'Super Admin', 'guard_name' => 'web'],
-            [
-                'description' => 'Full access to all features and settings',
-                'guard_name' => 'web'
-            ]
+            ['name' => 'Super Admin', 'guard_name' => 'web']
         );
 
         $adminRole = Role::firstOrCreate(
-            ['name' => 'Admin', 'guard_name' => 'web'],
-            [
-                'description' => 'Administrative access to most features',
-                'guard_name' => 'web'
-            ]
+            ['name' => 'Admin', 'guard_name' => 'web']
         );
 
         $editorRole = Role::firstOrCreate(
-            ['name' => 'Editor', 'guard_name' => 'web'],
-            [
-                'description' => 'Can edit content but not manage users or system settings',
-                'guard_name' => 'web'
-            ]
+            ['name' => 'Editor', 'guard_name' => 'web']
         );
 
         $viewerRole = Role::firstOrCreate(
-            ['name' => 'Viewer', 'guard_name' => 'web'],
-            [
-                'description' => 'Read-only access to the admin panel',
-                'guard_name' => 'web'
-            ]
+            ['name' => 'Viewer', 'guard_name' => 'web']
         );
 
         // Assign permissions to roles

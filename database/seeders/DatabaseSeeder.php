@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             AboutPageSeeder::class,
             PortfolioSeeder::class,
+            NewsCategorySeeder::class, // Must run before NewsSeeder
             NewsSeeder::class,
             TeamSeeder::class,
             DynamicPageSeeder::class,

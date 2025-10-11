@@ -64,7 +64,10 @@ class TrustedPartnerSeeder extends Seeder
         ];
 
         foreach ($partners as $partner) {
-            TrustedPartner::create($partner);
+            TrustedPartner::updateOrCreate(
+                ['name' => $partner['name']], // Find by name
+                $partner // Update or create with these values
+            );
         }
     }
 }

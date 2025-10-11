@@ -322,7 +322,10 @@ class DynamicPageSeeder extends Seeder
         ];
 
         foreach ($pages as $pageData) {
-            DynamicPage::create($pageData);
+            DynamicPage::updateOrCreate(
+                ['slug' => $pageData['slug']], // Find by slug
+                $pageData // Update or create with these values
+            );
         }
     }
 }
