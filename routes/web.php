@@ -59,9 +59,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/test-image/{filename}', [App\Http\Controllers\ImageTestController::class, 'serveTestImage']);
     
     // Media Library Routes
-    Route::resource('media', App\Http\Controllers\Admin\MediaController::class);
-    Route::post('/media/bulk-delete', [App\Http\Controllers\Admin\MediaController::class, 'bulkDelete'])->name('media.bulk-delete');
-    Route::get('/media-api', [App\Http\Controllers\Admin\MediaController::class, 'api'])->name('media.api');
+    Route::resource('media', App\Http\Controllers\Admin\MediaController::class)->names([
+        'index' => 'admin.media.index',
+        'create' => 'admin.media.create',
+        'store' => 'admin.media.store',
+        'show' => 'admin.media.show',
+        'edit' => 'admin.media.edit',
+        'update' => 'admin.media.update',
+        'destroy' => 'admin.media.destroy',
+    ]);
+    Route::post('/media/bulk-delete', [App\Http\Controllers\Admin\MediaController::class, 'bulkDelete'])->name('admin.media.bulk-delete');
+    Route::get('/media-api', [App\Http\Controllers\Admin\MediaController::class, 'api'])->name('admin.media.api');
     Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
     Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
     Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);

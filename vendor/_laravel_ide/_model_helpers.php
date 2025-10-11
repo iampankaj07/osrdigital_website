@@ -3604,12 +3604,48 @@ namespace App\Models {
     /**
      * App\Models\Media
      *
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property int $uploaded_by
+     * @property boolean $is_public
+     * @property array|null $metadata
+     * @property string|null $category
+     * @property string|null $description
+     * @property string|null $alt_text
+     * @property integer|null $height
+     * @property integer|null $width
+     * @property integer $size
+     * @property string $extension
+     * @property string $mime_type
+     * @property string $url
+     * @property string $path
+     * @property string $filename
+     * @property string $name
+     * @property int $id
      * @property-read mixed $public_url
      * @property-read mixed $thumbnail_url
      * @property-read mixed $preview_url
      * @property-read mixed $human_size
      * @property-read mixed $icon
      * @property-read \App\Models\User $uploader
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereName($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereFilename($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media wherePath($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereUrl($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereMimeType($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereExtension($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereSize($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereWidth($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereHeight($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereAltText($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereDescription($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereCategory($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereMetadata($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereIsPublic($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereUploadedBy($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media public()
      * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media images()
      * @method static \Illuminate\Database\Eloquent\Builder<Media>|Media documents()
