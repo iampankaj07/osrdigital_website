@@ -70,75 +70,109 @@
 
     <!-- Media Grid -->
     <div class="card">
-        <div class="card-body">
+        <div class="card-body p-0">
             @if($media->count() > 0)
-                <div class="row" id="media-grid">
-                    @foreach($media as $item)
-                        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4 media-item" data-id="{{ $item->id }}">
-                            <div class="card h-100">
-                                <div class="position-relative">
-                                    @if($item->isImage())
-                                        <img src="{{ $item->thumbnail_url }}" 
-                                             class="card-img-top" 
-                                             alt="{{ $item->alt_text ?: $item->name }}"
-                                             style="height: 150px; object-fit: cover;">
-                                    @else
-                                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" 
-                                             style="height: 150px;">
-                                            <i class="{{ $item->icon }} fa-3x text-muted"></i>
-                                        </div>
-                                    @endif
-                                    
-                                    <!-- Selection checkbox -->
-                                    <div class="position-absolute top-0 start-0 m-2">
-                                        <input type="checkbox" class="form-check-input media-select" 
-                                               value="{{ $item->id }}">
-                                    </div>
-                                    
-                                    <!-- Public/Private indicator -->
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        @if($item->is_public)
-                                            <span class="badge bg-success">Public</span>
+                <!-- Grid Header with Select All -->
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <input type="checkbox" class="form-check-input me-2" id="selectAll" onchange="selectAll(this.checked)">
+                        <label for="selectAll" class="form-check-label mb-0">Select All</label>
+                    </div>
+                    <div class="text-muted">
+                        {{ $media->total() }} items
+                    </div>
+                </div>
+                
+                <!-- Media Grid -->
+                <div class="p-3">
+                    <div class="row g-3" id="media-grid">
+                        @foreach($media as $item)
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 media-item" data-id="{{ $item->id }}">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="position-relative">
+                                        @if($item->isImage())
+                                            <img src="{{ $item->thumbnail_url }}" 
+                                                 class="card-img-top" 
+                                                 alt="{{ $item->alt_text ?: $item->name }}"
+                                                 style="height: 180px; object-fit: cover; width: 100%;">
                                         @else
-                                            <span class="badge bg-warning">Private</span>
+                                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" 
+                                                 style="height: 180px; width: 100%;">
+                                                <i class="{{ $item->icon }} fa-4x text-muted"></i>
+                                            </div>
                                         @endif
+                                        
+                                        <!-- Selection checkbox -->
+                                        <div class="position-absolute top-0 start-0 m-2">
+                                            <input type="checkbox" class="form-check-input media-select" 
+                                                   value="{{ $item->id }}" style="background-color: white;">
+                                        </div>
+                                        
+                                        <!-- Public/Private indicator -->
+                                        <div class="position-absolute top-0 end-0 m-2">
+                                            @if($item->is_public)
+                                                <span class="badge bg-success bg-opacity-90">Public</span>
+                                            @else
+                                                <span class="badge bg-warning bg-opacity-90">Private</span>
+                                            @endif
+                                        </div>
+                                        
+                                        <!-- File type indicator -->
+                                        <div class="position-absolute bottom-0 end-0 m-2">
+                                            <span class="badge bg-dark bg-opacity-75 text-white">
+                                                {{ strtoupper($item->extension) }}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="card-body p-2">
-                                    <h6 class="card-title text-truncate" title="{{ $item->name }}">
-                                        {{ $item->name }}
-                                    </h6>
-                                    <p class="card-text small text-muted mb-1">
-                                        {{ $item->human_size }}
-                                        @if($item->isImage() && $item->width && $item->height)
-                                            • {{ $item->width }}×{{ $item->height }}
+                                    
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title text-truncate mb-2" title="{{ $item->name }}" style="font-size: 0.9rem;">
+                                            {{ $item->name }}
+                                        </h6>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <small class="text-muted">
+                                                {{ $item->human_size }}
+                                            </small>
+                                            @if($item->isImage() && $item->width && $item->height)
+                                                <small class="text-muted">
+                                                    {{ $item->width }}×{{ $item->height }}
+                                                </small>
+                                            @endif
+                                        </div>
+                                        
+                                        @if($item->category)
+                                            <div class="mb-2">
+                                                <span class="badge bg-secondary bg-opacity-75">{{ ucfirst($item->category) }}</span>
+                                            </div>
                                         @endif
-                                    </p>
-                                    @if($item->category)
-                                        <span class="badge bg-secondary">{{ ucfirst($item->category) }}</span>
-                                    @endif
-                                </div>
-                                
-                                <div class="card-footer p-2">
-                                    <div class="btn-group w-100" role="group">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                onclick="viewMedia({{ $item->id }})" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" 
-                                                onclick="editMedia({{ $item->id }})" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                onclick="deleteMedia({{ $item->id }})" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        
+                                        <div class="text-muted small">
+                                            <i class="fas fa-user me-1"></i>
+                                            {{ $item->uploader->name ?? 'Unknown' }}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-footer bg-transparent border-0 p-3 pt-0">
+                                        <div class="btn-group w-100" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    onclick="viewMedia({{ $item->id }})" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="editMedia({{ $item->id }})" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="deleteMedia({{ $item->id }})" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
 
                 <!-- Pagination -->
@@ -291,6 +325,76 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    .media-item {
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .media-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .media-item .card {
+        transition: box-shadow 0.2s ease-in-out;
+    }
+    
+    .media-item:hover .card {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .media-select {
+        transform: scale(1.2);
+    }
+    
+    .media-select:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    #media-grid .card-img-top {
+        border-radius: 0.375rem 0.375rem 0 0;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+    
+    .btn-group .btn {
+        border-radius: 0;
+    }
+    
+    .btn-group .btn:first-child {
+        border-top-left-radius: 0.375rem;
+        border-bottom-left-radius: 0.375rem;
+    }
+    
+    .btn-group .btn:last-child {
+        border-top-right-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+    }
+    
+    .btn-group .btn:not(:first-child):not(:last-child) {
+        border-radius: 0;
+    }
+    
+    /* Responsive grid adjustments */
+    @media (max-width: 576px) {
+        .col-12 {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    @media (min-width: 1200px) {
+        .col-xl-2 {
+            flex: 0 0 16.666667%;
+            max-width: 16.666667%;
+        }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
