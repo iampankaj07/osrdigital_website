@@ -21,6 +21,20 @@ class NewsSeeder extends Seeder
         $technologyCategory = NewsCategory::where('slug', 'technology')->first();
         $awardsCategory = NewsCategory::where('slug', 'awards-recognition')->first();
 
+        // Check if required categories exist
+        if (!$companyCategory) {
+            $this->command->error('Company News category not found. Please run NewsCategorySeeder first.');
+            return;
+        }
+        if (!$partnershipCategory) {
+            $this->command->error('Partnerships category not found. Please run NewsCategorySeeder first.');
+            return;
+        }
+        if (!$industryCategory) {
+            $this->command->error('Industry Insights category not found. Please run NewsCategorySeeder first.');
+            return;
+        }
+
         $newsArticles = [
             [
                 'title' => 'OSR Digital Media Expands Global Distribution Network',

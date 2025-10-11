@@ -104,7 +104,10 @@ class TeamMemberSeeder extends Seeder
         ];
 
         foreach ($teamMembers as $member) {
-            TeamMember::create($member);
+            TeamMember::updateOrCreate(
+                ['name' => $member['name']], // Find by name
+                $member // Update or create with these values
+            );
         }
     }
 }

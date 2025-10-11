@@ -56,7 +56,10 @@ class ServiceSeeder extends Seeder
         ];
 
         foreach ($services as $service) {
-            Service::create($service);
+            Service::updateOrCreate(
+                ['slug' => $service['slug']], // Find by slug
+                $service // Update or create with these values
+            );
         }
     }
 }
