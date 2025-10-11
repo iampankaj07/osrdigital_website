@@ -1,19 +1,33 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-CCUraJkV.css",
+    "file": "assets/app-hsOSAfM1.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "names": [
       "app.css"
     ]
   },
+  "resources/css/skeleton.css": {
+    "file": "assets/skeleton-BHek77L_.css",
+    "src": "resources/css/skeleton.css",
+    "isEntry": true,
+    "names": [
+      "skeleton.css"
+    ]
+  },
   "resources/js/app.jsx": {
-    "file": "assets/app-BKHlnGR5.js",
+    "file": "assets/app-DAVMb2do.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
     "css": [
-      "assets/app-CCUraJkV.css"
+      "assets/app-hsOSAfM1.css"
     ]
+  },
+  "resources/js/skeleton-loader.js": {
+    "file": "assets/skeleton-loader-GVSN1aIF.js",
+    "name": "skeleton-loader",
+    "src": "resources/js/skeleton-loader.js",
+    "isEntry": true
   }
 }

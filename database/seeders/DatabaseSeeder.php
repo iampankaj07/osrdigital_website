@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             PartnershipBenefitSeeder::class,
             TeamMemberSeeder::class,
             TeamValueSeeder::class,
+            HeroSectionSeeder::class, // Hero sections for all pages
         ]);
     }
 }
