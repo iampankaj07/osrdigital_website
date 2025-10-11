@@ -245,7 +245,7 @@ class FileUploadController extends Controller
             ]);
 
             $validator = \Validator::make($request->all(), [
-                'logo' => 'required|file|mimes:png,svg,jpg,jpeg|max:2048', // 5MB max
+                'logo' => 'required|file|max:2048', // 2MB max
                 'old_file' => 'nullable|string',
             ]);
 

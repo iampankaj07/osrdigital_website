@@ -34,7 +34,7 @@ class ProductionFileUploadController extends Controller
             ]);
 
             $validator = \Validator::make($request->all(), [
-                'logo' => 'required|file|mimes:png,svg,jpg,jpeg|max:2048',
+                'logo' => 'required|file|max:2048',
                 'old_file' => 'nullable|string',
             ]);
 
@@ -74,16 +74,57 @@ class ProductionFileUploadController extends Controller
                     ], 422);
                 }
                 
-                // Additional validation for file content
-                $allowedMimes = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg'];
+                // Enhanced file validation with better MIME type detection
                 $fileMime = $file->getMimeType();
+                $fileExtension = strtolower($file->getClientOriginalExtension());
+                $originalName = $file->getClientOriginalName();
                 
-                if (!in_array($fileMime, $allowedMimes)) {
-                    Log::error('Production invalid file MIME type', [
-                        'expected' => $allowedMimes,
-                        'actual' => $fileMime,
+                // Allowed MIME types and extensions
+                $allowedMimes = [
+                    'image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg',
+                    'image/x-png', 'image/svg', 'application/octet-stream' // Additional MIME types
+                ];
+                $allowedExtensions = ['png', 'svg', 'jpg', 'jpeg'];
+                
+                Log::info('Production file validation details', [
+                    'mime_type' => $fileMime,
+                    'extension' => $fileExtension,
+                    'original_name' => $originalName,
+                    'file_size' => $file->getSize(),
+                    'is_valid' => $file->isValid(),
+                    'error_code' => $file->getError()
+                ]);
+                
+                // Check MIME type and extension
+                $mimeValid = in_array($fileMime, $allowedMimes);
+                $extensionValid = in_array($fileExtension, $allowedExtensions);
+                
+                // Additional check using file content for images
+                $isImage = false;
+                try {
+                    $fileContent = file_get_contents($file->getPathname());
+                    $imageInfo = getimagesize($file->getPathname());
+                    $isImage = $imageInfo !== false;
+                    
+                    Log::info('Production image content validation', [
+                        'is_image' => $isImage,
+                        'image_info' => $imageInfo,
+                        'file_content_size' => strlen($fileContent)
+                    ]);
+                } catch (\Exception $e) {
+                    Log::warning('Production image content validation failed', ['error' => $e->getMessage()]);
+                }
+                
+                // Accept file if MIME type OR extension OR image content is valid
+                if (!$mimeValid && !$extensionValid && !$isImage) {
+                    Log::error('Production file validation failed', [
+                        'mime_type' => $fileMime,
+                        'extension' => $fileExtension,
+                        'is_image' => $isImage,
+                        'allowed_mimes' => $allowedMimes,
+                        'allowed_extensions' => $allowedExtensions,
                         'file_size' => $file->getSize(),
-                        'original_name' => $file->getClientOriginalName()
+                        'original_name' => $originalName
                     ]);
                     
                     return response()->json([
@@ -92,6 +133,13 @@ class ProductionFileUploadController extends Controller
                         'errors' => ['logo' => ['Invalid file type. Please upload a PNG, SVG, JPG, or JPEG image.']]
                     ], 422);
                 }
+                
+                Log::info('Production file validation passed', [
+                    'mime_valid' => $mimeValid,
+                    'extension_valid' => $extensionValid,
+                    'is_image' => $isImage,
+                    'final_decision' => 'accepted'
+                ]);
                 
                 // Delete old file if provided
                 if ($request->filled('old_file')) {
