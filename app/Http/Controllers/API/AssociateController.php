@@ -15,9 +15,46 @@ class AssociateController extends Controller
     {
         $associates = Associate::active()->ordered()->get();
 
+        // Transform the data to include proper logo URLs
+        $transformedAssociates = $associates->map(function ($associate) {
+            return [
+                'id' => $associate->id,
+                'name' => $associate->name,
+                'logo' => $associate->frontend_logo_url,
+                'website' => $associate->website,
+                'is_active' => $associate->is_active,
+                'sort_order' => $associate->sort_order,
+            ];
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $associates
+            'data' => $transformedAssociates
+        ]);
+    }
+
+    /**
+     * Get associates by type
+     */
+    public function getByType($type)
+    {
+        $associates = Associate::active()->ordered()->get();
+
+        // Transform the data to include proper logo URLs
+        $transformedAssociates = $associates->map(function ($associate) {
+            return [
+                'id' => $associate->id,
+                'name' => $associate->name,
+                'logo' => $associate->frontend_logo_url,
+                'website' => $associate->website,
+                'is_active' => $associate->is_active,
+                'sort_order' => $associate->sort_order,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $transformedAssociates
         ]);
     }
 

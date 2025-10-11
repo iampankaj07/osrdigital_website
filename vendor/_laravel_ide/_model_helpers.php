@@ -334,6 +334,9 @@ namespace App\Models {
      * @property string|null $logo
      * @property string $name
      * @property int $id
+     * @property-read mixed $logo_url
+     * @property-read mixed $admin_logo_url
+     * @property-read mixed $frontend_logo_url
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereLogo($value)

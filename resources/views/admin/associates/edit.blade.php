@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load existing image if available
     @if($associate->logo)
-        pond.addFile('{{ $associate->logo }}');
+        pond.addFile('{{ $associate->logo_url }}');
     @endif
 
     // Add clear all files functionality
