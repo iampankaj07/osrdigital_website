@@ -456,7 +456,7 @@ background-color: rgba(255, 255, 255, 0.98);
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js" defer></script>
     
     <!-- Load Vite-built JS -->
-    @vite(['resources/js/app.js', 'resources/js/skeleton-loader.js'])
+    @vite(['resources/js/app.jsx', 'resources/js/skeleton-loader.js'])
     
     @yield('scripts')
 </body>
