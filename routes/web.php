@@ -20,6 +20,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/upload/associate-image-cloud', [App\Http\Controllers\Admin\CloudFileUploadController::class, 'uploadAssociateImage']);
     Route::post('/upload/associate-image-production', [App\Http\Controllers\Admin\ProductionFileUploadController::class, 'uploadAssociateImage']);
     Route::get('/debug/cloud-storage', [App\Http\Controllers\Admin\CloudDebugController::class, 'debugStorage']);
+    Route::get('/debug/image-serving', [App\Http\Controllers\ImageTestController::class, 'testImageServing']);
+    Route::get('/test-image/{filename}', [App\Http\Controllers\ImageTestController::class, 'serveTestImage']);
     Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
     Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
     Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
@@ -43,6 +45,10 @@ Route::get('/images/{path}', [ImageController::class, 'serve'])->where('path', '
 Route::get('/images/optimized/{width}x{height}/{path}', [ImageController::class, 'optimized'])->where('path', '.*');
 Route::get('/placeholder/{width}x{height}', [ImageController::class, 'placeholder'])->where(['width' => '[0-9]+', 'height' => '[0-9]+']);
 Route::get('/api/images/{path}/info', [ImageController::class, 'info'])->where('path', '.*');
+
+// Public image testing endpoints
+Route::get('/public-debug/image-serving', [App\Http\Controllers\PublicImageTestController::class, 'testImageServing']);
+Route::get('/public-test-image/{filename}', [App\Http\Controllers\PublicImageTestController::class, 'serveTestImage']);
 
 Route::get('/news/{slug}', function ($slug) {
     // If you want Laravel to handle individual news items, keep this
