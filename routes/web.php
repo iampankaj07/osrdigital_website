@@ -50,6 +50,31 @@ Route::get('/api/images/{path}/info', [ImageController::class, 'info'])->where('
 Route::get('/public-debug/image-serving', [App\Http\Controllers\PublicImageTestController::class, 'testImageServing']);
 Route::get('/public-test-image/{filename}', [App\Http\Controllers\PublicImageTestController::class, 'serveTestImage']);
 
+// Simple debug endpoint for Laravel Cloud
+Route::get('/debug-storage', function() {
+    $associatesPath = storage_path('app/public/associates');
+    $files = [];
+    
+    if (is_dir($associatesPath)) {
+        $files = array_map(function($file) {
+            return [
+                'name' => basename($file),
+                'path' => $file,
+                'size' => filesize($file),
+                'modified' => filemtime($file)
+            ];
+        }, glob($associatesPath . '/*'));
+    }
+    
+    return response()->json([
+        'associates_path' => $associatesPath,
+        'exists' => is_dir($associatesPath),
+        'files' => $files,
+        'test_file' => '60fb5eec-00e1-4742-9eb2-ba5fb93c7ec3.png',
+        'test_exists' => file_exists($associatesPath . '/60fb5eec-00e1-4742-9eb2-ba5fb93c7ec3.png')
+    ]);
+});
+
 Route::get('/news/{slug}', function ($slug) {
     // If you want Laravel to handle individual news items, keep this
     // Otherwise, let React handle it and remove this route
