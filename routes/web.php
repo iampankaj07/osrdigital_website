@@ -18,6 +18,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/upload/general-favicon', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralFavicon']);
     Route::post('/upload/associate-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadAssociateImage']);
     Route::post('/upload/associate-image-cloud', [App\Http\Controllers\Admin\CloudFileUploadController::class, 'uploadAssociateImage']);
+    Route::post('/upload/associate-image-production', [App\Http\Controllers\Admin\ProductionFileUploadController::class, 'uploadAssociateImage']);
     Route::get('/debug/cloud-storage', [App\Http\Controllers\Admin\CloudDebugController::class, 'debugStorage']);
     Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
     Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
