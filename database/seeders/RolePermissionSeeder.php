@@ -69,6 +69,14 @@ class RolePermissionSeeder extends Seeder
             'delete-permissions',
             'assign-roles',
             'assign-permissions',
+            
+            // Media Library permissions
+            'view-media',
+            'create-media',
+            'edit-media',
+            'delete-media',
+            'upload-media',
+            'manage-media',
         ];
 
         foreach ($permissions as $permission) {
@@ -118,6 +126,12 @@ class RolePermissionSeeder extends Seeder
             'view-users',
             'view-roles',
             'view-permissions',
+            'view-media',
+            'create-media',
+            'edit-media',
+            'delete-media',
+            'upload-media',
+            'manage-media',
         ]);
 
         $editorRole->givePermissionTo([
@@ -138,6 +152,10 @@ class RolePermissionSeeder extends Seeder
             'delete-partners',
             'view-contact',
             'edit-contact',
+            'view-media',
+            'create-media',
+            'edit-media',
+            'upload-media',
         ]);
 
         $viewerRole->givePermissionTo([
@@ -152,6 +170,7 @@ class RolePermissionSeeder extends Seeder
             'view-users',
             'view-roles',
             'view-permissions',
+            'view-media',
         ]);
 
         // Assign roles to existing users

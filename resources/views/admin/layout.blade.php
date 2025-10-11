@@ -352,6 +352,11 @@ background-color: rgba(255, 255, 255, 0.98);
                     <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">SYSTEM</h3>
                 </div>
                 
+                <a href="{{ route('admin.media.index') }}" class="flex items-center px-6 py-3 text-white nav-item {{ request()->routeIs('admin.media*') ? 'nav-item-active text-purple-400' : '' }}">
+                    <i class="fas fa-images w-5 h-5 mr-3"></i>
+                    Media Library
+                </a>
+                
                 <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 text-white nav-item {{ request()->routeIs('admin.settings*') ? 'nav-item-active text-purple-400' : '' }}">
                     <i class="fas fa-cog w-5 h-5 mr-3"></i>
                     Settings
