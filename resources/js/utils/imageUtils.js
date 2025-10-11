@@ -269,6 +269,31 @@ export const validateImageFile = (file, options = {}) => {
     };
 };
 
+/**
+ * Handle image error by setting a fallback image
+ * @param {Event} event - Error event
+ * @param {string} text - Text for fallback image
+ * @param {number} width - Image width
+ * @param {number} height - Image height
+ */
+export const handleImageError = (event, text = 'Image', width = 400, height = 300) => {
+    const img = event.target;
+    img.src = getPlaceholderImage(text, width, height);
+    img.onerror = null; // Prevent infinite loop
+};
+
+/**
+ * Handle avatar error by setting a fallback avatar
+ * @param {Event} event - Error event
+ * @param {string} text - Text for fallback avatar
+ * @param {number} size - Avatar size
+ */
+export const handleAvatarError = (event, text = 'Avatar', size = 100) => {
+    const img = event.target;
+    img.src = getPlaceholderImage(text, size, size);
+    img.onerror = null; // Prevent infinite loop
+};
+
 // Export all functions as default object
 export default {
     isPlaceholderImage,

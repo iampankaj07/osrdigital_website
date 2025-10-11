@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ImageHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -59,13 +60,12 @@ class Testimonial extends Model
 
     public function getAvatarUrlAttribute($value)
     {
-        if (!empty($value)) {
-            return $value;
-        }
-
-        // Default avatar based on name initials
-        $initials = strtoupper(substr($this->name, 0, 1));
-        return "https://ui-avatars.com/api/?name={$initials}&background=ec681b&color=fff&size=64";
+        // Use ImageHelper for dynamic image handling
+        return ImageHelper::getContextualImage(
+            $value,
+            'avatar',
+            ['width' => 64, 'height' => 64, 'text' => $this->name]
+        );
     }
 
     public static function getFeaturedTestimonials($limit = 4)
