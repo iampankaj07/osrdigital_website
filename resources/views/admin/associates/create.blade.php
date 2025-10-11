@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         imagePreviewHeight: 200,
         server: {
             process: {
-                url: '/upload/associate-image',
+                url: '{{ app()->environment('production') ? '/upload/associate-image-production' : '/upload/associate-image' }}',
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
