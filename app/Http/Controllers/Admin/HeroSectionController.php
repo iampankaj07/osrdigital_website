@@ -33,7 +33,7 @@ class HeroSectionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'page' => 'required|string|in:home,about,partners,team,news|unique:hero_sections,page',
+            'page' => 'required|string|in:home,about,partners,team,news,portfolio,contact,business|unique:hero_sections,page',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:500',
             'content' => 'required|string',
@@ -80,7 +80,7 @@ class HeroSectionController extends Controller
     public function update(Request $request, HeroSection $heroSection)
     {
         $validator = Validator::make($request->all(), [
-            'page' => 'required|string|in:home,about,partners,team,news|unique:hero_sections,page,' . $heroSection->id,
+            'page' => 'required|string|in:home,about,partners,team,news,portfolio,contact,business|unique:hero_sections,page,' . $heroSection->id,
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:500',
             'content' => 'required|string',
