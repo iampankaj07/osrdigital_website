@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\ImageController;
 
 
 Route::get('/', function () {
@@ -33,6 +34,12 @@ Route::get('/theme-test', function () {
 Route::get('/news', function () {
     return view('app'); // Let React handle this route
 });
+
+// Image serving routes
+Route::get('/images/{path}', [ImageController::class, 'serve'])->where('path', '.*');
+Route::get('/images/optimized/{width}x{height}/{path}', [ImageController::class, 'optimized'])->where('path', '.*');
+Route::get('/placeholder/{width}x{height}', [ImageController::class, 'placeholder'])->where(['width' => '[0-9]+', 'height' => '[0-9]+']);
+Route::get('/api/images/{path}/info', [ImageController::class, 'info'])->where('path', '.*');
 
 Route::get('/news/{slug}', function ($slug) {
     // If you want Laravel to handle individual news items, keep this

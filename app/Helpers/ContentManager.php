@@ -167,12 +167,12 @@ class ContentManager
         $logoPath = $settings[$settingKey] ?? null;
 
         if ($logoPath) {
-            // Check if the path is already a full URL
-            if (filter_var($logoPath, FILTER_VALIDATE_URL)) {
-                return $logoPath;
-            }
-            // Assume it's a storage path
-            return \Illuminate\Support\Facades\Storage::url($logoPath);
+            // Use ImageHelper for dynamic image handling
+            return \App\Helpers\ImageHelper::getContextualImage(
+                $logoPath,
+                'logo',
+                ['width' => 200, 'height' => 100, 'text' => 'Logo']
+            );
         }
 
         // Fallback to default logo if nothing is set

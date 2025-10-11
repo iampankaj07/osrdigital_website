@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ImageHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
@@ -92,18 +93,30 @@ class Portfolio extends Model
 
     public function getImageUrlAttribute($value)
     {
-        // If there's a featured_image, use that with storage URL
-        if (!empty($this->attributes['featured_image'])) {
-            return asset('storage/' . $this->attributes['featured_image']);
-        }
+        // Use ImageHelper for dynamic image handling
+        return ImageHelper::getContextualImage(
+            $this->attributes['featured_image'] ?? $value,
+            'card',
+            ['width' => 400, 'height' => 300, 'text' => 'Portfolio Item']
+        );
+    }
 
-        // Otherwise return the direct image_url if it exists
-        if (!empty($value)) {
-            return $value;
-        }
+    public function getFeaturedImageUrlAttribute()
+    {
+        return ImageHelper::getContextualImage(
+            $this->attributes['featured_image'],
+            'hero',
+            ['width' => 800, 'height' => 600, 'text' => 'Featured Portfolio']
+        );
+    }
 
-        // Default fallback image
-        return 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=800';
+    public function getThumbnailUrlAttribute()
+    {
+        return ImageHelper::getContextualImage(
+            $this->attributes['featured_image'],
+            'thumbnail',
+            ['width' => 300, 'height' => 200, 'text' => 'Portfolio Thumbnail']
+        );
     }
 
     // Cache methods for performance
