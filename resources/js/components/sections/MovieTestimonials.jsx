@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { getSafeImageUrl } from '../../utils/imageUtils';
 
 function MovieTestimonials() {
     const { isDark } = useTheme();
@@ -11,13 +12,24 @@ function MovieTestimonials() {
         const fetchTestimonials = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('/api/testimonials/featured?limit=4');
-                const data = await response.json();
+                setError(null);
                 
-                if (data.success) {
-                    setTestimonials(data.data || []);
+                console.log('Fetching testimonials from API...');
+                const response = await fetch('/api/testimonials/featured?limit=4');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('API Response:', data);
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    console.log('Using API data:', data.data.length, 'testimonials');
+                    setTestimonials(data.data);
                 } else {
-                    setError('Failed to load testimonials');
+                    console.log('API returned no data, using fallback');
+                    setError('No testimonials available');
                     // Use fallback data
                     setTestimonials([
                         {
@@ -26,7 +38,8 @@ function MovieTestimonials() {
                             role: "Producer, Indie Films Co.",
                             company: "Indie Films Co.",
                             content: "Working with OSR Digital has been transformative for our independent films. Their distribution network helped us reach audiences we never thought possible.",
-                            project: "The Last Horizon"
+                            project: "The Last Horizon",
+                            avatar_url: "https://ui-avatars.com/api/?name=S&background=ec681b&color=fff&size=64"
                         },
                         {
                             id: 2,
@@ -34,7 +47,8 @@ function MovieTestimonials() {
                             role: "Director, Creative Studios",
                             company: "Creative Studios",
                             content: "The marketing strategy they developed for our documentary was brilliant. We saw a 300% increase in viewership across all platforms.",
-                            project: "Rising Stars"
+                            project: "Rising Stars",
+                            avatar_url: "https://ui-avatars.com/api/?name=M&background=ec681b&color=fff&size=64"
                         },
                         {
                             id: 3,
@@ -42,7 +56,8 @@ function MovieTestimonials() {
                             role: "Executive Producer, Global Media",
                             company: "Global Media",
                             content: "OSR Digital's approach to content acquisition and distribution is both strategic and creative. They've helped us build a strong presence in new markets.",
-                            project: "Digital Dreams"
+                            project: "Digital Dreams",
+                            avatar_url: "https://ui-avatars.com/api/?name=E&background=ec681b&color=fff&size=64"
                         },
                         {
                             id: 4,
@@ -50,13 +65,53 @@ function MovieTestimonials() {
                             role: "Founder, New Wave Cinema",
                             company: "New Wave Cinema",
                             content: "Their team's passion for storytelling and commitment to quality distribution is evident in everything they do. Highly recommended.",
-                            project: "Urban Legends"
+                            project: "Urban Legends",
+                            avatar_url: "https://ui-avatars.com/api/?name=D&background=ec681b&color=fff&size=64"
                         }
                     ]);
                 }
             } catch (err) {
-                setError('Failed to load testimonials');
                 console.error('Error fetching testimonials:', err);
+                setError(`Failed to load testimonials: ${err.message}`);
+                // Still show fallback data even on error
+                setTestimonials([
+                    {
+                        id: 1,
+                        name: "Sarah Chen",
+                        role: "Producer, Indie Films Co.",
+                        company: "Indie Films Co.",
+                        content: "Working with OSR Digital has been transformative for our independent films. Their distribution network helped us reach audiences we never thought possible.",
+                        project: "The Last Horizon",
+                        avatar_url: "https://ui-avatars.com/api/?name=S&background=ec681b&color=fff&size=64"
+                    },
+                    {
+                        id: 2,
+                        name: "Michael Rodriguez",
+                        role: "Director, Creative Studios",
+                        company: "Creative Studios",
+                        content: "The marketing strategy they developed for our documentary was brilliant. We saw a 300% increase in viewership across all platforms.",
+                        project: "Rising Stars",
+                        avatar_url: "https://ui-avatars.com/api/?name=M&background=ec681b&color=fff&size=64"
+                    },
+                    {
+                        id: 3,
+                        name: "Emma Thompson",
+                        role: "Executive Producer, Global Media",
+                        company: "Global Media",
+                        content: "OSR Digital's approach to content acquisition and distribution is both strategic and creative. They've helped us build a strong presence in new markets.",
+                        project: "Digital Dreams",
+                        avatar_url: "https://ui-avatars.com/api/?name=E&background=ec681b&color=fff&size=64"
+                    },
+                    {
+                        id: 4,
+                        name: "David Park",
+                        role: "Founder, New Wave Cinema",
+                        company: "New Wave Cinema",
+                        content: "Their team's passion for storytelling and commitment to quality distribution is evident in everything they do. Highly recommended.",
+                        project: "Urban Legends",
+                        avatar_url: "https://ui-avatars.com/api/?name=D&background=ec681b&color=fff&size=64"
+                    }
+                ]);
             } finally {
                 setLoading(false);
             }
@@ -169,7 +224,7 @@ function MovieTestimonials() {
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 mr-4">
                                     <img 
-                                        src={testimonial.avatar_url} 
+                                        src={getSafeImageUrl(testimonial.avatar_url, testimonial.name, 64, 64)} 
                                         alt={testimonial.name}
                                         className="w-12 h-12 rounded-full object-cover"
                                     />
