@@ -1,12 +1,28 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TeamController;
 
 
 Route::get('/', function () {
     return view('app'); // This should load your React app
 });
+
+// File upload routes for FilePond
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::post('/admin/film-portfolios/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmImage'])->name('admin.film-portfolios.upload');
+    Route::post('/admin/testimonials/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialAvatar'])->name('admin.testimonials.upload');
+    Route::post('/upload/general-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralLogo']);
+    Route::post('/upload/general-favicon', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralFavicon']);
+    Route::post('/upload/associate-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadAssociateImage']);
+    Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
+    Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
+    Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
+    Route::post('/upload/testimonial-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialImage']);
+    Route::post('/upload/news-featured-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadNewsFeaturedImage']);
+});
+
 
 // Theme Settings Test Route (for development)
 Route::get('/theme-test', function () {
@@ -32,48 +48,33 @@ Route::get('/news/{slug}', function ($slug) {
     return view('news.show', compact('news'));
 });
 
-// API Routes for React (add these as you develop features)
+// API Routes for React - Unified Content Management
+use App\Http\Controllers\API\ContentController;
+
 Route::prefix('api')->group(function () {
+    
+    // Unified content API - get all content in one call
+    Route::get('/content', [ContentController::class, 'getAllContent']);
+    
+    // Individual content endpoints
+    Route::get('/pages/{slug}', [ContentController::class, 'getPage']);
+    Route::get('/settings/{key}', [ContentController::class, 'getSetting']);
+    Route::get('/settings', [ContentController::class, 'getAllSettings']);
+    
+    // Legacy endpoints for backward compatibility
     Route::get('/featured-content', function () {
-        return response()->json(\App\Models\Portfolio::published()->featured()->limit(6)->get()->map(function($item) {
-            return [
-                'id' => $item->id,
-                'slug' => $item->slug,
-                'title' => $item->title,
-                'type' => ucfirst($item->type),
-                'views' => number_format($item->views) . ' views',
-                'image' => $item->image_url, // This will use the accessor we created
-                'category' => $item->category,
-                'description' => $item->description
-            ];
-        }));
+        $content = \App\Helpers\ContentManager::getAllContent();
+        return response()->json($content['portfolio']['featured']);
     });
 
     Route::get('/stats', function () {
-        return response()->json([
-            ['number' => '500+', 'label' => 'Movies Published', 'icon' => '🎬'],
-            ['number' => '2,000+', 'label' => 'Songs Released', 'icon' => '🎵'],
-            ['number' => '800+', 'label' => 'Short Films', 'icon' => '🎥'],
-            ['number' => '50M+', 'label' => 'Total Views', 'icon' => '👁️']
-        ]);
+        $content = \App\Helpers\ContentManager::getAllContent();
+        return response()->json($content['stats']);
     });
 
-    // Portfolio API
     Route::get('/portfolio', function () {
-        return response()->json(\App\Models\Portfolio::published()->orderBy('created_at', 'desc')->get()->map(function($item) {
-            return [
-                'id' => $item->id,
-                'slug' => $item->slug,
-                'title' => $item->title,
-                'description' => strip_tags($item->description),
-                'type' => $item->type,
-                'category' => $item->category,
-                'views' => $item->views,
-                'image' => $item->image_url, // This will use the accessor we created
-                'is_featured' => $item->is_featured,
-                'created_at' => $item->created_at,
-            ];
-        }));
+        $content = \App\Helpers\ContentManager::getAllContent();
+        return response()->json($content['portfolio']['all']);
     });
 
     Route::get('/portfolio/{slug}', function ($slug) {
@@ -92,7 +93,7 @@ Route::prefix('api')->group(function () {
             'slug' => $portfolio->slug,
             'description' => $portfolio->description,
             'content' => $portfolio->content,
-            'image' => $portfolio->image_url, // This will use the accessor we created
+            'image' => $portfolio->image_url,
             'video_url' => $portfolio->video_url,
             'type' => $portfolio->type,
             'category' => $portfolio->category,
@@ -105,27 +106,14 @@ Route::prefix('api')->group(function () {
         ]);
     });
 
-    // Partners API
     Route::get('/partners', function () {
-        return response()->json(\App\Models\Partner::active()->get());
+        $content = \App\Helpers\ContentManager::getAllContent();
+        return response()->json($content['partners']);
     });
 
-    // Teams API
     Route::get('/team', function () {
-        return response()->json(\App\Models\Team::active()->ordered()->get()->map(function($team) {
-            return [
-                'id' => $team->id,
-                'name' => $team->name,
-                'slug' => $team->slug,
-                'position' => $team->position,
-                'description' => $team->description,
-                'email' => $team->email,
-                'phone' => $team->phone,
-                'image' => $team->image_url,
-                'social_links' => $team->social_links,
-                'sort_order' => $team->sort_order,
-            ];
-        }));
+        $content = \App\Helpers\ContentManager::getAllContent();
+        return response()->json($content['team']);
     });
 
     Route::get('/team/{slug}', function ($slug) {
@@ -148,25 +136,9 @@ Route::prefix('api')->group(function () {
         ]);
     });
 
-    // News API
-    Route::get('/news', function () {
-        return response()->json(\App\Models\News::published()->recent()->get());
-    });
-
-    // Single News Post API
-    Route::get('/news/{slug}', function ($slug) {
-        $news = \App\Models\News::where('slug', $slug)->where('status', 'published')->where('published_at', '<=', now())->first();
-        if (!$news) {
-            return response()->json(['error' => 'News post not found'], 404);
-        }
-        // Optionally increment view count
-        $news->increment('views');
-        return response()->json($news);
-    });
 
     // Contact form submission
     Route::post('/contact', function (Illuminate\Http\Request $request) {
-        // Validate the request
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -177,7 +149,6 @@ Route::prefix('api')->group(function () {
         ]);
 
         try {
-            // Send email directly using Laravel Mail
             \Illuminate\Support\Facades\Mail::to(config('mail.from.address'))
                 ->send(new \App\Mail\ContactFormSubmission($validated));
 
@@ -197,66 +168,45 @@ Route::prefix('api')->group(function () {
 
     // Logo API
     Route::get('/logo/{type?}', function ($type = 'default') {
-        // Always use static logo for cloud deployment reliability
-        if (file_exists(public_path('images/logo.png'))) {
-            $url = asset('images/logo.png');
-            $filename = 'logo.png';
-        } else {
-            // Fallback to database settings if static file doesn't exist
-            $settingKeyMap = [
-                'default' => 'site_logo',
-                'seeklogo' => 'site_logo',
-                'main' => 'site_logo',
-                'dark' => 'logo_dark',
-                'mobile' => 'logo_mobile',
-                'admin' => 'logo_admin',
-                'light' => 'logo_light',
-                'footer' => 'logo_footer',
-                'email' => 'logo_email'
-            ];
-
-            $settingKey = $settingKeyMap[$type] ?? 'site_logo';
-            $logoPath = \App\Helpers\SettingsHelper::get($settingKey);
-
-            if ($logoPath) {
-                $url = \Illuminate\Support\Facades\Storage::url($logoPath);
-                $filename = basename($logoPath);
-            } else {
-                // Fallback to default logo
-                $fallbackFile = 'osrdigital-seeklogo.svg';
-                $url = \Illuminate\Support\Facades\Storage::url('logos/' . $fallbackFile);
-                $filename = $fallbackFile;
-            }
-        }
-
+        $logoUrl = \App\Helpers\ContentManager::getLogoUrl($type);
         return response()->json([
-            'url' => $url,
+            'url' => $logoUrl,
             'type' => $type,
-            'filename' => $filename
+            'filename' => basename($logoUrl)
         ]);
     });
-
-    // Pages API (for dynamic content)
-    Route::get('/pages', function () {
-        return response()->json(\App\Models\Page::published()->get());
-    });
-
-    Route::get('/pages/{slug}', function ($slug) {
-        $page = \App\Models\Page::where('slug', $slug)->where('is_published', true)->first();
-
-        if (!$page) {
-            return response()->json(['error' => 'Page not found'], 404);
-        }
-
-        return response()->json($page);
-    });
-
-    // Settings API
-    Route::get('/settings/flat', function () {
-        $settings = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
-        return response()->json($settings);
-    });
 });
+
+// Authentication routes
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::post('/login', function (Illuminate\Http\Request $request) {
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        return redirect()->intended('/admin');
+    }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+});
+
+Route::post('/logout', function (Illuminate\Http\Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
+
+// Admin routes
+require __DIR__.'/admin.php';
 
 // Catch-all route for React SPA (place this at the end)
 Route::get('/{any}', function () {

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -15,103 +14,162 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         // Create permissions
         $permissions = [
-            // User management
-            'users.view',
-            'users.create',
-            'users.edit',
-            'users.delete',
-
-            // Role management
-            'roles.view',
-            'roles.create',
-            'roles.edit',
-            'roles.delete',
-
-            // Permission management
-            'permissions.view',
-            'permissions.create',
-            'permissions.edit',
-            'permissions.delete',
-
-            // Portfolio management
-            'portfolios.view',
-            'portfolios.create',
-            'portfolios.edit',
-            'portfolios.delete',
-
-            // News management
-            'news.view',
-            'news.create',
-            'news.edit',
-            'news.delete',
-
-            // Pages management
-            'pages.view',
-            'pages.create',
-            'pages.edit',
-            'pages.delete',
-
-            // Partners management
-            'partners.view',
-            'partners.create',
-            'partners.edit',
-            'partners.delete',
-
-            // Contact management
-            'contacts.view',
-            'contacts.edit',
-            'contacts.delete',
+            // Dashboard permissions
+            'view-dashboard',
+            
+            // Settings permissions
+            'view-settings',
+            'create-settings',
+            'edit-settings',
+            'delete-settings',
+            
+            // Navigation permissions
+            'view-navigation',
+            'create-navigation',
+            'edit-navigation',
+            'delete-navigation',
+            
+            // Footer permissions
+            'view-footer',
+            'edit-footer',
+            
+            // Home page permissions
+            'view-home-page',
+            'edit-home-page',
+            
+            // Content permissions
+            'view-business',
+            'edit-business',
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
+            'view-contact',
+            'edit-contact',
+            
+            // User management permissions
+            'view-users',
+            'create-users',
+            'edit-users',
+            'delete-users',
+            
+            // Role & Permission management
+            'view-roles',
+            'create-roles',
+            'edit-roles',
+            'delete-roles',
+            'view-permissions',
+            'create-permissions',
+            'edit-permissions',
+            'delete-permissions',
+            'assign-roles',
+            'assign-permissions',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::create(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // Create roles
-        $superAdminRole = Role::firstOrCreate(['name' => 'Super Admin']);
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        $editorRole = Role::firstOrCreate(['name' => 'Editor']);
-        $viewerRole = Role::firstOrCreate(['name' => 'Viewer']);
+        $superAdminRole = Role::create([
+            'name' => 'Super Admin',
+            'description' => 'Full access to all features and settings',
+            'guard_name' => 'web'
+        ]);
+
+        $adminRole = Role::create([
+            'name' => 'Admin',
+            'description' => 'Administrative access to most features',
+            'guard_name' => 'web'
+        ]);
+
+        $editorRole = Role::create([
+            'name' => 'Editor',
+            'description' => 'Can edit content but not manage users or system settings',
+            'guard_name' => 'web'
+        ]);
+
+        $viewerRole = Role::create([
+            'name' => 'Viewer',
+            'description' => 'Read-only access to the admin panel',
+            'guard_name' => 'web'
+        ]);
 
         // Assign permissions to roles
         $superAdminRole->givePermissionTo(Permission::all());
 
         $adminRole->givePermissionTo([
-            'users.view', 'users.create', 'users.edit',
-            'portfolios.view', 'portfolios.create', 'portfolios.edit', 'portfolios.delete',
-            'news.view', 'news.create', 'news.edit', 'news.delete',
-            'pages.view', 'pages.create', 'pages.edit', 'pages.delete',
-            'partners.view', 'partners.create', 'partners.edit', 'partners.delete',
-            'contacts.view', 'contacts.edit', 'contacts.delete',
+            'view-dashboard',
+            'view-settings',
+            'edit-settings',
+            'view-navigation',
+            'create-navigation',
+            'edit-navigation',
+            'delete-navigation',
+            'view-footer',
+            'edit-footer',
+            'view-home-page',
+            'edit-home-page',
+            'view-business',
+            'edit-business',
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
+            'view-contact',
+            'edit-contact',
+            'view-users',
+            'view-roles',
+            'view-permissions',
         ]);
 
         $editorRole->givePermissionTo([
-            'portfolios.view', 'portfolios.create', 'portfolios.edit',
-            'news.view', 'news.create', 'news.edit',
-            'pages.view', 'pages.create', 'pages.edit',
-            'partners.view', 'partners.create', 'partners.edit',
-            'contacts.view',
+            'view-dashboard',
+            'view-navigation',
+            'create-navigation',
+            'edit-navigation',
+            'delete-navigation',
+            'view-footer',
+            'edit-footer',
+            'view-home-page',
+            'edit-home-page',
+            'view-business',
+            'edit-business',
+            'view-partners',
+            'create-partners',
+            'edit-partners',
+            'delete-partners',
+            'view-contact',
+            'edit-contact',
         ]);
 
         $viewerRole->givePermissionTo([
-            'portfolios.view',
-            'news.view',
-            'pages.view',
-            'partners.view',
-            'contacts.view',
+            'view-dashboard',
+            'view-settings',
+            'view-navigation',
+            'view-footer',
+            'view-home-page',
+            'view-business',
+            'view-partners',
+            'view-contact',
+            'view-users',
+            'view-roles',
+            'view-permissions',
         ]);
 
-        // Create default admin user and assign super admin role
-        $adminUser = User::firstOrCreate(
-            ['email' => 'admin@osr.com'],
-            [
-                'name' => 'Super Admin',
-                'password' => bcrypt('password'),
-            ]
-        );
-
-        $adminUser->assignRole('Super Admin');
+        // Assign roles to existing users
+        $users = User::all();
+        foreach ($users as $user) {
+            if ($user->email === 'admin@osrdigital.com') {
+                $user->assignRole('Super Admin');
+            } else {
+                $user->assignRole('Admin');
+            }
+        }
     }
 }

@@ -1,0 +1,218 @@
+import { useState, useEffect } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
+
+function MovieTestimonials() {
+    const { isDark } = useTheme();
+    const [testimonials, setTestimonials] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchTestimonials = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/testimonials/featured?limit=4');
+                const data = await response.json();
+                
+                if (data.success) {
+                    setTestimonials(data.data || []);
+                } else {
+                    setError('Failed to load testimonials');
+                    // Use fallback data
+                    setTestimonials([
+                        {
+                            id: 1,
+                            name: "Sarah Chen",
+                            role: "Producer, Indie Films Co.",
+                            company: "Indie Films Co.",
+                            content: "Working with OSR Digital has been transformative for our independent films. Their distribution network helped us reach audiences we never thought possible.",
+                            project: "The Last Horizon"
+                        },
+                        {
+                            id: 2,
+                            name: "Michael Rodriguez",
+                            role: "Director, Creative Studios",
+                            company: "Creative Studios",
+                            content: "The marketing strategy they developed for our documentary was brilliant. We saw a 300% increase in viewership across all platforms.",
+                            project: "Rising Stars"
+                        },
+                        {
+                            id: 3,
+                            name: "Emma Thompson",
+                            role: "Executive Producer, Global Media",
+                            company: "Global Media",
+                            content: "OSR Digital's approach to content acquisition and distribution is both strategic and creative. They've helped us build a strong presence in new markets.",
+                            project: "Digital Dreams"
+                        },
+                        {
+                            id: 4,
+                            name: "David Park",
+                            role: "Founder, New Wave Cinema",
+                            company: "New Wave Cinema",
+                            content: "Their team's passion for storytelling and commitment to quality distribution is evident in everything they do. Highly recommended.",
+                            project: "Urban Legends"
+                        }
+                    ]);
+                }
+            } catch (err) {
+                setError('Failed to load testimonials');
+                console.error('Error fetching testimonials:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTestimonials();
+    }, []);
+
+    if (loading) {
+        return (
+            <section className={`section-minimal ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                <div className="container-minimal">
+                    <div className="text-center mb-16">
+                        <h2 className={`text-3xl md:text-4xl font-bold mb-6 text-minimal-bold ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            What Our Partners Say
+                        </h2>
+                        <p className={`text-lg max-w-3xl mx-auto text-minimal ${
+                            isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
+                            Loading testimonials...
+                        </p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className={`section-minimal ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                <div className="container-minimal">
+                    <div className="text-center mb-16">
+                        <h2 className={`text-3xl md:text-4xl font-bold mb-6 text-minimal-bold ${
+                            isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
+                            What Our Partners Say
+                        </h2>
+                        <p className={`text-lg max-w-3xl mx-auto text-minimal ${
+                            isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
+                            {error}
+                        </p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    return (
+        <section className={`section-minimal ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <div className="container-minimal">
+                {/* Header */}
+                <div className="text-center mb-16">
+                    <h2 className={`text-3xl md:text-4xl font-bold mb-6 text-minimal-bold ${
+                        isDark ? 'text-white' : 'text-gray-900'
+                    }`}>
+                        What Our Partners Say
+                    </h2>
+                    <p className={`text-lg max-w-3xl mx-auto text-minimal ${
+                        isDark ? 'text-gray-300' : 'text-gray-600'
+                    }`}>
+                        Hear from filmmakers, producers, and industry professionals who have 
+                        experienced the OSR Digital difference.
+                    </p>
+                </div>
+
+                {/* Testimonials Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {testimonials.map((testimonial, index) => (
+                        <div
+                            key={testimonial.id}
+                            className={`p-6 rounded-xl transition-all duration-200 hover-subtle ${
+                                isDark 
+                                    ? 'card-minimal-dark hover:border-brand-orange-500/30' 
+                                    : 'card-minimal hover:border-brand-orange-200'
+                            }`}
+                        >
+                            {/* Quote Icon */}
+                            <div className="mb-4">
+                                <svg className={`w-8 h-8 ${
+                                    isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'
+                                }`} fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
+                                </svg>
+                            </div>
+
+                            {/* Testimonial Content */}
+                            <blockquote className={`text-base leading-relaxed mb-6 text-minimal ${
+                                isDark ? 'text-gray-300' : 'text-gray-700'
+                            }`}>
+                                "{testimonial.content}"
+                            </blockquote>
+
+                            {/* Project Badge */}
+                            {testimonial.project && (
+                                <div className="mb-4">
+                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                                        isDark 
+                                            ? 'bg-brand-orange-500/20 text-brand-orange-400' 
+                                            : 'bg-brand-orange-100 text-brand-orange-600'
+                                    }`}>
+                                        {testimonial.project}
+                                    </span>
+                                </div>
+                            )}
+
+                            {/* Author Info */}
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0 mr-4">
+                                    <img 
+                                        src={testimonial.avatar_url} 
+                                        alt={testimonial.name}
+                                        className="w-12 h-12 rounded-full object-cover"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className={`text-lg font-semibold mb-1 text-minimal-bold ${
+                                        isDark ? 'text-white' : 'text-gray-900'
+                                    }`}>
+                                        {testimonial.name}
+                                    </h4>
+                                    <p className={`text-sm font-medium ${
+                                        isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'
+                                    }`}>
+                                        {testimonial.role}
+                                    </p>
+                                    <p className={`text-sm text-minimal ${
+                                        isDark ? 'text-gray-400' : 'text-gray-600'
+                                    }`}>
+                                        {testimonial.company}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* CTA Section */}
+                <div className="text-center mt-16">
+                    <div className={`inline-block px-8 py-4 rounded-lg ${
+                        isDark 
+                            ? 'bg-brand-orange-500/10 border border-brand-orange-500/30' 
+                            : 'bg-brand-orange-50 border border-brand-orange-200'
+                    }`}>
+                        <p className={`text-lg font-semibold ${
+                            isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'
+                        }`}>
+                            Ready to share your story with the world?
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export default MovieTestimonials;

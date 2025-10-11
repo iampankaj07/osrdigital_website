@@ -15,15 +15,21 @@ class DatabaseSeeder extends Seeder
     {
         // Run all seeders
         $this->call([
+            AdminUserSeeder::class,
             RolePermissionSeeder::class,
             PageSeeder::class,
             AboutPageSeeder::class,
             PortfolioSeeder::class,
-            PartnerSeeder::class,
-            PartnerSettingsSeeder::class,
-            BusinessSettingsSeeder::class,
             NewsSeeder::class,
             TeamSeeder::class,
+            DynamicPageSeeder::class,
+            MissionVisionSeeder::class,
+            CoreValueSeeder::class,
+            ServiceSeeder::class,
+            TrustedPartnerSeeder::class,
+            PartnershipBenefitSeeder::class,
+            TeamMemberSeeder::class,
+            TeamValueSeeder::class,
         ]);
     }
 }

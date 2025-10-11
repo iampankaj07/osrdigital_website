@@ -13,12 +13,16 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'check-filament-permissions' => \App\Http\Middleware\CheckFilamentPermissions::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'maintenance' => \App\Http\Middleware\MaintenanceMode::class,
         ]);
 
         $middleware->web(append: [
             \App\Http\Middleware\MaintenanceMode::class,
+        ]);
+
+        $middleware->web(replace: [
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class => \App\Http\Middleware\VerifyCsrfToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

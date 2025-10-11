@@ -1,15 +1,35 @@
+import { useTheme } from '../contexts/ThemeContext';
 import Hero from '../components/sections/Hero';
-import DynamicStats from '../components/sections/DynamicStats';
-import DynamicFeaturedContent from '../components/sections/DynamicFeaturedContent';
-import CallToAction from '../components/sections/CallToAction';
+import ClientLogos from '../components/sections/ClientLogos';
+import DistributionServices from '../components/sections/DistributionServices';
+import MovieStats from '../components/sections/MovieStats';
+import MoviePortfolio from '../components/sections/MoviePortfolio';
+import MovieTestimonials from '../components/sections/MovieTestimonials';
 
 function Home() {
+    const { isDark } = useTheme();
+
     return (
-        <div className="min-h-screen">
+        <div className={`min-h-screen transition-colors duration-300 ${
+            isDark ? 'bg-gray-900' : 'bg-white'
+        }`}>
+            {/* Hero Section with Carousel */}
             <Hero />
-            <DynamicStats />
-            <DynamicFeaturedContent />
-            <CallToAction />
+            
+            {/* Client Logos Section */}
+            <ClientLogos />
+            
+            {/* Distribution Services Section */}
+            <DistributionServices />
+            
+            {/* Statistics Section */}
+            <MovieStats />
+            
+            {/* Movie Portfolio Section */}
+            <MoviePortfolio />
+            
+            {/* Testimonials Section */}
+            <MovieTestimonials />
         </div>
     );
 }

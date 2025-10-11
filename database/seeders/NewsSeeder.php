@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\News;
+use App\Models\NewsCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,13 @@ class NewsSeeder extends Seeder
      */
     public function run(): void
     {
+        // Get category IDs
+        $companyCategory = NewsCategory::where('slug', 'company-news')->first();
+        $partnershipCategory = NewsCategory::where('slug', 'partnerships')->first();
+        $industryCategory = NewsCategory::where('slug', 'industry-insights')->first();
+        $technologyCategory = NewsCategory::where('slug', 'technology')->first();
+        $awardsCategory = NewsCategory::where('slug', 'awards-recognition')->first();
+
         $newsArticles = [
             [
                 'title' => 'OSR Digital Media Expands Global Distribution Network',
@@ -31,6 +39,8 @@ class NewsSeeder extends Seeder
                 'author_name' => 'OSR Digital Team',
                 'tags' => ['expansion', 'global', 'distribution', 'creators'],
                 'status' => 'published',
+                'featured' => true,
+                'category_id' => $companyCategory->id,
             ],
             [
                 'title' => 'New Partnership with Emerging Creators Program',
@@ -49,6 +59,8 @@ class NewsSeeder extends Seeder
                 'author_name' => 'Sarah Martinez',
                 'tags' => ['partnership', 'creators', 'mentorship', 'program'],
                 'status' => 'published',
+                'featured' => false,
+                'category_id' => $partnershipCategory->id,
             ],
             [
                 'title' => 'Industry Report: The Future of Digital Media in 2024',
@@ -67,6 +79,8 @@ class NewsSeeder extends Seeder
                 'author_name' => 'Dr. Michael Chen',
                 'tags' => ['industry', 'report', 'trends', 'digital media', '2024'],
                 'status' => 'published',
+                'featured' => false,
+                'category_id' => $industryCategory->id,
             ],
             [
                 'title' => 'OSR Digital Media Achieves Carbon Neutral Operations',
@@ -87,6 +101,8 @@ class NewsSeeder extends Seeder
                 'author_name' => 'Environmental Team',
                 'tags' => ['sustainability', 'carbon neutral', 'environment', 'renewable energy'],
                 'status' => 'published',
+                'featured' => false,
+                'category_id' => $companyCategory->id,
             ],
             [
                 'title' => 'Upcoming Industry Conference: Digital Media Summit 2024',
@@ -107,6 +123,8 @@ class NewsSeeder extends Seeder
                 'author_name' => 'Events Team',
                 'tags' => ['conference', 'summit', 'industry', 'networking', 'events'],
                 'status' => 'published',
+                'featured' => false,
+                'category_id' => $industryCategory->id,
             ],
         ];
 

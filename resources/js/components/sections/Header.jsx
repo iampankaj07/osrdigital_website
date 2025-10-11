@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAllSettings } from '../../hooks/useSettings';
 import { useTheme } from '../../contexts/ThemeContext';
 import Logo from '../Logo';
 import ThemeToggle from '../ThemeToggle';
@@ -9,17 +8,13 @@ function Header() {
     const location = useLocation();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { getSetting } = useAllSettings();
     const { isDark } = useTheme();
 
     const isActive = (path) => location.pathname === path;
-    const primaryColor = '#ff6b35'; // OSR Digital brand orange
-    // const companyName = getSetting('company_name', 'OSR Digital');
-    const primaryButtonText = getSetting('hero_primary_button_text', 'Partner With Us');
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            setIsScrolled(window.scrollY > 20);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -28,9 +23,7 @@ function Header() {
 
     const navItems = [
         { to: '/', label: 'Home' },
-        { to: '/about', label: 'About Us' },
-        { to: '/business', label: 'Our Business' },
-        { to: '/portfolio', label: 'Portfolio' },
+        { to: '/about', label: 'About' },
         { to: '/partners', label: 'Partners' },
         { to: '/team', label: 'Team' },
         { to: '/news', label: 'News' },
@@ -39,60 +32,44 @@ function Header() {
     return (
         <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
             isScrolled
-                ? `${isDark ? 'bg-gray-900/90 border-b border-gray-700/50' : 'bg-white/90 border-b border-gray-200/50'} backdrop-blur-md`
+                ? `${isDark ? 'bg-gray-900/95 border-b border-gray-800' : 'bg-white/95 border-b border-gray-200'} backdrop-blur-sm`
                 : 'bg-transparent'
         }`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center py-4">
+            <div className="container-minimal">
+                <div className="flex justify-between items-center py-6">
                     {/* Logo */}
                     <div className="flex-shrink-0">
-                        <Link to="/" className="group flex items-center space-x-3">
-                            <div className="w-auto h-10 flex items-center">
-                                <Logo
-                                    type="seeklogo"
-                                    height="40"
-                                    width="auto"
-                                    className="transition-opacity duration-300 group-hover:opacity-80 max-w-[120px]"
-                                />
-                            </div>
-                            <span className={`text-xl lg:text-2xl font-bold group-hover:transition-colors hidden sm:block ${isDark ? 'text-white' : 'text-gray-900'}`}
-                                  style={{ '--hover-color': primaryColor }}
-                                  onMouseEnter={(e) => e.target.style.color = primaryColor}
-                                  onMouseLeave={(e) => e.target.style.color = isDark ? '#ffffff' : '#111827'}>
-                                {/* {companyName} */}
-                            </span>
+                        <Link to="/" className="flex items-center hover-subtle">
+                            <Logo
+                                type="seeklogo"
+                                height="48"
+                                width="auto"
+                                className="transition-all duration-200"
+                            />
                         </Link>
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden lg:block flex-1 max-w-2xl mx-8">
-                        <div className="flex items-center justify-center space-x-1">
+                    <nav className="hidden lg:block">
+                        <div className="flex items-center space-x-10">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.to}
                                     to={item.to}
-                                    className={`relative px-3 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                                    className={`text-base font-medium transition-colors duration-200 hover-subtle ${
                                         isActive(item.to)
                                             ? `${isDark ? 'text-white' : 'text-gray-900'}`
-                                            : `${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`
+                                            : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
                                     }`}
-                                    style={isActive(item.to) ? {
-                                        color: primaryColor,
-                                        backgroundColor: `${primaryColor}10`
-                                    } : {}}
                                 >
                                     {item.label}
-                                    {isActive(item.to) && (
-                                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full"
-                                             style={{ backgroundColor: primaryColor }}></div>
-                                    )}
                                 </Link>
                             ))}
                         </div>
                     </nav>
 
                     {/* Right side items */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-4">
                         {/* Theme Toggle */}
                         <ThemeToggle />
 
@@ -100,14 +77,9 @@ function Header() {
                         <div className="hidden md:block">
                             <Link
                                 to="/contact"
-                                className="text-white px-4 lg:px-6 py-2.5 rounded-lg text-sm font-semibold transition-all hover:opacity-90 flex items-center gap-2 whitespace-nowrap"
-                                style={{ backgroundColor: primaryColor }}
+                                className="btn-minimal text-base px-6 py-3"
                             >
-                                <span className="hidden lg:inline">{primaryButtonText}</span>
-                                <span className="lg:hidden">Contact</span>
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
+                                Contact
                             </Link>
                         </div>
 
@@ -115,9 +87,13 @@ function Header() {
                         <div className="lg:hidden">
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                className={`p-2 rounded-lg transition-colors ${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
+                                className={`p-2 rounded-lg transition-colors duration-200 ${
+                                    isDark 
+                                        ? 'text-gray-400 hover:text-white hover:bg-gray-800' 
+                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                }`}
                             >
-                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     {isMobileMenuOpen ? (
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     ) : (
@@ -131,34 +107,31 @@ function Header() {
 
                 {/* Mobile Navigation */}
                 {isMobileMenuOpen && (
-                    <div className={`lg:hidden border-t ${isDark ? 'border-gray-700/50' : 'border-gray-200/50'}`}>
-                        <div className="px-2 pt-2 pb-3 space-y-1">
+                    <div className={`lg:hidden border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+                        <div className="py-6 space-y-3">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.to}
                                     to={item.to}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
+                                    className={`block px-4 py-4 text-lg font-medium transition-colors duration-200 ${
                                         isActive(item.to)
                                             ? `${isDark ? 'text-white' : 'text-gray-900'}`
-                                            : `${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`
+                                            : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
                                     }`}
-                                    style={isActive(item.to) ? {
-                                        color: primaryColor,
-                                        backgroundColor: `${primaryColor}10`
-                                    } : {}}
                                 >
                                     {item.label}
                                 </Link>
                             ))}
-                            <Link
-                                to="/contact"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="block w-full mt-4 text-white px-3 py-2 rounded-lg text-base font-medium text-center transition-all hover:opacity-90"
-                                style={{ backgroundColor: primaryColor }}
-                            >
-                                {primaryButtonText}
-                            </Link>
+                            <div className="pt-6 px-4">
+                                <Link
+                                    to="/contact"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="btn-minimal w-full text-center text-lg py-4"
+                                >
+                                    Contact
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 )}
