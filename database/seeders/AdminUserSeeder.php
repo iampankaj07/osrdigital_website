@@ -132,8 +132,8 @@ class AdminUserSeeder extends Seeder
             ['name' => 'Super Admin', 'guard_name' => 'web']
         );
 
-        // Create admin user if it doesn't exist
-        $user = User::firstOrCreate(
+        // Create or update admin user
+        $user = User::updateOrCreate(
             ['email' => 'admin@osr.com'],
             [
                 'name' => 'Super Admin',
@@ -165,7 +165,7 @@ class AdminUserSeeder extends Seeder
         ];
 
         foreach ($additionalAdmins as $adminData) {
-            $adminUser = User::firstOrCreate(
+            $adminUser = User::updateOrCreate(
                 ['email' => $adminData['email']],
                 [
                     'name' => $adminData['name'],
