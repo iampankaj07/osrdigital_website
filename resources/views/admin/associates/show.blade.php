@@ -25,13 +25,7 @@
                 <div>
                     <div class="mb-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Logo</h3>
-                        @if($associate->logo)
-                            <img src="{{ $associate->logo }}" alt="{{ $associate->name }}" class="h-24 w-auto object-contain border border-gray-200 rounded-lg p-4">
-                        @else
-                            <div class="h-24 w-32 bg-gradient-to-r from-brand-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                                {{ substr($associate->name, 0, 2) }}
-                            </div>
-                        @endif
+                        <img src="{{ $associate->logo_url }}" alt="{{ $associate->name }}" class="h-24 w-auto object-contain border border-gray-200 rounded-lg p-4">
                     </div>
 
                     <div class="space-y-4">

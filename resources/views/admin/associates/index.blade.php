@@ -50,13 +50,7 @@
                         @foreach($associates as $associate)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($associate->logo)
-                                        <img src="{{ $associate->logo }}" alt="{{ $associate->name }}" class="h-12 w-auto object-contain">
-                                    @else
-                                        <div class="h-12 w-16 bg-gradient-to-r from-brand-orange-500 to-red-600 rounded flex items-center justify-center text-white font-bold text-sm">
-                                            {{ substr($associate->name, 0, 2) }}
-                                        </div>
-                                    @endif
+                                    <img src="{{ $associate->admin_logo_url }}" alt="{{ $associate->name }}" class="h-12 w-auto object-contain">
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $associate->name }}</div>
