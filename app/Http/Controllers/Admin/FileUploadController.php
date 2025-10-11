@@ -315,23 +315,85 @@ class FileUploadController extends Controller
                 
                 $filename = 'associates/' . Str::uuid() . '.' . $file->getClientOriginalExtension();
                 
+                // Ensure the associates directory exists
+                if (!Storage::disk('public')->exists('associates')) {
+                    Storage::disk('public')->makeDirectory('associates');
+                    \Log::info('Created associates directory');
+                }
+                
                 \Log::info('Attempting to store file', [
                     'filename' => $filename,
                     'file_size' => $file->getSize(),
                     'storage_path' => storage_path('app/public'),
-                    'target_path' => storage_path('app/public/' . $filename)
+                    'target_path' => storage_path('app/public/' . $filename),
+                    'associates_dir_exists' => Storage::disk('public')->exists('associates')
                 ]);
                 
-                // Try using Storage::disk('public')->put() instead of storeAs
-                $path = Storage::disk('public')->putFileAs('', $file, $filename);
-                $url = Storage::url($filename);
+                // Store the file with multiple fallback methods
+                $path = null;
+                $url = null;
+                
+                try {
+                    // Method 1: Standard Laravel Storage
+                    $path = Storage::disk('public')->putFileAs('', $file, $filename);
+                    
+                    if ($path && Storage::disk('public')->exists($filename)) {
+                        $url = Storage::url($filename);
+                        \Log::info('File stored using standard method', ['path' => $path, 'url' => $url]);
+                    } else {
+                        throw new \Exception('Standard storage method failed');
+                    }
+                    
+                } catch (\Exception $e) {
+                    \Log::warning('Standard storage failed, trying alternative method', ['error' => $e->getMessage()]);
+                    
+                    try {
+                        // Method 2: Direct file operations
+                        $targetPath = storage_path('app/public/' . $filename);
+                        $targetDir = dirname($targetPath);
+                        
+                        if (!is_dir($targetDir)) {
+                            mkdir($targetDir, 0755, true);
+                        }
+                        
+                        if (move_uploaded_file($file->getPathname(), $targetPath)) {
+                            $path = $filename;
+                            $url = Storage::url($filename);
+                            \Log::info('File stored using direct method', ['path' => $path, 'url' => $url]);
+                        } else {
+                            throw new \Exception('Direct file method failed');
+                        }
+                        
+                    } catch (\Exception $e2) {
+                        \Log::error('All storage methods failed', [
+                            'standard_error' => $e->getMessage(),
+                            'direct_error' => $e2->getMessage(),
+                            'filename' => $filename,
+                            'file_size' => $file->getSize(),
+                            'storage_disk' => config('filesystems.default'),
+                            'storage_path' => storage_path('app/public'),
+                            'permissions' => [
+                                'storage_writable' => is_writable(storage_path('app/public')),
+                                'associates_writable' => is_writable(storage_path('app/public/associates'))
+                            ]
+                        ]);
+                        
+                        throw new \Exception('All storage methods failed: ' . $e2->getMessage());
+                    }
+                }
+                
+                // Final verification
+                if (!$path || !Storage::disk('public')->exists($filename)) {
+                    throw new \Exception('File storage verification failed');
+                }
                 
                 \Log::info('File storage result', [
                     'path' => $path,
                     'url' => $url,
-                    'file_exists' => file_exists(storage_path('app/public/' . $filename)),
+                    'file_exists' => Storage::disk('public')->exists($filename),
                     'storage_exists' => is_dir(storage_path('app/public')),
-                    'associates_dir_exists' => is_dir(storage_path('app/public/associates'))
+                    'associates_dir_exists' => Storage::disk('public')->exists('associates'),
+                    'file_size_stored' => Storage::disk('public')->size($filename)
                 ]);
 
                 \Log::info('Associate image uploaded successfully', [
