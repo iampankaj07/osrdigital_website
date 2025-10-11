@@ -316,9 +316,32 @@ class FileUploadController extends Controller
                 $filename = 'associates/' . Str::uuid() . '.' . $file->getClientOriginalExtension();
                 
                 // Ensure the associates directory exists
-                if (!Storage::disk('public')->exists('associates')) {
-                    Storage::disk('public')->makeDirectory('associates');
-                    \Log::info('Created associates directory');
+                try {
+                    if (!Storage::disk('public')->exists('associates')) {
+                        Storage::disk('public')->makeDirectory('associates');
+                        \Log::info('Created associates directory');
+                    }
+                    
+                    // Verify directory was created and is writable
+                    if (!Storage::disk('public')->exists('associates')) {
+                        throw new \Exception('Failed to create associates directory');
+                    }
+                    
+                    \Log::info('Associates directory verified', [
+                        'exists' => Storage::disk('public')->exists('associates'),
+                        'writable' => is_writable(storage_path('app/public/associates')),
+                        'permissions' => substr(sprintf('%o', fileperms(storage_path('app/public/associates'))), -4)
+                    ]);
+                    
+                } catch (\Exception $dirError) {
+                    \Log::error('Directory creation failed', [
+                        'error' => $dirError->getMessage(),
+                        'storage_path' => storage_path('app/public'),
+                        'associates_path' => storage_path('app/public/associates'),
+                        'storage_exists' => is_dir(storage_path('app/public')),
+                        'storage_writable' => is_writable(storage_path('app/public'))
+                    ]);
+                    throw $dirError;
                 }
                 
                 \Log::info('Attempting to store file', [
@@ -365,26 +388,81 @@ class FileUploadController extends Controller
                         }
                         
                     } catch (\Exception $e2) {
-                        \Log::error('All storage methods failed', [
-                            'standard_error' => $e->getMessage(),
-                            'direct_error' => $e2->getMessage(),
-                            'filename' => $filename,
-                            'file_size' => $file->getSize(),
-                            'storage_disk' => config('filesystems.default'),
-                            'storage_path' => storage_path('app/public'),
-                            'permissions' => [
-                                'storage_writable' => is_writable(storage_path('app/public')),
-                                'associates_writable' => is_writable(storage_path('app/public/associates'))
-                            ]
-                        ]);
+                        \Log::warning('Direct file method failed, trying copy method', ['error' => $e2->getMessage()]);
                         
-                        throw new \Exception('All storage methods failed: ' . $e2->getMessage());
+                        try {
+                            // Method 3: Copy method for cloud environments
+                            $targetPath = storage_path('app/public/' . $filename);
+                            $targetDir = dirname($targetPath);
+                            
+                            if (!is_dir($targetDir)) {
+                                mkdir($targetDir, 0755, true);
+                            }
+                            
+                            if (copy($file->getPathname(), $targetPath)) {
+                                $path = $filename;
+                                $url = Storage::url($filename);
+                                \Log::info('File stored using copy method', ['path' => $path, 'url' => $url]);
+                            } else {
+                                throw new \Exception('Copy method failed');
+                            }
+                            
+                        } catch (\Exception $e3) {
+                            \Log::error('All storage methods failed', [
+                                'standard_error' => $e->getMessage(),
+                                'direct_error' => $e2->getMessage(),
+                                'copy_error' => $e3->getMessage(),
+                                'filename' => $filename,
+                                'file_size' => $file->getSize(),
+                                'storage_disk' => config('filesystems.default'),
+                                'storage_path' => storage_path('app/public'),
+                                'permissions' => [
+                                    'storage_writable' => is_writable(storage_path('app/public')),
+                                    'associates_writable' => is_writable(storage_path('app/public/associates'))
+                                ],
+                                'file_info' => [
+                                    'pathname' => $file->getPathname(),
+                                    'real_path' => $file->getRealPath(),
+                                    'temp_name' => $file->getFilename()
+                                ]
+                            ]);
+                            
+                            throw new \Exception('All storage methods failed: ' . $e3->getMessage());
+                        }
                     }
                 }
                 
-                // Final verification
-                if (!$path || !Storage::disk('public')->exists($filename)) {
-                    throw new \Exception('File storage verification failed');
+                // Final verification with detailed logging
+                if (!$path) {
+                    \Log::error('File storage failed - no path returned', [
+                        'filename' => $filename,
+                        'file_size' => $file->getSize(),
+                        'storage_disk' => config('filesystems.default'),
+                        'storage_path' => storage_path('app/public')
+                    ]);
+                    throw new \Exception('File storage failed - no path returned');
+                }
+                
+                if (!Storage::disk('public')->exists($filename)) {
+                    \Log::error('File storage verification failed - file not found', [
+                        'filename' => $filename,
+                        'path' => $path,
+                        'storage_exists' => Storage::disk('public')->exists($filename),
+                        'file_exists' => file_exists(storage_path('app/public/' . $filename)),
+                        'storage_list' => Storage::disk('public')->files('associates'),
+                        'directory_list' => Storage::disk('public')->directories('associates')
+                    ]);
+                    throw new \Exception('File storage verification failed - file not found in storage');
+                }
+                
+                // Additional verification - check file size
+                $storedFileSize = Storage::disk('public')->size($filename);
+                if ($storedFileSize !== $file->getSize()) {
+                    \Log::warning('File size mismatch after storage', [
+                        'original_size' => $file->getSize(),
+                        'stored_size' => $storedFileSize,
+                        'filename' => $filename
+                    ]);
                 }
                 
                 \Log::info('File storage result', [
