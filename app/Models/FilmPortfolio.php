@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ImageHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -86,15 +87,30 @@ class FilmPortfolio extends Model
 
     public function getImageUrlAttribute($value)
     {
-        if (!empty($this->attributes['featured_image'])) {
-            return asset('storage/' . $this->attributes['featured_image']);
-        }
+        // Use ImageHelper for dynamic image handling
+        return ImageHelper::getContextualImage(
+            $this->attributes['featured_image'] ?? $value,
+            'card',
+            ['width' => 400, 'height' => 300, 'text' => 'Film Portfolio']
+        );
+    }
 
-        if (!empty($value)) {
-            return $value;
-        }
+    public function getFeaturedImageUrlAttribute()
+    {
+        return ImageHelper::getContextualImage(
+            $this->attributes['featured_image'],
+            'hero',
+            ['width' => 800, 'height' => 600, 'text' => 'Featured Film']
+        );
+    }
 
-        return 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=800';
+    public function getThumbnailUrlAttribute()
+    {
+        return ImageHelper::getContextualImage(
+            $this->attributes['featured_image'],
+            'thumbnail',
+            ['width' => 300, 'height' => 200, 'text' => 'Film Thumbnail']
+        );
     }
 
     public static function getFeaturedFilms($limit = 6)

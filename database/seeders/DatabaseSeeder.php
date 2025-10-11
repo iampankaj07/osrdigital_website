@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
         // Run all seeders
         $this->call([
             AdminUserSeeder::class,
+            DistributionServiceSeeder::class,
+            FilmCategorySeeder::class,
+            FilmPortfolioSeeder::class,
             RolePermissionSeeder::class,
             AboutPageSeeder::class,
             PortfolioSeeder::class,
