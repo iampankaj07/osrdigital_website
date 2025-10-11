@@ -8,11 +8,11 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">Media Library</h1>
-            <p class="text-muted">Manage your media files and assets</p>
+            <p class="text-muted">Upload and manage your media files</p>
         </div>
         <div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="fas fa-plus"></i> Upload Media
+            <button type="button" class="btn btn-primary" onclick="openUploadModal()">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Files
             </button>
         </div>
     </div>
@@ -68,105 +68,141 @@
         </div>
     </div>
 
+    <!-- Upload Dropzone -->
+    <div class="card mb-4" id="dropzone-container" style="display: none;">
+        <div class="card-body">
+            <form action="{{ route('admin.media.store') }}" class="dropzone" id="media-dropzone">
+                @csrf
+                <div class="dz-message">
+                    <div class="text-center">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h4>Drop files here or click to upload</h4>
+                        <p class="text-muted">Supports images, documents, and other media files</p>
+                        <p class="text-muted small">Maximum file size: 10MB</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Media Grid -->
     <div class="card">
         <div class="card-body p-0">
             @if($media->count() > 0)
                 <!-- Grid Header with Select All -->
-                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-light">
                     <div class="d-flex align-items-center">
-                        <input type="checkbox" class="form-check-input me-2" id="selectAll" onchange="selectAll(this.checked)">
-                        <label for="selectAll" class="form-check-label mb-0">Select All</label>
+                        <input type="checkbox" class="form-check-input me-3" id="selectAll" onchange="selectAll(this.checked)">
+                        <label for="selectAll" class="form-check-label mb-0 fw-semibold">Select All</label>
                     </div>
-                    <div class="text-muted">
-                        {{ $media->total() }} items
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-2">{{ $media->total() }} items</span>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleView('grid')" id="gridViewBtn">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleView('list')" id="listViewBtn">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- Media Grid -->
-                <div class="p-3">
-                    <div class="row g-3" id="media-grid">
+                <div class="p-4">
+                    <div class="row g-4" id="media-grid">
                         @foreach($media as $item)
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12 media-item" data-id="{{ $item->id }}">
-                                <div class="card h-100 shadow-sm border-0">
+                                <div class="card h-100 shadow-sm border-0 media-card">
                                     <div class="position-relative">
                                         @if($item->isImage())
                                             <img src="{{ $item->thumbnail_url }}" 
                                                  class="card-img-top" 
                                                  alt="{{ $item->alt_text ?: $item->name }}"
-                                                 style="height: 180px; object-fit: cover; width: 100%;">
+                                                 style="height: 200px; object-fit: cover; width: 100%;">
                                         @else
-                                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" 
-                                                 style="height: 180px; width: 100%;">
-                                                <i class="{{ $item->icon }} fa-4x text-muted"></i>
+                                            <div class="card-img-top d-flex align-items-center justify-content-center bg-gradient" 
+                                                 style="height: 200px; width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                                <i class="{{ $item->icon }} fa-4x text-white"></i>
                                             </div>
                                         @endif
                                         
                                         <!-- Selection checkbox -->
-                                        <div class="position-absolute top-0 start-0 m-2">
+                                        <div class="position-absolute top-0 start-0 m-3">
                                             <input type="checkbox" class="form-check-input media-select" 
-                                                   value="{{ $item->id }}" style="background-color: white;">
+                                                   value="{{ $item->id }}" style="background-color: white; transform: scale(1.2);">
                                         </div>
                                         
                                         <!-- Public/Private indicator -->
-                                        <div class="position-absolute top-0 end-0 m-2">
+                                        <div class="position-absolute top-0 end-0 m-3">
                                             @if($item->is_public)
-                                                <span class="badge bg-success bg-opacity-90">Public</span>
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-globe me-1"></i>Public
+                                                </span>
                                             @else
-                                                <span class="badge bg-warning bg-opacity-90">Private</span>
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-lock me-1"></i>Private
+                                                </span>
                                             @endif
                                         </div>
                                         
                                         <!-- File type indicator -->
-                                        <div class="position-absolute bottom-0 end-0 m-2">
-                                            <span class="badge bg-dark bg-opacity-75 text-white">
+                                        <div class="position-absolute bottom-0 end-0 m-3">
+                                            <span class="badge bg-dark">
                                                 {{ strtoupper($item->extension) }}
                                             </span>
+                                        </div>
+                                        
+                                        <!-- Hover overlay -->
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center overlay" 
+                                             style="background: rgba(0,0,0,0.7); opacity: 0; transition: opacity 0.3s;">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-light" 
+                                                        onclick="viewMedia({{ $item->id }})" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-light" 
+                                                        onclick="editMedia({{ $item->id }})" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-light" 
+                                                        onclick="deleteMedia({{ $item->id }})" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     
                                     <div class="card-body p-3">
-                                        <h6 class="card-title text-truncate mb-2" title="{{ $item->name }}" style="font-size: 0.9rem;">
+                                        <h6 class="card-title text-truncate mb-2" title="{{ $item->name }}" style="font-size: 0.9rem; font-weight: 600;">
                                             {{ $item->name }}
                                         </h6>
                                         
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <small class="text-muted">
-                                                {{ $item->human_size }}
+                                                <i class="fas fa-file me-1"></i>{{ $item->human_size }}
                                             </small>
                                             @if($item->isImage() && $item->width && $item->height)
                                                 <small class="text-muted">
-                                                    {{ $item->width }}×{{ $item->height }}
+                                                    <i class="fas fa-expand me-1"></i>{{ $item->width }}×{{ $item->height }}
                                                 </small>
                                             @endif
                                         </div>
                                         
                                         @if($item->category)
                                             <div class="mb-2">
-                                                <span class="badge bg-secondary bg-opacity-75">{{ ucfirst($item->category) }}</span>
+                                                <span class="badge bg-secondary">{{ ucfirst($item->category) }}</span>
                                             </div>
                                         @endif
                                         
-                                        <div class="text-muted small">
+                                        <div class="text-muted small d-flex align-items-center">
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $item->uploader->name ?? 'Unknown' }}
+                                            <span class="text-truncate">{{ $item->uploader->name ?? 'Unknown' }}</span>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="card-footer bg-transparent border-0 p-3 pt-0">
-                                        <div class="btn-group w-100" role="group">
-                                            <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                    onclick="viewMedia({{ $item->id }})" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
-                                                    onclick="editMedia({{ $item->id }})" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                    onclick="deleteMedia({{ $item->id }})" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                        
+                                        <div class="text-muted small">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ $item->created_at->diffForHumans() }}
                                         </div>
                                     </div>
                                 </div>
@@ -327,25 +363,70 @@
 @endsection
 
 @push('styles')
+<!-- Dropzone.js CSS -->
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
 <style>
+    /* Dropzone Styling */
+    .dropzone {
+        border: 2px dashed #dee2e6;
+        border-radius: 0.5rem;
+        background: #f8f9fa;
+        min-height: 200px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .dropzone:hover {
+        border-color: #0d6efd;
+        background: #e7f1ff;
+    }
+    
+    .dropzone.dz-drag-hover {
+        border-color: #0d6efd;
+        background: #e7f1ff;
+        transform: scale(1.02);
+    }
+    
+    .dz-message {
+        text-align: center;
+        margin: 0;
+    }
+    
+    .dz-preview {
+        margin: 0.5rem;
+    }
+    
+    .dz-preview .dz-image {
+        border-radius: 0.375rem;
+    }
+    
+    /* Media Grid Styling */
     .media-item {
-        transition: transform 0.2s ease-in-out;
+        transition: all 0.3s ease;
     }
     
     .media-item:hover {
-        transform: translateY(-2px);
+        transform: translateY(-4px);
     }
     
-    .media-item .card {
-        transition: box-shadow 0.2s ease-in-out;
+    .media-card {
+        transition: all 0.3s ease;
+        border-radius: 0.75rem;
+        overflow: hidden;
     }
     
-    .media-item:hover .card {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    .media-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .media-card:hover .overlay {
+        opacity: 1 !important;
     }
     
     .media-select {
         transform: scale(1.2);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
     .media-select:checked {
@@ -353,37 +434,28 @@
         border-color: #0d6efd;
     }
     
-    #media-grid .card-img-top {
-        border-radius: 0.375rem 0.375rem 0 0;
-    }
-    
     .badge {
         font-size: 0.7rem;
         font-weight: 500;
+        padding: 0.4em 0.6em;
     }
     
-    .btn-group .btn {
-        border-radius: 0;
+    /* View Toggle Buttons */
+    .btn-group .btn.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
     }
     
-    .btn-group .btn:first-child {
-        border-top-left-radius: 0.375rem;
-        border-bottom-left-radius: 0.375rem;
-    }
-    
-    .btn-group .btn:last-child {
-        border-top-right-radius: 0.375rem;
-        border-bottom-right-radius: 0.375rem;
-    }
-    
-    .btn-group .btn:not(:first-child):not(:last-child) {
-        border-radius: 0;
-    }
-    
-    /* Responsive grid adjustments */
+    /* Responsive adjustments */
     @media (max-width: 576px) {
         .col-12 {
             margin-bottom: 1rem;
+        }
+        
+        .dropzone {
+            min-height: 150px;
+            padding: 1rem;
         }
     }
     
@@ -393,51 +465,116 @@
             max-width: 16.666667%;
         }
     }
+    
+    /* Loading animation */
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+    
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
 </style>
 @endpush
 
 @push('scripts')
+<!-- Dropzone.js JavaScript -->
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
 <script>
 let selectedMedia = new Set();
+let dropzone;
 
-// Upload media
-function uploadMedia() {
-    const form = document.getElementById('uploadForm');
-    const formData = new FormData(form);
-    const progressDiv = document.getElementById('uploadProgress');
-    const progressBar = progressDiv.querySelector('.progress-bar');
-    const statusSpan = document.getElementById('uploadStatus');
-    
-    // Show progress
-    progressDiv.classList.remove('d-none');
-    
-    fetch('{{ route("admin.media.store") }}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            statusSpan.textContent = 'Upload successful!';
-            progressBar.style.width = '100%';
-            progressBar.classList.add('bg-success');
+// Initialize Dropzone
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Dropzone
+    dropzone = new Dropzone("#media-dropzone", {
+        url: "{{ route('admin.media.store') }}",
+        paramName: "file",
+        maxFilesize: 10, // MB
+        acceptedFiles: "image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar",
+        addRemoveLinks: true,
+        dictDefaultMessage: "Drop files here or click to upload",
+        dictRemoveFile: "Remove",
+        dictCancelUpload: "Cancel",
+        dictUploadCanceled: "Upload canceled",
+        dictInvalidFileType: "You can't upload files of this type.",
+        dictFileTooBig: "File is too big (10MB max).",
+        dictMaxFilesExceeded: "You can not upload any more files.",
+        init: function() {
+            this.on("sending", function(file, xhr, formData) {
+                formData.append("_token", document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+                formData.append("category", "general");
+                formData.append("is_public", "1");
+            });
             
-            // Reload page after a short delay
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        } else {
-            statusSpan.textContent = 'Upload failed: ' + data.message;
-            progressBar.classList.add('bg-danger');
+            this.on("success", function(file, response) {
+                if (response.success) {
+                    showNotification('File uploaded successfully!', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    this.removeFile(file);
+                    showNotification(response.message || 'Upload failed', 'error');
+                }
+            });
+            
+            this.on("error", function(file, message) {
+                this.removeFile(file);
+                showNotification(message || 'Upload failed', 'error');
+            });
         }
-    })
-    .catch(error => {
-        statusSpan.textContent = 'Upload failed: ' + error.message;
-        progressBar.classList.add('bg-danger');
     });
+});
+
+// Open upload modal
+function openUploadModal() {
+    const dropzoneContainer = document.getElementById('dropzone-container');
+    if (dropzoneContainer.style.display === 'none') {
+        dropzoneContainer.style.display = 'block';
+        dropzoneContainer.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        dropzoneContainer.style.display = 'none';
+    }
+}
+
+// Toggle view between grid and list
+function toggleView(view) {
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+    const mediaGrid = document.getElementById('media-grid');
+    
+    if (view === 'grid') {
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+        mediaGrid.className = 'row g-4';
+    } else {
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+        mediaGrid.className = 'list-group';
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
 }
 
 // View media
