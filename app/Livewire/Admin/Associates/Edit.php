@@ -7,10 +7,12 @@ use Livewire\WithFileUploads;
 use App\Models\Associate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\LivewireFilepond\WithFilePond;
+use Illuminate\Support\Facades\Auth;
 
 class Edit extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithFilePond;
 
     public Associate $associate;
     public $name = '';
@@ -22,6 +24,16 @@ class Edit extends Component
     public $sort_order = 0;
     public $old_logo = '';
 
+    // FilePond uploads
+    public $filepondUploads = [];
+
+    // Media library selection
+    public $selectedMediaId = null;
+    public $selectedMediaUrl = null;
+
+    // Upload method preference
+    public $uploadMethod = 'filepond'; // 'filepond' or 'media_library'
+
     protected $rules = [
         'name' => 'required|string|max:255',
         'description' => 'required|string',
@@ -30,6 +42,11 @@ class Edit extends Component
         'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'is_active' => 'boolean',
         'sort_order' => 'integer|min:0',
+        'uploadMethod' => 'required|in:filepond,media_library',
+    ];
+
+    protected $listeners = [
+        'mediaSelected' => 'handleMediaSelection',
     ];
 
     public function mount(Associate $associate)
@@ -42,6 +59,15 @@ class Edit extends Component
         $this->is_active = $associate->is_active;
         $this->sort_order = $associate->sort_order;
         $this->old_logo = $associate->logo;
+
+        // Load existing media selection
+        if ($associate->media_id) {
+            $this->selectedMediaId = $associate->media_id;
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($associate->media_id);
+            if ($media) {
+                $this->selectedMediaUrl = $media->getFullUrl();
+            }
+        }
     }
 
     public function updated($propertyName)
@@ -49,11 +75,34 @@ class Edit extends Component
         $this->validateOnly($propertyName);
     }
 
+    public function validateUploadedFile($filename)
+    {
+        return true;
+    }
+
+    public function handleMediaSelection($data)
+    {
+        $this->selectedMediaId = $data['mediaId'];
+        $this->selectedMediaUrl = $data['mediaUrl'];
+    }
+
+    public function openMediaSelector()
+    {
+        $this->dispatch('openMediaSelector');
+    }
+
+    public function clearSelectedMedia()
+    {
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+    }
+
     public function save()
     {
         $this->validate();
 
         try {
+            $user = Auth::user();
             $this->associate->name = $this->name;
             $this->associate->description = $this->description;
             $this->associate->type = $this->type;
@@ -61,16 +110,34 @@ class Edit extends Component
             $this->associate->is_active = $this->is_active;
             $this->associate->sort_order = $this->sort_order;
 
-            // Handle logo upload
-            if ($this->logo) {
+            // Handle logo upload based on method
+            if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $this->associate->media_id = $this->selectedMediaId;
+                // Clear old logo field since we're using media library
+                $this->associate->logo = null;
+            } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+                // Process FilePond uploads
+                foreach ($this->filepondUploads as $upload) {
+                    $media = $user->addMedia($upload->getRealPath())
+                        ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                        ->usingFileName($upload->getClientOriginalName())
+                        ->toMediaCollection('media-library');
+
+                    $this->associate->media_id = $media->id;
+                    $this->associate->logo = null; // Clear old logo field
+                    break; // Only use first image
+                }
+            } elseif ($this->logo) {
+                // Fallback to traditional upload
                 // Delete old logo if exists
                 if ($this->old_logo && Storage::disk('public')->exists($this->old_logo)) {
                     Storage::disk('public')->delete($this->old_logo);
                 }
-                
+
                 $filename = 'associates/' . Str::uuid() . '.' . $this->logo->getClientOriginalExtension();
                 $this->logo->storeAs('public', $filename);
                 $this->associate->logo = $filename;
+                $this->associate->media_id = null; // Clear media ID since using direct upload
             }
 
             $this->associate->save();
@@ -85,7 +152,6 @@ class Edit extends Component
 
     public function render()
     {
-        return view('livewire.admin.associates.edit')
-            ->layout('admin.layout', ['title' => 'Edit Associate']);
+        return view('livewire.admin.associates.edit');
     }
 }

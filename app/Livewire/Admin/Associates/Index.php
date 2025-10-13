@@ -4,17 +4,22 @@ namespace App\Livewire\Admin\Associates;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\Associate;
+use Spatie\LivewireFilepond\WithFilePond;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads, WithFilePond;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -24,13 +29,28 @@ class Index extends Component
         'website' => '',
         'sort_order' => 0,
         'is_active' => true,
+        'media_id' => null,
     ];
+
+    // FilePond uploads
+    public $filepondUploads = [];
+
+    // Media library selection
+    public $selectedMediaId = null;
+    public $selectedMediaUrl = null;
+
+    // Upload method preference
+    public $uploadMethod = 'media_library'; // 'filepond' or 'media_library'
 
     protected $queryString = [
         'search' => ['except' => ''],
         'perPage' => ['except' => 10],
         'sortField' => ['except' => 'sort_order'],
         'sortDirection' => ['except' => 'asc'],
+    ];
+
+    protected $listeners = [
+        'mediaSelected' => 'handleMediaSelection',
     ];
 
     public function updatingSearch()
@@ -58,7 +78,16 @@ class Index extends Component
         $this->isCreating = true;
         $this->editingId = null;
         $this->reset('form');
+        $this->resetUploadStates();
         $this->form['sort_order'] = Associate::max('sort_order') + 1;
+    }
+
+    public function resetUploadStates()
+    {
+        $this->filepondUploads = [];
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->uploadMethod = 'media_library';
     }
 
     public function edit($id)
@@ -66,14 +95,30 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $associate = Associate::findOrFail($id);
-        
+
         $this->form = [
             'name' => $associate->name,
             'logo' => $associate->logo,
             'website' => $associate->website,
             'sort_order' => $associate->sort_order,
             'is_active' => $associate->is_active,
+            'media_id' => $associate->media_id,
         ];
+
+        $this->resetUploadStates();
+
+        // Load existing media selection
+        if ($associate->media_id) {
+            $this->selectedMediaId = $associate->media_id;
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($associate->media_id);
+            if ($media) {
+                $this->selectedMediaUrl = $media->getFullUrl();
+                $this->uploadMethod = 'media_library';
+            }
+        } else {
+            // Default to filepond for existing associates without media
+            $this->uploadMethod = 'filepond';
+        }
     }
 
     public function cancelEdit()
@@ -81,6 +126,31 @@ class Index extends Component
         $this->editingId = null;
         $this->isCreating = false;
         $this->reset('form');
+        $this->resetUploadStates();
+    }
+
+    public function validateUploadedFile($filename)
+    {
+        return true;
+    }
+
+    public function handleMediaSelection($data)
+    {
+        $this->selectedMediaId = $data['mediaId'];
+        $this->selectedMediaUrl = $data['mediaUrl'];
+        $this->form['media_id'] = $data['mediaId'];
+    }
+
+    public function openMediaSelector()
+    {
+        $this->dispatch('openMediaSelector');
+    }
+
+    public function clearSelectedMedia()
+    {
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->form['media_id'] = null;
     }
 
     public function store()
@@ -93,12 +163,38 @@ class Index extends Component
             'form.sort_order' => 'required|integer|min:0',
         ]);
 
-        Associate::create($this->form);
-        
-        $this->isCreating = false;
-        $this->reset('form');
-        
-        session()->flash('success', 'Associate created successfully!');
+        try {
+            $user = Auth::user();
+            $associateData = $this->form;
+
+            // Handle logo upload based on method
+            if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $associateData['media_id'] = $this->selectedMediaId;
+                $associateData['logo'] = null; // Clear logo field when using media library
+            } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+                // Process FilePond uploads
+                foreach ($this->filepondUploads as $upload) {
+                    $media = $user->addMedia($upload->getRealPath())
+                        ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                        ->usingFileName($upload->getClientOriginalName())
+                        ->toMediaCollection('media-library');
+
+                    $associateData['media_id'] = $media->id;
+                    $associateData['logo'] = null;
+                    break; // Only use first image
+                }
+            }
+
+            Associate::create($associateData);
+
+            $this->isCreating = false;
+            $this->reset('form');
+            $this->resetUploadStates();
+
+            session()->flash('success', 'Associate created successfully!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to create associate: ' . $e->getMessage());
+        }
     }
 
     public function update()
@@ -111,20 +207,46 @@ class Index extends Component
             'form.sort_order' => 'required|integer|min:0',
         ]);
 
-        $associate = Associate::findOrFail($this->editingId);
-        $associate->update($this->form);
-        
-        $this->editingId = null;
-        $this->reset('form');
-        
-        session()->flash('success', 'Associate updated successfully!');
+        try {
+            $user = Auth::user();
+            $associate = Associate::findOrFail($this->editingId);
+            $associateData = $this->form;
+
+            // Handle logo upload based on method
+            if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $associateData['media_id'] = $this->selectedMediaId;
+                $associateData['logo'] = null; // Clear logo field when using media library
+            } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+                // Process FilePond uploads
+                foreach ($this->filepondUploads as $upload) {
+                    $media = $user->addMedia($upload->getRealPath())
+                        ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                        ->usingFileName($upload->getClientOriginalName())
+                        ->toMediaCollection('media-library');
+
+                    $associateData['media_id'] = $media->id;
+                    $associateData['logo'] = null;
+                    break; // Only use first image
+                }
+            }
+
+            $associate->update($associateData);
+
+            $this->editingId = null;
+            $this->reset('form');
+            $this->resetUploadStates();
+
+            session()->flash('success', 'Associate updated successfully!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to update associate: ' . $e->getMessage());
+        }
     }
 
     public function delete($id)
     {
         $associate = Associate::findOrFail($id);
         $associate->delete();
-        
+
         session()->flash('success', 'Associate deleted successfully!');
     }
 
@@ -132,7 +254,7 @@ class Index extends Component
     {
         $associate = Associate::findOrFail($id);
         $associate->update(['is_active' => !$associate->is_active]);
-        
+
         session()->flash('success', 'Associate status updated successfully!');
     }
 
@@ -146,7 +268,6 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.admin.associates.index', compact('associates'))
-            ->layout('admin.layout', ['title' => 'Associates']);
+        return view('livewire.admin.associates.index', compact('associates'));
     }
 }

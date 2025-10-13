@@ -24,13 +24,16 @@ class AssociateController extends Controller
                 'website' => $associate->website,
                 'is_active' => $associate->is_active,
                 'sort_order' => $associate->sort_order,
+                'updated_at' => $associate->updated_at->timestamp, // Add timestamp for cache busting
             ];
         });
 
         return response()->json([
             'success' => true,
             'data' => $transformedAssociates
-        ]);
+        ])->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+          ->header('Pragma', 'no-cache')
+          ->header('Expires', '0');
     }
 
     /**
@@ -49,13 +52,16 @@ class AssociateController extends Controller
                 'website' => $associate->website,
                 'is_active' => $associate->is_active,
                 'sort_order' => $associate->sort_order,
+                'updated_at' => $associate->updated_at->timestamp, // Add timestamp for cache busting
             ];
         });
 
         return response()->json([
             'success' => true,
             'data' => $transformedAssociates
-        ]);
+        ])->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+          ->header('Pragma', 'no-cache')
+          ->header('Expires', '0');
     }
 
 }
