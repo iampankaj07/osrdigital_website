@@ -7,6 +7,7 @@ use Livewire\WithFileUploads;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class Index extends Component
@@ -67,17 +68,25 @@ class Index extends Component
 
     public function validateUploadedFile($filename)
     {
-        // Validation logic for uploaded files
-        // Return true if valid, false if invalid
-        \Log::info('Validating uploaded file: ' . $filename);
+        // Validation logic for uploaded files - images only
+        Log::info('Validating uploaded file: ' . $filename);
+
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        if (!in_array($extension, $allowedExtensions)) {
+            Log::warning('Invalid file type uploaded: ' . $extension);
+            return false;
+        }
+
         return true;
     }
-    
+
     public function updatedUploads()
     {
-        \Log::info('Uploads updated. Count: ' . count($this->uploads));
+        Log::info('Uploads updated. Count: ' . count($this->uploads));
         foreach ($this->uploads as $index => $upload) {
-            \Log::info("Upload {$index}: " . ($upload ? $upload->getClientOriginalName() : 'null'));
+            Log::info("Upload {$index}: " . ($upload ? $upload->getClientOriginalName() : 'null'));
         }
     }
 

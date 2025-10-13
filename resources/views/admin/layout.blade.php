@@ -707,7 +707,21 @@
     <script src="{{ asset('vendor/livewire-filepond/filepond.js') }}?v={{ time() }}"></script>
 
     <!-- Alpine.js - Load with defer to ensure Livewire loads first -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        // Prevent multiple Alpine instances
+        if (typeof Alpine === 'undefined') {
+            document.addEventListener('livewire:initialized', function() {
+                // Only load Alpine after Livewire is ready and if not already loaded
+                if (typeof Alpine === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js';
+                    script.defer = true;
+                    document.head.appendChild(script);
+                    console.log('Alpine.js loaded after Livewire');
+                }
+            });
+        }
+    </script>
 
     <!-- Initialization Script -->
     <script>
