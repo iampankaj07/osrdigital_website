@@ -331,15 +331,20 @@ namespace App\Models {
      * @property integer $sort_order
      * @property boolean $is_active
      * @property string|null $website
+     * @property int|null $media_id
      * @property string|null $logo
      * @property string $name
      * @property int $id
      * @property-read mixed $logo_url
      * @property-read mixed $admin_logo_url
      * @property-read mixed $frontend_logo_url
+     * @property-read mixed $logo_from_media
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+     * @property-read int|null $media_count
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereLogo($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereMediaId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereWebsite($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereIsActive($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Associate>|Associate whereSortOrder($value)
