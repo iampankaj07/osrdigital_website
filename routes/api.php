@@ -138,13 +138,8 @@ Route::get('/news/latest', [\App\Http\Controllers\API\NewsController::class, 'la
 Route::get('/news/{slug}', [\App\Http\Controllers\API\NewsController::class, 'show']);
 
 
-// Image Upload API - Admin only
+// Image Upload API - Admin only (Legacy - now using Livewire file uploads)
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/upload/associate-image', [ImageUploadController::class, 'uploadAssociateImage']);
-    Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
-    Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
-    Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
-    Route::post('/upload/testimonial-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialImage']);
-    Route::post('/upload/news-featured-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadNewsFeaturedImage']);
     Route::delete('/upload/delete-image', [ImageUploadController::class, 'deleteImage']);
 });

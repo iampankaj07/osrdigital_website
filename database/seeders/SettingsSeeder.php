@@ -359,6 +359,108 @@ class SettingsSeeder extends Seeder
                 'description' => 'Website favicon',
                 'is_public' => true,
             ],
+
+            // Footer Settings
+            [
+                'key' => 'footer_text',
+                'value' => 'OSR Digital specializes in acquiring exceptional entertainment content and strategically distributing it to worldwide audiences through cutting-edge digital platforms.',
+                'type' => 'textarea',
+                'group' => 'footer',
+                'description' => 'Footer description text',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'footer_copyright',
+                'value' => '© 2024 OSR Digital. All rights reserved.',
+                'type' => 'text',
+                'group' => 'footer',
+                'description' => 'Footer copyright text',
+                'is_public' => true,
+            ],
+
+            // Additional Contact Fields
+            [
+                'key' => 'contact_address',
+                'value' => '123 Digital Street',
+                'type' => 'text',
+                'group' => 'contact',
+                'description' => 'Contact address',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'contact_city',
+                'value' => 'Los Angeles',
+                'type' => 'text',
+                'group' => 'contact',
+                'description' => 'Contact city',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'contact_state',
+                'value' => 'CA',
+                'type' => 'text',
+                'group' => 'contact',
+                'description' => 'Contact state',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'contact_zip',
+                'value' => '90210',
+                'type' => 'text',
+                'group' => 'contact',
+                'description' => 'Contact ZIP code',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'contact_country',
+                'value' => 'United States',
+                'type' => 'text',
+                'group' => 'contact',
+                'description' => 'Contact country',
+                'is_public' => true,
+            ],
+
+            // Social Media Settings
+            [
+                'key' => 'facebook_url',
+                'value' => 'https://facebook.com/osrdigital',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'Facebook page URL',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'twitter_url',
+                'value' => 'https://twitter.com/osrdigital',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'Twitter profile URL',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'instagram_url',
+                'value' => 'https://instagram.com/osrdigital',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'Instagram profile URL',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'linkedin_url',
+                'value' => 'https://linkedin.com/company/osrdigital',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'LinkedIn company URL',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'youtube_url',
+                'value' => 'https://youtube.com/channel/osrdigital',
+                'type' => 'url',
+                'group' => 'social',
+                'description' => 'YouTube channel URL',
+                'is_public' => true,
+            ],
         ];
 
         foreach ($settings as $setting) {

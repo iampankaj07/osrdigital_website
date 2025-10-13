@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel') - OSR Digital</title>
-    <!-- AdminLTE 3.2 & Montserrat Font -->
+    <!-- AdminLTE 3.2 & Space Grotesk Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- AdminLTE 3.2 CSS -->
@@ -21,29 +21,32 @@
 
     <!-- Load Vite-built CSS -->
     @vite(['resources/css/app.css'])
+    
+    <!-- Livewire Styles -->
+    @livewireStyles
 
     <!-- Quill Editor -->
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script src="{{ asset('js/quill-config.js') }}"></script>
     <style>
-        /* AdminLTE 3.2 Custom Styles with Montserrat */
+        /* AdminLTE 3.2 Custom Styles with Space Grotesk */
         body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
             font-weight: 400;
             background: #f4f6f9 !important;
         }
 
         /* Brand & Logo */
         .brand-text {
-            font-family: 'Montserrat', sans-serif !important;
-            font-weight: 700 !important;
+            font-family: 'Space Grotesk', sans-serif !important;
+            font-weight: 600 !important;
             font-size: 1.2rem !important;
         }
 
         .navbar-brand {
-            font-family: 'Montserrat', sans-serif !important;
-            font-weight: 700 !important;
+            font-family: 'Space Grotesk', sans-serif !important;
+            font-weight: 600 !important;
         }
 
         /* Sidebar Customizations */
@@ -53,7 +56,7 @@
 
         .sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link {
             color: rgba(255, 255, 255, 0.9) !important;
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 500 !important;
         }
 
@@ -69,7 +72,7 @@
         /* Navigation Headers */
         .nav-header {
             color: rgba(255, 255, 255, 0.6) !important;
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 600 !important;
             font-size: 0.75rem !important;
             text-transform: uppercase !important;
@@ -78,7 +81,7 @@
 
         /* Content Header */
         .content-header h1 {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 700 !important;
             color: #495057 !important;
         }
@@ -95,7 +98,7 @@
         }
 
         .card-title {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 600 !important;
         }
 
@@ -106,18 +109,18 @@
         }
 
         .info-box .info-box-number {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 700 !important;
         }
 
         .info-box .info-box-text {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 500 !important;
         }
 
         /* Buttons */
         .btn {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 500 !important;
         }
 
@@ -141,7 +144,7 @@
         /* Quill Editor */
         .ql-editor {
             min-height: 200px;
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
         }
 
         .ql-toolbar {
@@ -259,11 +262,11 @@
             border: none !important;
             box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.15) !important;
             border-radius: 0.375rem !important;
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
         }
 
         .dropdown-item {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 400 !important;
             padding: 0.5rem 1rem !important;
         }
@@ -275,7 +278,7 @@
 
         .navbar-nav .nav-link {
             color: #495057 !important;
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 500 !important;
             transition: color 0.15s ease-in-out !important;
         }
@@ -300,7 +303,7 @@
 
         /* Badge Styles */
         .badge {
-            font-family: 'Montserrat', sans-serif !important;
+            font-family: 'Share Tech', sans-serif !important;
             font-weight: 600 !important;
         }
 
@@ -333,113 +336,23 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
                             class="fas fa-bars"></i></a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">Home</a>
-                </li>
+         
             </ul>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Navbar Search -->
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                        <i class="fas fa-search"></i>
-                    </a>
-                    <div class="navbar-search-block">
-                        <form class="form-inline">
-                            <div class="input-group input-group-sm">
-                                <input class="form-control form-control-navbar" type="search" placeholder="Search"
-                                    aria-label="Search">
-                                <div class="input-group-append">
-                                    <button class="btn btn-navbar" type="submit">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </li>
+        
 
-                <!-- Messages Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <div class="media-object">
-                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
-                                        style="width: 40px; height: 40px;">
-                                        <span
-                                            class="text-white font-weight-bold">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
-                                    </div>
-                                </div>
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        New Message
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-                    </div>
-                </li>
-
-                <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                    </div>
-                </li>
+           
 
                 <!-- User Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
-                            style="width: 30px; height: 30px;">
-                            <span
-                                class="text-white font-weight-bold text-sm">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</span>
-                        </div>
+       {{-- //logout --}}
+                    <a class="nav-link" href="{{ route('logout') }}" role="button">
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <div class="dropdown-header">
-                            <strong>{{ auth()->user()->name ?? 'User' }}</strong><br>
-                            <small>{{ auth()->user()->email ?? 'user@example.com' }}</small>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="{{ route('admin.settings') }}" class="dropdown-item">
-                            <i class="fas fa-cog mr-2"></i> Settings
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                            </button>
-                        </form>
-                    </div>
+
+
                 </li>
             </ul>
         </nav>
@@ -486,7 +399,7 @@
                         </li>
 
                         <!-- Content Management -->
-                        <li class="nav-header">CONTENT MANAGEMENT</li>
+                        <li class="nav-header">Content Management</li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.hero-sections.index') }}"
@@ -497,7 +410,7 @@
                         </li>
 
                         <!-- About Us Section -->
-                        <li class="nav-header">ABOUT US</li>
+                        <li class="nav-header">About us</li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.mission-vision.index') }}"
@@ -548,7 +461,7 @@
                         </li>
 
                         <!-- Partners Section -->
-                        <li class="nav-header">OUR PARTNERS</li>
+                        <li class="nav-header">Our Partners</li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.trusted-partners.index') }}"
@@ -567,7 +480,7 @@
                         </li>
 
                         <!-- Team Section -->
-                        <li class="nav-header">OUR TEAMS</li>
+                        <li class="nav-header">Our Teams</li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.team-members.index') }}"
@@ -586,7 +499,7 @@
                         </li>
 
                         <!-- Film Section -->
-                        <li class="nav-header">FILM</li>
+                        <li class="nav-header">Films</li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.film-portfolios.index') }}"
@@ -635,7 +548,7 @@
                         </li>
 
                         <!-- System Section -->
-                        <li class="nav-header">SYSTEM</li>
+                        <li class="nav-header">Configuration</li>
 
 
                         <li class="nav-item">
@@ -645,12 +558,30 @@
                                 <p>Settings</p>
                             </a>
                         </li>
+                        <!-- User Management Section -->
+                        <li class="nav-header">USER MANAGEMENT</li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.roles') }}"
-                                class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-users-cog"></i>
-                                <p>Roles & Permissions</p>
+                            <a href="{{ route('admin.users.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>Users</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.user-roles.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.user-roles*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user-tag"></i>
+                                <p>User Roles</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.permissions.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.permissions*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-key"></i>
+                                <p>Permissions</p>
                             </a>
                         </li>
                     </ul>
@@ -665,21 +596,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            <div class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0">@yield('title', 'Dashboard')</h1>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                @yield('breadcrumb')
-                            </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content-header -->
+           
 
             <!-- Main content -->
             <section class="content">
@@ -715,9 +632,18 @@
                         </div>
                     @endif
 
+                    <!-- Livewire Flash Messages -->
+                    <div>
+                        <div class="alert alert-success alert-dismissible fade-in" style="display: none;">
+                            <button type="button" class="close">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Success!</h4>
+                            <span></span>
+                        </div>
+                    </div>
 
 
-                    <div class="main-content-area">
+
+                    <div class="main-content-area pt-4">
                         @yield('content')
                     </div>
                 </div><!-- /.container-fluid -->
@@ -829,9 +755,14 @@
                 $('.alert').fadeOut('slow');
             }, 5000);
         });
+        
+      
     </script>
 
     @yield('scripts')
+    
+    <!-- Livewire Scripts -->
+    @livewireScripts
 </body>
 
 </html>
