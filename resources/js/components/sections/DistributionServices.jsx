@@ -123,16 +123,6 @@ function DistributionServices() {
                                             {service.description}
                                         </p>
 
-                                        <div className={`flex items-center text-sm font-medium transition-colors duration-200 ${
-                                            isDark 
-                                                ? 'text-brand-orange-400 group-hover:text-brand-orange-300' 
-                                                : 'text-brand-orange-600 group-hover:text-brand-orange-700'
-                                        }`}>
-                                            <span>Learn More</span>
-                                            <svg className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </div>
                                     </div>
                                 </div>
                             </Link>

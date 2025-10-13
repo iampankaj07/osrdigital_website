@@ -12,8 +12,8 @@ class TeamValueController extends Controller
 
     public function index()
     {
-        $teamValues = TeamValue::ordered()->get();
-        return view('admin.team-values.index', compact('teamValues'));
+        //redirect to view index
+        return view('admin.team-values.index');
     }
 
     public function create()

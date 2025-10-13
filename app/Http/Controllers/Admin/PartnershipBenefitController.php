@@ -12,8 +12,8 @@ class PartnershipBenefitController extends Controller
 
     public function index()
     {
-        $benefits = PartnershipBenefit::ordered()->get();
-        return view('admin.partnership-benefits.index', compact('benefits'));
+        //redirect to view index
+        return view('admin.partnership-benefits.index');
     }
 
     public function create()

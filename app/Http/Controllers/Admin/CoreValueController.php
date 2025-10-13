@@ -12,8 +12,8 @@ class CoreValueController extends Controller
 
     public function index()
     {
-        $coreValues = CoreValue::ordered()->get();
-        return view('admin.core-values.index', compact('coreValues'));
+        //redirect to view index
+        return view('admin.core-values.index');
     }
 
     public function create()
