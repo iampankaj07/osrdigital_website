@@ -17,23 +17,23 @@ function ClientLogos() {
                 setError(err);
                 // Fallback to static data if API fails
                 setAssociates([
-                    { 
-                        name: 'OSR Digital', 
+                    {
+                        name: 'OSR Digital',
                         logo: '/images/logo.png',
                         website: 'https://osrdigital.com/'
                     },
-                    { 
-                        name: 'OSR Connect', 
+                    {
+                        name: 'OSR Connect',
                         logo: '/images/associates/osr-connect.png',
                         website: 'https://osrdigital.com/'
                     },
-                    { 
-                        name: 'OSR Reality', 
+                    {
+                        name: 'OSR Reality',
                         logo: '/images/associates/osr-reality.png',
                         website: 'https://osrdigital.com/'
                     },
-                    { 
-                        name: 'OSR Sports', 
+                    {
+                        name: 'OSR Sports',
                         logo: '/images/associates/osr-sports.png',
                         website: 'https://osrdigital.com/'
                     }
@@ -50,9 +50,17 @@ function ClientLogos() {
         return (
             <section className={`py-16 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-orange-500 mx-auto mb-4"></div>
-                        <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading associates...</p>
+                    <div className="text-center mb-12">
+                        <div className={`h-8 w-64 mx-auto mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-4 w-96 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className="flex justify-center">
+                                <div className={`h-16 w-32 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -81,8 +89,8 @@ function ClientLogos() {
                         <div
                             key={index}
                             className={`p-6 rounded-2xl transition-all duration-300 hover-subtle ${
-                                isDark 
-                                    ? 'bg-gray-800 border border-gray-700' 
+                                isDark
+                                    ? 'bg-gray-800 border border-gray-700'
                                     : 'bg-white border border-gray-200'
                             }`}
                         >
@@ -101,7 +109,7 @@ function ClientLogos() {
                                         {associate.name.split(' ')[0]}
                                     </div>
                                 </div>
-                                
+
                                 <h3 className={`text-xl font-bold mb-4 ${
                                     isDark ? 'text-white' : 'text-gray-900'
                                 }`}>
@@ -114,8 +122,8 @@ function ClientLogos() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover-subtle ${
-                                            isDark 
-                                                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                                            isDark
+                                                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         }`}
                                     >

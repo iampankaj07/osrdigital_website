@@ -30,12 +30,40 @@ function PortfolioItem() {
         return (
             <div className="min-h-screen bg-gray-900 pt-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="animate-pulse">
-                        <div className="h-8 bg-gray-800 rounded mb-4"></div>
-                        <div className="h-64 bg-gray-800 rounded mb-6"></div>
-                        <div className="h-4 bg-gray-800 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-800 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-800 rounded w-1/2"></div>
+                    {/* Header Skeleton */}
+                    <div className="mb-8">
+                        <div className="h-4 w-32 bg-gray-700 rounded mb-4 animate-pulse"></div>
+                        <div className="h-12 w-3/4 bg-gray-700 rounded mb-6 animate-pulse"></div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-12">
+                        {/* Image Skeleton */}
+                        <div className="h-96 bg-gray-700 rounded-lg animate-pulse"></div>
+
+                        {/* Content Skeleton */}
+                        <div className="space-y-6">
+                            <div>
+                                <div className="h-6 w-20 bg-gray-700 rounded mb-2 animate-pulse"></div>
+                                <div className="h-4 w-32 bg-gray-700 rounded animate-pulse"></div>
+                            </div>
+
+                            <div>
+                                <div className="h-6 w-24 bg-gray-700 rounded mb-2 animate-pulse"></div>
+                                <div className="h-4 w-28 bg-gray-700 rounded animate-pulse"></div>
+                            </div>
+
+                            <div>
+                                <div className="h-6 w-28 bg-gray-700 rounded mb-2 animate-pulse"></div>
+                                <div className="h-4 w-full bg-gray-700 rounded mb-2 animate-pulse"></div>
+                                <div className="h-4 w-3/4 bg-gray-700 rounded mb-2 animate-pulse"></div>
+                                <div className="h-4 w-1/2 bg-gray-700 rounded animate-pulse"></div>
+                            </div>
+
+                            <div className="flex space-x-4 pt-6">
+                                <div className="h-12 w-32 bg-gray-700 rounded-lg animate-pulse"></div>
+                                <div className="h-12 w-24 bg-gray-700 rounded-lg animate-pulse"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

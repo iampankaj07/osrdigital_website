@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faNewspaper, faCalendarAlt, faUser, faArrowRight, faFilter, faSearch, faRocket, faChartLine, faGlobe, faLightbulb, faExternalLinkAlt, faChevronLeft, faChevronRight, faAngleDoubleLeft, faAngleDoubleRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import DynamicHero from '../components/sections/DynamicHero';
+import CompactHero from '../components/sections/CompactHero';
 
 function News() {
     const { isDark } = useTheme();
@@ -21,7 +21,7 @@ function News() {
         try {
             setLoading(true);
             setError(null);
-            
+
             // Fetch all news articles with proper headers
             const response = await fetch('/api/news', {
                 method: 'GET',
@@ -31,16 +31,16 @@ function News() {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 setNewsArticles(data.data);
-                
+
                 // Find featured article
                 const featured = data.data.find(article => article.featured);
                 setFeaturedArticle(featured);
@@ -65,7 +65,7 @@ function News() {
             document.getElementsByTagName('head')[0].appendChild(metaDescription);
         }
         metaDescription.content = "Stay updated with the latest news, industry insights, and company announcements from OSR Digital. Discover trends in digital content distribution and media innovation.";
-        
+
         fetchNewsData();
     }, []);
 
@@ -271,8 +271,8 @@ function News() {
 
     const filteredArticles = selectedCategory === 'all'
         ? newsArticles
-        : newsArticles.filter(article => 
-            article.category?.slug === selectedCategory || 
+        : newsArticles.filter(article =>
+            article.category?.slug === selectedCategory ||
             article.category_id === selectedCategory ||
             article.category?.id === selectedCategory
         );
@@ -296,7 +296,16 @@ function News() {
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
             {/* Hero Section */}
-            <DynamicHero page="news" />
+            <CompactHero
+                page="news"
+                title="Latest News"
+                subtitle="Industry Updates"
+                description="Stay updated with the latest news, insights, and announcements from OSR Digital and the entertainment industry."
+                breadcrumbs={[
+                    { label: 'Home', href: '/', icon: 'fas fa-home' },
+                    { label: 'News' }
+                ]}
+            />
 
             {/* Category Filter */}
             <section className={`py-8 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
@@ -309,8 +318,8 @@ function News() {
                                 className={`flex items-center px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                                     selectedCategory === (category.slug || category.id)
                                         ? 'bg-brand-orange-500 text-white shadow-lg'
-                                        : isDark 
-                                            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                                        : isDark
+                                            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                             : 'bg-white text-gray-700 hover:bg-gray-100'
                                 }`}
                             >
@@ -326,9 +335,29 @@ function News() {
             {loading && (
                 <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
                     <div className="container-minimal">
-                        <div className="text-center">
-                            <FontAwesomeIcon icon={faSpinner} className="animate-spin text-4xl text-purple-600 mb-4" />
-                            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading news articles...</p>
+                        {/* Featured Article Skeleton */}
+                        <div className="mb-16">
+                            <div className={`h-8 w-48 mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-96 rounded-lg mb-6 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-8 w-3/4 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-6 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        </div>
+
+                        {/* Articles Grid Skeleton */}
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className={`rounded-lg overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                                    <div className={`h-48 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className="p-6">
+                                        <div className={`h-4 w-20 mb-3 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-6 w-full mb-3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-3/4 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-24 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </section>
@@ -348,7 +377,7 @@ function News() {
                             <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'} mb-6`}>
                                 {error}
                             </p>
-                            <button 
+                            <button
                                 onClick={fetchNewsData}
                                 className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
                             >
@@ -368,7 +397,7 @@ function News() {
                                 Featured Article
                             </h2>
                         </div>
-                        
+
                         <div className={`rounded-2xl overflow-hidden shadow-2xl ${
                             isDark ? 'bg-gray-800' : 'bg-white'
                         }`}>
@@ -392,15 +421,15 @@ function News() {
                                             {new Date(featuredArticle.published_at).toLocaleDateString()}
                                         </span>
                                     </div>
-                                    
+
                                     <h3 className={`text-3xl lg:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                         {featuredArticle.title}
                                     </h3>
-                                    
+
                                     <p className={`text-lg mb-6 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                                         {featuredArticle.excerpt}
                                     </p>
-                                    
+
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-4">
                                             <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -412,8 +441,8 @@ function News() {
                                             </span>
                                         </div>
                                         <button className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                                            isDark 
-                                                ? 'bg-brand-orange-500 text-white hover:bg-brand-orange-600' 
+                                            isDark
+                                                ? 'bg-brand-orange-500 text-white hover:bg-brand-orange-600'
                                                 : 'bg-brand-orange-500 text-white hover:bg-brand-orange-600'
                                         }`}>
                                             Read More
@@ -460,7 +489,7 @@ function News() {
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="p-6">
                                         <div className="flex items-center mb-3 text-sm text-gray-500">
                                             <FontAwesomeIcon icon={faCalendarAlt} className="mr-1" />
@@ -469,15 +498,15 @@ function News() {
                                             <FontAwesomeIcon icon={faUser} className="mr-1" />
                                             {article.author_name}
                                         </div>
-                                        
+
                                         <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                             {article.title}
                                         </h3>
-                                        
+
                                         <p className={`text-sm mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                                             {article.excerpt}
                                         </p>
-                                        
+
                                         <div className="flex items-center justify-between">
                                             <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                                 {Math.ceil(article.content?.split(' ').length / 200) || 5} min read
@@ -569,8 +598,8 @@ function News() {
                                                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                                                     currentPage === pageNumber
                                                         ? 'bg-brand-orange-500 text-white'
-                                                        : isDark 
-                                                            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                                                        : isDark
+                                                            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                                             : 'bg-white text-gray-700 hover:bg-gray-100'
                                                 }`}
                                             >

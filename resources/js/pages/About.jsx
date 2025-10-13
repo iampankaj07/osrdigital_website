@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import DynamicHero from '../components/sections/DynamicHero';
+import CompactHero from '../components/sections/CompactHero';
 
 function About() {
     const { isDark } = useTheme();
@@ -74,7 +74,7 @@ function About() {
     const fetchServices = async () => {
         try {
             console.log('Fetching services data...');
-            
+
             // Create AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -113,7 +113,7 @@ function About() {
     const fetchCoreValues = async () => {
         try {
             console.log('Fetching core values data...');
-            
+
             // Create AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -153,11 +153,11 @@ function About() {
         try {
             console.log('Fetching mission & vision data...');
             setIsLoading(true);
-            
+
             // Create AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-            
+
             const response = await fetch('/api/mission-vision', {
                 method: 'GET',
                 headers: {
@@ -166,11 +166,11 @@ function About() {
                 },
                 signal: controller.signal
             });
-            
+
             clearTimeout(timeoutId);
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
-            
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('Mission & Vision data received:', data);
@@ -195,13 +195,13 @@ function About() {
     useEffect(() => {
         setIsVisible(true);
         document.title = 'About OSR Digital - Leading Content Distribution Company';
-        
+
         // Fetch Mission & Vision data
         fetchMissionVision();
-        
+
         // Fetch Core Values data
         fetchCoreValues();
-        
+
         // Fetch Services data
         fetchServices();
     }, []);
@@ -214,18 +214,50 @@ function About() {
             isDark ? 'bg-gray-900' : 'bg-white'
         }`}>
             {/* Hero Section */}
-            <DynamicHero page="about" />
+            <CompactHero
+                page="about"
+                title="About OSR Digital"
+                subtitle="Movie Distribution Excellence"
+                description="Learn more about our mission, vision, and the team behind OSR Digital's success in global content distribution."
+                breadcrumbs={[
+                    { label: 'Home', href: '/', icon: 'fas fa-home' },
+                    { label: 'About Us' }
+                ]}
+            />
 
 
             {/* Mission & Vision Section */}
             {missionVision.is_active && (
                 <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     <div className="container-minimal">
-                        
+
                         {isLoading ? (
-                            <div className="text-center py-20">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                                <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading Mission & Vision...</p>
+                            <div className="grid lg:grid-cols-2 gap-16 items-center">
+                                {/* Mission Skeleton */}
+                                <div>
+                                    <div className="mb-6">
+                                        <div className={`w-12 h-12 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-10 w-48 mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-5/6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
+
+                                {/* Vision Skeleton */}
+                                <div>
+                                    <div className="mb-6">
+                                        <div className={`w-12 h-12 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-10 w-48 mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-4/5 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
                             </div>
                         ) : (
                             <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -334,8 +366,24 @@ function About() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {services.services.map((service, index) => (
+                    {isLoading ? (
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div key={i} className={`p-8 rounded-2xl border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+                                    <div className="flex items-start space-x-4">
+                                        <div className={`w-12 h-12 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse flex-shrink-0`}></div>
+                                        <div className="flex-1">
+                                            <div className={`h-6 w-32 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                            <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                            <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {services.services.map((service, index) => (
                             <div key={index} className={`transform transition-all duration-1000 delay-${index * 200} ${
                                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                             } p-8 rounded-2xl border ${
@@ -359,8 +407,9 @@ function About() {
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

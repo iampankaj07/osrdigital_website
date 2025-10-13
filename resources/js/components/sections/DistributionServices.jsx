@@ -14,7 +14,7 @@ function DistributionServices() {
                 setLoading(true);
                 const response = await fetch('/api/distribution-services');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     setServices(data.data);
                 } else {
@@ -48,9 +48,27 @@ function DistributionServices() {
         return (
             <section className={`section-minimal ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
-                    <div className="text-center py-16">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                        <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading services...</p>
+                    {/* Header Skeleton */}
+                    <div className="text-center mb-16">
+                        <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-6 w-96 mx-auto mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-6 w-64 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                    </div>
+
+                    {/* Services Grid Skeleton */}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className={`p-8 rounded-xl border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
+                                <div className="flex items-start space-x-4">
+                                    <div className={`w-12 h-12 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse flex-shrink-0`}></div>
+                                    <div className="flex-1">
+                                        <div className={`h-6 w-32 mb-3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -83,7 +101,7 @@ function DistributionServices() {
                     <p className={`text-lg max-w-3xl mx-auto text-minimal ${
                         isDark ? 'text-gray-300' : 'text-gray-600'
                     }`}>
-                        We provide comprehensive movie distribution services across all platforms and markets, 
+                        We provide comprehensive movie distribution services across all platforms and markets,
                         ensuring your content reaches the right audience at the right time.
                     </p>
                 </div>
@@ -96,27 +114,27 @@ function DistributionServices() {
                                 key={service.id || index}
                                 to={service.link}
                                 className={`group p-6 rounded-xl transition-all duration-200 hover-subtle ${
-                                    isDark 
-                                        ? 'card-minimal-dark hover:border-brand-orange-500/30' 
+                                    isDark
+                                        ? 'card-minimal-dark hover:border-brand-orange-500/30'
                                         : 'card-minimal hover:border-brand-orange-200'
                                 }`}
                             >
                                 <div className="flex items-start gap-4">
                                     <div className={`p-3 rounded-lg ${
-                                        isDark 
-                                            ? 'bg-brand-orange-500/10 text-brand-orange-400' 
+                                        isDark
+                                            ? 'bg-brand-orange-500/10 text-brand-orange-400'
                                             : 'bg-brand-orange-100 text-brand-orange-600'
                                     }`}>
                                         {renderIcon(service)}
                                     </div>
-                                    
+
                                     <div className="flex-1">
                                         <h3 className={`text-lg font-semibold mb-3 text-minimal-bold ${
                                             isDark ? 'text-white' : 'text-gray-900'
                                         }`}>
                                             {service.title}
                                         </h3>
-                                        
+
                                         <p className={`text-sm text-minimal mb-4 ${
                                             isDark ? 'text-gray-300' : 'text-gray-600'
                                         }`}>

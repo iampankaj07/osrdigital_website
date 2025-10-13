@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandshake, faRocket, faGlobe, faUsers, faChartLine, faAward, faShieldAlt, faLightbulb, faStar, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import DynamicHero from '../components/sections/DynamicHero';
+import CompactHero from '../components/sections/CompactHero';
 import { getSafeImageUrl, handleImageError } from '../utils/imageUtils';
 
 function Partners() {
@@ -23,7 +23,7 @@ function Partners() {
             document.getElementsByTagName('head')[0].appendChild(metaDescription);
         }
         metaDescription.content = "Discover our network of trusted partners and collaborators who help us bring exceptional content to global audiences. Join our partnership program today.";
-        
+
         // Fetch partners and benefits data
         fetchPartners();
         fetchBenefits();
@@ -130,7 +130,16 @@ function Partners() {
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
             {/* Hero Section */}
-            <DynamicHero page="partners" />
+            <CompactHero
+                page="partners"
+                title="Our Partners"
+                subtitle="Strategic Partnerships"
+                description="Discover our network of trusted partners and collaborators who help us bring exceptional content to global audiences."
+                breadcrumbs={[
+                    { label: 'Home', href: '/', icon: 'fas fa-home' },
+                    { label: 'Partners' }
+                ]}
+            />
 
             {/* Partners Grid Section */}
             <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
@@ -145,8 +154,24 @@ function Partners() {
                     </div>
 
                     {isLoading ? (
-                        <div className="flex justify-center items-center py-16">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-orange-500"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className={`p-8 rounded-lg shadow-lg ${isDark ? 'bg-gray-700' : 'bg-white'}`}>
+                                    <div className="text-center mb-6">
+                                        <div className={`h-16 w-32 mx-auto mb-4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-6 w-24 mx-auto mb-2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-32 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-1/2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                    <div className="flex justify-center mt-6">
+                                        <div className={`h-10 w-24 rounded-lg ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -155,8 +180,8 @@ function Partners() {
                                     isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
                                 }`}>
                                     <div className="text-center mb-6">
-                                        <img 
-                                            src={getSafeImageUrl(partner.logo, partner.name, 200, 100)} 
+                                        <img
+                                            src={getSafeImageUrl(partner.logo, partner.name, 200, 100)}
                                             alt={`${partner.name} logo`}
                                             className="h-16 mx-auto mb-4 object-contain"
                                             onError={(e) => handleImageError(e, partner.name, 200, 100)}
@@ -170,9 +195,9 @@ function Partners() {
                                             </p>
                                         )}
                                         {partner.website_url && (
-                                            <a 
-                                                href={partner.website_url} 
-                                                target="_blank" 
+                                            <a
+                                                href={partner.website_url}
+                                                target="_blank"
                                                 rel="noopener noreferrer"
                                                 className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                                                     isDark ? 'bg-brand-orange-500/20 text-brand-orange-400' : 'bg-brand-orange-100 text-brand-orange-600'
