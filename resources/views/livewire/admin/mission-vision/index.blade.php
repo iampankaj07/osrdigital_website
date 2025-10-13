@@ -141,7 +141,7 @@
                     </div>
                     
                     <div class="form-group text-right">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-dark">
                         <i class="fas fa-save mr-1"></i>Save Mission & Vision
                         </button>
                     </div>

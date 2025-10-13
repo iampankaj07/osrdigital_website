@@ -1,106 +1,111 @@
 <div>
-    <div class="card">
-        <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h5 class="mb-0">
-                        <i class="fas fa-key mr-2"></i>Permissions Management
-                    </h5>
-                </div>
-                <div class="col-auto">
-                    @if(count($selectedItems) > 0)
-                        <button wire:click="openBulkDeleteModal" class="btn btn-danger mr-2">
-                            <i class="fas fa-trash mr-1"></i>Delete Selected ({{ count($selectedItems) }})
-                        </button>
-                    @endif
-                    <button wire:click="create" class="btn btn-primary">
-                        <i class="fas fa-plus mr-1"></i>Add Permission
-                    </button>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0 font-weight-bold text-dark">
+                <i class="fas fa-key mr-2 text-primary"></i>Permissions Management
+            </h4>
+            <p class="text-muted small mb-0">Manage system permissions and access controls</p>
         </div>
-        <div class="card-body">
-            <!-- Search and Filters -->
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" wire:model="search" class="form-control" placeholder="Search permissions...">
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
+        <div>
+            <button wire:click="create" class="btn btn-dark btn-sm">
+                <i class="fas fa-plus mr-1"></i>Add Permission
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <div class="row align-items-end">
+                <div class="col-md-4">
+                    <div class="form-group mb-0">
+                        <label for="search" class="small text-muted mb-1">Search</label>
+                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search permissions...">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select wire:model="perPage" class="form-control">
-                        <option value="10">10 per page</option>
-                        <option value="25">25 per page</option>
-                        <option value="50">50 per page</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="perPage" class="small text-muted mb-1">Per Page</label>
+                        <select wire:model.live="perPage" class="form-control form-control-sm">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <select wire:model="sortField" class="form-control">
-                        <option value="name">Name</option>
-                        <option value="created_at">Created Date</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="sortField" class="small text-muted mb-1">Sort By</label>
+                        <select wire:model.live="sortField" class="form-control form-control-sm">
+                            <option value="name">Name</option>
+                            <option value="created_at">Created Date</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Permissions Table -->
+    <!-- Permissions Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
                         <tr>
-                            <th>
-                                <div class="form-check">
-                                    <input type="checkbox" wire:model="selectAll" class="form-check-input">
-                                    <label class="form-check-label">All</label>
-                                </div>
+                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 40%;">
+                                <span class="d-flex align-items-center">
+                                    Permission Name
+                                    @if($sortField === 'name')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th wire:click="sortBy('name')" style="cursor: pointer;">
-                                Permission Name
-                                @if($sortField === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @endif
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 15%;">Guard</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 15%;">Roles Count</th>
+                            <th wire:click="sortBy('created_at')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 15%;">
+                                <span class="d-flex align-items-center">
+                                    Created
+                                    @if($sortField === 'created_at')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th>Guard</th>
-                            <th>Roles Count</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($permissions as $permission)
-                            <tr>
-                                <td>
-                                    <div class="form-check">
-                                        <input type="checkbox" 
-                                               wire:model="selectedItems" 
-                                               value="{{ $permission->id }}" 
-                                               class="form-check-input">
-                                    </div>
+                            <tr class="border-bottom">
+                                <td class="py-3 px-3">
+                                    <div class="font-weight-medium text-dark">{{ $permission->name }}</div>
                                 </td>
-                                <td>
-                                    <strong>{{ $permission->name }}</strong>
+                                <td class="py-3 px-3 text-center">
+                                    <span class="badge badge-light text-dark border small">{{ $permission->guard_name }}</span>
                                 </td>
-                                <td>
-                                    <span class="badge badge-info">{{ $permission->guard_name }}</span>
+                                <td class="py-3 px-3 text-center">
+                                    <span class="badge badge-{{ $permission->roles_count > 0 ? 'success' : 'light' }} badge-sm">
+                                        {{ $permission->roles_count ?? 0 }}
+                                    </span>
                                 </td>
-                                <td>
-                                    <span class="badge badge-secondary">{{ $permission->roles_count ?? 0 }}</span>
+                                <td class="py-3 px-3">
+                                    <div class="text-muted small">{{ $permission->created_at->format('M d, Y') }}</div>
                                 </td>
-                                <td>
-                                    <small class="text-muted">{{ $permission->created_at->format('M d, Y') }}</small>
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
+                                <td class="py-3 px-3 text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
                                         <button wire:click="edit({{ $permission->id }})" 
-                                                class="btn btn-sm btn-outline-primary">
+                                                class="btn btn-dark btn-sm border-0" 
+                                                title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button wire:click="delete({{ $permission->id }})" 
-                                                class="btn btn-sm btn-outline-danger"
+                                                class="btn btn-danger btn-sm border-0"
+                                                title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this permission?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -148,12 +153,12 @@
                                                     </div>
 
                                                     <div class="form-group text-right">
-                                                        <button type="button" class="btn btn-secondary mr-2" wire:click="cancelEdit">
-                                                            Cancel
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary">
-                                                            <i class="fas fa-save mr-1"></i>Update Permission
-                                                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm mr-2" wire:click="cancelEdit">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-dark btn-sm">
+                            <i class="fas fa-save mr-1"></i>Update Permission
+                        </button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -163,25 +168,28 @@
                             @endif
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <i class="fas fa-key fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">No permissions found</p>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="fas fa-key fa-3x mb-3 opacity-50"></i>
+                                        <h5 class="font-weight-normal">No permissions found</h5>
+                                        <p class="small">Start by creating your first permission</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    Showing {{ $permissions->firstItem() ?? 0 }} to {{ $permissions->lastItem() ?? 0 }} of {{ $permissions->total() }} results
-                </div>
-                <div>
-                    {{ $permissions->links() }}
-                </div>
-            </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="text-muted small">
+            Showing {{ $permissions->firstItem() ?? 0 }} to {{ $permissions->lastItem() ?? 0 }} of {{ $permissions->total() }} results
+        </div>
+        <div>
+            {{ $permissions->links() }}
         </div>
     </div>
 
@@ -223,10 +231,10 @@
                     </div>
 
                     <div class="form-group text-right">
-                        <button type="button" class="btn btn-secondary mr-2" wire:click="cancelEdit">
+                        <button type="button" class="btn btn-secondary btn-sm mr-2" wire:click="cancelEdit">
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark btn-sm">
                             <i class="fas fa-save mr-1"></i>Create Permission
                         </button>
                     </div>
@@ -235,33 +243,4 @@
         </div>
     @endif
 
-    <!-- Bulk Delete Modal -->
-    @if($showBulkDeleteModal)
-        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-exclamation-triangle mr-2 text-warning"></i>Confirm Bulk Delete
-                        </h5>
-                        <button type="button" class="close" wire:click="closeBulkDeleteModal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete <strong>{{ count($selectedItems) }}</strong> selected permission(s)?</p>
-                        <p class="text-danger"><strong>This action cannot be undone!</strong></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeBulkDeleteModal">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-danger" wire:click="bulkDelete">
-                            <i class="fas fa-trash mr-1"></i>Delete Selected
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 </div>

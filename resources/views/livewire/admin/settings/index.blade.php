@@ -5,7 +5,7 @@
             <h1 class="h4 mb-1 font-weight-normal">Settings</h1>
             <p class="text-muted small mb-0">Manage application settings and configuration</p>
         </div>
-        <button wire:click="create" class="btn btn-primary btn-sm">
+        <button wire:click="create" class="btn btn-dark btn-sm">
             <i class="fas fa-plus mr-1"></i>
             Add Setting
         </button>
@@ -118,11 +118,11 @@
                     </div>
                     
                     <div class="form-group text-right">
-                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
+                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary btn-sm mr-2">
                             <i class="fas fa-times mr-1"></i>
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-success">
+                        <button type="submit" class="btn btn-success btn-sm">
                             <i class="fas fa-save mr-1"></i>
                             Create Setting
                         </button>
@@ -192,7 +192,7 @@
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
                                         <button wire:click="edit({{ $setting->id }})" 
-                                                class="btn btn-outline-primary btn-sm border-0" 
+                                                class="btn btn-dark btn-sm border-0" 
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -202,7 +202,7 @@
                                             <i class="fas fa-{{ $setting->is_public ? 'lock' : 'unlock' }}"></i>
                                         </button>
                                         <button wire:click="delete({{ $setting->id }})" 
-                                                class="btn btn-outline-danger btn-sm border-0"
+                                                class="btn btn-danger btn-sm border-0"
                                                 title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this setting?')">
                                             <i class="fas fa-trash"></i>
@@ -284,11 +284,11 @@
                                                 </div>
                                                 
                                                 <div class="form-group text-right">
-                                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
+                                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary btn-sm mr-2">
                                                         <i class="fas fa-times mr-1"></i>
                                                         Cancel
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary">
+                                                    <button type="submit" class="btn btn-dark btn-sm">
                                                         <i class="fas fa-save mr-1"></i>
                                                         Update
                                                     </button>

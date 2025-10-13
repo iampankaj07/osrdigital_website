@@ -105,7 +105,7 @@
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <a href="{{ route('admin.film-portfolios.index') }}" class="btn btn-block btn-outline-warning">
+                            <a href="{{ route('admin.film-portfolios.index') }}" class="btn btn-block btn-warning">
                                 <i class="fas fa-film mr-2"></i>
                                 Manage Film Portfolios
                             </a>
