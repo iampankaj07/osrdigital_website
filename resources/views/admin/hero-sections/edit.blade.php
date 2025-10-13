@@ -22,7 +22,7 @@
         <form action="{{ route('admin.hero-sections.update', $heroSection) }}" method="POST" class="p-6">
             @csrf
             @method('PUT')
-            
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Page Selection -->
                 <div>
@@ -87,7 +87,7 @@
             <!-- Button Configuration -->
             <div class="mt-8">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Button Configuration</h3>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Primary Button -->
                     <div class="space-y-4">
@@ -144,7 +144,7 @@
                 <a href="{{ route('admin.hero-sections.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-save mr-2"></i>
                     Update Hero Section
                 </button>

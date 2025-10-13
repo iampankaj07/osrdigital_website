@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-900">Mission & Vision</h1>
-        <button onclick="saveMissionVision()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+        <button onclick="saveMissionVision()" class="btn btn-dark">
             <i class="fas fa-save mr-2"></i>
             Save Changes
         </button>
@@ -39,7 +39,7 @@
     <form method="POST" action="{{ route('admin.mission-vision.update') }}" id="missionVisionForm">
         @csrf
         @method('PUT')
-        
+
         <!-- Mission Section -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -76,7 +76,7 @@
                         @enderror
                     </div>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Mission Description</label>
                     <textarea name="mission_description" rows="4" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">{{ old('mission_description', $missionVision->mission_description) }}</textarea>
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Vision Description</label>
                     <textarea name="vision_description" rows="4" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">{{ old('vision_description', $missionVision->vision_description) }}</textarea>
@@ -201,11 +201,11 @@ function validateMissionVisionForm() {
 function showFieldError(input, message) {
     input.classList.remove('border-gray-300');
     input.classList.add('border-red-500');
-    
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message text-red-500 text-sm mt-1';
     errorDiv.textContent = message;
-    
+
     input.parentNode.appendChild(errorDiv);
 }
 
@@ -216,9 +216,9 @@ function showNotification(message, type = 'success') {
         type === 'success' ? 'bg-green-500' : 'bg-red-500'
     }`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remove notification after 3 seconds
     setTimeout(() => {
         notification.remove();

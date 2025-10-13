@@ -8,7 +8,7 @@
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-900">Roles & Permissions</h1>
         <div class="flex space-x-3">
-            <button onclick="openAddRoleModal()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+            <button onclick="openAddRoleModal()" class="btn btn-dark">
                 <i class="fas fa-plus mr-2"></i>
                 New Role
             </button>
@@ -404,7 +404,7 @@ function showTab(tabName) {
     document.getElementById('roles-content').classList.add('hidden');
     document.getElementById('permissions-content').classList.add('hidden');
     document.getElementById('users-content').classList.add('hidden');
-    
+
     // Remove active class from all tabs
     document.getElementById('roles-tab').classList.remove('border-purple-500', 'text-purple-600');
     document.getElementById('roles-tab').classList.add('border-transparent', 'text-gray-500');
@@ -412,7 +412,7 @@ function showTab(tabName) {
     document.getElementById('permissions-tab').classList.add('border-transparent', 'text-gray-500');
     document.getElementById('users-tab').classList.remove('border-purple-500', 'text-purple-600');
     document.getElementById('users-tab').classList.add('border-transparent', 'text-gray-500');
-    
+
     // Show selected content and activate tab
     document.getElementById(tabName + '-content').classList.remove('hidden');
     document.getElementById(tabName + '-tab').classList.remove('border-transparent', 'text-gray-500');
@@ -427,9 +427,9 @@ function showNotification(message, type = 'success') {
         type === 'success' ? 'bg-green-500' : 'bg-red-500'
     }`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remove notification after 3 seconds
     setTimeout(() => {
         notification.remove();
@@ -446,11 +446,11 @@ function makeRequest(url, method = 'GET', data = null) {
             'X-Requested-With': 'XMLHttpRequest'
         }
     };
-    
+
     if (data) {
         options.body = JSON.stringify(data);
     }
-    
+
     return fetch(url, options)
         .then(response => {
             if (!response.ok) {
@@ -481,7 +481,7 @@ function closeRoleModal() {
 function editRole(id) {
     currentRoleId = id;
     document.getElementById('roleModalTitle').textContent = 'Edit Role';
-    
+
     // Fetch role data
     makeRequest(`/admin/roles/${id}`)
         .then(data => {
@@ -528,7 +528,7 @@ function closePermissionModal() {
 function editPermission(id) {
     currentPermissionId = id;
     document.getElementById('permissionModalTitle').textContent = 'Edit Permission';
-    
+
     // Fetch permission data
     makeRequest(`/admin/permissions/${id}`)
         .then(data => {
@@ -585,11 +585,11 @@ function deleteUser(id) {
 // Role Permission Assignment functions
 function assignPermissionsToRole(roleId) {
     currentRoleId = roleId;
-    
+
     // For now, show a simple message and redirect to a dedicated page
     // This avoids authentication issues with AJAX
     showNotification('Permission assignment feature will be implemented in a future update. For now, you can manage roles and permissions through the main interface.', 'error');
-    
+
     // TODO: Implement proper permission assignment modal
     // This requires either:
     // 1. Setting up proper API authentication
@@ -600,7 +600,7 @@ function assignPermissionsToRole(roleId) {
 function loadPermissionsIntoModal(permissions, roleId) {
     const container = document.getElementById('permissionsList');
     container.innerHTML = '';
-    
+
     // Group permissions by guard name
     const groupedPermissions = permissions.reduce((acc, permission) => {
         if (!acc[permission.guard_name]) {
@@ -609,7 +609,7 @@ function loadPermissionsIntoModal(permissions, roleId) {
         acc[permission.guard_name].push(permission);
         return acc;
     }, {});
-    
+
     Object.keys(groupedPermissions).forEach(guardName => {
         const guardDiv = document.createElement('div');
         guardDiv.className = 'mb-4';
@@ -618,9 +618,9 @@ function loadPermissionsIntoModal(permissions, roleId) {
             <div class="space-y-2" id="permissions-${guardName}">
                 ${groupedPermissions[guardName].map(permission => `
                     <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
-                        <input type="checkbox" 
-                               name="permissions[]" 
-                               value="${permission.id}" 
+                        <input type="checkbox"
+                               name="permissions[]"
+                               value="${permission.id}"
                                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
                         <div class="flex-1">
                             <div class="text-sm font-medium text-gray-900">${permission.name}</div>
@@ -632,7 +632,7 @@ function loadPermissionsIntoModal(permissions, roleId) {
         `;
         container.appendChild(guardDiv);
     });
-    
+
     // Load current role permissions
     loadCurrentRolePermissions(roleId);
 }
@@ -657,7 +657,7 @@ function loadCurrentRolePermissions(roleId) {
 function saveRolePermissions() {
     const selectedPermissions = Array.from(document.querySelectorAll('input[name="permissions[]"]:checked'))
         .map(checkbox => parseInt(checkbox.value));
-    
+
     makeRequest(`/admin/roles/${currentRoleId}/permissions`, 'POST', { permissions: selectedPermissions })
         .then(data => {
             if (data.success) {
@@ -681,11 +681,11 @@ function closeRolePermissionModal() {
 // User Role Assignment functions
 function assignRolesToUser(userId) {
     currentUserId = userId;
-    
+
     // For now, show a simple message
     // This avoids authentication issues with AJAX
     showNotification('User role assignment feature will be implemented in a future update. For now, you can manage users through the main interface.', 'error');
-    
+
     // TODO: Implement proper user role assignment modal
     // This requires either:
     // 1. Setting up proper API authentication
@@ -696,7 +696,7 @@ function assignRolesToUser(userId) {
 function loadRolesIntoModal(roles, userId) {
     const container = document.getElementById('rolesList');
     container.innerHTML = '';
-    
+
     // Group roles by guard name
     const groupedRoles = roles.reduce((acc, role) => {
         if (!acc[role.guard_name]) {
@@ -705,7 +705,7 @@ function loadRolesIntoModal(roles, userId) {
         acc[role.guard_name].push(role);
         return acc;
     }, {});
-    
+
     Object.keys(groupedRoles).forEach(guardName => {
         const guardDiv = document.createElement('div');
         guardDiv.className = 'mb-4';
@@ -714,9 +714,9 @@ function loadRolesIntoModal(roles, userId) {
             <div class="space-y-2" id="roles-${guardName}">
                 ${groupedRoles[guardName].map(role => `
                     <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
-                        <input type="checkbox" 
-                               name="roles[]" 
-                               value="${role.id}" 
+                        <input type="checkbox"
+                               name="roles[]"
+                               value="${role.id}"
                                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
                         <div class="flex-1">
                             <div class="text-sm font-medium text-gray-900">${role.name}</div>
@@ -728,7 +728,7 @@ function loadRolesIntoModal(roles, userId) {
         `;
         container.appendChild(guardDiv);
     });
-    
+
     // Load current user roles
     loadCurrentUserRoles(userId);
 }
@@ -753,7 +753,7 @@ function loadCurrentUserRoles(userId) {
 function saveUserRoles() {
     const selectedRoles = Array.from(document.querySelectorAll('input[name="roles[]"]:checked'))
         .map(checkbox => parseInt(checkbox.value));
-    
+
     makeRequest(`/admin/users/${currentUserId}/roles`, 'POST', { roles: selectedRoles })
         .then(data => {
             if (data.success) {
@@ -779,13 +779,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Role form submission
     document.getElementById('roleForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const formData = new FormData(this);
         const data = Object.fromEntries(formData);
-        
+
         const url = currentRoleId ? `/admin/roles/${currentRoleId}` : '/admin/roles';
         const method = currentRoleId ? 'PUT' : 'POST';
-        
+
         makeRequest(url, method, data)
             .then(response => {
                 if (response.success) {
@@ -800,17 +800,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Failed to save role', 'error');
             });
     });
-    
+
     // Permission form submission
     document.getElementById('permissionForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const formData = new FormData(this);
         const data = Object.fromEntries(formData);
-        
+
         const url = currentPermissionId ? `/admin/permissions/${currentPermissionId}` : '/admin/permissions';
         const method = currentPermissionId ? 'PUT' : 'POST';
-        
+
         makeRequest(url, method, data)
             .then(response => {
                 if (response.success) {

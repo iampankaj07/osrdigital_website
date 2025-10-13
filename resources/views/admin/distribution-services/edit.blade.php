@@ -21,11 +21,11 @@
         <form action="{{ route('admin.distribution-services.update', $distributionService) }}" method="POST" class="p-6">
             @csrf
             @method('PUT')
-            
+
             <!-- Basic Information Section -->
             <div class="mb-8">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Title -->
                     <div>
@@ -63,7 +63,7 @@
             <!-- Icon Configuration Section -->
             <div class="mb-8">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Icon Configuration</h3>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Icon Type -->
                     <div>
@@ -124,7 +124,7 @@
             <!-- Settings Section -->
             <div class="mb-8">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Settings & Configuration</h3>
-                
+
                 <div class="flex items-center">
                     <input type="checkbox" name="is_active" id="is_active" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded" value="1" {{ old('is_active', $distributionService->is_active) ? 'checked' : '' }}>
                     <label for="is_active" class="ml-2 block text-sm text-gray-900">
@@ -138,7 +138,7 @@
                 <a href="{{ route('admin.distribution-services.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-save mr-2"></i>
                     Update Service
                 </button>
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
         Object.values(iconInputs).forEach(input => {
             input.style.display = 'none';
         });
-        
+
         // Show selected input
         if (iconInputs[type]) {
             iconInputs[type].style.display = 'block';

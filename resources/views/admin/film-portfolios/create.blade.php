@@ -20,12 +20,12 @@
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <form action="{{ route('admin.film-portfolios.store') }}" method="POST" enctype="multipart/form-data" class="p-6">
             @csrf
-            
+
             <div class="space-y-8">
                 <!-- Basic Information -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                    
+
                     <div class="space-y-6">
                         <!-- Title -->
                         <div>
@@ -78,7 +78,7 @@
                 <!-- Media & Details -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Media & Details</h3>
-                    
+
                     <div class="space-y-6">
 
                         <!-- Featured Image Upload -->
@@ -91,7 +91,7 @@
                                     <i class="fas fa-trash mr-1"></i>Clear
                                 </button>
                             </div>
-                            <input type="file" name="featured_image" id="featured_image" class="filepond" accept=".png,.svg,.jpg,.jpeg">
+                            <input type="file" name="featured_image" id="featured_image"  accept=".png,.svg,.jpg,.jpeg">
                             <input type="hidden" name="featured_image_url" id="featured_image_url" value="{{ old('featured_image_url') }}">
                             <p class="mt-1 text-sm text-gray-500">Upload a featured image for this portfolio</p>
                             @error('featured_image')
@@ -128,7 +128,7 @@
                 <!-- Category & Settings -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Category & Settings</h3>
-                    
+
                     <div class="space-y-6">
                         <!-- Category -->
                         <div>
@@ -188,7 +188,7 @@
                 <a href="{{ route('admin.film-portfolios.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors duration-200">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-save mr-2"></i>
                     Create Film
                 </button>
@@ -197,106 +197,3 @@
     </div>
 @endsection
 
-@section('scripts')
-<!-- FilePond CSS -->
-<link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
-<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
-
-<!-- FilePond JS -->
-<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Register the plugin
-    FilePond.registerPlugin(FilePondPluginImagePreview);
-
-    // Create FilePond instance for featured image upload
-    const featuredImagePond = FilePond.create(document.querySelector('#featured_image'), {
-        name: 'featured_image',
-        acceptedFileTypes: ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg'],
-        maxFileSize: '2MB',
-        imageResizeTargetWidth: 800,
-        imageResizeTargetHeight: 450,
-        imageResizeMode: 'contain',
-        imageResizeUpscale: false,
-        timeout: 30000, // 30 seconds timeout
-        allowRevert: false, // Prevent reverting to server
-        allowRemove: true, // Allow removing files
-        allowReplace: true, // Allow replacing files
-        server: {
-            process: {
-                url: '/upload/film-portfolio-image',
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                },
-                withCredentials: true,
-                onload: (response) => {
-                    console.log('Raw response:', response);
-                    try {
-                        const result = JSON.parse(response);
-                        console.log('Parsed response:', result);
-                        if (result.success && result.url) {
-                            console.log('Upload successful, returning URL:', result.url);
-                            // Store the uploaded URL in the hidden field
-                            document.getElementById('featured_image_url').value = result.url;
-                            return result.url;
-                        } else {
-                            console.error('Upload failed:', result.message || 'Unknown error');
-                            return null;
-                        }
-                    } catch (error) {
-                        console.error('Error parsing response:', error);
-                        throw new Error('Upload failed');
-                    }
-                },
-                onerror: (response) => {
-                    console.error('Upload error:', response);
-                    alert('Upload failed: ' + response);
-                    throw new Error('Upload failed');
-                }
-            }
-        },
-        allowImagePreview: true,
-        imagePreviewHeight: 200,
-        imageCropAspectRatio: '16:9',
-        labelIdle: 'Drag & Drop featured image or <span class="filepond--label-action">Browse</span>',
-        labelInvalidField: 'Field contains invalid files',
-        labelFileWaitingForSize: 'Waiting for size',
-        labelFileSizeNotAvailable: 'Size not available',
-        labelFileLoading: 'Loading',
-        labelFileLoadError: 'Error during load',
-        labelFileProcessing: 'Uploading',
-        labelFileProcessingComplete: 'Upload complete',
-        labelFileProcessingAborted: 'Upload cancelled',
-        labelFileProcessingError: 'Error during upload',
-        labelFileProcessingRevertError: 'Error during revert',
-        labelFileRemoveError: 'Error during remove',
-        labelTapToCancel: 'tap to cancel',
-        labelTapToRetry: 'tap to retry',
-        labelTapToUndo: 'tap to undo',
-        labelButtonRemoveItem: 'Clear',
-        labelButtonAbortItemLoad: 'Abort',
-        labelButtonRetryItemLoad: 'Retry',
-        labelButtonAbortItemProcessing: 'Cancel',
-        labelButtonUndoItemProcessing: 'Undo',
-        labelButtonRetryItemProcessing: 'Retry',
-        labelButtonProcessItem: 'Upload'
-    });
-
-    // Add clear featured image functionality
-    window.clearFeaturedImage = function() {
-        featuredImagePond.removeFiles();
-        document.getElementById('featured_image_url').value = '';
-    };
-
-    // Handle form submission
-    document.getElementById('filmForm').addEventListener('submit', function(e) {
-        // Form validation can be added here if needed
-        console.log('Form submitted');
-    });
-});
-</script>
-@endsection

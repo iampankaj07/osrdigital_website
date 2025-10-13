@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-900">Category Details</h1>
         <div class="flex space-x-3">
-            <a href="{{ route('admin.news-categories.edit', $newsCategory) }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+            <a href="{{ route('admin.news-categories.edit', $newsCategory) }}" class="btn btn-dark">
                 <i class="fas fa-edit mr-2"></i>
                 Edit Category
             </a>
@@ -23,7 +23,7 @@
         <div class="lg:col-span-2">
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">{{ $newsCategory->name }}</h2>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-500 mb-1">Color</label>
@@ -32,25 +32,25 @@
                             <span class="text-sm text-gray-900">{{ $newsCategory->color }}</span>
                         </div>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-500 mb-1">Status</label>
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $newsCategory->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                             {{ $newsCategory->is_active ? 'Active' : 'Inactive' }}
                         </span>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-500 mb-1">Sort Order</label>
                         <span class="text-sm text-gray-900">{{ $newsCategory->sort_order }}</span>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-500 mb-1">Created</label>
                         <span class="text-sm text-gray-900">{{ $newsCategory->created_at->format('M d, Y') }}</span>
                     </div>
                 </div>
-                
+
                 @if($newsCategory->description)
                     <div>
                         <label class="block text-sm font-medium text-gray-500 mb-2">Description</label>
@@ -64,7 +64,7 @@
         <div>
             <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">News Articles ({{ $newsCategory->news->count() }})</h3>
-                
+
                 @if($newsCategory->news->count() > 0)
                     <div class="space-y-3">
                         @foreach($newsCategory->news->take(5) as $article)
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                         @endforeach
-                        
+
                         @if($newsCategory->news->count() > 5)
                             <p class="text-sm text-gray-500 text-center">And {{ $newsCategory->news->count() - 5 }} more articles...</p>
                         @endif

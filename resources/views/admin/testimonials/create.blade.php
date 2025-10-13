@@ -20,12 +20,12 @@
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
         <form action="{{ route('admin.testimonials.store') }}" method="POST" enctype="multipart/form-data" class="p-6">
             @csrf
-            
+
             <div class="space-y-8">
                 <!-- Basic Information -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                    
+
                     <div class="space-y-6">
                         <!-- Content -->
                         <div>
@@ -91,20 +91,14 @@
                 <!-- Media & Settings -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Media & Settings</h3>
-                    
+
                     <div class="space-y-6">
                         <!-- Avatar Upload -->
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <label for="avatar" class="block text-sm font-medium text-gray-700">
-                                    Author Avatar (Optional)
-                                </label>
-                                <button type="button" onclick="clearAllFiles()" class="text-sm text-red-600 hover:text-red-800 font-medium">
-                                    <i class="fas fa-trash mr-1"></i>Clear All
-                                </button>
-                            </div>
-                            <input type="file" name="avatar" id="avatar" class="filepond" accept=".png,.svg,.jpg,.jpeg">
-                            <input type="hidden" name="avatar_url" id="avatar_url" value="{{ old('avatar_url') }}">
+                            <label for="avatar" class="block text-sm font-medium text-gray-700 mb-2">
+                                Author Avatar (Optional)
+                            </label>
+                            <input type="file" name="avatar" id="avatar" accept=".png,.svg,.jpg,.jpeg" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                             <p class="mt-1 text-sm text-gray-500">Upload a profile picture for the author. If not provided, initials will be used.</p>
                             @error('avatar')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -151,7 +145,7 @@
                 <a href="{{ route('admin.testimonials.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors duration-200">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-save mr-2"></i>
                     Create Testimonial
                 </button>
@@ -160,85 +154,3 @@
     </div>
 @endsection
 
-@section('scripts')
-<!-- FilePond CSS -->
-<link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
-<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
-
-<!-- FilePond JS -->
-<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Register the plugin
-    FilePond.registerPlugin(FilePondPluginImagePreview);
-
-    // Create FilePond instance for avatar upload
-    const avatarPond = FilePond.create(document.querySelector('#avatar'), {
-        name: 'avatar',
-        server: {
-            process: {
-                url: '/upload/testimonial-image',
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                },
-                withCredentials: true,
-                onload: (response) => {
-                    const data = JSON.parse(response);
-                    if (data.success) {
-                        document.getElementById('avatar_url').value = data.url;
-                        return data.url;
-                    } else {
-                        throw new Error(data.message || 'Upload failed');
-                    }
-                },
-                onerror: (response) => {
-                    console.error('Upload error:', response);
-                    throw new Error('Upload failed');
-                }
-            }
-        },
-        allowImagePreview: true,
-        imagePreviewHeight: 120,
-        allowImageCrop: true,
-        imageCropAspectRatio: '1:1',
-        allowImageResize: true,
-        imageResizeTargetWidth: 300,
-        imageResizeTargetHeight: 300,
-        imageResizeMode: 'cover',
-        acceptedFileTypes: ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg'],
-        maxFileSize: '2MB',
-        labelIdle: 'Drag & Drop avatar or <span class="filepond--label-action">Browse</span>',
-        labelInvalidField: 'Field contains invalid files',
-        labelFileWaitingForSize: 'Waiting for size',
-        labelFileSizeNotAvailable: 'Size not available',
-        labelFileLoading: 'Loading',
-        labelFileLoadError: 'Error during load',
-        labelFileProcessing: 'Uploading',
-        labelFileProcessingComplete: 'Upload complete',
-        labelFileProcessingAborted: 'Upload cancelled',
-        labelFileProcessingError: 'Error during upload',
-        labelFileProcessingRevertError: 'Error during revert',
-        labelFileRemoveError: 'Error during remove',
-        labelTapToCancel: 'tap to cancel',
-        labelTapToRetry: 'tap to retry',
-        labelTapToUndo: 'tap to undo',
-        labelButtonRemoveItem: 'Clear',
-        labelButtonAbortItemLoad: 'Abort',
-        labelButtonRetryItemLoad: 'Retry',
-        labelButtonAbortItemProcessing: 'Cancel',
-        labelButtonUndoItemProcessing: 'Undo',
-        labelButtonRetryItemProcessing: 'Retry',
-        labelButtonProcessItem: 'Upload'
-    });
-
-    // Add clear all files functionality
-    window.clearAllFiles = function() {
-        avatarPond.removeFiles();
-    };
-});
-</script>
-@endsection

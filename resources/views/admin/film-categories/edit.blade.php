@@ -21,12 +21,12 @@
         <form action="{{ route('admin.film-categories.update', $filmCategory) }}" method="POST" class="p-6">
             @csrf
             @method('PUT')
-            
+
             <div class="space-y-6">
                 <!-- Basic Information -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                    
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Name -->
                         <div>
@@ -69,7 +69,7 @@
                 <!-- Settings -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Settings</h3>
-                    
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Sort Order -->
                         <div>
@@ -101,7 +101,7 @@
                 <a href="{{ route('admin.film-categories.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors duration-200">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-save mr-2"></i>
                     Update Category
                 </button>
@@ -114,12 +114,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const colorInput = document.getElementById('color');
     const colorText = document.getElementById('color-text');
-    
+
     // Sync color picker with text input
     colorInput.addEventListener('input', function() {
         colorText.value = this.value;
     });
-    
+
     // Sync text input with color picker
     colorText.addEventListener('input', function() {
         if (this.value.match(/^#[0-9A-Fa-f]{6}$/)) {

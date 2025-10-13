@@ -2,57 +2,61 @@
 
 @section('title', 'Dashboard')
 
+@section('breadcrumb')
+<li class="breadcrumb-item active">Dashboard</li>
+@endsection
+
 @section('content')
-<div class="space-y-6">
-    <!-- Stats Cards -->
-    <div id="stats-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-blue-100 rounded-lg">
-                    <i class="fas fa-home text-blue-600 w-6 h-6"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Home Page</p>
-                    <p class="text-2xl font-semibold text-gray-900">Active</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-green-100 rounded-lg">
-                    <i class="fas fa-handshake text-green-600 w-6 h-6"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Associates</p>
-                    <p class="text-2xl font-semibold text-gray-900">{{ \App\Models\Associate::count() }}</p>
-                </div>
-            </div>
-        </div>
+<!-- Stats Cards -->
+<div id="stats-cards" class="row mb-4">
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>Active</h3>
+        <p>Home Page</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-home"></i>
+      </div>
+    </div>
+  </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-purple-100 rounded-lg">
-                    <i class="fas fa-film text-purple-600 w-6 h-6"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Film Portfolios</p>
-                    <p class="text-2xl font-semibold text-gray-900">{{ \App\Models\FilmPortfolio::count() }}</p>
-                </div>
-            </div>
-        </div>
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{ \App\Models\Associate::count() }}</h3>
+        <p>Associates</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-handshake"></i>
+      </div>
+    </div>
+  </div>
 
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center">
-                <div class="p-2 bg-orange-100 rounded-lg">
-                    <i class="fas fa-quote-left text-orange-600 w-6 h-6"></i>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-600">Testimonials</p>
-                    <p class="text-2xl font-semibold text-gray-900">{{ \App\Models\Testimonial::count() }}</p>
-                </div>
-            </div>
-        </div>
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{ \App\Models\FilmPortfolio::count() }}</h3>
+        <p>Film Portfolios</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-film"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ \App\Models\Testimonial::count() }}</h3>
+        <p>Testimonials</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-quote-left"></i>
+      </div>
+    </div>
+  </div>
     </div>
 
     <!-- Quick Actions -->

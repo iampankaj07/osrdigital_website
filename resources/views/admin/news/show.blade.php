@@ -11,7 +11,7 @@
             <p class="text-gray-600">Article details and preview</p>
         </div>
         <div class="flex space-x-3">
-            <a href="{{ route('admin.news.edit', $news) }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+            <a href="{{ route('admin.news.edit', $news) }}" class="btn btn-dark">
                 <i class="fas fa-edit mr-2"></i>
                 Edit Article
             </a>

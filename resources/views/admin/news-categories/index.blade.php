@@ -6,7 +6,7 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-900">News Categories</h1>
-        <a href="{{ route('admin.news-categories.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+        <a href="{{ route('admin.news-categories.create') }}" class="btn btn-dark">
             <i class="fas fa-plus mr-2"></i>
             Add Category
         </a>
