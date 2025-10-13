@@ -697,13 +697,37 @@
     <!-- AdminLTE JS -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
+    <!-- Livewire Scripts FIRST -->
+    @livewireScripts
+
+    <!-- Alpine.js AFTER Livewire -->
+    <script>
+        // Only load Alpine if not already loaded and after Livewire is ready
+        if (typeof window.Alpine === 'undefined' && typeof window.Livewire !== 'undefined') {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add Alpine script dynamically to ensure proper loading order
+                const alpineScript = document.createElement('script');
+                alpineScript.src = 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js';
+                alpineScript.defer = true;
+                document.head.appendChild(alpineScript);
+            });
+        }
+    </script>
+
+    <!-- FilePond Scripts AFTER Alpine -->
+    @filepondScripts
 
     <!-- Load Vite-built JS -->
     @vite(['resources/js/app.jsx'])
 
     <!-- AdminLTE initialization script -->
     <script>
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for Alpine.js to be ready
+            if (typeof Alpine !== 'undefined') {
+                Alpine.start();
+            }
+            
             // Initialize AdminLTE components
             if (window.AdminLTE) {
                 window.AdminLTE.init();
@@ -757,40 +781,66 @@
                 $('.form-control-navbar').focus();
             });
 
-            // Handle sidebar search
-            $('[data-widget="sidebar-search"]').SidebarSearch({
-                arrowSign: '→',
-                minLength: 2,
-                maxResults: 7,
-                highlightName: true,
-                highlightPath: false,
-                highlightClass: 'text-light',
-                notFoundText: 'No results found'
-            });
-
-            // Initialize treeview
-            $('[data-widget="treeview"]').Treeview('init');
-
             // Auto-hide alerts after 5 seconds
             setTimeout(function() {
                 $('.alert').fadeOut('slow');
             }, 5000);
         });
 
+        // jQuery specific initialization
+        $(document).ready(function() {
+            // Handle sidebar search
+            if (typeof $('[data-widget="sidebar-search"]').SidebarSearch === 'function') {
+                $('[data-widget="sidebar-search"]').SidebarSearch({
+                    arrowSign: '→',
+                    minLength: 2,
+                    maxResults: 7,
+                    highlightName: true,
+                    highlightPath: false,
+                    highlightClass: 'text-light',
+                    notFoundText: 'No results found'
+                });
+            }
 
+            // Initialize treeview
+            if (typeof $('[data-widget="treeview"]').Treeview === 'function') {
+                $('[data-widget="treeview"]').Treeview('init');
+            }
+        });
+
+        // Wait for Livewire to be ready before initializing other components
+        document.addEventListener('livewire:initialized', function() {
+            console.log('Livewire initialized successfully');
+            
+            // Initialize FilePond after Livewire is ready
+            if (typeof window.FilePond !== 'undefined') {
+                console.log('FilePond is available');
+            }
+        });
+
+        // Handle Livewire navigation/updates
+        document.addEventListener('livewire:navigated', function() {
+            console.log('Livewire navigation completed');
+        });
+
+        // Prevent multiple Alpine initialization
+        document.addEventListener('alpine:init', function() {
+            console.log('Alpine.js initialized');
+        });
+
+        // Global error handler for debugging
+        window.addEventListener('error', function(event) {
+            if (event.message && (event.message.includes('entangle') || event.message.includes('loadModel'))) {
+                console.error('FilePond/Livewire integration error:', event.message);
+                console.log('Livewire available:', typeof window.Livewire !== 'undefined');
+                console.log('Alpine available:', typeof window.Alpine !== 'undefined');
+                console.log('FilePond available:', typeof window.FilePond !== 'undefined');
+            }
+        });
     </script>
 
     @yield('scripts')
     @stack('scripts')
-
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Livewire Scripts -->
-    @livewireScripts
-
-    <!-- FilePond Scripts -->
-    @filepondScripts
 </body>
 
 </html>
