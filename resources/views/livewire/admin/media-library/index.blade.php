@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Media Library</h1>
-            <p class="text-gray-600">Upload and manage your media files</p>
+            <p class="text-gray-600">Upload and manage your image files</p>
         </div>
         <div class="flex gap-2">
             <button wire:click="refreshMedia" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
@@ -31,7 +31,7 @@
     <!-- File Upload Section -->
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold">Upload Files</h2>
+            <h2 class="text-xl font-semibold">Upload Images</h2>
             @if(count($uploads) > 0)
                 <button wire:click="uploadFiles"
                         class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors">
@@ -40,19 +40,9 @@
             @endif
         </div>
 
-        <div class="w-full" x-data="{ debug: false }" x-init="
-            console.log('FilePond container initialized');
-            console.log('Livewire available:', typeof Livewire !== 'undefined');
-            console.log('$wire available:', typeof $wire !== 'undefined');
-            setTimeout(() => {
-                console.log('After delay - $wire available:', typeof $wire !== 'undefined');
-            }, 1000);
-        ">
-            <div x-show="typeof $wire === 'undefined'" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-                ⚠️ Livewire ($wire) not ready. Please refresh the page if file upload doesn't work.
-            </div>
+        <div class="w-full">
             <div id="filepond-container" wire:ignore>
-                <input type="file" id="filepond-input" multiple>
+                <input type="file" id="filepond-input" multiple accept="image/*">
             </div>
 
             <script>
@@ -79,14 +69,28 @@
                         allowMultiple: true,
                         maxFiles: 20,
                         maxFileSize: '10MB',
-                        acceptedFileTypes: ['image/*', 'video/*', 'audio/*', 'application/pdf', '.doc', '.docx'],
-                        labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span><br><small>Supports: Images, Videos, Audio, PDF, Documents (Max: 10MB each)</small>',
+                        acceptedFileTypes: ['image/*'],
+                        labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span><br><small>Supports: Images only (JPG, PNG, GIF, WebP - Max: 10MB each)</small>',
                         server: {
                             process: async (fieldName, file, metadata, load, error, progress) => {
                                 console.log('Processing file:', file.name);
-                                await @this.upload('uploads', file, (response) => {
-                                    console.log('Upload successful:', response);
-                                    load(response);
+
+                                // Check if it's an image file
+                                if (!file.type.startsWith('image/')) {
+                                    error('Only image files are allowed');
+                                    return;
+                                }
+
+                                await @this.upload('uploads', file, async (response) => {
+                                    // Validate the file server-side
+                                    let validationResult = await @this.call('validateUploadedFile', response);
+
+                                    if (validationResult === true) {
+                                        console.log('Upload successful:', response);
+                                        load(response);
+                                    } else {
+                                        error('Invalid image file type');
+                                    }
                                 }, error, (event) => {
                                     progress(event.detail.progress, event.detail.progress, 100);
                                 });
@@ -100,11 +104,13 @@
                 setTimeout(initSimpleFilePond, 500);
             });
             </script>
-        </div>        @if(count($uploads) > 0)
+        </div>
+
+        @if(count($uploads) > 0)
             <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <p class="text-sm text-blue-700">
                     <i class="fas fa-info-circle mr-2"></i>
-                    {{ count($uploads) }} file{{ count($uploads) > 1 ? 's' : '' }} ready to upload.
+                    {{ count($uploads) }} image{{ count($uploads) > 1 ? 's' : '' }} ready to upload.
                     Click the "Upload" button to save them to your media library.
                 </p>
             </div>
@@ -114,7 +120,7 @@
     <!-- Media Grid -->
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold">Media Files ({{ count($mediaItems) }})</h2>
+            <h2 class="text-xl font-semibold">Image Files ({{ count($mediaItems) }})</h2>
         </div>
 
         @if(count($mediaItems) > 0)
@@ -170,8 +176,8 @@
             <div class="text-center py-12">
                 <div class="flex flex-col items-center space-y-3">
                     <i class="fas fa-images text-4xl text-gray-300"></i>
-                    <p class="text-lg text-gray-500">No media files found</p>
-                    <p class="text-sm text-gray-400">Upload some files using the uploader above.</p>
+                    <p class="text-lg text-gray-500">No images found</p>
+                    <p class="text-sm text-gray-400">Upload some images using the uploader above.</p>
                 </div>
             </div>
         @endif
