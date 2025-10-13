@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import HeroSlider from '../components/sections/HeroSlider';
 import ClientLogos from '../components/sections/ClientLogos';

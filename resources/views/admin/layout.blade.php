@@ -25,6 +25,9 @@
     <!-- Livewire Styles -->
     @livewireStyles
 
+    <!-- FilePond Styles -->
+    <link href="{{ asset('vendor/livewire-filepond/filepond.css') }}?v={{ time() }}" rel="stylesheet">
+
     <!-- Quill Editor -->
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
@@ -700,34 +703,32 @@
     <!-- Livewire Scripts FIRST -->
     @livewireScripts
 
-    <!-- Alpine.js AFTER Livewire -->
+    <!-- FilePond Scripts AFTER Livewire -->
+    <script src="{{ asset('vendor/livewire-filepond/filepond.js') }}?v={{ time() }}"></script>
+
+    <!-- Alpine.js - Load with defer to ensure Livewire loads first -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Initialization Script -->
     <script>
-        // Only load Alpine if not already loaded and after Livewire is ready
-        if (typeof window.Alpine === 'undefined' && typeof window.Livewire !== 'undefined') {
-            document.addEventListener('DOMContentLoaded', function() {
-                // Add Alpine script dynamically to ensure proper loading order
-                const alpineScript = document.createElement('script');
-                alpineScript.src = 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js';
-                alpineScript.defer = true;
-                document.head.appendChild(alpineScript);
-            });
-        }
+        document.addEventListener('alpine:init', () => {
+            console.log('Alpine.js is ready');
+        });
+
+        document.addEventListener('livewire:initialized', () => {
+            console.log('Livewire is ready');
+        });
     </script>
 
-    <!-- FilePond Scripts AFTER Alpine -->
-    @filepondScripts
-
-    <!-- Load Vite-built JS -->
-    @vite(['resources/js/app.jsx'])
+    <!-- Load Vite-built JS (Only if needed for admin features) -->
+    {{-- @vite(['resources/js/app.jsx']) --}}
 
     <!-- AdminLTE initialization script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Wait for Alpine.js to be ready
-            if (typeof Alpine !== 'undefined') {
-                Alpine.start();
-            }
-            
+            // Alpine.js will be automatically started by Livewire
+            // Removed manual Alpine.start() to prevent double initialization
+
             // Initialize AdminLTE components
             if (window.AdminLTE) {
                 window.AdminLTE.init();
@@ -808,35 +809,38 @@
             }
         });
 
-        // Wait for Livewire to be ready before initializing other components
+        // Simple initialization tracking
+        let componentsReady = {
+            livewire: false,
+            alpine: false,
+            filepond: false
+        };
+
         document.addEventListener('livewire:initialized', function() {
-            console.log('Livewire initialized successfully');
-            
-            // Initialize FilePond after Livewire is ready
-            if (typeof window.FilePond !== 'undefined') {
-                console.log('FilePond is available');
-            }
+            console.log('✓ Livewire initialized');
+            componentsReady.livewire = true;
         });
 
-        // Handle Livewire navigation/updates
-        document.addEventListener('livewire:navigated', function() {
-            console.log('Livewire navigation completed');
-        });
-
-        // Prevent multiple Alpine initialization
         document.addEventListener('alpine:init', function() {
-            console.log('Alpine.js initialized');
+            console.log('✓ Alpine.js initialized');
+            componentsReady.alpine = true;
         });
 
-        // Global error handler for debugging
-        window.addEventListener('error', function(event) {
-            if (event.message && (event.message.includes('entangle') || event.message.includes('loadModel'))) {
-                console.error('FilePond/Livewire integration error:', event.message);
-                console.log('Livewire available:', typeof window.Livewire !== 'undefined');
-                console.log('Alpine available:', typeof window.Alpine !== 'undefined');
-                console.log('FilePond available:', typeof window.FilePond !== 'undefined');
+        // Check if FilePond is loaded
+        const checkFilePond = () => {
+            if (typeof window.FilePond !== 'undefined' && typeof window.LivewireFilePond !== 'undefined') {
+                console.log('✓ FilePond is ready');
+                componentsReady.filepond = true;
             }
-        });
+        };
+
+        // Check FilePond periodically
+        const filepond = setInterval(() => {
+            checkFilePond();
+            if (componentsReady.filepond) {
+                clearInterval(filepond);
+            }
+        }, 100);
     </script>
 
     @yield('scripts')
