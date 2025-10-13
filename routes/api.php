@@ -135,6 +135,10 @@ Route::get('/team-members', [TeamMemberController::class, 'index']);
 // Team Values API
 Route::get('/team-values', [TeamValueController::class, 'index']);
 
+// Business Page API
+Route::get('/business-page', [\App\Http\Controllers\API\BusinessPageController::class, 'index']);
+Route::get('/business-page/{id}', [\App\Http\Controllers\API\BusinessPageController::class, 'show']);
+
 // News API
 Route::get('/news', [\App\Http\Controllers\API\NewsController::class, 'index']);
 Route::get('/news/featured', [\App\Http\Controllers\API\NewsController::class, 'featured']);
