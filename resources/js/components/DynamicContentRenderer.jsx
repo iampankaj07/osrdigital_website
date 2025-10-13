@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import HeroBlock from './blocks/HeroBlock';
 import TextBlock from './blocks/TextBlock';

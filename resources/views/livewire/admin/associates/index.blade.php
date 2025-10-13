@@ -415,12 +415,12 @@
 <script>
 document.addEventListener('livewire:initialized', function() {
     console.log('Associates component - Livewire initialized');
-    
+
     // Ensure FilePond is working with Livewire
     Livewire.hook('morph.updated', ({ el, component }) => {
         if (component.name === 'admin.associates.index') {
             console.log('Associates component updated');
-            
+
             // Re-initialize any FilePond instances that may have been destroyed
             setTimeout(() => {
                 const filepondElements = el.querySelectorAll('[wire\\:model="filepondUploads"]');
@@ -432,7 +432,7 @@ document.addEventListener('livewire:initialized', function() {
             }, 100);
         }
     });
-    
+
     // Handle upload method changes
     window.addEventListener('uploadMethodChanged', function() {
         console.log('Upload method changed - reinitializing FilePond if needed');

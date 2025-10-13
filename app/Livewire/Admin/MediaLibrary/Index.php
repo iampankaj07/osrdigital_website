@@ -69,7 +69,16 @@ class Index extends Component
     {
         // Validation logic for uploaded files
         // Return true if valid, false if invalid
+        \Log::info('Validating uploaded file: ' . $filename);
         return true;
+    }
+    
+    public function updatedUploads()
+    {
+        \Log::info('Uploads updated. Count: ' . count($this->uploads));
+        foreach ($this->uploads as $index => $upload) {
+            \Log::info("Upload {$index}: " . ($upload ? $upload->getClientOriginalName() : 'null'));
+        }
     }
 
     public function uploadFiles()

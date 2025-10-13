@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-Cm_ugMjx.css",
+    "file": "assets/app-Dl-dD0vD.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "names": [
@@ -16,13 +16,13 @@
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-DfIdhzVG.js",
+    "file": "assets/app-D3nRN8px.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
     "css": [
       "assets/app-Bj8sxSJ7.css",
-      "assets/app-Cm_ugMjx.css"
+      "assets/app-Dl-dD0vD.css"
     ]
   },
   "resources/js/skeleton-loader.js": {

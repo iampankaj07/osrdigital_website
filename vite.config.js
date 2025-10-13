@@ -7,7 +7,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css', 
+                'resources/css/app.css',
                 'resources/css/skeleton.css',
                 'resources/js/app.jsx',
                 'resources/js/skeleton-loader.js'
@@ -15,11 +15,19 @@ export default defineConfig({
             refresh: true,
         }),
         react({
-            jsxRuntime: 'automatic',
+            jsxRuntime: 'classic',
             jsxImportSource: 'react',
             babel: {
-                presets: [['@babel/preset-react', { runtime: 'automatic' }]],
+                presets: [
+                    ['@babel/preset-react', {
+                        runtime: 'classic',
+                        pragma: 'React.createElement',
+                        pragmaFrag: 'React.Fragment'
+                    }]
+                ],
+                plugins: []
             },
+            include: "**/*.{jsx,tsx}",
         }),
         tailwindcss(),
     ],
@@ -32,5 +40,9 @@ export default defineConfig({
         hmr: {
             host: 'localhost',
         },
+    },
+    esbuild: {
+        jsxFactory: 'React.createElement',
+        jsxFragment: 'React.Fragment',
     },
 });

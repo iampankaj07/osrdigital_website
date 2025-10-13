@@ -40,17 +40,66 @@
             @endif
         </div>
 
-        <div class="w-full">
-            <x-filepond::upload
-                wire:model="uploads"
-                multiple
-                max-files="20"
-                max-file-size="10MB"
-                accepted-file-types="image/*, video/*, audio/*, application/pdf, .doc, .docx"
-                allow-reorder="true"
-                credits="false"
-                placeholder="Drag & Drop your files or <span class='filepond--label-action'>Browse</span><br><small>Supports: Images, Videos, Audio, PDF, Documents (Max: 10MB each)</small>"
-            />
+        <div class="w-full" x-data="{ debug: false }" x-init="
+            console.log('FilePond container initialized');
+            console.log('Livewire available:', typeof Livewire !== 'undefined');
+            console.log('$wire available:', typeof $wire !== 'undefined');
+            setTimeout(() => {
+                console.log('After delay - $wire available:', typeof $wire !== 'undefined');
+            }, 1000);
+        ">
+            <div x-show="typeof $wire === 'undefined'" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+                ⚠️ Livewire ($wire) not ready. Please refresh the page if file upload doesn't work.
+            </div>
+            <div id="filepond-container" wire:ignore>
+                <input type="file" id="filepond-input" multiple>
+            </div>
+
+            <script>
+            document.addEventListener('livewire:initialized', function() {
+                console.log('Initializing simple FilePond...');
+
+                function initSimpleFilePond() {
+                    if (typeof LivewireFilePond === 'undefined' || typeof @this === 'undefined') {
+                        console.log('Waiting for dependencies...');
+                        setTimeout(initSimpleFilePond, 200);
+                        return;
+                    }
+
+                    const input = document.getElementById('filepond-input');
+                    if (!input) {
+                        console.error('FilePond input not found');
+                        return;
+                    }
+
+                    console.log('Creating FilePond instance...');
+                    const pond = LivewireFilePond.create(input);
+
+                    pond.setOptions({
+                        allowMultiple: true,
+                        maxFiles: 20,
+                        maxFileSize: '10MB',
+                        acceptedFileTypes: ['image/*', 'video/*', 'audio/*', 'application/pdf', '.doc', '.docx'],
+                        labelIdle: 'Drag & Drop your files or <span class="filepond--label-action">Browse</span><br><small>Supports: Images, Videos, Audio, PDF, Documents (Max: 10MB each)</small>',
+                        server: {
+                            process: async (fieldName, file, metadata, load, error, progress) => {
+                                console.log('Processing file:', file.name);
+                                await @this.upload('uploads', file, (response) => {
+                                    console.log('Upload successful:', response);
+                                    load(response);
+                                }, error, (event) => {
+                                    progress(event.detail.progress, event.detail.progress, 100);
+                                });
+                            }
+                        }
+                    });
+
+                    console.log('Simple FilePond initialized successfully');
+                }
+
+                setTimeout(initSimpleFilePond, 500);
+            });
+            </script>
         </div>        @if(count($uploads) > 0)
             <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <p class="text-sm text-blue-700">
@@ -131,7 +180,7 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('livewire:initialized', function() {
     // Listen for Livewire events
     window.addEventListener('mediaDeleted', () => {
         setTimeout(() => {
@@ -146,7 +195,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000); // Reset after 3 seconds
     });
 
-    console.log('Spatie Livewire FilePond initialized successfully');
+    console.log('Media Library - Livewire initialized successfully');
+});
+
+// Fallback for DOMContentLoaded if livewire:initialized doesn't fire
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (typeof @this !== 'undefined') {
+            console.log('Media Library - Fallback initialization successful');
+        }
+    }, 100);
 });
 </script>
 @endpush
