@@ -167,6 +167,7 @@ class Index extends Component
     public function render()
     {
         $permissions = Permission::query()
+            ->withCount('roles')
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })

@@ -5,7 +5,7 @@
             <h1 class="h4 mb-1 font-weight-normal">News Categories</h1>
             <p class="text-muted small mb-0">Manage news categories and topics</p>
         </div>
-        <button wire:click="create" class="btn btn-primary btn-sm">
+        <button wire:click="create" class="btn btn-dark btn-sm">
             <i class="fas fa-plus mr-1"></i>
             Add Category
         </button>
@@ -167,7 +167,7 @@
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
                                         <button wire:click="edit({{ $category->id }})" 
-                                                class="btn btn-outline-primary btn-sm border-0" 
+                                                class="btn btn-dark btn-sm border-0" 
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -177,7 +177,7 @@
                                             <i class="fas fa-{{ $category->is_active ? 'pause' : 'play' }}"></i>
                                         </button>
                                         <button wire:click="delete({{ $category->id }})" 
-                                                class="btn btn-outline-danger btn-sm border-0"
+                                                class="btn btn-danger btn-sm border-0"
                                                 title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this category?')">
                                             <i class="fas fa-trash"></i>
@@ -254,7 +254,7 @@
                                                         <i class="fas fa-times mr-1"></i>
                                                         Cancel
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary">
+                                                    <button type="submit" class="btn btn-dark">
                                                         <i class="fas fa-save mr-1"></i>
                                                         Update
                                                     </button>

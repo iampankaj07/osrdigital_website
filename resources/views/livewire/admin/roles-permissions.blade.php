@@ -139,7 +139,7 @@
                         {{ count($selectedItems) }} item(s) selected
                     </span>
                     <div>
-                        <button wire:click="openBulkActionModal" class="btn btn-sm btn-primary mr-2">
+                        <button wire:click="openBulkActionModal" class="btn btn-sm btn-dark mr-2">
                             <i class="fas fa-tasks mr-1"></i>Bulk Actions
                         </button>
                         <button wire:click="selectedItems = []; selectAll = false" class="btn btn-sm btn-outline-secondary">
@@ -161,7 +161,7 @@
                         <h5 class="mb-0">
                             <i class="fas fa-users-cog mr-2"></i>Roles Management
                         </h5>
-                        <button wire:click="createRole" class="btn btn-primary">
+                        <button wire:click="createRole" class="btn btn-dark">
                             <i class="fas fa-plus mr-1"></i>Create Role
                         </button>
                     </div>
@@ -224,7 +224,7 @@
                                                 <td>
                                                     <div class="btn-group btn-group-sm">
                                                         <button wire:click="editRole({{ $role->id }})" 
-                                                                class="btn btn-outline-primary btn-sm" title="Edit">
+                                                                class="btn btn-dark btn-sm" title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                                         <button wire:click="manageRolePermissions({{ $role->id }})" 
@@ -247,7 +247,7 @@
                                 <i class="fas fa-users-cog fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">No roles found</h5>
                                 <p class="text-muted">Create your first role to get started.</p>
-                                <button wire:click="createRole" class="btn btn-primary">
+                                <button wire:click="createRole" class="btn btn-dark">
                                     <i class="fas fa-plus mr-1"></i>Create Role
                                 </button>
                             </div>
@@ -267,7 +267,7 @@
                         <h5 class="mb-0">
                             <i class="fas fa-key mr-2"></i>Permissions Management
                         </h5>
-                        <button wire:click="createPermission" class="btn btn-primary">
+                        <button wire:click="createPermission" class="btn btn-dark">
                             <i class="fas fa-plus mr-1"></i>Create Permission
                         </button>
                     </div>
@@ -326,7 +326,7 @@
                                                 <td>
                                                     <div class="btn-group btn-group-sm">
                                                         <button wire:click="editPermission({{ $permission->id }})" 
-                                                                class="btn btn-outline-primary btn-sm" title="Edit">
+                                                                class="btn btn-dark btn-sm" title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                                         <button wire:click="confirmDeletePermission({{ $permission->id }})" 
@@ -345,7 +345,7 @@
                                 <i class="fas fa-key fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">No permissions found</h5>
                                 <p class="text-muted">Create your first permission to get started.</p>
-                                <button wire:click="createPermission" class="btn btn-primary">
+                                <button wire:click="createPermission" class="btn btn-dark">
                                     <i class="fas fa-plus mr-1"></i>Create Permission
                                 </button>
                             </div>
@@ -439,7 +439,7 @@
                                                 <td>
                                                     <div class="btn-group btn-group-sm">
                                                         <button wire:click="manageUserRoles({{ $user->id }})" 
-                                                                class="btn btn-outline-primary btn-sm" title="Manage Roles">
+                                                                class="btn btn-dark btn-sm" title="Manage Roles">
                                                             <i class="fas fa-users-cog"></i>
                                                         </button>
                                                         <button wire:click="manageUserPermissions({{ $user->id }})" 
@@ -533,7 +533,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" wire:click="closeRoleModal" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark">
                             <i class="fas fa-save mr-1"></i>Save Role
                         </button>
                     </div>
@@ -604,7 +604,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" wire:click="closePermissionModal" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark">
                             <i class="fas fa-save mr-1"></i>Save Permission
                         </button>
                     </div>
@@ -717,7 +717,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" wire:click="closeTemplateModal" class="btn btn-secondary">Cancel</button>
-                    <button wire:click="createFromTemplate" class="btn btn-primary" {{ !$selectedTemplate ? 'disabled' : '' }}>
+                    <button wire:click="createFromTemplate" class="btn btn-dark" {{ !$selectedTemplate ? 'disabled' : '' }}>
                         <i class="fas fa-plus mr-1"></i>Create Role
                     </button>
                 </div>

@@ -1,155 +1,167 @@
 <div>
-    <div class="card">
-        <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h5 class="mb-0">
-                        <i class="fas fa-users mr-2"></i>Users Management
-                    </h5>
-                </div>
-                <div class="col-auto">
-                    @if(count($selectedItems) > 0)
-                        <button wire:click="openBulkDeleteModal" class="btn btn-danger mr-2">
-                            <i class="fas fa-trash mr-1"></i>Delete Selected ({{ count($selectedItems) }})
-                        </button>
-                    @endif
-                    <button wire:click="create" class="btn btn-primary">
-                        <i class="fas fa-plus mr-1"></i>Add User
-                    </button>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0 font-weight-bold text-dark">
+                <i class="fas fa-users mr-2 text-primary"></i>Users Management
+            </h4>
+            <p class="text-muted small mb-0">Manage system users and their access</p>
         </div>
-        <div class="card-body">
-            <!-- Search and Filters -->
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <input type="text" wire:model="search" class="form-control" placeholder="Search users...">
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
+        <div>
+            <button wire:click="create" class="btn btn-dark btn-sm">
+                <i class="fas fa-plus mr-1"></i>Add User
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <div class="row align-items-end">
+                <div class="col-md-3">
+                    <div class="form-group mb-0">
+                        <label for="search" class="small text-muted mb-1">Search</label>
+                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search users...">
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <select wire:model="filterRole" class="form-control">
-                        <option value="">All Roles</option>
-                        @foreach($availableRoles as $role)
-                            <option value="{{ $role->id }}">{{ $role->name }}</option>
-                        @endforeach
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="filterRole" class="small text-muted mb-1">Role</label>
+                        <select wire:model.live="filterRole" class="form-control form-control-sm">
+                            <option value="">All Roles</option>
+                            @foreach($availableRoles as $role)
+                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <select wire:model="filterStatus" class="form-control">
-                        <option value="">All Status</option>
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="filterStatus" class="small text-muted mb-1">Status</label>
+                        <select wire:model.live="filterStatus" class="form-control form-control-sm">
+                            <option value="">All Status</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <select wire:model="perPage" class="form-control">
-                        <option value="10">10 per page</option>
-                        <option value="25">25 per page</option>
-                        <option value="50">50 per page</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="perPage" class="small text-muted mb-1">Per Page</label>
+                        <select wire:model.live="perPage" class="form-control form-control-sm">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <select wire:model="sortField" class="form-control">
-                        <option value="name">Name</option>
-                        <option value="email">Email</option>
-                        <option value="created_at">Created Date</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="sortField" class="small text-muted mb-1">Sort By</label>
+                        <select wire:model.live="sortField" class="form-control form-control-sm">
+                            <option value="name">Name</option>
+                            <option value="email">Email</option>
+                            <option value="created_at">Created Date</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Users Table -->
+    <!-- Users Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
                         <tr>
-                            <th>
-                                <div class="form-check">
-                                    <input type="checkbox" wire:model="selectAll" class="form-check-input">
-                                    <label class="form-check-label">All</label>
-                                </div>
+                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 20%;">
+                                <span class="d-flex align-items-center">
+                                    Name
+                                    @if($sortField === 'name')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th wire:click="sortBy('name')" style="cursor: pointer;">
-                                Name
-                                @if($sortField === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @endif
+                            <th wire:click="sortBy('email')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 25%;">
+                                <span class="d-flex align-items-center">
+                                    Email
+                                    @if($sortField === 'email')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th wire:click="sortBy('email')" style="cursor: pointer;">
-                                Email
-                                @if($sortField === 'email')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @endif
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 20%;">Roles</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
+                            <th wire:click="sortBy('created_at')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 15%;">
+                                <span class="d-flex align-items-center">
+                                    Created
+                                    @if($sortField === 'created_at')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th>Roles</th>
-                            <th>Status</th>
-                            <th wire:click="sortBy('created_at')" style="cursor: pointer;">
-                                Created
-                                @if($sortField === 'created_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @endif
-                            </th>
-                            <th>Actions</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($users as $user)
-                            <tr>
-                                <td>
-                                    <div class="form-check">
-                                        <input type="checkbox" 
-                                               wire:model="selectedItems" 
-                                               value="{{ $user->id }}" 
-                                               class="form-check-input">
-                                    </div>
-                                </td>
-                                <td>
+                            <tr class="border-bottom">
+                                <td class="py-3 px-3">
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mr-3">
+                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mr-3" style="width: 32px; height: 32px; font-size: 14px;">
                                             {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
-                                        <strong>{{ $user->name }}</strong>
+                                        <div class="font-weight-medium text-dark">{{ $user->name }}</div>
                                     </div>
                                 </td>
-                                <td>
-                                    <a href="mailto:{{ $user->email }}" class="text-primary">{{ $user->email }}</a>
+                                <td class="py-3 px-3">
+                                    <a href="mailto:{{ $user->email }}" class="text-primary small">{{ $user->email }}</a>
                                 </td>
-                                <td>
+                                <td class="py-3 px-3 text-center">
                                     @if($user->roles->count() > 0)
-                                        @foreach($user->roles as $role)
-                                            <span class="badge badge-info mr-1">{{ $role->name }}</span>
+                                        @foreach($user->roles->take(2) as $role)
+                                            <span class="badge badge-light text-dark border small mr-1">{{ $role->name }}</span>
                                         @endforeach
+                                        @if($user->roles->count() > 2)
+                                            <span class="badge badge-secondary small">+{{ $user->roles->count() - 2 }}</span>
+                                        @endif
                                     @else
-                                        <span class="text-muted">No roles</span>
+                                        <span class="text-muted small">No roles</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="py-3 px-3 text-center">
                                     <span wire:click="toggleStatus({{ $user->id }})" 
-                                          class="badge badge-{{ $user->is_active ? 'success' : 'secondary' }} badge-pill" 
+                                          class="badge badge-{{ $user->is_active ? 'success' : 'light' }} badge-sm" 
                                           style="cursor: pointer;">
                                         {{ $user->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
-                                <td>
-                                    <small class="text-muted">{{ $user->created_at->format('M d, Y') }}</small>
+                                <td class="py-3 px-3">
+                                    <div class="text-muted small">{{ $user->created_at->format('M d, Y') }}</div>
                                 </td>
-                                <td>
-                                    <div class="btn-group" role="group">
+                                <td class="py-3 px-3 text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
                                         <button wire:click="edit({{ $user->id }})" 
-                                                class="btn btn-sm btn-outline-primary">
+                                                class="btn btn-outline-primary btn-sm border-0" 
+                                                title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button wire:click="openRoleModal({{ $user->id }})" 
-                                                class="btn btn-sm btn-outline-info">
+                                                class="btn btn-outline-info btn-sm border-0"
+                                                title="Manage Roles">
                                             <i class="fas fa-user-tag"></i>
                                         </button>
                                         <button wire:click="delete({{ $user->id }})" 
-                                                class="btn btn-sm btn-outline-danger"
+                                                class="btn btn-danger btn-sm border-0"
+                                                title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this user?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -246,10 +258,10 @@
                                                     </div>
 
                                                     <div class="form-group text-right">
-                                                        <button type="button" class="btn btn-secondary mr-2" wire:click="cancelEdit">
+                                                        <button type="button" class="btn btn-secondary btn-sm mr-2" wire:click="cancelEdit">
                                                             Cancel
                                                         </button>
-                                                        <button type="submit" class="btn btn-primary">
+                                                        <button type="submit" class="btn btn-dark btn-sm">
                                                             <i class="fas fa-save mr-1"></i>Update User
                                                         </button>
                                                     </div>
@@ -261,25 +273,28 @@
                             @endif
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-4">
-                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">No users found</p>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="fas fa-users fa-3x mb-3 opacity-50"></i>
+                                        <h5 class="font-weight-normal">No users found</h5>
+                                        <p class="small">Start by creating your first user</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} results
-                </div>
-                <div>
-                    {{ $users->links() }}
-                </div>
-            </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="text-muted small">
+            Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} results
+        </div>
+        <div>
+            {{ $users->links() }}
         </div>
     </div>
 
@@ -367,10 +382,10 @@
                     </div>
 
                     <div class="form-group text-right">
-                        <button type="button" class="btn btn-secondary mr-2" wire:click="cancelEdit">
+                        <button type="button" class="btn btn-secondary btn-sm mr-2" wire:click="cancelEdit">
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark btn-sm">
                             <i class="fas fa-save mr-1"></i>Create User
                         </button>
                     </div>
@@ -410,10 +425,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeRoleModal">
+                        <button type="button" class="btn btn-secondary btn-sm" wire:click="closeRoleModal">
                             Cancel
                         </button>
-                        <button type="button" class="btn btn-primary" wire:click="updateUserRoles">
+                        <button type="button" class="btn btn-dark btn-sm" wire:click="updateUserRoles">
                             <i class="fas fa-save mr-1"></i>Update Roles
                         </button>
                     </div>
@@ -422,35 +437,6 @@
         </div>
     @endif
 
-    <!-- Bulk Delete Modal -->
-    @if($showBulkDeleteModal)
-        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-exclamation-triangle mr-2 text-warning"></i>Confirm Bulk Delete
-                        </h5>
-                        <button type="button" class="close" wire:click="closeBulkDeleteModal">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete <strong>{{ count($selectedItems) }}</strong> selected user(s)?</p>
-                        <p class="text-danger"><strong>This action cannot be undone!</strong></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeBulkDeleteModal">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-danger" wire:click="bulkDelete">
-                            <i class="fas fa-trash mr-1"></i>Delete Selected
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 
     <style>
         .avatar-sm {

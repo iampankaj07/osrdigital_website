@@ -91,7 +91,7 @@
                 <div class="form-group mt-4">
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('admin.testimonials.index') }}" class="btn btn-secondary mr-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark">
                             <i class="fas fa-save mr-2"></i>
                             Create Testimonial
                         </button>

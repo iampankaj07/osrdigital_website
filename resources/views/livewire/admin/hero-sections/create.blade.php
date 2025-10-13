@@ -128,10 +128,10 @@
                                 @endif
                                 <div class="d-flex gap-2">
                                     @if($button_text)
-                                        <button class="btn btn-primary btn-sm">{{ $button_text }}</button>
+                                        <button class="btn btn-dark btn-sm">{{ $button_text }}</button>
                                     @endif
                                     @if($button_text_secondary)
-                                        <button class="btn btn-outline-primary btn-sm">{{ $button_text_secondary }}</button>
+                                        <button class="btn btn-dark btn-sm">{{ $button_text_secondary }}</button>
                                     @endif
                                 </div>
                             </div>
@@ -143,7 +143,7 @@
                 <div class="form-group mt-4">
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('admin.hero-sections.index') }}" class="btn btn-secondary mr-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark">
                             <i class="fas fa-save mr-2"></i>
                             Create Hero Section
                         </button>

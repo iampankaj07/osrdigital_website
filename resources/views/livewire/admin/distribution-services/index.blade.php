@@ -1,121 +1,138 @@
 <div>
-    <div class="card">
-        <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h5 class="mb-0">
-                        <i class="fas fa-broadcast-tower mr-2"></i>Distribution Services Management
-                    </h5>
-                </div>
-                <div class="col-auto">
-                    <button wire:click="create" class="btn btn-primary">
-                        <i class="fas fa-plus mr-1"></i>Add Service
-                    </button>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0 font-weight-bold text-dark">
+                <i class="fas fa-broadcast-tower mr-2 text-primary"></i>Distribution Services Management
+            </h4>
+            <p class="text-muted small mb-0">Manage distribution services and platforms</p>
         </div>
-        <div class="card-body">
-            <!-- Search and Filters -->
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input type="text" wire:model="search" class="form-control" placeholder="Search services...">
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                        </div>
+        <div>
+            <button wire:click="create" class="btn btn-dark btn-sm">
+                <i class="fas fa-plus mr-1"></i>Add Service
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <div class="row align-items-end">
+                <div class="col-md-4">
+                    <div class="form-group mb-0">
+                        <label for="search" class="small text-muted mb-1">Search</label>
+                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search services...">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select wire:model="perPage" class="form-control">
-                        <option value="10">10 per page</option>
-                        <option value="25">25 per page</option>
-                        <option value="50">50 per page</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="perPage" class="small text-muted mb-1">Per Page</label>
+                        <select wire:model.live="perPage" class="form-control form-control-sm">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <select wire:model="sortField" class="form-control">
-                        <option value="sort_order">Sort Order</option>
-                        <option value="title">Title</option>
-                        <option value="created_at">Created Date</option>
-                    </select>
+                    <div class="form-group mb-0">
+                        <label for="sortField" class="small text-muted mb-1">Sort By</label>
+                        <select wire:model.live="sortField" class="form-control form-control-sm">
+                            <option value="sort_order">Sort Order</option>
+                            <option value="title">Title</option>
+                            <option value="created_at">Created Date</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Services Table -->
+    <!-- Services Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
                         <tr>
-                            <th wire:click="sortBy('title')" style="cursor: pointer;">
-                                Title
-                                @if($sortField === 'title')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @endif
+                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 25%;">
+                                <span class="d-flex align-items-center">
+                                    Title
+                                    @if($sortField === 'title')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th>Icon</th>
-                            <th>Description</th>
-                            <th>Link</th>
-                            <th wire:click="sortBy('sort_order')" style="cursor: pointer;">
-                                Order
-                                @if($sortField === 'sort_order')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @endif
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Icon</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 25%;">Description</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Link</th>
+                            <th wire:click="sortBy('sort_order')" class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="cursor: pointer; width: 10%;">
+                                <span class="d-flex align-items-center justify-content-center">
+                                    Order
+                                    @if($sortField === 'sort_order')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($services as $service)
-                            <tr>
-                                <td>
-                                    <strong>{{ $service->title }}</strong>
+                            <tr class="border-bottom">
+                                <td class="py-3 px-3">
+                                    <div class="font-weight-medium text-dark">{{ $service->title }}</div>
                                 </td>
-                                <td>
+                                <td class="py-3 px-3 text-center">
                                     @if($service->icon_data)
                                         @if($service->icon_type === 'font-awesome')
                                             <i class="{{ $service->icon_data }} fa-lg text-primary"></i>
                                         @elseif($service->icon_type === 'svg')
-                                            {!! $service->icon_data !!}
+                                            <div style="width: 24px; height: 24px; display: inline-block;">{!! $service->icon_data !!}</div>
                                         @elseif($service->icon_type === 'image')
                                             <img src="{{ $service->icon_data }}" alt="{{ $service->title }}" style="width: 24px; height: 24px;">
                                         @endif
                                     @else
-                                        <span class="text-muted">No icon</span>
+                                        <span class="text-muted small">No icon</span>
                                     @endif
                                 </td>
-                                <td>
-                                    {{ Str::limit($service->description, 50) }}
+                                <td class="py-3 px-3">
+                                    <div class="text-muted small">{{ Str::limit($service->description, 50) }}</div>
                                 </td>
-                                <td>
+                                <td class="py-3 px-3 text-center">
                                     @if($service->link)
                                         <a href="{{ $service->link }}" target="_blank" class="text-primary">
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     @else
-                                        <span class="text-muted">No link</span>
+                                        <span class="text-muted small">No link</span>
                                     @endif
                                 </td>
-                                <td>
-                                    <span class="badge badge-info">{{ $service->sort_order }}</span>
+                                <td class="py-3 px-3 text-center">
+                                    <span class="badge badge-light text-dark border small">{{ $service->sort_order }}</span>
                                 </td>
-                                <td>
+                                <td class="py-3 px-3 text-center">
                                     <span wire:click="toggleActive({{ $service->id }})" 
-                                          class="badge badge-{{ $service->is_active ? 'success' : 'secondary' }} badge-pill" 
+                                          class="badge badge-{{ $service->is_active ? 'success' : 'light' }} badge-sm" 
                                           style="cursor: pointer;">
                                         {{ $service->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
-                                <td>
-                                    <div class="btn-group" role="group">
+                                <td class="py-3 px-3 text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
                                         <button wire:click="edit({{ $service->id }})" 
-                                                class="btn btn-sm btn-outline-primary">
+                                                class="btn btn-dark btn-sm border-0" 
+                                                title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button wire:click="delete({{ $service->id }})" 
-                                                class="btn btn-sm btn-outline-danger"
+                                                class="btn btn-danger btn-sm border-0"
+                                                title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this service?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -254,10 +271,10 @@
                                                     </div>
 
                                                     <div class="form-group text-right">
-                                                        <button type="button" class="btn btn-secondary mr-2" wire:click="cancelEdit">
+                                                        <button type="button" class="btn btn-secondary btn-sm mr-2" wire:click="cancelEdit">
                                                             Cancel
                                                         </button>
-                                                        <button type="submit" class="btn btn-primary">
+                                                        <button type="submit" class="btn btn-dark btn-sm">
                                                             <i class="fas fa-save mr-1"></i>Update Service
                                                         </button>
                                                     </div>
@@ -269,25 +286,28 @@
                             @endif
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-4">
-                                    <i class="fas fa-broadcast-tower fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">No distribution services found</p>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="fas fa-broadcast-tower fa-3x mb-3 opacity-50"></i>
+                                        <h5 class="font-weight-normal">No distribution services found</h5>
+                                        <p class="small">Start by creating your first distribution service</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    Showing {{ $services->firstItem() ?? 0 }} to {{ $services->lastItem() ?? 0 }} of {{ $services->total() }} results
-                </div>
-                <div>
-                    {{ $services->links() }}
-                </div>
-            </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="text-muted small">
+            Showing {{ $services->firstItem() ?? 0 }} to {{ $services->lastItem() ?? 0 }} of {{ $services->total() }} results
+        </div>
+        <div>
+            {{ $services->links() }}
         </div>
     </div>
 
@@ -420,10 +440,10 @@
                     </div>
 
                     <div class="form-group text-right">
-                        <button type="button" class="btn btn-secondary mr-2" wire:click="cancelEdit">
+                        <button type="button" class="btn btn-secondary btn-sm mr-2" wire:click="cancelEdit">
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark btn-sm">
                             <i class="fas fa-save mr-1"></i>Create Service
                         </button>
                     </div>
@@ -477,7 +497,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeIconDropdown">
+                        <button type="button" class="btn btn-secondary btn-sm" wire:click="closeIconDropdown">
                             Cancel
                         </button>
                     </div>

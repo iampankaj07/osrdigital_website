@@ -124,7 +124,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm">
                                 <i class="fas fa-save mr-2"></i>Save General Settings
                             </button>
                         </div>
@@ -209,7 +209,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm">
                                 <i class="fas fa-save mr-2"></i>Save Contact Settings
                             </button>
                         </div>
@@ -268,7 +268,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm">
                                 <i class="fas fa-save mr-2"></i>Save Social Media Settings
                             </button>
                         </div>
@@ -297,7 +297,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm">
                                 <i class="fas fa-save mr-2"></i>Save Footer Settings
                             </button>
                         </div>
@@ -364,7 +364,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm">
                                 <i class="fas fa-save mr-2"></i>Save Hero Section Settings
                             </button>
                         </div>
@@ -487,7 +487,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-dark btn-sm">
                                 <i class="fas fa-save mr-2"></i>Save Call to Action Settings
                             </button>
                         </div>

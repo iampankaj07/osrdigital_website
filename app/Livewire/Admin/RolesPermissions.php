@@ -413,8 +413,15 @@ class RolesPermissions extends Component
     {
         try {
             $user = User::findOrFail($this->selectedUserId);
-            $permissions = Permission::whereIn('id', $this->userPermissions)->get();
-            $user->syncPermissions($permissions);
+            
+            // Filter out invalid permission IDs and sync only existing permissions
+            if (!empty($this->userPermissions)) {
+                $validPermissionIds = Permission::whereIn('id', $this->userPermissions)->pluck('id')->toArray();
+                $permissions = Permission::whereIn('id', $validPermissionIds)->get();
+                $user->syncPermissions($permissions);
+            } else {
+                $user->syncPermissions([]);
+            }
             
             session()->flash('success', 'User permissions updated successfully!');
             $this->closeUserPermissionModal();
@@ -461,8 +468,15 @@ class RolesPermissions extends Component
     {
         try {
             $role = Role::findOrFail($this->selectedRoleId);
-            $permissions = Permission::whereIn('id', $this->rolePermissions)->get();
-            $role->syncPermissions($permissions);
+            
+            // Filter out invalid permission IDs and sync only existing permissions
+            if (!empty($this->rolePermissions)) {
+                $validPermissionIds = Permission::whereIn('id', $this->rolePermissions)->pluck('id')->toArray();
+                $permissions = Permission::whereIn('id', $validPermissionIds)->get();
+                $role->syncPermissions($permissions);
+            } else {
+                $role->syncPermissions([]);
+            }
             
             session()->flash('success', 'Role permissions updated successfully!');
             $this->closeRolePermissionModal();

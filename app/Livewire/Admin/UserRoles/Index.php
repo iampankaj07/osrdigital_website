@@ -108,7 +108,9 @@ class Index extends Component
         ]);
 
         if (!empty($this->form['permissions'])) {
-            $role->syncPermissions($this->form['permissions']);
+            // Filter out invalid permission IDs and sync only existing permissions
+            $validPermissionIds = Permission::whereIn('id', $this->form['permissions'])->pluck('id')->toArray();
+            $role->syncPermissions($validPermissionIds);
         }
         
         $this->isCreating = false;
@@ -131,7 +133,14 @@ class Index extends Component
             'guard_name' => $this->form['guard_name'],
         ]);
 
-        $role->syncPermissions($this->form['permissions'] ?? []);
+        // Filter out invalid permission IDs and sync only existing permissions
+        $permissionIds = $this->form['permissions'] ?? [];
+        if (!empty($permissionIds)) {
+            $validPermissionIds = Permission::whereIn('id', $permissionIds)->pluck('id')->toArray();
+            $role->syncPermissions($validPermissionIds);
+        } else {
+            $role->syncPermissions([]);
+        }
         
         $this->editingId = null;
         $this->reset('form');
@@ -179,7 +188,15 @@ class Index extends Component
     public function updateRolePermissions()
     {
         $role = Role::findOrFail($this->selectedRoleId);
-        $role->syncPermissions($this->rolePermissions);
+        
+        // Filter out invalid permission IDs and sync only existing permissions
+        if (!empty($this->rolePermissions)) {
+            $validPermissionIds = Permission::whereIn('id', $this->rolePermissions)->pluck('id')->toArray();
+            $role->syncPermissions($validPermissionIds);
+        } else {
+            $role->syncPermissions([]);
+        }
+        
         $this->closePermissionModal();
         
         session()->flash('success', 'Role permissions updated successfully!');
