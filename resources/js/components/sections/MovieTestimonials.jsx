@@ -13,17 +13,17 @@ function MovieTestimonials() {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 console.log('Fetching testimonials from API...');
                 const response = await fetch('/api/testimonials/featured?limit=4');
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
                 console.log('API Response:', data);
-                
+
                 if (data.success && data.data && data.data.length > 0) {
                     console.log('Using API data:', data.data.length, 'testimonials');
                     setTestimonials(data.data);
@@ -125,16 +125,25 @@ function MovieTestimonials() {
             <section className={`section-minimal ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="container-minimal">
                     <div className="text-center mb-16">
-                        <h2 className={`text-3xl md:text-4xl font-bold mb-6 text-minimal-bold ${
-                            isDark ? 'text-white' : 'text-gray-900'
-                        }`}>
-                            What Our Partners Say
-                        </h2>
-                        <p className={`text-lg max-w-3xl mx-auto text-minimal ${
-                            isDark ? 'text-gray-300' : 'text-gray-600'
-                        }`}>
-                            Loading testimonials...
-                        </p>
+                        <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-6 w-96 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className={`p-8 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                                <div className="flex items-start space-x-4">
+                                    <div className={`w-16 h-16 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse flex-shrink-0`}></div>
+                                    <div className="flex-1">
+                                        <div className={`h-5 w-32 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-24 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-3/4 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -175,7 +184,7 @@ function MovieTestimonials() {
                     <p className={`text-lg max-w-3xl mx-auto text-minimal ${
                         isDark ? 'text-gray-300' : 'text-gray-600'
                     }`}>
-                        Hear from filmmakers, producers, and industry professionals who have 
+                        Hear from filmmakers, producers, and industry professionals who have
                         experienced the OSR Digital difference.
                     </p>
                 </div>
@@ -186,8 +195,8 @@ function MovieTestimonials() {
                         <div
                             key={testimonial.id}
                             className={`p-6 rounded-xl transition-all duration-200 hover-subtle ${
-                                isDark 
-                                    ? 'card-minimal-dark hover:border-brand-orange-500/30' 
+                                isDark
+                                    ? 'card-minimal-dark hover:border-brand-orange-500/30'
                                     : 'card-minimal hover:border-brand-orange-200'
                             }`}
                         >
@@ -211,8 +220,8 @@ function MovieTestimonials() {
                             {testimonial.project && (
                                 <div className="mb-4">
                                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                        isDark 
-                                            ? 'bg-brand-orange-500/20 text-brand-orange-400' 
+                                        isDark
+                                            ? 'bg-brand-orange-500/20 text-brand-orange-400'
                                             : 'bg-brand-orange-100 text-brand-orange-600'
                                     }`}>
                                         {testimonial.project}
@@ -223,8 +232,8 @@ function MovieTestimonials() {
                             {/* Author Info */}
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 mr-4">
-                                    <img 
-                                        src={getSafeImageUrl(testimonial.avatar_url, testimonial.name, 64, 64)} 
+                                    <img
+                                        src={getSafeImageUrl(testimonial.avatar_url, testimonial.name, 64, 64)}
                                         alt={testimonial.name}
                                         className="w-12 h-12 rounded-full object-cover"
                                     />
@@ -254,8 +263,8 @@ function MovieTestimonials() {
                 {/* CTA Section */}
                 <div className="text-center mt-16">
                     <div className={`inline-block px-8 py-4 rounded-lg ${
-                        isDark 
-                            ? 'bg-brand-orange-500/10 border border-brand-orange-500/30' 
+                        isDark
+                            ? 'bg-brand-orange-500/10 border border-brand-orange-500/30'
                             : 'bg-brand-orange-50 border border-brand-orange-200'
                     }`}>
                         <p className={`text-lg font-semibold ${

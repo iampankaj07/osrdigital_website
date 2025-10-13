@@ -13,15 +13,15 @@ function Portfolio() {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 const response = await fetch('/api/dynamic-page/portfolio');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
                 setPageData(data);
-                
+
                 // Update document title and meta tags
                 if (data.meta_title) {
                     document.title = data.meta_title.includes('OSR Digital') ? data.meta_title : `${data.meta_title} - OSR Digital`;
@@ -53,8 +53,33 @@ function Portfolio() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
+            <div className={`min-h-screen pt-20 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                    {/* Header Skeleton */}
+                    <div className="text-center mb-16">
+                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-6 w-96 mx-auto mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-6 w-64 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                    </div>
+
+                    {/* Content Skeleton */}
+                    <div className="space-y-16">
+                        {/* Hero Section Skeleton */}
+                        <div className={`h-96 rounded-xl ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+
+                        {/* Content Blocks Skeleton */}
+                        <div className="grid md:grid-cols-2 gap-12">
+                            {[1, 2].map((i) => (
+                                <div key={i}>
+                                    <div className={`h-8 w-48 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-4 w-3/4 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-4 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -85,7 +110,7 @@ function Portfolio() {
         <div className={`min-h-screen transition-colors duration-300 ${
             isDark ? 'bg-gray-900' : 'bg-white'
         }`}>
-            <DynamicContentRenderer 
+            <DynamicContentRenderer
                 contentBlocks={pageData.content_blocks || []}
                 pageSettings={pageData.settings || {}}
                 template={pageData.template || 'portfolio'}

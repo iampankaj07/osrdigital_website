@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faRocket, faLightbulb, faHandshake, faChartLine, faGlobe, faEnvelope, faQuoteLeft, faAward, faHeart, faCoffee, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { faLinkedin as faLinkedinBrand, faTwitter as faTwitterBrand } from '@fortawesome/free-brands-svg-icons';
-import DynamicHero from '../components/sections/DynamicHero';
+import CompactHero from '../components/sections/CompactHero';
 import { getSafeImageUrl, handleAvatarError } from '../utils/imageUtils';
 
 function Team() {
@@ -136,14 +136,14 @@ function Team() {
             document.getElementsByTagName('head')[0].appendChild(metaDescription);
         }
         metaDescription.content = "Meet the talented team behind OSR Digital. Our diverse group of professionals is dedicated to bringing exceptional content to global audiences through innovative distribution strategies.";
-        
+
         // Fetch data
         const fetchData = async () => {
             setIsLoading(true);
             await Promise.all([fetchTeamMembers(), fetchTeamValues()]);
             setIsLoading(false);
         };
-        
+
         fetchData();
     }, []);
 
@@ -175,7 +175,16 @@ function Team() {
     return (
         <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
             {/* Hero Section */}
-            <DynamicHero page="team" />
+            <CompactHero
+                page="team"
+                title="Our Team"
+                subtitle="Meet the Experts"
+                description="Get to know the talented individuals who make OSR Digital a leader in content distribution and digital media."
+                breadcrumbs={[
+                    { label: 'Home', href: '/', icon: 'fas fa-home' },
+                    { label: 'Team' }
+                ]}
+            />
 
             {/* Team Members Section */}
             <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
@@ -190,9 +199,26 @@ function Team() {
                     </div>
 
                     {isLoading ? (
-                        <div className="text-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading team members...</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className={`p-8 rounded-lg shadow-lg ${isDark ? 'bg-gray-700' : 'bg-white'}`}>
+                                    <div className="text-center mb-6">
+                                        <div className={`w-24 h-24 rounded-full mx-auto mb-4 ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-6 w-32 mx-auto mb-2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-40 mx-auto mb-2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-24 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                    <div className="flex justify-center space-x-4 mt-6">
+                                        <div className={`w-8 h-8 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`w-8 h-8 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`w-8 h-8 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -201,8 +227,8 @@ function Team() {
                                 isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
                             }`}>
                                 <div className="text-center mb-6">
-                                    <img 
-                                        src={getSafeImageUrl(member.avatar, member.name, 300, 300)} 
+                                    <img
+                                        src={getSafeImageUrl(member.avatar, member.name, 300, 300)}
                                         alt={`${member.name} avatar`}
                                         className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                                         onError={(e) => handleAvatarError(e, member.name, 300)}
@@ -221,9 +247,9 @@ function Team() {
                                 </div>
 
                                 <div className="flex justify-center space-x-4">
-                                    <a 
-                                        href={member.linkedin} 
-                                        target="_blank" 
+                                    <a
+                                        href={member.linkedin}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className={`p-2 rounded-full transition-colors ${
                                             isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
@@ -231,9 +257,9 @@ function Team() {
                                     >
                                         <FontAwesomeIcon icon={faLinkedinBrand} />
                                     </a>
-                                    <a 
-                                        href={member.twitter} 
-                                        target="_blank" 
+                                    <a
+                                        href={member.twitter}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className={`p-2 rounded-full transition-colors ${
                                             isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
@@ -241,7 +267,7 @@ function Team() {
                                     >
                                         <FontAwesomeIcon icon={faTwitterBrand} />
                                     </a>
-                                    <a 
+                                    <a
                                         href={`mailto:${member.email}`}
                                         className={`p-2 rounded-full transition-colors ${
                                             isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-brand-orange-400' : 'hover:bg-gray-200 text-gray-500 hover:text-brand-orange-600'
@@ -270,9 +296,15 @@ function Team() {
                     </div>
 
                     {isLoading ? (
-                        <div className="text-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                            <p className={`text-lg ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>Loading team values...</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div key={i} className={`p-6 rounded-lg shadow-lg text-center ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                                    <div className={`w-12 h-12 mx-auto mb-4 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-6 w-24 mx-auto mb-3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                </div>
+                            ))}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

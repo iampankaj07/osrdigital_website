@@ -47,9 +47,41 @@ function HeroSlider() {
 
     if (loading) {
         return (
-            <section className={`w-full h-screen flex items-center justify-center ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-orange-500 mx-auto"></div>
+            <section className="w-full h-screen relative overflow-hidden">
+                {/* Skeleton Background */}
+                <div className={`absolute inset-0 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+
+                {/* Skeleton Content */}
+                <div className="relative z-10 w-full h-full flex items-center justify-center pt-20">
+                    <div className="container-minimal">
+                        <div className="text-center max-w-4xl mx-auto">
+                            {/* Skeleton Subtitle */}
+                            <div className="mb-8">
+                                <div className={`h-8 w-48 mx-auto rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            </div>
+
+                            {/* Skeleton Title */}
+                            <div className="mb-12">
+                                <div className={`h-16 w-full max-w-3xl mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                <div className={`h-12 w-3/4 mx-auto mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                <div className={`h-6 w-full max-w-2xl mx-auto mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            </div>
+
+                            {/* Skeleton Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                <div className={`h-12 w-32 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                <div className={`h-12 w-32 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Skeleton Navigation Dots */}
+                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className={`w-3 h-3 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                    ))}
                 </div>
             </section>
         );

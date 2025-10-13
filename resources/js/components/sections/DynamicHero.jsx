@@ -14,12 +14,12 @@ function DynamicHero({ page = 'home' }) {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 const response = await fetch(`/api/hero-sections/page/${page}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
                 if (data.success) {
                     setHeroData(data.data);
@@ -42,8 +42,25 @@ function DynamicHero({ page = 'home' }) {
         return (
             <section className={`min-h-screen flex items-center justify-center pt-16 md:pt-20 lg:pt-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
-                    <div className="text-center">
-                        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-brand-orange-500 mx-auto"></div>
+                    <div className="text-center max-w-4xl mx-auto">
+                        {/* Skeleton Subtitle */}
+                        <div className="mb-8">
+                            <div className={`h-6 w-48 mx-auto rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        </div>
+
+                        {/* Skeleton Title */}
+                        <div className="mb-12">
+                            <div className={`h-16 w-full mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-12 w-3/4 mx-auto mb-8 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        </div>
+
+                        {/* Skeleton Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                            <div className={`h-12 w-32 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-12 w-36 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        </div>
                     </div>
                 </div>
             </section>
