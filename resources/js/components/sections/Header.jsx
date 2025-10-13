@@ -32,8 +32,8 @@ function Header() {
     return (
         <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
             isScrolled
-                ? `${isDark ? 'bg-gray-900/95 border-b border-gray-800' : 'bg-white/95 border-b border-gray-200'} backdrop-blur-sm`
-                : 'bg-transparent'
+                ? `${isDark ? 'bg-gray-900/95 border-b border-gray-800' : 'bg-white/95 border-b border-gray-200'} backdrop-blur-md`
+                : 'bg-black/10 backdrop-blur-sm'
         }`}>
             <div className="container-minimal">
                 <div className="flex justify-between items-center py-6">
@@ -57,9 +57,13 @@ function Header() {
                                     key={item.to}
                                     to={item.to}
                                     className={`text-base font-medium transition-colors duration-200 hover-subtle ${
-                                        isActive(item.to)
-                                            ? `${isDark ? 'text-white' : 'text-gray-900'}`
-                                            : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
+                                        isScrolled
+                                            ? isActive(item.to)
+                                                ? `${isDark ? 'text-white' : 'text-gray-900'}`
+                                                : `${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`
+                                            : isActive(item.to)
+                                                ? 'text-white'
+                                                : 'text-white/80 hover:text-white'
                                     }`}
                                 >
                                     {item.label}
@@ -71,13 +75,17 @@ function Header() {
                     {/* Right side items */}
                     <div className="flex items-center space-x-4">
                         {/* Theme Toggle */}
-                        <ThemeToggle />
+                        <ThemeToggle isOverHero={!isScrolled} />
 
                         {/* CTA Button */}
                         <div className="hidden md:block">
                             <Link
                                 to="/contact"
-                                className="btn-minimal text-base px-6 py-3"
+                                className={`text-base px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                                    isScrolled
+                                        ? 'btn-minimal'
+                                        : 'bg-white text-gray-900 hover:bg-gray-100'
+                                }`}
                             >
                                 Contact
                             </Link>
@@ -88,9 +96,11 @@ function Header() {
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                                 className={`p-2 rounded-lg transition-colors duration-200 ${
-                                    isDark 
-                                        ? 'text-gray-400 hover:text-white hover:bg-gray-800' 
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                    isScrolled
+                                        ? isDark
+                                            ? 'text-gray-400 hover:text-white hover:bg-gray-800'
+                                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                        : 'text-white hover:text-white hover:bg-white/10'
                                 }`}
                             >
                                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

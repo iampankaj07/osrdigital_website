@@ -21,7 +21,7 @@
 
     <!-- Load Vite-built CSS -->
     @vite(['resources/css/app.css'])
-    
+
     <!-- Livewire Styles -->
     @livewireStyles
 
@@ -336,14 +336,14 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
                             class="fas fa-bars"></i></a>
                 </li>
-         
+
             </ul>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-        
 
-           
+
+
 
                 <!-- User Menu -->
                 <li class="nav-item dropdown">
@@ -399,15 +399,20 @@
                         </li>
 
                         <!-- Content Management -->
+                                                <!-- Content Management -->
                         <li class="nav-header">Content Management</li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.hero-sections.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.hero-sections*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-star"></i>
-                                <p>Hero Sections</p>
+                            <a href="{{ route('admin.hero-slider.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.hero-slider*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-images"></i>
+                                <p>Hero Slider / Home</p>
                             </a>
                         </li>
+
+                        <!-- About Us Section -->
+
+
 
                         <!-- About Us Section -->
                         <li class="nav-header">About us</li>
@@ -596,7 +601,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-           
+
 
             <!-- Main content -->
             <section class="content">
@@ -755,12 +760,12 @@
                 $('.alert').fadeOut('slow');
             }, 5000);
         });
-        
-      
+
+
     </script>
 
     @yield('scripts')
-    
+
     <!-- Livewire Scripts -->
     @livewireScripts
 </body>

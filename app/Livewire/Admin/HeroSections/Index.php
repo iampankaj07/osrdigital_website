@@ -11,16 +11,14 @@ class Index extends Component
     use WithPagination;
 
     public $search = '';
-    public $page_filter = '';
     public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
     public $form = [
-        'page' => '',
         'title' => '',
         'subtitle' => '',
         'content' => '',
@@ -28,13 +26,16 @@ class Index extends Component
         'button_url' => '',
         'button_text_secondary' => '',
         'button_url_secondary' => '',
+        'background_type' => 'color',
+        'background_color' => '',
         'background_image' => '',
+        'text_color' => '#ffffff',
         'is_active' => true,
+        'sort_order' => 0,
     ];
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'page_filter' => ['except' => ''],
         'perPage' => ['except' => 10],
         'sortField' => ['except' => 'created_at'],
         'sortDirection' => ['except' => 'desc'],
@@ -45,10 +46,7 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatingPageFilter()
-    {
-        $this->resetPage();
-    }
+
 
     public function updatingPerPage()
     {
@@ -69,7 +67,7 @@ class Index extends Component
     {
         $heroSection = HeroSection::findOrFail($id);
         $heroSection->delete();
-        
+
         session()->flash('success', 'Hero section deleted successfully!');
     }
 
@@ -77,7 +75,7 @@ class Index extends Component
     {
         $heroSection = HeroSection::findOrFail($id);
         $heroSection->update(['is_active' => !$heroSection->is_active]);
-        
+
         session()->flash('success', 'Hero section status updated successfully!');
     }
 
@@ -86,6 +84,10 @@ class Index extends Component
         $this->isCreating = true;
         $this->editingId = null;
         $this->reset('form');
+        $this->form['is_active'] = true;
+        $this->form['background_type'] = 'color';
+        $this->form['text_color'] = '#ffffff';
+        $this->form['sort_order'] = HeroSection::max('sort_order') + 1;
     }
 
     public function edit($id)
@@ -93,9 +95,8 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $heroSection = HeroSection::findOrFail($id);
-        
+
         $this->form = [
-            'page' => $heroSection->page,
             'title' => $heroSection->title,
             'subtitle' => $heroSection->subtitle,
             'content' => $heroSection->content,
@@ -103,8 +104,12 @@ class Index extends Component
             'button_url' => $heroSection->button_url,
             'button_text_secondary' => $heroSection->button_text_secondary,
             'button_url_secondary' => $heroSection->button_url_secondary,
+            'background_type' => $heroSection->background_type,
+            'background_color' => $heroSection->background_color,
             'background_image' => $heroSection->background_image,
+            'text_color' => $heroSection->text_color,
             'is_active' => $heroSection->is_active,
+            'sort_order' => $heroSection->sort_order,
         ];
     }
 
@@ -118,7 +123,6 @@ class Index extends Component
     public function store()
     {
         $this->validate([
-            'form.page' => 'required|string|max:255',
             'form.title' => 'required|string|max:255',
             'form.subtitle' => 'nullable|string|max:255',
             'form.content' => 'nullable|string',
@@ -126,22 +130,25 @@ class Index extends Component
             'form.button_url' => 'nullable|url|max:255',
             'form.button_text_secondary' => 'nullable|string|max:255',
             'form.button_url_secondary' => 'nullable|url|max:255',
+            'form.background_type' => 'required|in:color,image',
+            'form.background_color' => 'nullable|string|max:7',
             'form.background_image' => 'nullable|string|max:255',
+            'form.text_color' => 'required|string|max:7',
             'form.is_active' => 'boolean',
+            'form.sort_order' => 'required|integer|min:0',
         ]);
 
         HeroSection::create($this->form);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'Hero section created successfully!');
     }
 
     public function update()
     {
         $this->validate([
-            'form.page' => 'required|string|max:255',
             'form.title' => 'required|string|max:255',
             'form.subtitle' => 'nullable|string|max:255',
             'form.content' => 'nullable|string',
@@ -149,16 +156,20 @@ class Index extends Component
             'form.button_url' => 'nullable|url|max:255',
             'form.button_text_secondary' => 'nullable|string|max:255',
             'form.button_url_secondary' => 'nullable|url|max:255',
+            'form.background_type' => 'required|in:color,image',
+            'form.background_color' => 'nullable|string|max:7',
             'form.background_image' => 'nullable|string|max:255',
+            'form.text_color' => 'required|string|max:7',
             'form.is_active' => 'boolean',
+            'form.sort_order' => 'required|integer|min:0',
         ]);
 
         $heroSection = HeroSection::findOrFail($this->editingId);
         $heroSection->update($this->form);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
+
         session()->flash('success', 'Hero section updated successfully!');
     }
 
@@ -170,15 +181,10 @@ class Index extends Component
                       ->orWhere('subtitle', 'like', '%' . $this->search . '%')
                       ->orWhere('content', 'like', '%' . $this->search . '%');
             })
-            ->when($this->page_filter, function ($query) {
-                $query->where('page', $this->page_filter);
-            })
+
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        $pages = HeroSection::getAvailablePages();
-
-        return view('livewire.admin.hero-sections.index', compact('heroSections', 'pages'))
-            ->layout('admin.layout', ['title' => 'Hero Sections']);
+        return view('livewire.admin.hero-sections.index', compact('heroSections'));
     }
 }

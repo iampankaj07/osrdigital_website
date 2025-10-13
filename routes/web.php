@@ -202,6 +202,30 @@ Route::prefix('api')->group(function () {
             'filename' => basename($logoUrl)
         ]);
     });
+
+    // Hero Slider API
+    Route::get('/hero-slider', function () {
+        $heroSliders = \App\Models\HeroSlider::active()->ordered()->get();
+        return response()->json([
+            'success' => true,
+            'data' => $heroSliders->map(function ($slider) {
+                return [
+                    'id' => $slider->id,
+                    'title' => $slider->title,
+                    'subtitle' => $slider->subtitle,
+                    'description' => $slider->description,
+                    'image' => $slider->image ? asset('storage/' . $slider->image) : null,
+                    'button_text' => $slider->button_text,
+                    'button_url' => $slider->button_url,
+                    'button_text_secondary' => $slider->button_text_secondary,
+                    'button_url_secondary' => $slider->button_url_secondary,
+                    'shouldShowButton' => $slider->shouldShowButton(),
+                    'shouldShowSecondaryButton' => $slider->shouldShowSecondaryButton(),
+                    'sort_order' => $slider->sort_order,
+                ];
+            })
+        ]);
+    });
 });
 
 // Authentication routes

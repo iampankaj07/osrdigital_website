@@ -5,22 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HeroSection extends Model
+class HeroSlider extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'title',
         'subtitle',
-        'content',
+        'description',
+        'image',
         'button_text',
         'button_url',
         'button_text_secondary',
         'button_url_secondary',
-        'background_type',
-        'background_color',
-        'background_image',
-        'text_color',
         'is_active',
         'sort_order'
     ];
@@ -31,35 +28,23 @@ class HeroSection extends Model
     ];
 
     /**
-     * Get the available pages for hero sections
+     * Scope for active slides
      */
-    public static function getAvailablePages()
+    public function scopeActive($query)
     {
-        return [
-            'home' => 'Home',
-            'about' => 'About',
-            'partners' => 'Partners',
-            'team' => 'Team',
-            'news' => 'News',
-            'portfolio' => 'Portfolio',
-            'contact' => 'Contact',
-            'business' => 'Business'
-        ];
+        return $query->where('is_active', true);
     }
 
     /**
-     * Get hero section by page
+     * Scope for ordered slides
      */
-    public static function getByPage($page)
+    public function scopeOrdered($query)
     {
-        return self::where('page', $page)
-                   ->where('is_active', true)
-                   ->orderBy('sort_order')
-                   ->first();
+        return $query->orderBy('sort_order');
     }
 
     /**
-     * Check if button should be displayed
+     * Check if primary button should be displayed
      */
     public function shouldShowButton()
     {
