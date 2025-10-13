@@ -10,7 +10,7 @@
             <h1 class="text-2xl font-semibold text-gray-900">News Management</h1>
             <p class="text-gray-600">Manage your news articles and featured content</p>
         </div>
-        <a href="{{ route('admin.news.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+        <a href="{{ route('admin.news.create') }}" class="btn btn-dark">
             <i class="fas fa-plus mr-2"></i>
             Add New Article
         </a>

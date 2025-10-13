@@ -24,7 +24,7 @@ Route::get('/public-test-image/{filename}', [App\Http\Controllers\PublicImageTes
 Route::get('/debug-storage', function() {
     $associatesPath = storage_path('app/public/associates');
     $files = [];
-    
+
     if (is_dir($associatesPath)) {
         $files = array_map(function($file) {
             return [
@@ -35,7 +35,7 @@ Route::get('/debug-storage', function() {
             ];
         }, glob($associatesPath . '/*'));
     }
-    
+
     return response()->json([
         'associates_path' => $associatesPath,
         'exists' => is_dir($associatesPath),
@@ -45,43 +45,15 @@ Route::get('/debug-storage', function() {
     ]);
 });
 
-// File upload routes for FilePond
+// Debug routes
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::post('/admin/film-portfolios/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmImage'])->name('admin.film-portfolios.upload');
-    Route::post('/admin/testimonials/upload', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialAvatar'])->name('admin.testimonials.upload');
-    Route::post('/upload/general-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralLogo']);
-    Route::post('/upload/general-favicon', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadGeneralFavicon']);
-    Route::post('/upload/associate-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadAssociateImage']);
-    Route::post('/upload/associate-image-cloud', [App\Http\Controllers\Admin\CloudFileUploadController::class, 'uploadAssociateImage']);
-    Route::post('/upload/associate-image-production', [App\Http\Controllers\Admin\ProductionFileUploadController::class, 'uploadAssociateImage']);
     Route::get('/debug/cloud-storage', [App\Http\Controllers\Admin\CloudDebugController::class, 'debugStorage']);
     Route::get('/debug/image-serving', [App\Http\Controllers\ImageTestController::class, 'testImageServing']);
     Route::get('/test-image/{filename}', [App\Http\Controllers\ImageTestController::class, 'serveTestImage']);
-    
-    // Media Library Routes
-    Route::resource('media', App\Http\Controllers\Admin\MediaController::class)->names([
-        'index' => 'admin.media.index',
-        'create' => 'admin.media.create',
-        'store' => 'admin.media.store',
-        'show' => 'admin.media.show',
-        'edit' => 'admin.media.edit',
-        'update' => 'admin.media.update',
-        'destroy' => 'admin.media.destroy',
-    ]);
-    Route::post('/media/bulk-delete', [App\Http\Controllers\Admin\MediaController::class, 'bulkDelete'])->name('admin.media.bulk-delete');
-    Route::get('/media-api', [App\Http\Controllers\Admin\MediaController::class, 'api'])->name('admin.media.api');
-    Route::post('/upload/partner-logo', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadPartnerLogo']);
-    Route::post('/upload/team-member-avatar', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTeamMemberAvatar']);
-    Route::post('/upload/film-portfolio-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadFilmPortfolioImage']);
-    Route::post('/upload/testimonial-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadTestimonialImage']);
-    Route::post('/upload/news-featured-image', [App\Http\Controllers\Admin\FileUploadController::class, 'uploadNewsFeaturedImage']);
 });
 
 
-// Theme Settings Test Route (for development)
-Route::get('/theme-test', function () {
-    return view('theme-test');
-});
+
 
 // News Routes - if you want React to handle these, remove these routes
 Route::get('/news', function () {
@@ -107,15 +79,15 @@ Route::get('/news/{slug}', function ($slug) {
 use App\Http\Controllers\API\ContentController;
 
 Route::prefix('api')->group(function () {
-    
+
     // Unified content API - get all content in one call
     Route::get('/content', [ContentController::class, 'getAllContent']);
-    
+
     // Individual content endpoints
     Route::get('/pages/{slug}', [ContentController::class, 'getPage']);
     Route::get('/settings/{key}', [ContentController::class, 'getSetting']);
     Route::get('/settings', [ContentController::class, 'getAllSettings']);
-    
+
     // Legacy endpoints for backward compatibility
     Route::get('/featured-content', function () {
         $content = \App\Helpers\ContentManager::getAllContent();

@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-900">Footer Settings</h1>
-        <button onclick="saveFooter()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+        <button onclick="saveFooter()" class="btn btn-dark">
             <i class="fas fa-save mr-2"></i>
             Save Changes
         </button>
@@ -16,7 +16,7 @@
     <form method="POST" action="{{ route('admin.footer.update') }}" id="footerForm">
         @csrf
         @method('PUT')
-        
+
         <!-- Company Information -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -33,12 +33,12 @@
                         <input type="email" name="email" value="{{ $footer->email ?? '' }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Company Description</label>
                     <textarea name="company_description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">{{ $footer->company_description ?? '' }}</textarea>
                 </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
@@ -49,7 +49,7 @@
                         <input type="url" name="website" value="{{ $footer->website ?? '' }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                     </div>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
                     <textarea name="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">{{ $footer->address ?? '' }}</textarea>
@@ -276,10 +276,10 @@ function validateFooterForm() {
     quickLinkItems.forEach((item, index) => {
         const titleInput = item.querySelector('input[name*="[title]"]');
         const urlInput = item.querySelector('input[name*="[url]"]');
-        
+
         const title = titleInput.value.trim();
         const url = urlInput.value.trim();
-        
+
         // If either field has content, both are required
         if (title || url) {
             if (!title) {
@@ -301,7 +301,7 @@ function validateFooterForm() {
     socialLinkItems.forEach((item, index) => {
         const urlInput = item.querySelector('input[name*="[url]"]');
         const url = urlInput.value.trim();
-        
+
         if (url && !isValidUrl(url)) {
             showFieldError(urlInput, `Social link ${index + 1} must be a valid URL`);
             isValid = false;
@@ -332,11 +332,11 @@ function validateFooterForm() {
 function showFieldError(input, message) {
     input.classList.remove('border-gray-300');
     input.classList.add('border-red-500');
-    
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message text-red-500 text-sm mt-1';
     errorDiv.textContent = message;
-    
+
     input.parentNode.appendChild(errorDiv);
 }
 
@@ -358,9 +358,9 @@ function showNotification(message, type = 'success') {
         type === 'success' ? 'bg-green-500' : 'bg-red-500'
     }`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remove notification after 3 seconds
     setTimeout(() => {
         notification.remove();
@@ -371,25 +371,25 @@ function validateQuickLinkField(input) {
     const value = input.value.trim();
     const isUrlField = input.name.includes('[url]');
     const isTitleField = input.name.includes('[title]');
-    
+
     // Clear previous error styling
     input.classList.remove('border-red-500');
     input.classList.add('border-gray-300');
-    
+
     // Remove existing error message
     const existingError = input.parentNode.querySelector('.error-message');
     if (existingError) {
         existingError.remove();
     }
-    
+
     // If field is empty, no validation needed
     if (!value) {
         return;
     }
-    
+
     let isValid = true;
     let errorMessage = '';
-    
+
     if (isUrlField) {
         if (!isValidUrl(value)) {
             isValid = false;
@@ -401,7 +401,7 @@ function validateQuickLinkField(input) {
             errorMessage = 'Title must be less than 255 characters';
         }
     }
-    
+
     if (!isValid) {
         input.classList.remove('border-gray-300');
         input.classList.add('border-red-500');

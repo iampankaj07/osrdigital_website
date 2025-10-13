@@ -31,7 +31,6 @@ class TestimonialController extends Controller
             'content' => 'required|string|max:1000',
             'project' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'avatar_url' => 'nullable|string|url',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
@@ -42,10 +41,8 @@ class TestimonialController extends Controller
             'is_featured', 'is_published', 'sort_order'
         ]);
 
-        // Handle avatar upload - prioritize FilePond URL if available
-        if ($request->filled('avatar_url')) {
-            $data['avatar_url'] = $request->avatar_url;
-        } elseif ($request->hasFile('avatar')) {
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
             $data['avatar_url'] = $request->file('avatar')->store('testimonials', 'public');
         }
 
@@ -74,7 +71,6 @@ class TestimonialController extends Controller
             'content' => 'required|string|max:1000',
             'project' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'avatar_url' => 'nullable|string|url',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
@@ -85,10 +81,8 @@ class TestimonialController extends Controller
             'is_featured', 'is_published', 'sort_order'
         ]);
 
-        // Handle avatar upload - prioritize FilePond URL if available
-        if ($request->filled('avatar_url')) {
-            $data['avatar_url'] = $request->avatar_url;
-        } elseif ($request->hasFile('avatar')) {
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
             // Delete old avatar
             if ($testimonial->avatar_url && Storage::disk('public')->exists($testimonial->avatar_url)) {
                 Storage::disk('public')->delete($testimonial->avatar_url);

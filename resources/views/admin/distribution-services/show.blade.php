@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('admin.distribution-services.edit', $distributionService) }}" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <a href="{{ route('admin.distribution-services.edit', $distributionService) }}" class="btn btn-dark">
                     <i class="fas fa-edit mr-2"></i>
                     Edit Service
                 </a>
@@ -31,18 +31,18 @@
             <!-- Basic Information -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                
+
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Title</label>
                         <p class="mt-1 text-sm text-gray-900">{{ $distributionService->title }}</p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Description</label>
                         <p class="mt-1 text-sm text-gray-900">{{ $distributionService->description }}</p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Link URL</label>
                         <p class="mt-1 text-sm text-gray-900">
@@ -58,7 +58,7 @@
             <!-- Icon Configuration -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Icon Configuration</h3>
-                
+
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Icon Type</label>
@@ -68,7 +68,7 @@
                             </span>
                         </p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Icon Preview</label>
                         <div class="mt-2 p-4 bg-gray-50 rounded-lg">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Icon Data</label>
                         <div class="mt-1 p-3 bg-gray-50 rounded-lg">
@@ -101,7 +101,7 @@
             <!-- Status & Settings -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Status & Settings</h3>
-                
+
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Status</label>
@@ -111,17 +111,17 @@
                             </span>
                         </p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Sort Order</label>
                         <p class="mt-1 text-sm text-gray-900">{{ $distributionService->sort_order }}</p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Created</label>
                         <p class="mt-1 text-sm text-gray-900">{{ $distributionService->created_at->format('M j, Y g:i A') }}</p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Last Updated</label>
                         <p class="mt-1 text-sm text-gray-900">{{ $distributionService->updated_at->format('M j, Y g:i A') }}</p>
@@ -132,13 +132,13 @@
             <!-- Actions -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Actions</h3>
-                
+
                 <div class="space-y-3">
-                    <a href="{{ route('admin.distribution-services.edit', $distributionService) }}" class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center">
+                    <a href="{{ route('admin.distribution-services.edit', $distributionService) }}" class="w-full btn btn-dark justify-center">
                         <i class="fas fa-edit mr-2"></i>
                         Edit Service
                     </a>
-                    
+
                     <form action="{{ route('admin.distribution-services.destroy', $distributionService) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this service? This action cannot be undone.')">
                         @csrf
                         @method('DELETE')

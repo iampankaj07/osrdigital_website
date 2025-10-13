@@ -21,12 +21,12 @@
         <form action="{{ route('admin.testimonials.update', $testimonial) }}" method="POST" enctype="multipart/form-data" class="p-6">
             @csrf
             @method('PUT')
-            
+
             <div class="space-y-8">
                 <!-- Basic Information -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                    
+
                     <div class="space-y-6">
                         <!-- Content -->
                         <div>
@@ -92,7 +92,7 @@
                 <!-- Media & Settings -->
                 <div>
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Media & Settings</h3>
-                    
+
                     <div class="space-y-6">
                         <!-- Current Avatar -->
                         @if($testimonial->avatar_url)
@@ -118,7 +118,7 @@
                                     <i class="fas fa-trash mr-1"></i>Clear All
                                 </button>
                             </div>
-                            <input type="file" name="avatar" id="avatar" class="filepond" accept=".png,.svg,.jpg,.jpeg">
+                            <input type="file" name="avatar" id="avatar"  accept=".png,.svg,.jpg,.jpeg">
                             <input type="hidden" name="avatar_url" id="avatar_url" value="{{ old('avatar_url', $testimonial->avatar_url) }}">
                             <p class="mt-1 text-sm text-gray-500">Upload a profile picture for the author. If not provided, initials will be used.</p>
                             @error('avatar')
@@ -166,7 +166,7 @@
                 <a href="{{ route('admin.testimonials.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors duration-200">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-save mr-2"></i>
                     Update Testimonial
                 </button>
@@ -175,93 +175,3 @@
     </div>
 @endsection
 
-@section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize FilePond for avatar upload
-    const inputElement = document.querySelector('input[id="avatar"]');
-    const pond = FilePond.create(inputElement, {
-        name: 'avatar',
-        acceptedFileTypes: ['image/png', 'image/svg+xml', 'image/jpeg', 'image/jpg'],
-        maxFileSize: '2MB',
-        allowImagePreview: true,
-        imagePreviewHeight: 120,
-        imageCropAspectRatio: '1:1',
-        imageResizeTargetWidth: 300,
-        imageResizeTargetHeight: 300,
-        imageResizeMode: 'cover',
-        imageResizeUpscale: false,
-        server: {
-            process: {
-                url: '/upload/testimonial-image',
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                },
-                withCredentials: true,
-                onload: (response) => {
-                    const data = JSON.parse(response);
-                    if (data.success && data.url) {
-                        document.getElementById('avatar_url').value = data.url;
-                        return data.url;
-                    } else {
-                        throw new Error(data.message || 'Upload failed');
-                    }
-                },
-                onerror: (response) => {
-                    console.error('Upload error:', response);
-                    let errorMessage = 'Upload failed';
-                    try {
-                        const errorData = JSON.parse(response);
-                        errorMessage = errorData.message || errorMessage;
-                    } catch (e) {
-                        console.error('Could not parse error response:', e);
-                    }
-                    throw new Error(errorMessage);
-                }
-            }
-        },
-        files: [],
-        // Add clear button functionality
-        labelButtonRemoveItem: 'Clear',
-        labelButtonProcessItem: 'Upload',
-        labelIdle: 'Drag & Drop avatar or <span class="filepond--label-action">Browse</span>',
-        labelInvalidField: 'Field contains invalid files',
-        labelFileWaitingForSize: 'Waiting for size',
-        labelFileSizeNotAvailable: 'Size not available',
-        labelFileLoading: 'Loading',
-        labelFileLoadError: 'Error during load',
-        labelFileProcessing: 'Uploading',
-        labelFileProcessingComplete: 'Upload complete',
-        labelFileProcessingAborted: 'Upload cancelled',
-        labelFileProcessingError: 'Error during upload',
-        labelFileProcessingRevertError: 'Error during revert',
-        labelFileRemoveError: 'Error during remove',
-        labelTapToCancel: 'tap to cancel',
-        labelTapToRetry: 'tap to retry',
-        labelTapToUndo: 'tap to undo',
-        labelButtonAbortItemLoad: 'Abort',
-        labelButtonRetryItemLoad: 'Retry',
-        labelButtonAbortItemProcessing: 'Cancel',
-        labelButtonUndoItemProcessing: 'Undo',
-        labelButtonRetryItemProcessing: 'Retry'
-    });
-
-    // Load existing avatar if available
-    @if($testimonial->avatar_url && !str_contains($testimonial->avatar_url, 'ui-avatars.com'))
-        pond.addFile('{{ $testimonial->avatar_url }}', {
-            type: 'image/jpeg',
-            metadata: {
-                poster: '{{ $testimonial->avatar_url }}'
-            }
-        });
-    @endif
-
-    // Add clear all files functionality
-    window.clearAllFiles = function() {
-        pond.removeFiles();
-    };
-});
-</script>
-@endsection

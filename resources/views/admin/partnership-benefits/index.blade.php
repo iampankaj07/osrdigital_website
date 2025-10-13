@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-900">Partnership Benefits</h1>
-        <a href="{{ route('admin.partnership-benefits.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+        <a href="{{ route('admin.partnership-benefits.create') }}" class="btn btn-dark">
             <i class="fas fa-plus mr-2"></i>
             Add Benefit
         </a>
@@ -31,7 +31,7 @@
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-900">Benefits Management</h2>
         </div>
-        
+
         @if($benefits->count() > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -101,7 +101,7 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No Benefits Found</h3>
                 <p class="text-gray-500 mb-6">Get started by adding your first partnership benefit.</p>
-                <a href="{{ route('admin.partnership-benefits.create') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                <a href="{{ route('admin.partnership-benefits.create') }}" class="btn btn-dark">
                     <i class="fas fa-plus mr-2"></i>
                     Add Benefit
                 </a>
@@ -110,4 +110,5 @@
     </div>
 </div>
 @endsection
+
 

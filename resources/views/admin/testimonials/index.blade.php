@@ -10,7 +10,7 @@
                 <h1 class="text-3xl font-bold text-gray-900">Testimonials</h1>
                 <p class="text-gray-600 mt-2">Manage partner testimonials and quotes</p>
             </div>
-            <a href="{{ route('admin.testimonials.create') }}" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center">
+            <a href="{{ route('admin.testimonials.create') }}" class="btn btn-dark">
                 <i class="fas fa-plus mr-2"></i>
                 Add Testimonial
             </a>

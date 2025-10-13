@@ -35,7 +35,7 @@
             <div id="general-content" class="tab-content">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-lg font-semibold text-gray-900">General Settings</h2>
-                    <button onclick="saveGeneral()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    <button onclick="saveGeneral()" class="btn btn-dark">
                         <i class="fas fa-save mr-2"></i>
                         Save Changes
                     </button>
@@ -44,7 +44,7 @@
                 <form method="POST" action="{{ route('admin.settings.general.update') }}" id="generalForm" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    
+
                     <!-- Website Information -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="px-6 py-4 border-b border-gray-200">
@@ -63,7 +63,7 @@
                                     <p class="text-sm text-gray-500 mt-1">A short description of your website</p>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
                                 <textarea name="site_description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="A comprehensive description of your website for SEO purposes">{{ $general['site_description'] ?? '' }}</textarea>
@@ -85,7 +85,7 @@
                                         <input type="file" id="logo-filepond" name="logo" accept=".png,.svg,.jpg,.jpeg" class="logo-filepond">
                                     </div>
                                     <p class="text-xs text-gray-500 mt-2">PNG, SVG, JPG, JPEG up to 5MB</p>
-                                    
+
                                     <!-- Current Logo Display -->
                                     @if(isset($general['logo']) && $general['logo'])
                                         <div class="mt-4">
@@ -117,7 +117,7 @@
                                         <input type="file" id="favicon-filepond" name="favicon" accept=".png,.svg,.ico" class="favicon-filepond">
                                     </div>
                                     <p class="text-xs text-gray-500 mt-2">PNG, SVG, ICO up to 1MB (recommended: 32x32px)</p>
-                                    
+
                                     <!-- Current Favicon Display -->
                                     @if(isset($general['favicon']) && $general['favicon'])
                                         <div class="mt-4">
@@ -142,7 +142,7 @@
             <div id="footer-content" class="tab-content hidden">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-lg font-semibold text-gray-900">Footer Settings</h2>
-                    <button onclick="saveFooter()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    <button onclick="saveFooter()" class="btn btn-dark">
                         <i class="fas fa-save mr-2"></i>
                         Save Changes
                     </button>
@@ -151,7 +151,7 @@
                 <form method="POST" action="{{ route('admin.settings.footer.update') }}" id="footerForm">
                     @csrf
                     @method('PUT')
-                    
+
                     <!-- Company Information -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="px-6 py-4 border-b border-gray-200">
@@ -168,12 +168,12 @@
                                     <input type="email" name="email" value="{{ $footer->email ?? '' }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Company Description</label>
                                 <textarea name="company_description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">{{ $footer->company_description ?? '' }}</textarea>
                             </div>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
@@ -184,7 +184,7 @@
                                     <input type="url" name="website" value="{{ $footer->website ?? '' }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
                                 <textarea name="address" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">{{ $footer->address ?? '' }}</textarea>
@@ -319,7 +319,7 @@
             <div id="contact-content" class="tab-content hidden">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-lg font-semibold text-gray-900">Contact Settings</h2>
-                    <button onclick="saveContact()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    <button onclick="saveContact()" class="btn btn-dark">
                         <i class="fas fa-save mr-2"></i>
                         Save Changes
                     </button>
@@ -328,7 +328,7 @@
                 <form method="POST" action="{{ route('admin.settings.contact.update') }}" id="contactForm">
                     @csrf
                     @method('PUT')
-                    
+
                     <!-- Contact Details -->
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div class="px-6 py-4 border-b border-gray-200">
@@ -345,7 +345,7 @@
                                     <input type="email" name="support_email" value="support@osrdigital.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                             </div>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
@@ -356,7 +356,7 @@
                                     <input type="tel" name="toll_free" value="1-800-OSR-DIGITAL" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
                                 <textarea name="address" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">123 Digital Street
@@ -405,17 +405,17 @@ United States</textarea>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">General Contact Email</label>
                                 <input type="email" name="general_contact_email" value="contact@osrdigital.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Sales Email</label>
                                 <input type="email" name="sales_email" value="sales@osrdigital.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Press Email</label>
                                 <input type="email" name="press_email" value="press@osrdigital.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Careers Email</label>
                                 <input type="email" name="careers_email" value="careers@osrdigital.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
@@ -439,7 +439,7 @@ United States</textarea>
                                     <input type="email" name="emergency_email" value="emergency@osrdigital.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Emergency Instructions</label>
                                 <textarea name="emergency_instructions" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">For urgent matters outside business hours, please call our emergency line or send an email. We will respond within 2 hours.</textarea>
@@ -460,16 +460,16 @@ function switchTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.add('hidden');
     });
-    
+
     // Remove active class from all tabs
     document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.remove('active', 'border-purple-500', 'text-purple-600');
         button.classList.add('border-transparent', 'text-gray-500');
     });
-    
+
     // Show selected tab content
     document.getElementById(tabName + '-content').classList.remove('hidden');
-    
+
     // Add active class to selected tab
     const activeTab = document.getElementById(tabName + '-tab');
     activeTab.classList.add('active', 'border-purple-500', 'text-purple-600');
@@ -486,7 +486,7 @@ function saveGeneral() {
 
 function validateGeneralForm() {
     let isValid = true;
-    
+
     // Clear previous error styling
     document.querySelectorAll('.border-red-500').forEach(el => {
         el.classList.remove('border-red-500');
@@ -518,14 +518,14 @@ function handleLogoUpload(input) {
             input.value = '';
             return;
         }
-        
+
         // Validate file size (5MB max)
         if (file.size > 5 * 1024 * 1024) {
             showNotification('File size must be less than 5MB', 'error');
             input.value = '';
             return;
         }
-        
+
         // Show preview
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -576,14 +576,14 @@ function handleFaviconUpload(input) {
             input.value = '';
             return;
         }
-        
+
         // Validate file size (1MB max)
         if (file.size > 1 * 1024 * 1024) {
             showNotification('File size must be less than 1MB', 'error');
             input.value = '';
             return;
         }
-        
+
         // Show preview
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -633,7 +633,7 @@ function removeLogo() {
         removeInput.name = 'remove_logo';
         removeInput.value = '1';
         form.appendChild(removeInput);
-        
+
         // Hide the current logo display
         const logoDisplay = document.querySelector('[onclick="removeLogo()"]').closest('.mt-4');
         if (logoDisplay) {
@@ -651,7 +651,7 @@ function removeFavicon() {
         removeInput.name = 'remove_favicon';
         removeInput.value = '1';
         form.appendChild(removeInput);
-        
+
         // Hide the current favicon display
         const faviconDisplay = document.querySelector('[onclick="removeFavicon()"]').closest('.mt-4');
         if (faviconDisplay) {
@@ -745,10 +745,10 @@ function validateFooterForm() {
     quickLinkItems.forEach((item, index) => {
         const titleInput = item.querySelector('input[name*="[title]"]');
         const urlInput = item.querySelector('input[name*="[url]"]');
-        
+
         const title = titleInput.value.trim();
         const url = urlInput.value.trim();
-        
+
         // If either field has content, both are required
         if (title || url) {
             if (!title) {
@@ -770,7 +770,7 @@ function validateFooterForm() {
     socialLinkItems.forEach((item, index) => {
         const urlInput = item.querySelector('input[name*="[url]"]');
         const url = urlInput.value.trim();
-        
+
         if (url && !isValidUrl(url)) {
             showFieldError(urlInput, `Social link ${index + 1} must be a valid URL`);
             isValid = false;
@@ -801,11 +801,11 @@ function validateFooterForm() {
 function showFieldError(input, message) {
     input.classList.remove('border-gray-300');
     input.classList.add('border-red-500');
-    
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message text-red-500 text-sm mt-1';
     errorDiv.textContent = message;
-    
+
     input.parentNode.appendChild(errorDiv);
 }
 
@@ -827,9 +827,9 @@ function showNotification(message, type = 'success') {
         type === 'success' ? 'bg-green-500' : 'bg-red-500'
     }`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remove notification after 3 seconds
     setTimeout(() => {
         notification.remove();
@@ -840,25 +840,25 @@ function validateQuickLinkField(input) {
     const value = input.value.trim();
     const isUrlField = input.name.includes('[url]');
     const isTitleField = input.name.includes('[title]');
-    
+
     // Clear previous error styling
     input.classList.remove('border-red-500');
     input.classList.add('border-gray-300');
-    
+
     // Remove existing error message
     const existingError = input.parentNode.querySelector('.error-message');
     if (existingError) {
         existingError.remove();
     }
-    
+
     // If field is empty, no validation needed
     if (!value) {
         return;
     }
-    
+
     let isValid = true;
     let errorMessage = '';
-    
+
     if (isUrlField) {
         if (!isValidUrl(value)) {
             isValid = false;
@@ -870,7 +870,7 @@ function validateQuickLinkField(input) {
             errorMessage = 'Title must be less than 255 characters';
         }
     }
-    
+
     if (!isValid) {
         input.classList.remove('border-gray-300');
         input.classList.add('border-red-500');
