@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\DistributionServiceController;
 use App\Http\Controllers\Admin\FilmCategoryController;
 use App\Http\Controllers\Admin\FilmPortfolioController;
 use App\Http\Controllers\Admin\GlobalImpactController;
-use App\Http\Controllers\Admin\HeroSectionController;
+use App\Http\Controllers\Admin\HeroSliderController;
 use App\Http\Controllers\Admin\MissionVisionController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NewsController;
@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Hero Slider Management
+    Route::resource('/hero-slider', HeroSliderController::class)->names('hero-slider');
 
     // Associates Management
     Route::get('/associates', [AssociateController::class, 'index'])->name('associates.index');
@@ -62,8 +65,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Settings Management
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
-    // Hero Sections Management (Livewire)
-    Route::get('/hero-sections', [HeroSectionController::class, 'index'])->name('hero-sections.index');
+
 
     // News Management
     Route::get('/news', [NewsController::class, 'index'])->name('news.index');
@@ -73,7 +75,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // User Roles Management
     Route::get('/user-roles', [UserRoleController::class, 'index'])->name('user-roles.index');
-    
+
     // Permissions Management
     Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
 

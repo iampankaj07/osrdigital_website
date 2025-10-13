@@ -1,5 +1,5 @@
 import { useTheme } from '../contexts/ThemeContext';
-import Hero from '../components/sections/Hero';
+import HeroSlider from '../components/sections/HeroSlider';
 import ClientLogos from '../components/sections/ClientLogos';
 import DistributionServices from '../components/sections/DistributionServices';
 import MovieStats from '../components/sections/MovieStats';
@@ -10,24 +10,24 @@ function Home() {
     const { isDark } = useTheme();
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 ${
+        <div className={`transition-colors duration-300 ${
             isDark ? 'bg-gray-900' : 'bg-white'
         }`}>
-            {/* Hero Section with Carousel */}
-            <Hero />
-            
+            {/* Hero Slider Section */}
+            <HeroSlider />
+
             {/* Client Logos Section */}
             <ClientLogos />
-            
+
             {/* Distribution Services Section */}
             <DistributionServices />
-            
+
             {/* Statistics Section */}
             <MovieStats />
-            
+
             {/* Movie Portfolio Section */}
             <MoviePortfolio />
-            
+
             {/* Testimonials Section */}
             <MovieTestimonials />
         </div>

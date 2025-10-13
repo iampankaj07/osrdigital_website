@@ -1,19 +1,30 @@
 import { useTheme } from '../contexts/ThemeContext';
 
-function ThemeToggle() {
+function ThemeToggle({ isOverHero = false }) {
     const { theme, toggleTheme, isDark } = useTheme();
+
+    // Different styles based on context
+    const buttonClasses = isOverHero
+        ? "p-2 rounded-lg transition-colors duration-200 hover:bg-white/10"
+        : `p-2 rounded-lg transition-colors duration-200 ${isDark ? 'hover:bg-white/5' : 'hover:bg-gray-100'}`;
+
+    const iconClasses = isOverHero
+        ? "w-5 h-5 text-white/80 hover:text-white transition-colors"
+        : isDark
+            ? "w-5 h-5 text-gray-300 hover:text-white transition-colors"
+            : "w-5 h-5 text-gray-600 hover:text-gray-800 transition-colors";
 
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-white/5"
+            className={buttonClasses}
             title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
         >
             {isDark ? (
                 // Sun icon for switching to light mode
                 <svg
-                    className="w-5 h-5 text-gray-300 hover:text-white transition-colors"
+                    className={iconClasses}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -28,7 +39,7 @@ function ThemeToggle() {
             ) : (
                 // Moon icon for switching to dark mode
                 <svg
-                    className="w-5 h-5 text-gray-600 hover:text-gray-800 transition-colors"
+                    className={iconClasses}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

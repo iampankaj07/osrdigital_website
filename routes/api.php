@@ -5,6 +5,7 @@ use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\API\WebAssetsController;
 use App\Http\Controllers\API\PageController;
 use App\Http\Controllers\Api\HeroSectionController;
+use App\Http\Controllers\API\HeroSliderController;
 use App\Http\Controllers\Api\AssociateController;
 use App\Http\Controllers\Api\ImageUploadController;
 use App\Http\Controllers\API\DistributionServiceController;
@@ -37,6 +38,9 @@ Route::get('teams-active', function () {
         'message' => 'Active teams retrieved successfully'
     ]);
 });
+
+// Hero Slider API routes
+Route::get('hero-sliders', [HeroSliderController::class, 'index']);
 
 // Settings API routes
 Route::prefix('settings')->group(function () {

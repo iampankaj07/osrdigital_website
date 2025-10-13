@@ -1,7 +1,7 @@
 <div>
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-  
+
         <button wire:click="create" class="btn btn-dark btn-sm">
             <i class="fas fa-plus mr-1"></i>
             Add Hero Section
@@ -18,17 +18,7 @@
                         <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search by title, subtitle, or content...">
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-0">
-                        <label for="page_filter" class="small text-muted mb-1">Page</label>
-                        <select wire:model.live="page_filter" class="form-control form-control-sm">
-                            <option value="">All Pages</option>
-                            @foreach($pages as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+
                 <div class="col-md-2">
                     <div class="form-group mb-0">
                         <label for="perPage" class="small text-muted mb-1">Per Page</label>
@@ -51,32 +41,25 @@
                     <i class="fas fa-plus mr-2"></i>
                     Create New Hero Section
                 </h5>
-                
+
                 <form wire:submit.prevent="store">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="form.page">Page</label>
-                                <select wire:model="form.page" class="form-control">
-                                    <option value="">Select Page</option>
-                                    <option value="home">Home</option>
-                                    <option value="about">About</option>
-                                    <option value="services">Services</option>
-                                    <option value="portfolio">Portfolio</option>
-                                    <option value="contact">Contact</option>
-                                </select>
-                                @error('form.page') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.title">Title</label>
+                                <label for="form.title">Title <span class="text-danger">*</span></label>
                                 <input type="text" wire:model="form.title" class="form-control" placeholder="Enter title">
                                 @error('form.title') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form.sort_order">Sort Order</label>
+                                <input type="number" wire:model="form.sort_order" class="form-control" min="0">
+                                @error('form.sort_order') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -86,7 +69,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -96,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -113,7 +96,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -130,8 +113,35 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form.background_type">Background Type</label>
+                                <select wire:model="form.background_type" class="form-control">
+                                    <option value="color">Color</option>
+                                    <option value="image">Image</option>
+                                </select>
+                                @error('form.background_type') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form.text_color">Text Color</label>
+                                <input type="color" wire:model="form.text_color" class="form-control" style="height: 38px;">
+                                @error('form.text_color') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form.background_color">Background Color</label>
+                                <input type="color" wire:model="form.background_color" class="form-control" style="height: 38px;">
+                                @error('form.background_color') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="form.background_image">Background Image URL</label>
@@ -139,7 +149,10 @@
                                 @error('form.background_image') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-check-label">
                                     <input type="checkbox" wire:model="form.is_active" class="form-check-input">
@@ -148,7 +161,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-right">
                         <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
                             <i class="fas fa-times mr-1"></i>
@@ -171,17 +184,7 @@
                 <table class="table table-hover mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th wire:click="sortBy('page')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 15%;">
-                                <span class="d-flex align-items-center">
-                                    Page
-                                    @if($sortField === 'page')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 40%;">
+                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 30%;">
                                 <span class="d-flex align-items-center">
                                     Title
                                     @if($sortField === 'title')
@@ -191,9 +194,20 @@
                                     @endif
                                 </span>
                             </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 15%;">Status</th>
-                            <th wire:click="sortBy('created_at')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 15%;">
-                                <span class="d-flex align-items-center">
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 25%;">Subtitle</th>
+                            <th wire:click="sortBy('sort_order')" class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="cursor: pointer; width: 10%;">
+                                <span class="d-flex align-items-center justify-content-center">
+                                    Order
+                                    @if($sortField === 'sort_order')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
+                            </th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
+                            <th wire:click="sortBy('created_at')" class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="cursor: pointer; width: 10%;">
+                                <span class="d-flex align-items-center justify-content-center">
                                     Created
                                     @if($sortField === 'created_at')
                                         <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
@@ -209,32 +223,37 @@
                         @forelse($heroSections as $heroSection)
                             <tr class="border-bottom">
                                 <td class="py-3 px-3">
-                                    <span class="badge badge-light text-dark border small">{{ ucfirst($heroSection->page) }}</span>
+                                    <div class="font-weight-medium text-dark">{{ Str::limit($heroSection->title, 40) }}</div>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="font-weight-medium text-dark">{{ Str::limit($heroSection->title, 60) }}</div>
+                                    <div class="text-muted small">{{ Str::limit($heroSection->subtitle, 50) }}</div>
                                 </td>
                                 <td class="py-3 px-3 text-center">
-                                    <span class="badge badge-{{ $heroSection->is_active ? 'success' : 'light' }} badge-sm">
+                                    <span class="badge badge-light text-dark border small">{{ $heroSection->sort_order }}</span>
+                                </td>
+                                <td class="py-3 px-3 text-center">
+                                    <span wire:click="toggleActive({{ $heroSection->id }})"
+                                          class="badge badge-{{ $heroSection->is_active ? 'success' : 'light' }} badge-sm"
+                                          style="cursor: pointer;">
                                         {{ $heroSection->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
-                                <td class="py-3 px-3">
+                                <td class="py-3 px-3 text-center">
                                     <div class="text-muted small">{{ $heroSection->created_at->format('M d, Y') }}</div>
                                 </td>
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $heroSection->id }})" 
-                                                class="btn btn-dark btn-sm border-0" 
+                                        <button wire:click="edit({{ $heroSection->id }})"
+                                                class="btn btn-dark btn-sm border-0"
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button wire:click="toggleActive({{ $heroSection->id }})" 
-                                                class="btn btn-outline-{{ $heroSection->is_active ? 'warning' : 'success' }} btn-sm border-0" 
+                                        <button wire:click="toggleActive({{ $heroSection->id }})"
+                                                class="btn btn-outline-{{ $heroSection->is_active ? 'warning' : 'success' }} btn-sm border-0"
                                                 title="{{ $heroSection->is_active ? 'Deactivate' : 'Activate' }}">
                                             <i class="fas fa-{{ $heroSection->is_active ? 'pause' : 'play' }}"></i>
                                         </button>
-                                        <button wire:click="delete({{ $heroSection->id }})" 
+                                        <button wire:click="delete({{ $heroSection->id }})"
                                                 class="btn btn-danger btn-sm border-0"
                                                 title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this hero section?')">
@@ -243,41 +262,35 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                             <!-- Inline Edit Form -->
                             @if($editingId === $heroSection->id)
                                 <tr class="bg-light">
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <div class="p-3 inline-edit-form">
                                             <h5 class="mb-3">
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit Hero Section
                                             </h5>
-                                            
+
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="form.page">Page</label>
-                                                            <select wire:model="form.page" class="form-control">
-                                                                <option value="home">Home</option>
-                                                                <option value="about">About</option>
-                                                                <option value="services">Services</option>
-                                                                <option value="portfolio">Portfolio</option>
-                                                                <option value="contact">Contact</option>
-                                                            </select>
-                                                            @error('form.page') <span class="text-danger">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="form.title">Title</label>
+                                                            <label for="form.title">Title <span class="text-danger">*</span></label>
                                                             <input type="text" wire:model="form.title" class="form-control">
                                                             @error('form.title') <span class="text-danger">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="form.sort_order">Sort Order</label>
+                                                            <input type="number" wire:model="form.sort_order" class="form-control" min="0">
+                                                            @error('form.sort_order') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -287,7 +300,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -297,7 +310,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -314,7 +327,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -331,8 +344,35 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="form.background_type">Background Type</label>
+                                                            <select wire:model="form.background_type" class="form-control">
+                                                                <option value="color">Color</option>
+                                                                <option value="image">Image</option>
+                                                            </select>
+                                                            @error('form.background_type') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="form.text_color">Text Color</label>
+                                                            <input type="color" wire:model="form.text_color" class="form-control" style="height: 38px;">
+                                                            @error('form.text_color') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="form.background_color">Background Color</label>
+                                                            <input type="color" wire:model="form.background_color" class="form-control" style="height: 38px;">
+                                                            @error('form.background_color') <span class="text-danger">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="form.background_image">Background Image URL</label>
@@ -340,7 +380,10 @@
                                                             @error('form.background_image') <span class="text-danger">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label class="form-check-label">
                                                                 <input type="checkbox" wire:model="form.is_active" class="form-check-input">
@@ -349,7 +392,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="form-group text-right">
                                                     <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
                                                         <i class="fas fa-times mr-1"></i>
@@ -367,7 +410,7 @@
                             @endif
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-4">
+                                <td colspan="6" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="fas fa-star fa-lg mb-2 opacity-50"></i>
                                         <p class="mb-1 small">No hero sections found</p>

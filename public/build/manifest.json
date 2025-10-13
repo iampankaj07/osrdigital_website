@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-Cpt83Flo.css",
+    "file": "assets/app-Cm_ugMjx.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "names": [
@@ -8,7 +8,7 @@
     ]
   },
   "resources/css/skeleton.css": {
-    "file": "assets/skeleton-BHek77L_.css",
+    "file": "assets/skeleton-NRWa7XXj.css",
     "src": "resources/css/skeleton.css",
     "isEntry": true,
     "names": [
@@ -16,16 +16,17 @@
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-Deert_A3.js",
+    "file": "assets/app-DfIdhzVG.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
     "css": [
-      "assets/app-Cpt83Flo.css"
+      "assets/app-Bj8sxSJ7.css",
+      "assets/app-Cm_ugMjx.css"
     ]
   },
   "resources/js/skeleton-loader.js": {
-    "file": "assets/skeleton-loader-GVSN1aIF.js",
+    "file": "assets/skeleton-loader-BhhIcNXp.js",
     "name": "skeleton-loader",
     "src": "resources/js/skeleton-loader.js",
     "isEntry": true
