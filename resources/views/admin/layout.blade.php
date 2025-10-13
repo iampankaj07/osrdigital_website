@@ -410,6 +410,22 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route('admin.business-pages.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.business-pages*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-building"></i>
+                                <p>Business Pages</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.media-library.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.media-library*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-images"></i>
+                                <p>Media Library</p>
+                            </a>
+                        </li>
+
                         <!-- About Us Section -->
 
 
@@ -765,9 +781,16 @@
     </script>
 
     @yield('scripts')
+    @stack('scripts')
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Livewire Scripts -->
     @livewireScripts
+
+    <!-- FilePond Scripts -->
+    @filepondScripts
 </body>
 
 </html>

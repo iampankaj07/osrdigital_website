@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\TeamValueController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TrustedPartnerController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -40,6 +41,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Services Management (Livewire)
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+
+    // Business Pages Management (Livewire)
+    Route::get('/business-pages', [\App\Http\Controllers\Admin\BusinessPageController::class, 'index'])->name('business-pages.index');
 
     // Distribution Services Management (Livewire)
     Route::get('/distribution-services', [DistributionServiceController::class, 'index'])->name('distribution-services.index');
@@ -86,4 +90,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/global-impact', [GlobalImpactController::class, 'index'])->name('global-impact.index');
 
     Route::get('/mission-vision', [MissionVisionController::class, 'index'])->name('mission-vision.index');
+
+    // Media Library (Livewire)
+    Route::get('/media-library', function() {
+        return view('admin.media-library.index');
+    })->name('media-library.index');
+
+    // Media Upload Routes are handled by spatie/livewire-filepond automatically
 });

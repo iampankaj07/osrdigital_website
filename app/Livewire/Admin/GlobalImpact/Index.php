@@ -216,7 +216,8 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.admin.global-impact.index')
-            ->layout('admin.layout', ['title' => 'Global Impact Settings']);
+        return view('livewire.admin.global-impact.index', [
+            'title' => 'Global Impact Settings'
+        ]);
     }
 }
