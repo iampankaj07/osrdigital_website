@@ -25,6 +25,7 @@ function Header() {
     const navItems = [
         { to: '/', label: 'Home' },
         { to: '/about', label: 'About' },
+        { to: '/portfolio', label: 'Portfolio' },
         { to: '/partners', label: 'Partners' },
         { to: '/team', label: 'Team' },
         { to: '/news', label: 'News' },

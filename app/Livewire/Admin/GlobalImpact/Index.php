@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\GlobalImpact;
 
 use Livewire\Component;
 use App\Models\AdminSettings;
+use Illuminate\Support\Facades\Log;
 
 class Index extends Component
 {
@@ -83,9 +84,6 @@ class Index extends Component
         'fas fa-chart-scatter-3d' => 'Chart Scatter 3D',
         'fas fa-chart-scatter-bubble' => 'Chart Scatter Bubble',
         'fas fa-chart-scatter-bubble-3d' => 'Chart Scatter Bubble 3D',
-        'fas fa-chart-scatter-3d' => 'Chart Scatter 3D',
-        'fas fa-chart-scatter-bubble' => 'Chart Scatter Bubble',
-        'fas fa-chart-scatter-bubble-3d' => 'Chart Scatter Bubble 3D',
     ];
 
     public function mount()
@@ -96,42 +94,59 @@ class Index extends Component
     public function loadGlobalImpact()
     {
         $settings = AdminSettings::getGroup('global_impact');
-        
+
         $this->form = [
-            'title' => $settings['title'] ?? 'Our Global Impact',
-            'subtitle' => $settings['subtitle'] ?? 'Numbers that speak to our commitment to bringing quality content to global audiences',
-            'stats' => $settings['stats'] ?? [
-                ['number' => '', 'label' => '', 'icon' => ''],
-                ['number' => '', 'label' => '', 'icon' => ''],
-                ['number' => '', 'label' => '', 'icon' => ''],
-                ['number' => '', 'label' => '', 'icon' => ''],
+            'title' => $settings['global_impact_title'] ?? 'Our Global Impact',
+            'subtitle' => $settings['global_impact_subtitle'] ?? 'Numbers that speak to our commitment to bringing quality content to global audiences',
+            'stats' => $settings['global_impact_stats'] ?? [
+                ['number' => '500+', 'label' => 'Movies Published', 'icon' => 'fas fa-film'],
+                ['number' => '2,000+', 'label' => 'Songs Released', 'icon' => 'fas fa-music'],
+                ['number' => '800+', 'label' => 'Short Films', 'icon' => 'fas fa-video'],
+                ['number' => '50M+', 'label' => 'Total Views', 'icon' => 'fas fa-eye'],
             ],
         ];
     }
 
     public function save()
     {
-        $this->validate([
-            'form.title' => 'required|string|max:255',
-            'form.subtitle' => 'required|string|max:500',
-            'form.stats' => 'required|array|min:1|max:6',
-            'form.stats.*.number' => 'required|string|max:50',
-            'form.stats.*.label' => 'required|string|max:100',
-            'form.stats.*.icon' => 'nullable|string|max:255',
-        ]);
+        try {
+            $this->validate([
+                'form.title' => 'required|string|max:255',
+                'form.subtitle' => 'required|string|max:500',
+                'form.stats' => 'required|array|min:1|max:6',
+                'form.stats.*.number' => 'required|string|max:50',
+                'form.stats.*.label' => 'required|string|max:100',
+                'form.stats.*.icon' => 'nullable|string|max:255',
+            ]);
 
-        // Update title and subtitle
-        AdminSettings::set('global_impact_title', $this->form['title'], 'string', 'global_impact', 'Global Impact section title', true);
-        AdminSettings::set('global_impact_subtitle', $this->form['subtitle'], 'string', 'global_impact', 'Global Impact section subtitle', true);
-        
-        // Update stats
-        AdminSettings::set('global_impact_stats', $this->form['stats'], 'json', 'global_impact', 'Global Impact statistics', true);
+            // Log the data being saved for debugging
+            Log::info('Global Impact save attempt', [
+                'title' => $this->form['title'],
+                'subtitle' => $this->form['subtitle'],
+                'stats' => $this->form['stats']
+            ]);
 
-        // Clear cache
-        \Illuminate\Support\Facades\Cache::forget('global_impact_settings');
-        \Illuminate\Support\Facades\Cache::forget('public_settings');
-        
-        session()->flash('success', 'Global Impact settings saved successfully!');
+            // Update title and subtitle
+            AdminSettings::set('global_impact_title', $this->form['title'], 'string', 'global_impact', 'Global Impact section title', true);
+            AdminSettings::set('global_impact_subtitle', $this->form['subtitle'], 'string', 'global_impact', 'Global Impact section subtitle', true);
+
+            // Update stats
+            AdminSettings::set('global_impact_stats', $this->form['stats'], 'json', 'global_impact', 'Global Impact statistics', true);
+
+            // Clear all related cache keys
+            \Illuminate\Support\Facades\Cache::forget('global_impact_settings');
+            \Illuminate\Support\Facades\Cache::forget('public_settings');
+            \Illuminate\Support\Facades\Cache::forget('admin_settings_group_global_impact');
+
+            session()->flash('success', 'Global Impact settings saved successfully!');
+
+            // Reload the data to reflect changes
+            $this->loadGlobalImpact();
+
+        } catch (\Exception $e) {
+            Log::error('Global Impact save error: ' . $e->getMessage());
+            session()->flash('error', 'Error saving Global Impact settings: ' . $e->getMessage());
+        }
     }
 
     public function addStat()
@@ -139,6 +154,12 @@ class Index extends Component
         if (count($this->form['stats']) < 6) {
             $this->form['stats'][] = ['number' => '', 'label' => '', 'icon' => ''];
         }
+    }
+
+    public function updatedForm()
+    {
+        // This method will be called whenever form data changes
+        Log::info('Form data updated', $this->form);
     }
 
     public function removeStat($index)
@@ -170,7 +191,7 @@ class Index extends Component
         if ($this->selectedIconField === 'stat') {
             $this->form['stats'][$this->selectedStatIndex]['icon'] = $iconClass;
         }
-        
+
         $this->closeIconDropdown();
     }
 
@@ -187,7 +208,7 @@ class Index extends Component
 
         return collect($this->availableIcons)
             ->filter(function ($name, $iconClass) {
-                return stripos($name, $this->iconSearch) !== false || 
+                return stripos($name, $this->iconSearch) !== false ||
                        stripos($iconClass, $this->iconSearch) !== false;
             })
             ->toArray();

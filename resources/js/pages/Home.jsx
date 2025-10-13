@@ -2,7 +2,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import HeroSlider from '../components/sections/HeroSlider';
 import ClientLogos from '../components/sections/ClientLogos';
 import DistributionServices from '../components/sections/DistributionServices';
-import MovieStats from '../components/sections/MovieStats';
+import OurImpact from '../components/sections/OurImpact';
 import MoviePortfolio from '../components/sections/MoviePortfolio';
 import MovieTestimonials from '../components/sections/MovieTestimonials';
 
@@ -22,8 +22,8 @@ function Home() {
             {/* Distribution Services Section */}
             <DistributionServices />
 
-            {/* Statistics Section */}
-            <MovieStats />
+            {/* Global Impact Section */}
+            <OurImpact />
 
             {/* Movie Portfolio Section */}
             <MoviePortfolio />

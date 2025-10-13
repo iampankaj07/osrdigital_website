@@ -15,7 +15,7 @@ function OurImpact({ content, title, subtitle }) {
                 setLoading(true);
                 const response = await fetch('/api/global-impact');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     setStats(data.data.stats || []);
                     setSectionTitle(data.data.title || "Our Impact");
@@ -115,14 +115,22 @@ function OurImpact({ content, title, subtitle }) {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     {stats.map((stat, index) => (
                         <div key={index} className="text-center group">
+                            {/* Icon (if available) */}
+                            {stat.icon && (
+                                <div className="mb-4">
+                                    <i className={`${stat.icon} text-4xl group-hover:scale-110 transition-transform duration-300`}
+                                       style={{ color: primaryColor }}></i>
+                                </div>
+                            )}
+
                             {/* Number */}
-                            <div 
+                            <div
                                 className="text-4xl lg:text-5xl font-bold mb-3 group-hover:scale-105 transition-transform duration-300"
                                 style={{ color: primaryColor }}
                             >
                                 {stat.number}
                             </div>
-                            
+
                             {/* Label */}
                             <p className={`text-lg font-medium ${
                                 isDark ? 'text-gray-300' : 'text-gray-600'
