@@ -150,7 +150,7 @@ function HeroSlider() {
                                     <div className="text-center max-w-4xl mx-auto text-white">
                                         {/* Subtitle */}
                                         {slider.subtitle && (
-                                            <div className="mb-8">
+                                            <div className="mb-8 transform transition-all duration-1000 delay-200 opacity-0 translate-y-8 animate-fade-in-up">
                                                 <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white bg-opacity-90 backdrop-blur-sm text-black">
                                                     <div className="w-2 h-2 rounded-full bg-black mr-2"></div>
                                                     {slider.subtitle}
@@ -159,7 +159,7 @@ function HeroSlider() {
                                         )}
 
                                         {/* Title */}
-                                        <div className="mb-12">
+                                        <div className="mb-12 transform transition-all duration-1000 delay-400 opacity-0 translate-y-8 animate-fade-in-up">
                                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight text-minimal-bold">
                                                 {slider.title}
                                             </h1>
@@ -173,11 +173,11 @@ function HeroSlider() {
 
                                         {/* CTA Buttons */}
                                         {(slider.button_text || slider.button_text_secondary) && (
-                                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center transform transition-all duration-1000 delay-600 opacity-0 translate-y-8 animate-fade-in-up">
                                                 {slider.button_text && slider.button_url && (
                                                     <Link
                                                         to={slider.button_url}
-                                                        className="btn-minimal bg-white text-gray-900 hover:bg-gray-100"
+                                                        className="btn-minimal bg-white text-gray-900 hover:bg-gray-100 hover:scale-105 transition-transform duration-300"
                                                     >
                                                         {slider.button_text}
                                                     </Link>
@@ -185,7 +185,7 @@ function HeroSlider() {
                                                 {slider.button_text_secondary && slider.button_url_secondary && (
                                                     <Link
                                                         to={slider.button_url_secondary}
-                                                        className="btn-minimal-outline border-white text-white hover:bg-white hover:text-gray-900"
+                                                        className="btn-minimal-outline border-white text-white hover:bg-white hover:text-gray-900 hover:scale-105 transition-transform duration-300"
                                                     >
                                                         {slider.button_text_secondary}
                                                     </Link>
