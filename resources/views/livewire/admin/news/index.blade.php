@@ -66,72 +66,62 @@
             </div>
         </div>
 
-        <!-- Create/Edit Form -->
-        @if($isCreating || $editingId)
+        <!-- Create Article Form -->
+        @if($isCreating)
             <div class="card shadow mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">{{ $isCreating ? 'Create New Article' : 'Edit Article' }}</h5>
+                    <h5 class="mb-0">Create New Article</h5>
                 </div>
                 <div class="card-body">
-                    <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
+                    <form wire:submit="store">
                         <div class="row">
-                            <!-- Basic Information -->
+                            <!-- Left Column - Main Content -->
                             <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                                    <input type="text" wire:model.live="form.title" class="form-control @error('form.title') is-invalid @enderror"
-                                           id="title" placeholder="Enter article title">
-                                    @error('form.title')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Title <span class="text-danger">*</span></label>
+                                            <input type="text" wire:model.live="form.title" class="form-control @error('form.title') is-invalid @enderror" placeholder="Enter article title">
+                                            @error('form.title') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Slug <span class="text-danger">*</span></label>
+                                            <input type="text" wire:model="form.slug" class="form-control @error('form.slug') is-invalid @enderror" placeholder="article-slug">
+                                            @error('form.slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
-                                    <input type="text" wire:model="form.slug" class="form-control @error('form.slug') is-invalid @enderror"
-                                           id="slug" placeholder="article-slug">
-                                    @error('form.slug')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Excerpt</label>
+                                    <textarea wire:model="form.excerpt" class="form-control @error('form.excerpt') is-invalid @enderror" rows="2" placeholder="Brief description"></textarea>
+                                    @error('form.excerpt') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="excerpt" class="form-label">Excerpt</label>
-                                    <textarea wire:model="form.excerpt" class="form-control @error('form.excerpt') is-invalid @enderror"
-                                              id="excerpt" rows="3" placeholder="Brief description of the article"></textarea>
-                                    @error('form.excerpt')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Content <span class="text-danger">*</span></label>
+                                    <textarea wire:model="form.content" class="form-control @error('form.content') is-invalid @enderror" rows="6" placeholder="Write your article content here"></textarea>
+                                    @error('form.content') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
-                                    <textarea wire:model="form.content" class="form-control @error('form.content') is-invalid @enderror"
-                                              id="content" rows="8" placeholder="Write your article content here"></textarea>
-                                    @error('form.content')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="tags" class="form-label">Tags</label>
-                                    <input type="text" wire:model="form.tags" class="form-control @error('form.tags') is-invalid @enderror"
-                                           id="tags" placeholder="tag1, tag2, tag3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Tags</label>
+                                    <input type="text" wire:model="form.tags" class="form-control @error('form.tags') is-invalid @enderror" placeholder="tag1, tag2, tag3">
                                     <small class="text-muted">Separate tags with commas</small>
-                                    @error('form.tags')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    @error('form.tags') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
-                            <!-- Sidebar -->
+                            <!-- Right Column - Media & Settings -->
                             <div class="col-md-4">
                                 <!-- Featured Image -->
-                                <div class="mb-4">
+                                <div class="form-group mb-3">
                                     <label class="form-label">Featured Image</label>
-
+                                    
                                     <!-- Upload Method Selection -->
-                                    <div class="mb-3">
+                                    <div class="mb-2">
                                         <div class="btn-group d-block">
                                             <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
                                                 <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
@@ -142,31 +132,26 @@
                                         </div>
                                     </div>
 
-                                    <!-- Media Library Selection -->
                                     @if($uploadMethod === 'media_library')
                                         <div class="border rounded p-3 text-center">
                                             @if($selectedMediaUrl)
-                                                <div class="mb-3">
-                                                    <img src="{{ $selectedMediaUrl }}" class="img-fluid rounded"
-                                                         style="max-height: 200px;" alt="Selected media">
-                                                    <button type="button" wire:click="clearSelectedMedia"
-                                                            class="btn btn-sm btn-outline-danger mt-2">
-                                                        <i class="fas fa-times me-1"></i>Remove
+                                                <div class="mb-2">
+                                                    <img src="{{ $selectedMediaUrl }}" class="img-fluid rounded" style="max-height: 100px;">
+                                                    <br>
+                                                    <button type="button" wire:click="clearSelectedMedia" class="btn btn-sm btn-outline-danger mt-2">
+                                                        <i class="fas fa-times"></i> Remove
                                                     </button>
                                                 </div>
                                             @else
-                                                <div class="mb-3">
-                                                    <i class="fas fa-image fa-3x text-muted mb-3"></i>
-                                                    <p class="text-muted">No image selected</p>
-                                                </div>
+                                                <i class="fas fa-image fa-2x text-muted mb-2"></i>
+                                                <p class="text-muted small">No image selected</p>
                                             @endif
-                                            <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary">
-                                                <i class="fas fa-folder-open me-2"></i>Select from Media Library
+                                            <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-folder-open me-1"></i>Select from Library
                                             </button>
                                         </div>
                                     @endif
 
-                                    <!-- FilePond Upload -->
                                     @if($uploadMethod === 'filepond')
                                         <div style="max-height: 120px;">
                                             <x-filepond::upload
@@ -179,83 +164,72 @@
                                         </div>
                                     @endif
 
-                                    <!-- Alternative URL Input -->
-                                    <div class="mt-3">
-                                        <label for="featured_image" class="form-label">Or Image URL</label>
-                                        <input type="url" wire:model="form.featured_image"
-                                               class="form-control @error('form.featured_image') is-invalid @enderror"
-                                               id="featured_image" placeholder="https://example.com/image.jpg">
-                                        @error('form.featured_image')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                    <div class="mt-2">
+                                        <input type="url" wire:model="form.featured_image" class="form-control form-control-sm @error('form.featured_image') is-invalid @enderror" placeholder="Or image URL">
+                                        @error('form.featured_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                 </div>
 
                                 <!-- Article Meta -->
-                                <div class="mb-3">
-                                    <label for="author_name" class="form-label">Author <span class="text-danger">*</span></label>
-                                    <input type="text" wire:model="form.author_name"
-                                           class="form-control @error('form.author_name') is-invalid @enderror"
-                                           id="author_name" placeholder="Author name">
-                                    @error('form.author_name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Author <span class="text-danger">*</span></label>
+                                            <input type="text" wire:model="form.author_name" class="form-control @error('form.author_name') is-invalid @enderror">
+                                            @error('form.author_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Category</label>
+                                            <select wire:model="form.category_id" class="form-select @error('form.category_id') is-invalid @enderror">
+                                                <option value="">Select</option>
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('form.category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="category_id" class="form-label">Category</label>
-                                    <select wire:model="form.category_id" class="form-select @error('form.category_id') is-invalid @enderror"
-                                            id="category_id">
-                                        <option value="">Select Category</option>
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('form.category_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                                            <select wire:model="form.status" class="form-select @error('form.status') is-invalid @enderror">
+                                                <option value="draft">Draft</option>
+                                                <option value="published">Published</option>
+                                                <option value="archived">Archived</option>
+                                            </select>
+                                            @error('form.status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mt-4">
+                                            <input class="form-check-input" type="checkbox" wire:model="form.featured" id="featured_create">
+                                            <label class="form-check-label" for="featured_create">
+                                                Featured
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                                    <select wire:model="form.status" class="form-select @error('form.status') is-invalid @enderror"
-                                            id="status">
-                                        <option value="draft">Draft</option>
-                                        <option value="published">Published</option>
-                                        <option value="archived">Archived</option>
-                                    </select>
-                                    @error('form.status')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="published_at" class="form-label">Publish Date</label>
-                                    <input type="datetime-local" wire:model="form.published_at"
-                                           class="form-control @error('form.published_at') is-invalid @enderror"
-                                           id="published_at">
-                                    @error('form.published_at')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" wire:model="form.featured"
-                                           id="featured">
-                                    <label class="form-check-label" for="featured">
-                                        Featured Article
-                                    </label>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Publish Date</label>
+                                    <input type="datetime-local" wire:model="form.published_at" class="form-control @error('form.published_at') is-invalid @enderror">
+                                    @error('form.published_at') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
                         </div>
 
                         <!-- Form Actions -->
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between pt-3 border-top">
                             <button type="button" wire:click="cancelEdit" class="btn btn-secondary">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </button>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>{{ $isCreating ? 'Create Article' : 'Update Article' }}
+                                <i class="fas fa-save me-2"></i>Create Article
                             </button>
                         </div>
                     </form>
@@ -383,6 +357,178 @@
                                             </div>
                                         </td>
                                     </tr>
+
+                                    <!-- Inline Edit Form -->
+                                    @if($editingId === $article->id)
+                                        <tr class="bg-light">
+                                            <td colspan="7">
+                                                <div class="p-4 inline-edit-form">
+                                                    <h5 class="mb-3">
+                                                        <i class="fas fa-edit me-2"></i>
+                                                        Edit Article: {{ $article->title }}
+                                                    </h5>
+
+                                                    <form wire:submit="update">
+                                                        <div class="row">
+                                                            <!-- Left Column - Main Content -->
+                                                            <div class="col-md-8">
+                                                                <div class="row">
+                                                                    <div class="col-md-8">
+                                                                        <div class="form-group mb-3">
+                                                                            <label class="form-label">Title <span class="text-danger">*</span></label>
+                                                                            <input type="text" wire:model.live="form.title" class="form-control @error('form.title') is-invalid @enderror">
+                                                                            @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group mb-3">
+                                                                            <label class="form-label">Slug <span class="text-danger">*</span></label>
+                                                                            <input type="text" wire:model="form.slug" class="form-control @error('form.slug') is-invalid @enderror">
+                                                                            @error('form.slug') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group mb-3">
+                                                                    <label class="form-label">Excerpt</label>
+                                                                    <textarea wire:model="form.excerpt" class="form-control @error('form.excerpt') is-invalid @enderror" rows="2"></textarea>
+                                                                    @error('form.excerpt') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                </div>
+
+                                                                <div class="form-group mb-3">
+                                                                    <label class="form-label">Content <span class="text-danger">*</span></label>
+                                                                    <textarea wire:model="form.content" class="form-control @error('form.content') is-invalid @enderror" rows="4"></textarea>
+                                                                    @error('form.content') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                </div>
+
+                                                                <div class="form-group mb-3">
+                                                                    <label class="form-label">Tags</label>
+                                                                    <input type="text" wire:model="form.tags" class="form-control @error('form.tags') is-invalid @enderror" placeholder="tag1, tag2, tag3">
+                                                                    @error('form.tags') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Right Column - Media & Settings -->
+                                                            <div class="col-md-4">
+                                                                <!-- Featured Image Upload -->
+                                                                <div class="form-group mb-3">
+                                                                    <label class="form-label">Featured Image</label>
+                                                                    
+                                                                    <!-- Upload Method Selection -->
+                                                                    <div class="mb-2">
+                                                                        <div class="btn-group d-block">
+                                                                            <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                                                                <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
+                                                                            </label>
+                                                                            <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                                                                <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    @if($uploadMethod === 'media_library')
+                                                                        <div class="border rounded p-2 text-center" style="min-height: 120px;">
+                                                                            @if($selectedMediaUrl)
+                                                                                <img src="{{ $selectedMediaUrl }}" class="img-fluid rounded mb-2" style="max-height: 80px;">
+                                                                                <br>
+                                                                                <button type="button" wire:click="clearSelectedMedia" class="btn btn-sm btn-outline-danger">
+                                                                                    <i class="fas fa-times"></i>
+                                                                                </button>
+                                                                            @else
+                                                                                <i class="fas fa-image fa-2x text-muted mb-2"></i>
+                                                                                <p class="small text-muted mb-2">No image selected</p>
+                                                                            @endif
+                                                                            <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                                                <i class="fas fa-folder-open me-1"></i>Select
+                                                                            </button>
+                                                                        </div>
+                                                                    @endif
+
+                                                                    @if($uploadMethod === 'filepond')
+                                                                        <div style="max-height: 120px;">
+                                                                            <x-filepond::upload
+                                                                                wire:model="filepondUploads"
+                                                                                multiple="false"
+                                                                                accepted-file-types="image/*"
+                                                                                max-file-size="10MB"
+                                                                                placeholder="Drop image or <span class='filepond--label-action'>Browse</span>"
+                                                                            />
+                                                                        </div>
+                                                                    @endif
+
+                                                                    <div class="mt-2">
+                                                                        <input type="url" wire:model="form.featured_image" class="form-control form-control-sm @error('form.featured_image') is-invalid @enderror" placeholder="Or image URL">
+                                                                        @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Article Settings -->
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group mb-3">
+                                                                            <label class="form-label">Author <span class="text-danger">*</span></label>
+                                                                            <input type="text" wire:model="form.author_name" class="form-control form-control-sm @error('form.author_name') is-invalid @enderror">
+                                                                            @error('form.author_name') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group mb-3">
+                                                                            <label class="form-label">Category</label>
+                                                                            <select wire:model="form.category_id" class="form-select form-select-sm @error('form.category_id') is-invalid @enderror">
+                                                                                <option value="">Select</option>
+                                                                                @foreach($categories as $category)
+                                                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                            @error('form.category_id') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group mb-3">
+                                                                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                                                                            <select wire:model="form.status" class="form-select form-select-sm @error('form.status') is-invalid @enderror">
+                                                                                <option value="draft">Draft</option>
+                                                                                <option value="published">Published</option>
+                                                                                <option value="archived">Archived</option>
+                                                                            </select>
+                                                                            @error('form.status') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-check mt-4">
+                                                                            <input class="form-check-input" type="checkbox" wire:model="form.featured" id="featured_{{ $article->id }}">
+                                                                            <label class="form-check-label" for="featured_{{ $article->id }}">
+                                                                                Featured
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group mb-3">
+                                                                    <label class="form-label">Publish Date</label>
+                                                                    <input type="datetime-local" wire:model="form.published_at" class="form-control form-control-sm @error('form.published_at') is-invalid @enderror">
+                                                                    @error('form.published_at') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Form Actions -->
+                                                        <div class="d-flex justify-content-between pt-3 border-top">
+                                                            <button type="button" wire:click="cancelEdit" class="btn btn-secondary">
+                                                                <i class="fas fa-times me-2"></i>Cancel
+                                                            </button>
+                                                            <button type="submit" class="btn btn-success">
+                                                                <i class="fas fa-save me-2"></i>Update Article
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
