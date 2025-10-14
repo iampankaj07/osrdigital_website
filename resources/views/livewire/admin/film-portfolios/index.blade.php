@@ -11,6 +11,27 @@
         </button>
     </div>
 
+    <!-- Flash Messages -->
+    @if (session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle mr-2"></i>
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <!-- Filters -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body py-3">
@@ -57,55 +78,31 @@
 
                 <form wire:submit.prevent="store">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label for="form.title">Film Title</label>
                                 <input type="text" wire:model="form.title" class="form-control" placeholder="Enter film title">
                                 @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label for="form.year">Year</label>
-                                <input type="number" wire:model="form.year" class="form-control" min="1900" max="{{ date('Y') + 5 }}">
+                                <label for="form.year">Release Year</label>
+                                <input type="number" wire:model="form.year" class="form-control" min="1900" max="{{ date('Y') + 5 }}" placeholder="2024">
                                 @error('form.year') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="form.genre">Genre</label>
-                                <input type="text" wire:model="form.genre" class="form-control" placeholder="e.g., Action, Drama">
+                                <input type="text" wire:model="form.genre" class="form-control" placeholder="Enter genre">
                                 @error('form.genre') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.slug">Slug</label>
-                                <input type="text" wire:model="form.slug" class="form-control" placeholder="Auto-generated from title">
-                                @error('form.slug') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.rating">Rating (0-10)</label>
-                                <input type="number" wire:model="form.rating" class="form-control" min="0" max="10" step="0.1">
-                                @error('form.rating') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.duration">Duration</label>
-                                <input type="text" wire:model="form.duration" class="form-control" placeholder="e.g., 120 min">
-                                @error('form.duration') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="form.category_id">Category</label>
                                 <select wire:model="form.category_id" class="form-control">
@@ -117,24 +114,28 @@
                                 @error('form.category_id') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="form.sort_order">Sort Order</label>
                                 <input type="number" wire:model="form.sort_order" class="form-control" min="0">
                                 @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-check-label">
-                                    <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
-                                    Featured
-                                </label>
-                                <br>
-                                <label class="form-check-label">
-                                    <input type="checkbox" wire:model="form.is_published" class="form-check-input">
-                                    Published
-                                </label>
+                                <label for="form.duration">Duration</label>
+                                <input type="text" wire:model="form.duration" class="form-control" placeholder="e.g., 120 min">
+                                @error('form.duration') <span class="text-danger small">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="form.rating">Rating (0-10)</label>
+                                <input type="number" wire:model="form.rating" class="form-control" min="0" max="10" step="0.1" placeholder="8.5">
+                                @error('form.rating') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
@@ -143,7 +144,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="form.description">Description</label>
-                                <textarea wire:model="form.description" class="form-control" rows="3" placeholder="Enter film description"></textarea>
+                                <textarea wire:model="form.description" class="form-control" rows="4" placeholder="Enter film description"></textarea>
                                 @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -154,16 +155,12 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Featured Image Upload Method</label>
-                                <div class="btn-group d-block" role="group">
+                                <div class="btn-group d-block">
                                     <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
-                                        <i class="fas fa-folder-open mr-1"></i>
-                                        Media Library
+                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                     </label>
                                     <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
-                                        <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                        Upload New
+                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                     </label>
                                 </div>
                             </div>
@@ -176,86 +173,59 @@
                                 <div class="form-group">
                                     <label>Select from Media Library</label>
                                     <div class="d-flex align-items-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('featured_image')">
-                                            <i class="fas fa-folder-open mr-1"></i>
-                                            Browse Media
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-images mr-1"></i>Browse Media
                                         </button>
                                         @if($selectedMediaUrl)
-                                            <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
+                                            <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         @endif
                                     </div>
+                                    @if($selectedMediaUrl)
+                                        <div class="mt-2">
+                                            <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 100px;">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                @if($selectedMediaUrl)
-                                    <div class="form-group">
-                                        <label>Selected Image</label>
-                                        <div class="border rounded p-2">
-                                            <img src="{{ $selectedMediaUrl }}" alt="Selected image" class="img-fluid rounded" style="max-height: 150px;">
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
                         </div>
-                    @elseif($uploadMethod === 'filepond')
+                    @endif
+
+                    @if($uploadMethod === 'filepond')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Upload New Featured Image</label>
-                                    <div class="filepond-upload-area">
-                                        <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                            accepted-file-types="image/*" max-file-size="10MB"
-                                            placeholder="Drop featured image here or <span class='filepond--label-action'>Browse</span>" />
+                                    <label>Upload Featured Image</label>
+                                    <div style="max-height: 120px;">
+                                        <x-filepond::upload
+                                            wire:model="filepondUploads"
+                                            multiple="false"
+                                            accepted-file-types="image/*"
+                                            max-file-size="10MB"
+                                            placeholder="Drop image here or <span class='filepond--label-action'>Browse</span>"
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                @if (!empty($filepondUploads))
-                                    <div class="form-group">
-                                        <label>Uploaded Image Preview</label>
-                                        <div class="border rounded p-2 bg-light">
-                                            <div class="text-center">
-                                                <i class="fas fa-check-circle text-success mb-2"></i>
-                                                <p class="mb-0 small text-muted">Featured image uploaded successfully</p>
-                                                <small class="text-muted d-block mt-1">Ready to save</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @error('filepondUploads')
-                                    <div class="form-group">
-                                        <div class="alert alert-danger alert-sm">
-                                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                                            {{ $message }}
-                                        </div>
-                                    </div>
-                                @enderror
                             </div>
                         </div>
                     @endif
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="form.image_url">Image URL (Alternative)</label>
-                                <input type="text" wire:model="form.image_url" class="form-control" placeholder="Enter image URL">
-                                @error('form.image_url') <span class="text-danger small">{{ $message }}</span> @enderror
+                                <label class="form-check-label">
+                                    <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
+                                    Featured Film
+                                </label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="form.featured_image">Featured Image URL (Alternative)</label>
-                                <input type="text" wire:model="form.featured_image" class="form-control" placeholder="Enter featured image URL">
-                                @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="form.video_url">Video URL</label>
-                                <input type="url" wire:model="form.video_url" class="form-control" placeholder="Enter video URL">
-                                @error('form.video_url') <span class="text-danger small">{{ $message }}</span> @enderror
+                                <label class="form-check-label">
+                                    <input type="checkbox" wire:model="form.is_published" class="form-check-input">
+                                    Published
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -292,7 +262,7 @@
                                     @endif
                                 </span>
                             </th>
-                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 25%;">
+                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 35%;">
                                 <span class="d-flex align-items-center">
                                     Film
                                     @if($sortField === 'title')
@@ -303,10 +273,18 @@
                                 </span>
                             </th>
                             <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Category</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Details</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 20%;">Description</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 7%;">Actions</th>
+                            <th wire:click="sortBy('year')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 10%;">
+                                <span class="d-flex align-items-center">
+                                    Year
+                                    @if($sortField === 'year')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
+                            </th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 12%;">Status</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 20%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -317,16 +295,22 @@
                                 </td>
                                 <td class="py-3 px-3">
                                     <div class="d-flex align-items-start">
-                                        @if($film->featured_image)
-                                            <img src="{{ $film->featured_image }}" alt="{{ $film->title }}" class="rounded mr-2" style="width: 40px; height: 30px; object-fit: cover;">
+                                        @if($film->featured_image_url)
+                                            <img src="{{ $film->featured_image_url }}" alt="{{ $film->title }}" class="rounded mr-2" style="width: 50px; height: 35px; object-fit: cover;">
                                         @else
-                                            <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
+                                            <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 35px;">
                                                 <i class="fas fa-film text-muted"></i>
                                             </div>
                                         @endif
                                         <div>
-                                            <div class="font-weight-medium text-dark">{{ Str::limit($film->title, 30) }}</div>
-                                            <div class="text-muted small">{{ $film->year }} • {{ $film->genre }}</div>
+                                            <div class="font-weight-medium text-dark">{{ Str::limit($film->title, 40) }}</div>
+                                            <div class="text-muted small">{{ Str::limit($film->genre, 20) ?: 'No genre' }}</div>
+                                            @if($film->rating)
+                                                <div class="text-warning small">
+                                                    <i class="fas fa-star mr-1"></i>
+                                                    {{ $film->rating }}/10
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
@@ -338,28 +322,19 @@
                                     @endif
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="small">
-                                        @if($film->rating)
-                                            <div class="text-warning">
-                                                <i class="fas fa-star"></i> {{ $film->rating }}/10
-                                            </div>
-                                        @endif
-                                        @if($film->duration)
-                                            <div class="text-muted">{{ $film->duration }}</div>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="text-muted small">{{ Str::limit($film->description, 60) }}</div>
+                                    <div class="text-muted small">{{ $film->year ?: '-' }}</div>
+                                    @if($film->duration)
+                                        <div class="text-muted small">{{ $film->duration }}</div>
+                                    @endif
                                 </td>
                                 <td class="py-3 px-3 text-center">
-                                    <div class="d-flex flex-column align-items-center">
-                                        @if($film->is_featured)
-                                            <span class="badge badge-warning badge-sm mb-1">Featured</span>
-                                        @endif
-                                        <span class="badge badge-{{ $film->is_published ? 'success' : 'light' }} badge-sm">
+                                    <div class="d-flex flex-column">
+                                        <span class="badge badge-{{ $film->is_published ? 'success' : 'light' }} badge-sm mb-1">
                                             {{ $film->is_published ? 'Published' : 'Draft' }}
                                         </span>
+                                        @if($film->is_featured)
+                                            <span class="badge badge-warning badge-sm">Featured</span>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="py-3 px-3 text-center">
@@ -371,11 +346,11 @@
                                         </button>
                                         <button wire:click="toggleFeatured({{ $film->id }})"
                                                 class="btn btn-outline-{{ $film->is_featured ? 'warning' : 'secondary' }} btn-sm border-0"
-                                                title="{{ $film->is_featured ? 'Remove Featured' : 'Make Featured' }}">
+                                                title="{{ $film->is_featured ? 'Remove from Featured' : 'Mark as Featured' }}">
                                             <i class="fas fa-star"></i>
                                         </button>
                                         <button wire:click="togglePublished({{ $film->id }})"
-                                                class="btn btn-outline-{{ $film->is_published ? 'success' : 'info' }} btn-sm border-0"
+                                                class="btn btn-outline-{{ $film->is_published ? 'warning' : 'success' }} btn-sm border-0"
                                                 title="{{ $film->is_published ? 'Unpublish' : 'Publish' }}">
                                             <i class="fas fa-{{ $film->is_published ? 'eye-slash' : 'eye' }}"></i>
                                         </button>
@@ -392,7 +367,7 @@
                             <!-- Inline Edit Form -->
                             @if($editingId === $film->id)
                                 <tr class="bg-light">
-                                    <td colspan="7">
+                                    <td colspan="6">
                                         <div class="p-3 inline-edit-form">
                                             <h5 class="mb-3">
                                                 <i class="fas fa-edit mr-2"></i>
@@ -401,55 +376,31 @@
 
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-8">
                                                         <div class="form-group">
                                                             <label for="form.title">Film Title</label>
                                                             <input type="text" wire:model="form.title" class="form-control">
                                                             @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label for="form.year">Year</label>
+                                                            <label for="form.year">Release Year</label>
                                                             <input type="number" wire:model="form.year" class="form-control" min="1900" max="{{ date('Y') + 5 }}">
                                                             @error('form.year') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="form.genre">Genre</label>
                                                             <input type="text" wire:model="form.genre" class="form-control">
                                                             @error('form.genre') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="form.slug">Slug</label>
-                                                            <input type="text" wire:model="form.slug" class="form-control">
-                                                            @error('form.slug') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.rating">Rating</label>
-                                                            <input type="number" wire:model="form.rating" class="form-control" min="0" max="10" step="0.1">
-                                                            @error('form.rating') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.duration">Duration</label>
-                                                            <input type="text" wire:model="form.duration" class="form-control">
-                                                            @error('form.duration') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="form.category_id">Category</label>
                                                             <select wire:model="form.category_id" class="form-control">
@@ -461,24 +412,28 @@
                                                             @error('form.category_id') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="form.sort_order">Sort Order</label>
                                                             <input type="number" wire:model="form.sort_order" class="form-control" min="0">
                                                             @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label class="form-check-label">
-                                                                <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
-                                                                Featured
-                                                            </label>
-                                                            <br>
-                                                            <label class="form-check-label">
-                                                                <input type="checkbox" wire:model="form.is_published" class="form-check-input">
-                                                                Published
-                                                            </label>
+                                                            <label for="form.duration">Duration</label>
+                                                            <input type="text" wire:model="form.duration" class="form-control">
+                                                            @error('form.duration') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="form.rating">Rating (0-10)</label>
+                                                            <input type="number" wire:model="form.rating" class="form-control" min="0" max="10" step="0.1">
+                                                            @error('form.rating') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                 </div>
@@ -498,16 +453,12 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label>Featured Image Upload Method</label>
-                                                            <div class="btn-group d-block" role="group">
+                                                            <div class="btn-group d-block">
                                                                 <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
-                                                                    <i class="fas fa-folder-open mr-1"></i>
-                                                                    Media Library
+                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                                                 </label>
                                                                 <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
-                                                                    <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                                                    Upload New
+                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                                                 </label>
                                                             </div>
                                                         </div>
@@ -520,89 +471,62 @@
                                                             <div class="form-group">
                                                                 <label>Select from Media Library</label>
                                                                 <div class="d-flex align-items-center">
-                                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('featured_image')">
-                                                                        <i class="fas fa-folder-open mr-1"></i>
-                                                                        Browse Media
+                                                                    <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                                        <i class="fas fa-images mr-1"></i>Browse Media
                                                                     </button>
                                                                     @if($selectedMediaUrl)
-                                                                        <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
+                                                                        <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
                                                                             <i class="fas fa-times"></i>
                                                                         </button>
                                                                     @endif
                                                                 </div>
+                                                                @if($selectedMediaUrl)
+                                                                    <div class="mt-2">
+                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 100px;">
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            @if($selectedMediaUrl)
-                                                                <div class="form-group">
-                                                                    <label>Selected Image</label>
-                                                                    <div class="border rounded p-2">
-                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected image" class="img-fluid rounded" style="max-height: 150px;">
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
                                                     </div>
-                                                @elseif($uploadMethod === 'filepond')
+                                                @endif
+
+                                                @if($uploadMethod === 'filepond')
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Upload New Featured Image</label>
-                                                                <div class="filepond-upload-area">
-                                                                    <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                                                        accepted-file-types="image/*" max-file-size="10MB"
-                                                                        placeholder="Drop featured image here or <span class='filepond--label-action'>Browse</span>" />
+                                                                <label>Upload Featured Image</label>
+                                                                <div style="max-height: 120px;">
+                                                                    <x-filepond::upload
+                                                                        wire:model="filepondUploads"
+                                                                        multiple="false"
+                                                                        accepted-file-types="image/*"
+                                                                        max-file-size="10MB"
+                                                                        placeholder="Drop image here or <span class='filepond--label-action'>Browse</span>"
+                                                                    />
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            @if (!empty($filepondUploads))
-                                                                <div class="form-group">
-                                                                    <label>Uploaded Image Preview</label>
-                                                                    <div class="border rounded p-2 bg-light">
-                                                                        <div class="text-center">
-                                                                            <i class="fas fa-check-circle text-success mb-2"></i>
-                                                                            <p class="mb-0 small text-muted">Featured image uploaded successfully</p>
-                                                                            <small class="text-muted d-block mt-1">Ready to save</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                            @error('filepondUploads')
-                                                                <div class="form-group">
-                                                                    <div class="alert alert-danger alert-sm">
-                                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                                        {{ $message }}
-                                                                    </div>
-                                                                </div>
-                                                            @enderror
                                                         </div>
                                                     </div>
                                                 @endif
 
                                                 <div class="row">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="form.image_url">Image URL (Alternative)</label>
-                                                            <input type="text" wire:model="form.image_url" class="form-control">
-                                                            @error('form.image_url') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
+                                                                Featured Film
+                                                            </label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="form.featured_image">Featured Image URL (Alternative)</label>
-                                                            <input type="text" wire:model="form.featured_image" class="form-control">
-                                                            @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" wire:model="form.is_published" class="form-check-input">
+                                                                Published
+                                                            </label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="form.video_url">Video URL</label>
-                                                            <input type="url" wire:model="form.video_url" class="form-control">
-                                                            @error('form.video_url') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-</div>
+                                                </div>
 
                                                 <div class="form-group text-right">
                                                     <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
@@ -621,7 +545,7 @@
                             @endif
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-4">
+                                <td colspan="6" class="text-center py-4">
                                     <div class="text-muted">
                                         <i class="fas fa-film fa-lg mb-2 opacity-50"></i>
                                         <p class="mb-1 small">No film portfolios found</p>
@@ -648,232 +572,18 @@
         </div>
     </div>
 
-    <!-- Media Library Modal -->
-    <div wire:ignore>
-        @include('admin.media-library.modal')
-    </div>
+    @livewire('components.media-selector')
 </div>
 
 @push('scripts')
 <script>
-function openMediaLibrary(field) {
-    if (typeof window.mediaLibraryModal !== 'undefined') {
-        window.mediaLibraryModal.show();
-        window.currentMediaField = field;
-    }
-}
+document.addEventListener('livewire:initialized', function() {
+    console.log('Film Portfolios - Livewire initialized');
 
-// Listen for media selection events
-document.addEventListener('livewire:initialized', function () {
-    window.addEventListener('media-selected', function(e) {
-        if (window.currentMediaField === 'featured_image') {
-            @this.call('handleMediaSelection', {
-                id: e.detail.id,
-                url: e.detail.url
-            });
-        }
-        if (typeof window.mediaLibraryModal !== 'undefined') {
-            window.mediaLibraryModal.hide();
-        }
-    });
-
-    // Enhanced FilePond event handling
-    window.addEventListener('filepond-upload-started', function(e) {
-        console.log('Upload started:', e.detail);
-        // Show loading state
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.add('uploading');
-        });
-    });
-
-    window.addEventListener('filepond-upload-finished', function(e) {
-        console.log('Upload finished:', e.detail);
-        // Remove loading state
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.remove('uploading');
-            area.classList.add('upload-success');
-        });
-
-        // Trigger Livewire refresh for preview
-        @this.$refresh();
-    });
-
-    window.addEventListener('filepond-upload-reset', function(e) {
-        console.log('Upload reset:', e.detail);
-        // Reset states
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.remove('uploading', 'upload-success', 'upload-error');
-        });
-    });
-
-    window.addEventListener('filepond-upload-reverted', function(e) {
-        console.log('Upload reverted:', e.detail);
-        // Reset preview
-        @this.$refresh();
+    // Handle media selection events
+    window.addEventListener('mediaSelected', function(event) {
+        @this.call('handleMediaSelection', event.detail);
     });
 });
 </script>
-@endpush
-
-@push('styles')
-    <style>
-        /* FilePond styling for film portfolios */
-        .filepond-upload-area {
-            min-height: 120px;
-        }
-
-        .filepond--root {
-            font-size: 0.875rem;
-        }
-
-        /* Drop area styling */
-        .filepond--drop-label {
-            height: auto !important;
-            min-height: 100px !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .filepond--panel-root {
-            min-height: 100px !important;
-            border-radius: 0.375rem;
-            border: 2px dashed #e9ecef;
-            background-color: #f8f9fa;
-        }
-
-        /* File item styling */
-        .filepond--item {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        .filepond--item-panel {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        /* Image preview styling */
-        .filepond--image-preview-wrapper {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        .filepond--image-preview {
-            height: auto !important;
-            min-height: 80px !important;
-            max-height: 120px !important;
-            border-radius: 0.375rem;
-        }
-
-        /* Process indicator styling */
-        .filepond--file-action-button {
-            width: 26px;
-            height: 26px;
-        }
-
-        /* Loading state */
-        .filepond--item-panel .filepond--item-process {
-            background-color: rgba(0, 123, 255, 0.1);
-            border-radius: 0.375rem;
-        }
-
-        /* Success state */
-        .filepond--item[data-filepond-item-state="processing-complete"] .filepond--item-panel {
-            background-color: rgba(40, 167, 69, 0.1);
-            border-color: #28a745;
-        }
-
-        /* Error state */
-        .filepond--item[data-filepond-item-state="processing-error"] .filepond--item-panel {
-            background-color: rgba(220, 53, 69, 0.1);
-            border-color: #dc3545;
-        }
-
-        /* Upload area states */
-        .filepond-upload-area.uploading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .filepond-upload-area.uploading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 123, 255, 0.1);
-            border-radius: 0.375rem;
-            z-index: 1;
-        }
-
-        .filepond-upload-area.upload-success {
-            animation: uploadSuccess 0.5s ease-in-out;
-        }
-
-        @keyframes uploadSuccess {
-            0% { background-color: transparent; }
-            50% { background-color: rgba(40, 167, 69, 0.1); }
-            100% { background-color: transparent; }
-        }
-
-        /* Inline edit form improvements */
-        .inline-edit-form {
-            background-color: #f8f9fa;
-            border-radius: 0.5rem;
-            margin: 0.5rem 0;
-        }
-
-        .inline-edit-form .filepond-upload-area {
-            background-color: white;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-        }
-
-        /* Alert styling */
-        .alert-sm {
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .alert-sm i {
-            font-size: 0.75rem;
-        }
-
-        /* Upload method button styling */
-        .btn-group .btn {
-            transition: all 0.2s ease-in-out;
-        }
-
-        .btn-group .btn.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-
-        .btn-group .btn:hover:not(.active) {
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .filepond--drop-label {
-                min-height: 80px !important;
-            }
-
-            .filepond--panel-root {
-                min-height: 80px !important;
-            }
-
-            .filepond-upload-area {
-                min-height: 100px;
-            }
-        }
-    </style>
 @endpush
