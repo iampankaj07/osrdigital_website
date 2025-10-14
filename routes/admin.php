@@ -108,4 +108,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('media.upload');
     Route::delete('/media/revert', [\App\Http\Controllers\Admin\MediaUploadController::class, 'revert'])->name('media.revert');
     Route::get('/media/load/{id}', [\App\Http\Controllers\Admin\MediaUploadController::class, 'load'])->name('media.load');
+    
+    // Team Member Avatar Upload Route
+    Route::post('/upload/team-member-avatar', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('team-member-avatar.upload');
+    
+    // Trusted Partner Logo Upload Route
+    Route::post('/upload/partner-logo', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('partner-logo.upload');
+    
+    // News Featured Image Upload Route
+    Route::post('/upload/news-featured-image', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('news-featured-image.upload');
 });

@@ -11,6 +11,27 @@
         </button>
     </div>
 
+    <!-- Flash Messages -->
+    @if (session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle mr-2"></i>
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <!-- Filters -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body py-3">
@@ -18,8 +39,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-0">
                         <label for="search" class="small text-muted mb-1">Search</label>
-                        <input type="text" wire:model.live="search" class="form-control form-control-sm"
-                            placeholder="Search by name, position, or department...">
+                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search by name, position, or department...">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -37,7 +57,7 @@
     </div>
 
     <!-- Create Form -->
-    @if ($isCreating)
+    @if($isCreating)
         <div class="card mb-4">
             <div class="card-body inline-edit-form">
                 <h5 class="mb-3">
@@ -50,31 +70,15 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="form.name">Full Name</label>
-                                <input type="text" wire:model="form.name" class="form-control"
-                                    placeholder="Enter full name">
-                                @error('form.name')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+                                <input type="text" wire:model="form.name" class="form-control" placeholder="Enter full name">
+                                @error('form.name') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="form.position">Position</label>
-                                <input type="text" wire:model="form.position" class="form-control"
-                                    placeholder="Enter position">
-                                @error('form.position')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.department">Department</label>
-                                <input type="text" wire:model="form.department" class="form-control"
-                                    placeholder="Enter department">
-                                @error('form.department')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+                                <input type="text" wire:model="form.position" class="form-control" placeholder="Enter position/title">
+                                @error('form.position') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
@@ -82,32 +86,40 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="form.email">Email</label>
-                                <input type="email" wire:model="form.email" class="form-control"
-                                    placeholder="Enter email address">
-                                @error('form.email')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+                                <label for="form.department">Department</label>
+                                <input type="text" wire:model="form.department" class="form-control" placeholder="Enter department">
+                                @error('form.department') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="form.email">Email</label>
+                                <input type="email" wire:model="form.email" class="form-control" placeholder="Enter email address">
+                                @error('form.email') <span class="text-danger small">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="form.sort_order">Sort Order</label>
+                                <input type="number" wire:model="form.sort_order" class="form-control" min="0">
+                                @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="form.linkedin">LinkedIn URL</label>
-                                <input type="url" wire:model="form.linkedin" class="form-control"
-                                    placeholder="https://linkedin.com/in/username">
-                                @error('form.linkedin')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+                                <input type="url" wire:model="form.linkedin" class="form-control" placeholder="https://linkedin.com/in/username">
+                                @error('form.linkedin') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="form.twitter">Twitter URL</label>
-                                <input type="url" wire:model="form.twitter" class="form-control"
-                                    placeholder="https://twitter.com/username">
-                                @error('form.twitter')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+                                <input type="url" wire:model="form.twitter" class="form-control" placeholder="https://twitter.com/username">
+                                @error('form.twitter') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
@@ -117,109 +129,64 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Avatar Upload Method</label>
-                                <div class="btn-group d-block" role="group">
-                                    <label
-                                        class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}"
-                                        wire:click="$set('uploadMethod', 'media_library')">
-                                        <input type="radio" wire:model="uploadMethod" value="media_library"
-                                            style="display: none;">
-                                        <i class="fas fa-folder-open mr-1"></i>
-                                        Media Library
+                                <div class="btn-group d-block">
+                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                     </label>
-                                    <label
-                                        class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}"
-                                        wire:click="$set('uploadMethod', 'filepond')">
-                                        <input type="radio" wire:model="uploadMethod" value="filepond"
-                                            style="display: none;">
-                                        <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                        Upload New
+                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    @if ($uploadMethod === 'media_library')
+                    @if($uploadMethod === 'media_library')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Select from Media Library</label>
                                     <div class="d-flex align-items-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="openMediaLibrary('avatar')">
-                                            <i class="fas fa-folder-open mr-1"></i>
-                                            Browse Media
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-images mr-1"></i>Browse Media
                                         </button>
-                                        @if ($selectedMediaUrl)
-                                            <button type="button" class="btn btn-outline-danger btn-sm ml-2"
-                                                wire:click="clearSelectedMedia">
+                                        @if($selectedMediaUrl)
+                                            <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         @endif
                                     </div>
+                                    @if($selectedMediaUrl)
+                                        <div class="mt-2">
+                                            <img src="{{ $selectedMediaUrl }}" alt="Selected Avatar" class="img-thumbnail rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                @if ($selectedMediaUrl)
-                                    <div class="form-group">
-                                        <label>Selected Avatar</label>
-                                        <div class="border rounded p-2">
-                                            <img src="{{ $selectedMediaUrl }}" alt="Selected avatar"
-                                                class="img-fluid rounded" style="max-height: 100px;">
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
                         </div>
-                    @elseif($uploadMethod === 'filepond')
+                    @endif
+
+                    @if($uploadMethod === 'filepond')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Upload New Avatar</label>
-                                    <div class="filepond-upload-area">
-                                        <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                            accepted-file-types="image/*" max-file-size="10MB"
-                                            placeholder="Drop avatar here or <span class='filepond--label-action'>Browse</span>" />
+                                    <label>Upload Avatar</label>
+                                    <div style="max-height: 100px;">
+                                        <x-filepond::upload
+                                            wire:model="filepondUploads"
+                                            multiple="false"
+                                            accepted-file-types="image/*"
+                                            max-file-size="10MB"
+                                            placeholder="Drop avatar here or <span class='filepond--label-action'>Browse</span>"
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                @if (!empty($filepondUploads))
-                                    <div class="form-group">
-                                        <label>Uploaded Avatar Preview</label>
-                                        <div class="border rounded p-2 bg-light">
-                                            <div class="text-center">
-                                                <i class="fas fa-check-circle text-success mb-2"></i>
-                                                <p class="mb-0 small text-muted">Avatar uploaded successfully</p>
-                                                <small class="text-muted d-block mt-1">Ready to save</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @error('filepondUploads')
-                                    <div class="form-group">
-                                        <div class="alert alert-danger alert-sm">
-                                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                                            {{ $message }}
-                                        </div>
-                                    </div>
-                                @enderror
                             </div>
                         </div>
                     @endif
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.sort_order">Sort Order</label>
-                                <input type="number" wire:model="form.sort_order" class="form-control"
-                                    min="0">
-                                @error('form.sort_order')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-check-label">
                                     <input type="checkbox" wire:model="form.is_active" class="form-check-input">
@@ -251,95 +218,84 @@
                 <table class="table table-hover mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th wire:click="sortBy('sort_order')"
-                                class="border-0 py-2 px-3 text-muted font-weight-normal"
-                                style="cursor: pointer; width: 8%;">
+                            <th wire:click="sortBy('sort_order')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 10%;">
                                 <span class="d-flex align-items-center">
                                     Order
-                                    @if ($sortField === 'sort_order')
-                                        <i
-                                            class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @if($sortField === 'sort_order')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
                                     @else
                                         <i class="fas fa-sort ml-1 text-muted"></i>
                                     @endif
                                 </span>
                             </th>
-                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal"
-                                style="cursor: pointer; width: 25%;">
+                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 30%;">
                                 <span class="d-flex align-items-center">
                                     Member
-                                    @if ($sortField === 'name')
-                                        <i
-                                            class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @if($sortField === 'name')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
                                     @else
                                         <i class="fas fa-sort ml-1 text-muted"></i>
                                     @endif
                                 </span>
                             </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 20%;">Position
+                            <th wire:click="sortBy('position')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 25%;">
+                                <span class="d-flex align-items-center">
+                                    Position
+                                    @if($sortField === 'position')
+                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
+                                    @else
+                                        <i class="fas fa-sort ml-1 text-muted"></i>
+                                    @endif
+                                </span>
                             </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">
-                                Department</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 12%;">Contact
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center"
-                                style="width: 8%;">Status</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center"
-                                style="width: 12%;">Actions</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Department</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($teamMembers as $member)
                             <tr class="border-bottom">
                                 <td class="py-3 px-3">
-                                    <span
-                                        class="badge badge-light text-dark border small">{{ $member->sort_order }}</span>
+                                    <span class="badge badge-light text-dark border small">{{ $member->sort_order }}</span>
                                 </td>
                                 <td class="py-3 px-3">
                                     <div class="d-flex align-items-start">
-                                        @if ($member->avatar_url)
-                                            <img src="{{ $member->avatar_url }}" alt="{{ $member->name }}"
-                                                class="rounded-circle mr-2"
-                                                style="width: 32px; height: 32px; object-fit: cover;">
+                                        @if($member->image_url)
+                                            <img src="{{ $member->image_url }}" alt="{{ $member->name }}" class="rounded-circle mr-2" style="width: 40px; height: 40px; object-fit: cover;">
                                         @else
-                                            <div class="bg-light rounded-circle mr-2 d-flex align-items-center justify-content-center"
-                                                style="width: 32px; height: 32px;">
+                                            <div class="bg-light rounded-circle mr-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                                 <i class="fas fa-user text-muted"></i>
                                             </div>
                                         @endif
                                         <div>
-                                            <div class="font-weight-medium text-dark">
-                                                {{ Str::limit($member->name, 25) }}</div>
-                                            @if ($member->email)
-                                                <div class="text-muted small">{{ Str::limit($member->email, 30) }}
+                                            <div class="font-weight-medium text-dark">{{ $member->name }}</div>
+                                            @if($member->email)
+                                                <div class="text-muted small">
+                                                    <i class="fas fa-envelope mr-1"></i>
+                                                    {{ $member->email }}
                                                 </div>
                                             @endif
+                                            <div class="d-flex align-items-center mt-1">
+                                                @if($member->linkedin)
+                                                    <a href="{{ $member->linkedin }}" target="_blank" class="text-primary mr-2" title="LinkedIn">
+                                                        <i class="fab fa-linkedin"></i>
+                                                    </a>
+                                                @endif
+                                                @if($member->twitter)
+                                                    <a href="{{ $member->twitter }}" target="_blank" class="text-info" title="Twitter">
+                                                        <i class="fab fa-twitter"></i>
+                                                    </a>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="font-weight-medium text-dark">{{ Str::limit($member->position, 30) }}
-                                    </div>
+                                    <div class="font-weight-medium">{{ $member->position }}</div>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="text-muted small">
-                                        {{ $member->department ? Str::limit($member->department, 20) : '-' }}</div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="d-flex flex-column">
-                                        @if ($member->linkedin)
-                                            <a href="{{ $member->linkedin }}" target="_blank"
-                                                class="text-primary small mb-1">
-                                                <i class="fab fa-linkedin mr-1"></i>LinkedIn
-                                            </a>
-                                        @endif
-                                        @if ($member->twitter)
-                                            <a href="{{ $member->twitter }}" target="_blank"
-                                                class="text-info small">
-                                                <i class="fab fa-twitter mr-1"></i>Twitter
-                                            </a>
-                                        @endif
-                                    </div>
+                                    <div class="text-muted small">{{ $member->department ?: '-' }}</div>
                                 </td>
                                 <td class="py-3 px-3 text-center">
                                     <span class="badge badge-{{ $member->is_active ? 'success' : 'light' }} badge-sm">
@@ -349,17 +305,19 @@
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
                                         <button wire:click="edit({{ $member->id }})"
-                                            class="btn btn-dark btn-sm border-0" title="Edit">
+                                                class="btn btn-dark btn-sm border-0"
+                                                title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button wire:click="toggleActive({{ $member->id }})"
-                                            class="btn btn-outline-{{ $member->is_active ? 'warning' : 'success' }} btn-sm border-0"
-                                            title="{{ $member->is_active ? 'Deactivate' : 'Activate' }}">
+                                                class="btn btn-outline-{{ $member->is_active ? 'warning' : 'success' }} btn-sm border-0"
+                                                title="{{ $member->is_active ? 'Deactivate' : 'Activate' }}">
                                             <i class="fas fa-{{ $member->is_active ? 'pause' : 'play' }}"></i>
                                         </button>
-                                        <button wire:click="deleteTeamMember({{ $member->id }})"
-                                            class="btn btn-danger btn-sm border-0" title="Delete"
-                                            onclick="return confirm('Are you sure you want to delete this team member?')">
+                                        <button wire:click="delete({{ $member->id }})"
+                                                class="btn btn-danger btn-sm border-0"
+                                                title="Delete"
+                                                onclick="return confirm('Are you sure you want to delete this team member?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -367,9 +325,9 @@
                             </tr>
 
                             <!-- Inline Edit Form -->
-                            @if ($editingId === $member->id)
+                            @if($editingId === $member->id)
                                 <tr class="bg-light">
-                                    <td colspan="7">
+                                    <td colspan="6">
                                         <div class="p-3 inline-edit-form">
                                             <h5 class="mb-3">
                                                 <i class="fas fa-edit mr-2"></i>
@@ -377,46 +335,19 @@
                                             </h5>
 
                                             <form wire:submit.prevent="update">
-                                                @if ($errors->any())
-                                                    <div class="alert alert-danger alert-sm mb-3">
-                                                        <h6 class="mb-2">Please fix the following errors:</h6>
-                                                        <ul class="mb-0 small">
-                                                            @foreach ($errors->all() as $error)
-                                                                <li>{{ $error }}</li>
-                                                            @endforeach
-                                                        </ul>
-                                                    </div>
-                                                @endif
-
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="form.name">Full Name</label>
-                                                            <input type="text" wire:model="form.name"
-                                                                class="form-control">
-                                                            @error('form.name')
-                                                                <span class="text-danger small">{{ $message }}</span>
-                                                            @enderror
+                                                            <input type="text" wire:model="form.name" class="form-control">
+                                                            @error('form.name') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="form.position">Position</label>
-                                                            <input type="text" wire:model="form.position"
-                                                                class="form-control">
-                                                            @error('form.position')
-                                                                <span class="text-danger small">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.department">Department</label>
-                                                            <input type="text" wire:model="form.department"
-                                                                class="form-control">
-                                                            @error('form.department')
-                                                                <span class="text-danger small">{{ $message }}</span>
-                                                            @enderror
+                                                            <input type="text" wire:model="form.position" class="form-control">
+                                                            @error('form.position') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                 </div>
@@ -424,32 +355,40 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label for="form.email">Email</label>
-                                                            <input type="email" wire:model="form.email"
-                                                                class="form-control">
-                                                            @error('form.email')
-                                                                <span class="text-danger small">{{ $message }}</span>
-                                                            @enderror
+                                                            <label for="form.department">Department</label>
+                                                            <input type="text" wire:model="form.department" class="form-control">
+                                                            @error('form.department') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="form.email">Email</label>
+                                                            <input type="email" wire:model="form.email" class="form-control">
+                                                            @error('form.email') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="form.sort_order">Sort Order</label>
+                                                            <input type="number" wire:model="form.sort_order" class="form-control" min="0">
+                                                            @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="form.linkedin">LinkedIn URL</label>
-                                                            <input type="url" wire:model="form.linkedin"
-                                                                class="form-control">
-                                                            @error('form.linkedin')
-                                                                <span class="text-danger small">{{ $message }}</span>
-                                                            @enderror
+                                                            <input type="url" wire:model="form.linkedin" class="form-control">
+                                                            @error('form.linkedin') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="form.twitter">Twitter URL</label>
-                                                            <input type="url" wire:model="form.twitter"
-                                                                class="form-control">
-                                                            @error('form.twitter')
-                                                                <span class="text-danger small">{{ $message }}</span>
-                                                            @enderror
+                                                            <input type="url" wire:model="form.twitter" class="form-control">
+                                                            @error('form.twitter') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                 </div>
@@ -459,280 +398,129 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label>Avatar Upload Method</label>
-                                                            <div class="btn-group d-block" role="group">
-                                                                <label
-                                                                    class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}"
-                                                                    wire:click="$set('uploadMethod', 'media_library')">
-                                                                    <input type="radio" wire:model="uploadMethod"
-                                                                        value="media_library" style="display: none;">
-                                                                    <i class="fas fa-folder-open mr-1"></i>
-                                                                    Media Library
+                                                            <div class="btn-group d-block">
+                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                                                 </label>
-                                                                <label
-                                                                    class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}"
-                                                                    wire:click="$set('uploadMethod', 'filepond')">
-                                                                    <input type="radio" wire:model="uploadMethod"
-                                                                        value="filepond" style="display: none;">
-                                                                    <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                                                    Upload New
+                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                                                 </label>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                @if ($uploadMethod === 'media_library')
+                                                @if($uploadMethod === 'media_library')
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Select from Media Library</label>
                                                                 <div class="d-flex align-items-center">
-                                                                    <button type="button"
-                                                                        class="btn btn-outline-primary btn-sm"
-                                                                        onclick="openMediaLibrary('avatar')">
-                                                                        <i class="fas fa-folder-open mr-1"></i>
-                                                                        Browse Media
+                                                                    <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                                        <i class="fas fa-images mr-1"></i>Browse Media
                                                                     </button>
-                                                                    @if ($selectedMediaUrl)
-                                                                        <button type="button"
-                                                                            class="btn btn-outline-danger btn-sm ml-2"
-                                                                            wire:click="clearSelectedMedia">
+                                                                    @if($selectedMediaUrl)
+                                                                        <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
                                                                             <i class="fas fa-times"></i>
                                                                         </button>
                                                                     @endif
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            @if ($selectedMediaUrl)
-                                                                <div class="form-group">
-                                                                    <label>Selected Avatar</label>
-                                                                    <div class="border rounded p-2">
-                                                                        <img src="{{ $selectedMediaUrl }}"
-                                                                            alt="Selected avatar"
-                                                                            class="img-fluid rounded"
-                                                                            style="max-height: 100px;">
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-
-                                                    @elseif($uploadMethod === 'filepond')
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>Upload New Avatar</label>
-                                                                    <div class="filepond-upload-area">
-                                                                        <x-filepond::upload wire:model="filepondUploads"
-                                                                            multiple="false" accepted-file-types="image/*"
-                                                                            max-file-size="10MB"
-                                                                            placeholder="Drop avatar here or <span class='filepond--label-action'>Browse</span>" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                @if (!empty($filepondUploads))
-                                                                    <div class="form-group">
-                                                                        <label>Uploaded Avatar Preview</label>
-                                                                        <div class="border rounded p-2 bg-light">
-                                                                            <div class="text-center">
-                                                                                <i class="fas fa-check-circle text-success mb-2"></i>
-                                                                                <p class="mb-0 small text-muted">Avatar uploaded successfully</p>
-                                                                                <small class="text-muted d-block mt-1">Ready to save</small>
-                                                                            </div>
-                                                                        </div>
+                                                                @if($selectedMediaUrl)
+                                                                    <div class="mt-2">
+                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected Avatar" class="img-thumbnail rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
                                                                     </div>
                                                                 @endif
-                                                                @error('filepondUploads')
-                                                                    <div class="form-group">
-                                                                        <div class="alert alert-danger alert-sm">
-                                                                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                                            {{ $message }}
-                                                                        </div>
-                                                                    </div>
-                                                                @enderror
                                                             </div>
                                                         </div>
-                                                    @endif
+                                                    </div>
+                                                @endif
 
- <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="form.sort_order">Sort Order</label>
-                                                        <input type="number" wire:model="form.sort_order"
-                                                            class="form-control" min="0">
-                                                        @error('form.sort_order')
-                                                            <span class="text-danger small">{{ $message }}</span>
-                                                        @enderror
+                                                @if($uploadMethod === 'filepond')
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Upload Avatar</label>
+                                                                <div style="max-height: 100px;">
+                                                                    <x-filepond::upload
+                                                                        wire:model="filepondUploads"
+                                                                        multiple="false"
+                                                                        accepted-file-types="image/*"
+                                                                        max-file-size="10MB"
+                                                                        placeholder="Drop avatar here or <span class='filepond--label-action'>Browse</span>"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" wire:model="form.is_active" class="form-check-input">
+                                                                Active
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-check-label">
-                                                            <input type="checkbox" wire:model="form.is_active"
-                                                                class="form-check-input">
-                                                            Active
-                                                        </label>
-                                                    </div>
+
+                                                <div class="form-group text-right">
+                                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
+                                                        <i class="fas fa-times mr-1"></i>
+                                                        Cancel
+                                                    </button>
+                                                    <button type="submit" class="btn btn-dark">
+                                                        <i class="fas fa-save mr-1"></i>
+                                                        Update
+                                                    </button>
                                                 </div>
-                                                    </div>
+                                            </form>
                                         </div>
-                                        <div class="form-group text-right">
-                                            <button type="button" wire:click="cancelEdit"
-                                                class="btn btn-secondary mr-2">
-                                                <i class="fas fa-times mr-1"></i>
-                                                Cancel
-                                            </button>
-                                            <button type="submit" class="btn btn-dark" wire:loading.attr="disabled">
-                                                <span wire:loading.remove>
-                                                    <i class="fas fa-save mr-1"></i>
-                                                    Update
-                                                </span>
-                                                <span wire:loading>
-                                                    <i class="fas fa-spinner fa-spin mr-1"></i>
-                                                    Updating...
-                                                </span>
-                                            </button>
-                                        </div>
-                                        </form>
+                                    </td>
+                                </tr>
+                            @endif
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-users fa-lg mb-2 opacity-50"></i>
+                                        <p class="mb-1 small">No team members found</p>
+                                        <small class="text-muted">Click "Add Team Member" to create your first one</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            </td>
-            </tr>
-            @endif
-        @empty
-            <tr>
-                <td colspan="7" class="text-center py-4">
-                    <div class="text-muted">
-                        <i class="fas fa-users fa-lg mb-2 opacity-50"></i>
-                        <p class="mb-1 small">No team members found</p>
-                        <small class="text-muted">Click "Add Team Member" to create your first one</small>
+
+            <!-- Pagination -->
+            @if($teamMembers->hasPages())
+                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top bg-light">
+                    <div class="text-muted small">
+                        {{ $teamMembers->firstItem() }}-{{ $teamMembers->lastItem() }} of {{ $teamMembers->total() }}
                     </div>
-                </td>
-            </tr>
-            @endforelse
-            </tbody>
-            </table>
+                    <div>
+                        {{ $teamMembers->links() }}
+                    </div>
+                </div>
+            @endif
         </div>
-
-        <!-- Pagination -->
-        @if ($teamMembers->hasPages())
-            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top bg-light">
-                <div class="text-muted small">
-                    {{ $teamMembers->firstItem() }}-{{ $teamMembers->lastItem() }} of {{ $teamMembers->total() }}
-                </div>
-                <div>
-                    {{ $teamMembers->links() }}
-                </div>
-            </div>
-        @endif
     </div>
-</div>
 
-<!-- Media Library Modal -->
-<div wire:ignore>
-    @include('admin.media-library.modal')
+    @livewire('components.media-selector')
 </div>
 
 @push('scripts')
-    <script>
-        function openMediaLibrary(field) {
-            if (typeof window.mediaLibraryModal !== 'undefined') {
-                window.mediaLibraryModal.show();
-                window.currentMediaField = field;
-            }
-        }
+<script>
+document.addEventListener('livewire:initialized', function() {
+    console.log('Team Members - Livewire initialized');
 
-        // Listen for media selection events
-        document.addEventListener('livewire:initialized', function() {
-            window.addEventListener('media-selected', function(e) {
-                if (window.currentMediaField === 'avatar') {
-                    @this.call('handleMediaSelection', {
-                        id: e.detail.id,
-                        url: e.detail.url
-                    });
-                }
-                if (typeof window.mediaLibraryModal !== 'undefined') {
-                    window.mediaLibraryModal.hide();
-                }
-            });
-
-            // Enhanced FilePond event handling
-            window.addEventListener('filepond-upload-started', function(e) {
-                console.log('Upload started:', e.detail);
-                // Show loading state
-                const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-                uploadAreas.forEach(area => {
-                    area.classList.add('uploading');
-                });
-            });
-
-            window.addEventListener('filepond-upload-finished', function(e) {
-                console.log('Upload finished:', e.detail);
-                // Remove loading state
-                const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-                uploadAreas.forEach(area => {
-                    area.classList.remove('uploading');
-                    area.classList.add('upload-success');
-                });
-
-                // Trigger Livewire refresh for preview with a slight delay
-                setTimeout(() => {
-                    @this.$refresh();
-                }, 100);
-            });
-
-            window.addEventListener('filepond-upload-reset', function(e) {
-                console.log('Upload reset:', e.detail);
-                // Reset states
-                const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-                uploadAreas.forEach(area => {
-                    area.classList.remove('uploading', 'upload-success', 'upload-error');
-                });
-            });
-
-            window.addEventListener('filepond-upload-reverted', function(e) {
-                console.log('Upload reverted:', e.detail);
-                // Reset preview
-                @this.$refresh();
-            });
-
-            // Listen for Livewire reset events
-            Livewire.on('reset-filepond', function() {
-                // Find all FilePond instances and reset them
-                const filepondElements = document.querySelectorAll('.filepond--root');
-                filepondElements.forEach(element => {
-                    if (element.FilePond) {
-                        element.FilePond.removeFiles();
-                    }
-                });
-
-                // Reset upload areas state
-                const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-                uploadAreas.forEach(area => {
-                    area.classList.remove('uploading', 'upload-success', 'upload-error');
-                });
-            });
-
-            // Listen for team member updated event
-            Livewire.on('teamMemberUpdated', function() {
-                console.log('Team member updated successfully');
-                // Optionally scroll to top or show a visual indication
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // Debug form submissions
-            document.addEventListener('submit', function(e) {
-                if (e.target.closest('form[wire\\:submit\\.prevent\\=update]')) {
-                    console.log('Update form submitted');
-                    console.log('Form valid:', e.target.checkValidity());
-                }
-            });
-
-            // Listen for Livewire errors
-            document.addEventListener('livewire:exception', function(e) {
-                console.error('Livewire error:', e.detail);
-            });
-        });
-    </script>
+    // Handle media selection events
+    window.addEventListener('mediaSelected', function(event) {
+        @this.call('handleMediaSelection', event.detail);
+    });
+});
+</script>
 @endpush

@@ -19,16 +19,19 @@ class MediaUploadController extends Controller
             ], 401);
         }
 
+        // Determine which field name to use (filepond or avatar)
+        $fieldName = $request->hasFile('filepond') ? 'filepond' : 'avatar';
+        
         $request->validate([
-            'filepond' => 'required|file|max:10240', // 10MB max
+            $fieldName => 'required|file|max:10240', // 10MB max
         ]);
 
         try {
             $user = Auth::user();
-            $file = $request->file('filepond');
+            $file = $request->file($fieldName);
 
             // Add media to user using spatie/laravel-medialibrary
-            $media = $user->addMediaFromRequest('filepond')
+            $media = $user->addMediaFromRequest($fieldName)
                 ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
                 ->usingFileName($file->getClientOriginalName())
                 ->toMediaCollection('media-library');
