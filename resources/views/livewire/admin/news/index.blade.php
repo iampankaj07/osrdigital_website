@@ -1,838 +1,420 @@
 <div>
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h4 mb-1 font-weight-normal">News</h1>
-            <p class="text-muted small mb-0">Manage news articles and blog posts</p>
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0 text-gray-800">News Management</h1>
+                <p class="mb-0 text-muted">Create and manage news articles</p>
+            </div>
+            <button wire:click="create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New Article
+            </button>
         </div>
-        <button wire:click="create" class="btn btn-dark btn-sm">
-            <i class="fas fa-plus mr-1"></i>
-            Add News Article
-        </button>
-    </div>
 
-    <!-- Filters -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body py-3">
-            <div class="row align-items-end">
-                <div class="col-md-4">
-                    <div class="form-group mb-0">
-                        <label for="search" class="small text-muted mb-1">Search</label>
-                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search by title, excerpt, or author...">
+        <!-- Flash Messages -->
+        @if (session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if (session()->has('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <!-- Filters and Search -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" wire:model.live="search" class="form-control" 
+                               placeholder="Search articles...">
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group mb-0">
-                        <label for="statusFilter" class="small text-muted mb-1">Status</label>
-                        <select wire:model.live="statusFilter" class="form-control form-control-sm">
+                    <div class="col-md-2">
+                        <select wire:model.live="statusFilter" class="form-select">
                             <option value="">All Status</option>
                             <option value="draft">Draft</option>
                             <option value="published">Published</option>
+                            <option value="archived">Archived</option>
                         </select>
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group mb-0">
-                        <label for="categoryFilter" class="small text-muted mb-1">Category</label>
-                        <select wire:model.live="categoryFilter" class="form-control form-control-sm">
+                    <div class="col-md-3">
+                        <select wire:model.live="categoryFilter" class="form-select">
                             <option value="">All Categories</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group mb-0">
-                        <label for="perPage" class="small text-muted mb-1">Per Page</label>
-                        <select wire:model.live="perPage" class="form-control form-control-sm">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
+                    <div class="col-md-2">
+                        <select wire:model.live="perPage" class="form-select">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
                         </select>
                     </div>
+                    <div class="col-md-1">
+                        <button wire:click="$refresh" class="btn btn-outline-secondary w-100" title="Refresh">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Create Form -->
-    @if($isCreating)
-        <div class="card mb-4">
-            <div class="card-body inline-edit-form">
-                <h5 class="mb-3">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create New News Article
-                </h5>
-
-                <form wire:submit.prevent="store">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label for="form.title">Article Title</label>
-                                <input type="text" wire:model="form.title" class="form-control" placeholder="Enter article title">
-                                @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="form.slug">Slug</label>
-                                <input type="text" wire:model="form.slug" class="form-control" placeholder="Auto-generated from title">
-                                @error('form.slug') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.author_name">Author Name</label>
-                                <input type="text" wire:model="form.author_name" class="form-control" placeholder="Enter author name">
-                                @error('form.author_name') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.category_id">Category</label>
-                                <select wire:model="form.category_id" class="form-control">
-                                    <option value="">Select Category</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('form.category_id') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.status">Status</label>
-                                <select wire:model="form.status" class="form-control">
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                </select>
-                                @error('form.status') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Featured Image Upload Options -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Featured Image Upload Method</label>
-                                <div class="btn-group d-block" role="group">
-                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
-                                        <i class="fas fa-folder-open mr-1"></i>
-                                        Media Library
-                                    </label>
-                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
-                                        <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                        Upload New
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if($uploadMethod === 'media_library')
+        <!-- Create/Edit Form -->
+        @if($isCreating || $editingId)
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ $isCreating ? 'Create New Article' : 'Edit Article' }}</h5>
+                </div>
+                <div class="card-body">
+                    <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Select from Media Library</label>
-                                    <div class="d-flex align-items-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('featured_image')">
-                                            <i class="fas fa-folder-open mr-1"></i>
-                                            Browse Media
-                                        </button>
-                                        @if($selectedMediaUrl)
-                                            <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        @endif
-                                    </div>
+                            <!-- Basic Information -->
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    <input type="text" wire:model.live="form.title" class="form-control @error('form.title') is-invalid @enderror" 
+                                           id="title" placeholder="Enter article title">
+                                    @error('form.title')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="slug" class="form-label">Slug <span class="text-danger">*</span></label>
+                                    <input type="text" wire:model="form.slug" class="form-control @error('form.slug') is-invalid @enderror" 
+                                           id="slug" placeholder="article-slug">
+                                    @error('form.slug')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="excerpt" class="form-label">Excerpt</label>
+                                    <textarea wire:model="form.excerpt" class="form-control @error('form.excerpt') is-invalid @enderror" 
+                                              id="excerpt" rows="3" placeholder="Brief description of the article"></textarea>
+                                    @error('form.excerpt')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
+                                    <textarea wire:model="form.content" class="form-control @error('form.content') is-invalid @enderror" 
+                                              id="content" rows="8" placeholder="Write your article content here"></textarea>
+                                    @error('form.content')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="tags" class="form-label">Tags</label>
+                                    <input type="text" wire:model="form.tags" class="form-control @error('form.tags') is-invalid @enderror" 
+                                           id="tags" placeholder="tag1, tag2, tag3">
+                                    <small class="text-muted">Separate tags with commas</small>
+                                    @error('form.tags')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                @if($selectedMediaUrl)
-                                    <div class="form-group">
-                                        <label>Selected Image</label>
-                                        <div class="border rounded p-2">
-                                            <img src="{{ $selectedMediaUrl }}" alt="Selected image" class="img-fluid rounded" style="max-height: 150px;">
+
+                            <!-- Sidebar -->
+                            <div class="col-md-4">
+                                <!-- Featured Image -->
+                                <div class="mb-4">
+                                    <label class="form-label">Featured Image</label>
+                                    
+                                    <!-- Upload Method Selection -->
+                                    <div class="mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" wire:model="uploadMethod" 
+                                                   id="media_library" value="media_library">
+                                            <label class="form-check-label" for="media_library">Media Library</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" wire:model="uploadMethod" 
+                                                   id="direct_upload" value="filepond">
+                                            <label class="form-check-label" for="direct_upload">Upload New</label>
                                         </div>
                                     </div>
-                                @endif
-                            </div>
-                        </div>
-                    @elseif($uploadMethod === 'filepond')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Upload New Featured Image</label>
-                                    <div class="filepond-upload-area">
-                                        <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                            accepted-file-types="image/*" max-file-size="10MB"
-                                            placeholder="Drop featured image here or <span class='filepond--label-action'>Browse</span>" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                @if (!empty($filepondUploads))
-                                    <div class="form-group">
-                                        <label>Uploaded Image Preview</label>
-                                        <div class="border rounded p-2 bg-light">
-                                            <div class="text-center">
-                                                <i class="fas fa-check-circle text-success mb-2"></i>
-                                                <p class="mb-0 small text-muted">Featured image uploaded successfully</p>
-                                                <small class="text-muted d-block mt-1">Ready to save</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @error('filepondUploads')
-                                    <div class="form-group">
-                                        <div class="alert alert-danger alert-sm">
-                                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                                            {{ $message }}
-                                        </div>
-                                    </div>
-                                @enderror
-                            </div>
-                        </div>
-                    @endif
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.featured_image">Featured Image URL (Alternative)</label>
-                                <input type="text" wire:model="form.featured_image" class="form-control" placeholder="Enter featured image URL">
-                                @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.published_at">Published At</label>
-                                <input type="datetime-local" wire:model="form.published_at" class="form-control">
-                                @error('form.published_at') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-check-label">
-                                    <input type="checkbox" wire:model="form.featured" class="form-check-input">
-                                    Featured
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="form.excerpt">Excerpt</label>
-                                <textarea wire:model="form.excerpt" class="form-control" rows="3" placeholder="Enter article excerpt"></textarea>
-                                @error('form.excerpt') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="form.content">Content</label>
-                                <textarea wire:model="form.content" class="form-control" rows="6" placeholder="Enter article content"></textarea>
-                                @error('form.content') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group text-right">
-                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                            <i class="fas fa-times mr-1"></i>
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save mr-1"></i>
-                            Create Article
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
-
-    <!-- News Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th wire:click="sortBy('published_at')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 15%;">
-                                <span class="d-flex align-items-center">
-                                    Date
-                                    @if($sortField === 'published_at')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 35%;">
-                                <span class="d-flex align-items-center">
-                                    Article
-                                    @if($sortField === 'title')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Author</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Category</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($news as $article)
-                            <tr class="border-bottom">
-                                <td class="py-3 px-3">
-                                    <div class="small text-muted">
-                                        @if($article->published_at)
-                                            {{ $article->published_at->format('M d, Y') }}
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="d-flex align-items-start">
-                                        @if($article->featured_image)
-                                            <img src="{{ $article->featured_image }}" alt="{{ $article->title }}" class="rounded mr-2" style="width: 40px; height: 30px; object-fit: cover;">
-                                        @else
-                                            <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 30px;">
-                                                <i class="fas fa-newspaper text-muted"></i>
-                                            </div>
-                                        @endif
-                                        <div>
-                                            <div class="font-weight-medium text-dark">{{ Str::limit($article->title, 50) }}</div>
-                                            @if($article->excerpt)
-                                                <div class="text-muted small">{{ Str::limit($article->excerpt, 60) }}</div>
+                                    <!-- Media Library Selection -->
+                                    @if($uploadMethod === 'media_library')
+                                        <div class="border rounded p-3 text-center">
+                                            @if($selectedMediaUrl)
+                                                <div class="mb-3">
+                                                    <img src="{{ $selectedMediaUrl }}" class="img-fluid rounded" 
+                                                         style="max-height: 200px;" alt="Selected media">
+                                                    <button type="button" wire:click="clearSelectedMedia" 
+                                                            class="btn btn-sm btn-outline-danger mt-2">
+                                                        <i class="fas fa-times me-1"></i>Remove
+                                                    </button>
+                                                </div>
+                                            @else
+                                                <div class="mb-3">
+                                                    <i class="fas fa-image fa-3x text-muted mb-3"></i>
+                                                    <p class="text-muted">No image selected</p>
+                                                </div>
                                             @endif
+                                            <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary">
+                                                <i class="fas fa-folder-open me-2"></i>Select from Media Library
+                                            </button>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="text-muted small">{{ $article->author_name }}</div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    @if($article->category)
-                                        <span class="badge badge-info badge-sm">{{ $article->category->name }}</span>
-                                    @else
-                                        <span class="text-muted small">-</span>
                                     @endif
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <div class="d-flex flex-column align-items-center">
-                                        @if($article->featured)
-                                            <span class="badge badge-warning badge-sm mb-1">Featured</span>
-                                        @endif
-                                        <span class="badge badge-{{ $article->status === 'published' ? 'success' : 'light' }} badge-sm">
-                                            {{ ucfirst($article->status) }}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $article->id }})"
-                                                class="btn btn-dark btn-sm border-0"
-                                                title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button wire:click="toggleFeatured({{ $article->id }})"
-                                                class="btn btn-outline-{{ $article->featured ? 'warning' : 'secondary' }} btn-sm border-0"
-                                                title="{{ $article->featured ? 'Remove Featured' : 'Make Featured' }}">
-                                            <i class="fas fa-star"></i>
-                                        </button>
-                                        <button wire:click="toggleStatus({{ $article->id }})"
-                                                class="btn btn-outline-{{ $article->status === 'published' ? 'success' : 'info' }} btn-sm border-0"
-                                                title="{{ $article->status === 'published' ? 'Unpublish' : 'Publish' }}">
-                                            <i class="fas fa-{{ $article->status === 'published' ? 'eye-slash' : 'eye' }}"></i>
-                                        </button>
-                                        <button wire:click="delete({{ $article->id }})"
-                                                class="btn btn-danger btn-sm border-0"
-                                                title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this article?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
 
-                            <!-- Inline Edit Form -->
-                            @if($editingId === $article->id)
-                                <tr class="bg-light">
-                                    <td colspan="6">
-                                        <div class="p-3 inline-edit-form">
-                                            <h5 class="mb-3">
-                                                <i class="fas fa-edit mr-2"></i>
-                                                Edit News Article
-                                            </h5>
-
-                                            <form wire:submit.prevent="update">
-                                                <div class="row">
-                                                    <div class="col-md-8">
-                                                        <div class="form-group">
-                                                            <label for="form.title">Article Title</label>
-                                                            <input type="text" wire:model="form.title" class="form-control">
-                                                            @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="form.slug">Slug</label>
-                                                            <input type="text" wire:model="form.slug" class="form-control">
-                                                            @error('form.slug') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="form.author_name">Author Name</label>
-                                                            <input type="text" wire:model="form.author_name" class="form-control">
-                                                            @error('form.author_name') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.category_id">Category</label>
-                                                            <select wire:model="form.category_id" class="form-control">
-                                                                <option value="">Select Category</option>
-                                                                @foreach($categories as $category)
-                                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                            @error('form.category_id') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.status">Status</label>
-                                                            <select wire:model="form.status" class="form-control">
-                                                                <option value="draft">Draft</option>
-                                                                <option value="published">Published</option>
-                                                            </select>
-                                                            @error('form.status') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Featured Image Upload Options for Edit -->
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label>Featured Image Upload Method</label>
-                                                            <div class="btn-group d-block" role="group">
-                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
-                                                                    <i class="fas fa-folder-open mr-1"></i>
-                                                                    Media Library
-                                                                </label>
-                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
-                                                                    <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                                                    Upload New
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                @if($uploadMethod === 'media_library')
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>Select from Media Library</label>
-                                                                <div class="d-flex align-items-center">
-                                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('featured_image')">
-                                                                        <i class="fas fa-folder-open mr-1"></i>
-                                                                        Browse Media
-                                                                    </button>
-                                                                    @if($selectedMediaUrl)
-                                                                        <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
-                                                                            <i class="fas fa-times"></i>
-                                                                        </button>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            @if($selectedMediaUrl)
-                                                                <div class="form-group">
-                                                                    <label>Selected Image</label>
-                                                                    <div class="border rounded p-2">
-                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected image" class="img-fluid rounded" style="max-height: 150px;">
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                @elseif($uploadMethod === 'filepond')
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>Upload New Featured Image</label>
-                                                                <div class="filepond-upload-area">
-                                                                    <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                                                        accepted-file-types="image/*" max-file-size="10MB"
-                                                                        placeholder="Drop featured image here or <span class='filepond--label-action'>Browse</span>" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            @if (!empty($filepondUploads))
-                                                                <div class="form-group">
-                                                                    <label>Uploaded Image Preview</label>
-                                                                    <div class="border rounded p-2 bg-light">
-                                                                        <div class="text-center">
-                                                                            <i class="fas fa-check-circle text-success mb-2"></i>
-                                                                            <p class="mb-0 small text-muted">Featured image uploaded successfully</p>
-                                                                            <small class="text-muted d-block mt-1">Ready to save</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                            @error('filepondUploads')
-                                                                <div class="form-group">
-                                                                    <div class="alert alert-danger alert-sm">
-                                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                                        {{ $message }}
-                                                                    </div>
-                                                                </div>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                @endif
-
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="form.featured_image">Featured Image URL (Alternative)</label>
-                                                            <input type="text" wire:model="form.featured_image" class="form-control">
-                                                            @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.published_at">Published At</label>
-                                                            <input type="datetime-local" wire:model="form.published_at" class="form-control">
-                                                            @error('form.published_at') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-check-label">
-                                                                <input type="checkbox" wire:model="form.featured" class="form-check-input">
-                                                                Featured
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label for="form.excerpt">Excerpt</label>
-                                                            <textarea wire:model="form.excerpt" class="form-control" rows="3"></textarea>
-                                                            @error('form.excerpt') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label for="form.content">Content</label>
-                                                            <textarea wire:model="form.content" class="form-control" rows="6"></textarea>
-                                                            @error('form.content') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group text-right">
-                                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                                                        <i class="fas fa-times mr-1"></i>
-                                                        Cancel
-                                                    </button>
-                                                    <button type="submit" class="btn btn-dark">
-                                                        <i class="fas fa-save mr-1"></i>
-                                                        Update
-                                                    </button>
-                                                </div>
-                                            </form>
+                                    <!-- FilePond Upload -->
+                                    @if($uploadMethod === 'filepond')
+                                        <div wire:ignore>
+                                            <x-filepond 
+                                                wire:model="filepondUploads" 
+                                                multiple="false"
+                                                accept-file-types="['image/png', 'image/jpg', 'image/jpeg', 'image/gif']"
+                                                max-file-size="10MB"
+                                            />
                                         </div>
-                                    </td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-newspaper fa-lg mb-2 opacity-50"></i>
-                                        <p class="mb-1 small">No news articles found</p>
-                                        <small class="text-muted">Click "Add News Article" to create your first one</small>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                    @endif
 
-            <!-- Pagination -->
-            @if($news->hasPages())
-                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top bg-light">
-                    <div class="text-muted small">
-                        {{ $news->firstItem() }}-{{ $news->lastItem() }} of {{ $news->total() }}
+                                    <!-- Alternative URL Input -->
+                                    <div class="mt-3">
+                                        <label for="featured_image" class="form-label">Or Image URL</label>
+                                        <input type="url" wire:model="form.featured_image" 
+                                               class="form-control @error('form.featured_image') is-invalid @enderror" 
+                                               id="featured_image" placeholder="https://example.com/image.jpg">
+                                        @error('form.featured_image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Article Meta -->
+                                <div class="mb-3">
+                                    <label for="author_name" class="form-label">Author <span class="text-danger">*</span></label>
+                                    <input type="text" wire:model="form.author_name" 
+                                           class="form-control @error('form.author_name') is-invalid @enderror" 
+                                           id="author_name" placeholder="Author name">
+                                    @error('form.author_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="category_id" class="form-label">Category</label>
+                                    <select wire:model="form.category_id" class="form-select @error('form.category_id') is-invalid @enderror" 
+                                            id="category_id">
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('form.category_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select wire:model="form.status" class="form-select @error('form.status') is-invalid @enderror" 
+                                            id="status">
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
+                                        <option value="archived">Archived</option>
+                                    </select>
+                                    @error('form.status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="published_at" class="form-label">Publish Date</label>
+                                    <input type="datetime-local" wire:model="form.published_at" 
+                                           class="form-control @error('form.published_at') is-invalid @enderror" 
+                                           id="published_at">
+                                    @error('form.published_at')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" wire:model="form.featured" 
+                                           id="featured">
+                                    <label class="form-check-label" for="featured">
+                                        Featured Article
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between">
+                            <button type="button" wire:click="cancelEdit" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>{{ $isCreating ? 'Create Article' : 'Update Article' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
+        <!-- Articles Table -->
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">Articles ({{ $news->total() }})</h5>
+            </div>
+            <div class="card-body p-0">
+                @if($news->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="60">Image</th>
+                                    <th>
+                                        <button wire:click="sortBy('title')" class="btn btn-sm btn-link p-0 text-decoration-none text-dark">
+                                            Title
+                                            @if($sortField === 'title')
+                                                <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </button>
+                                    </th>
+                                    <th>Category</th>
+                                    <th>Author</th>
+                                    <th>
+                                        <button wire:click="sortBy('status')" class="btn btn-sm btn-link p-0 text-decoration-none text-dark">
+                                            Status
+                                            @if($sortField === 'status')
+                                                <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </button>
+                                    </th>
+                                    <th>
+                                        <button wire:click="sortBy('published_at')" class="btn btn-sm btn-link p-0 text-decoration-none text-dark">
+                                            Published
+                                            @if($sortField === 'published_at')
+                                                <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
+                                            @endif
+                                        </button>
+                                    </th>
+                                    <th width="200">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($news as $article)
+                                    <tr>
+                                        <td>
+                                            @if($article->featured_image_url)
+                                                <img src="{{ $article->featured_image_url }}" 
+                                                     class="rounded" style="width: 50px; height: 50px; object-fit: cover;" 
+                                                     alt="{{ $article->title }}">
+                                            @else
+                                                <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>{{ $article->title }}</strong>
+                                                @if($article->featured)
+                                                    <span class="badge bg-warning text-dark ms-1">Featured</span>
+                                                @endif
+                                            </div>
+                                            @if($article->excerpt)
+                                                <small class="text-muted">{{ Str::limit($article->excerpt, 60) }}</small>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($article->category)
+                                                <span class="badge bg-info">{{ $article->category->name }}</span>
+                                            @else
+                                                <span class="text-muted">Uncategorized</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $article->author_name }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm dropdown-toggle 
+                                                    @if($article->status === 'published') btn-success 
+                                                    @elseif($article->status === 'draft') btn-warning
+                                                    @else btn-secondary @endif" 
+                                                    type="button" data-bs-toggle="dropdown">
+                                                    {{ ucfirst($article->status) }}
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><button class="dropdown-item" wire:click="changeStatus({{ $article->id }}, 'draft')">Draft</button></li>
+                                                    <li><button class="dropdown-item" wire:click="changeStatus({{ $article->id }}, 'published')">Published</button></li>
+                                                    <li><button class="dropdown-item" wire:click="changeStatus({{ $article->id }}, 'archived')">Archived</button></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if($article->published_at)
+                                                {{ $article->published_at->format('M j, Y') }}
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button wire:click="edit({{ $article->id }})" 
+                                                        class="btn btn-outline-primary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                
+                                                <button wire:click="toggleFeatured({{ $article->id }})" 
+                                                        class="btn btn-outline-{{ $article->featured ? 'warning' : 'secondary' }}" 
+                                                        title="{{ $article->featured ? 'Remove from Featured' : 'Mark as Featured' }}">
+                                                    <i class="fas fa-star"></i>
+                                                </button>
+                                                
+                                                <button wire:click="delete({{ $article->id }})" 
+                                                        class="btn btn-outline-danger"
+                                                        onclick="return confirm('Are you sure you want to delete this article?')" 
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <div>
+
+                    <!-- Pagination -->
+                    <div class="card-footer">
                         {{ $news->links() }}
                     </div>
-                </div>
-            @endif
+                @else
+                    <div class="text-center py-5">
+                        <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Articles Found</h5>
+                        <p class="text-muted">
+                            @if($search || $statusFilter || $categoryFilter)
+                                No articles match your current filters.
+                            @else
+                                Start by creating your first news article.
+                            @endif
+                        </p>
+                        @if(!$search && !$statusFilter && !$categoryFilter)
+                            <button wire:click="create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create First Article
+                            </button>
+                        @endif
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 
-    <!-- Media Library Modal -->
-    <div wire:ignore>
-        @include('admin.media-library.modal')
-    </div>
+    <!-- Media Selector Component -->
+    @livewire('components.media-selector')
 </div>
-
-@push('scripts')
-<script>
-function openMediaLibrary(field) {
-    if (typeof window.mediaLibraryModal !== 'undefined') {
-        window.mediaLibraryModal.show();
-        window.currentMediaField = field;
-    }
-}
-
-// Listen for media selection events
-document.addEventListener('livewire:initialized', function () {
-    window.addEventListener('media-selected', function(e) {
-        if (window.currentMediaField === 'featured_image') {
-            @this.call('handleMediaSelection', {
-                id: e.detail.id,
-                url: e.detail.url
-            });
-        }
-        if (typeof window.mediaLibraryModal !== 'undefined') {
-            window.mediaLibraryModal.hide();
-        }
-    });
-
-    // Enhanced FilePond event handling
-    window.addEventListener('filepond-upload-started', function(e) {
-        console.log('Upload started:', e.detail);
-        // Show loading state
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.add('uploading');
-        });
-    });
-
-    window.addEventListener('filepond-upload-finished', function(e) {
-        console.log('Upload finished:', e.detail);
-        // Remove loading state
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.remove('uploading');
-            area.classList.add('upload-success');
-        });
-
-        // Trigger Livewire refresh for preview
-        @this.$refresh();
-    });
-
-    window.addEventListener('filepond-upload-reset', function(e) {
-        console.log('Upload reset:', e.detail);
-        // Reset states
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.remove('uploading', 'upload-success', 'upload-error');
-        });
-    });
-
-    window.addEventListener('filepond-upload-reverted', function(e) {
-        console.log('Upload reverted:', e.detail);
-        // Reset preview
-        @this.$refresh();
-    });
-});
-</script>
-@endpush
-
-@push('styles')
-    <style>
-        /* FilePond styling for news */
-        .filepond-upload-area {
-            min-height: 120px;
-        }
-
-        .filepond--root {
-            font-size: 0.875rem;
-        }
-
-        /* Drop area styling */
-        .filepond--drop-label {
-            height: auto !important;
-            min-height: 100px !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .filepond--panel-root {
-            min-height: 100px !important;
-            border-radius: 0.375rem;
-            border: 2px dashed #e9ecef;
-            background-color: #f8f9fa;
-        }
-
-        /* File item styling */
-        .filepond--item {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        .filepond--item-panel {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        /* Image preview styling */
-        .filepond--image-preview-wrapper {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        .filepond--image-preview {
-            height: auto !important;
-            min-height: 80px !important;
-            max-height: 120px !important;
-            border-radius: 0.375rem;
-        }
-
-        /* Process indicator styling */
-        .filepond--file-action-button {
-            width: 26px;
-            height: 26px;
-        }
-
-        /* Loading state */
-        .filepond--item-panel .filepond--item-process {
-            background-color: rgba(0, 123, 255, 0.1);
-            border-radius: 0.375rem;
-        }
-
-        /* Success state */
-        .filepond--item[data-filepond-item-state="processing-complete"] .filepond--item-panel {
-            background-color: rgba(40, 167, 69, 0.1);
-            border-color: #28a745;
-        }
-
-        /* Error state */
-        .filepond--item[data-filepond-item-state="processing-error"] .filepond--item-panel {
-            background-color: rgba(220, 53, 69, 0.1);
-            border-color: #dc3545;
-        }
-
-        /* Upload area states */
-        .filepond-upload-area.uploading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .filepond-upload-area.uploading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 123, 255, 0.1);
-            border-radius: 0.375rem;
-            z-index: 1;
-        }
-
-        .filepond-upload-area.upload-success {
-            animation: uploadSuccess 0.5s ease-in-out;
-        }
-
-        @keyframes uploadSuccess {
-            0% { background-color: transparent; }
-            50% { background-color: rgba(40, 167, 69, 0.1); }
-            100% { background-color: transparent; }
-        }
-
-        /* Inline edit form improvements */
-        .inline-edit-form {
-            background-color: #f8f9fa;
-            border-radius: 0.5rem;
-            margin: 0.5rem 0;
-        }
-
-        .inline-edit-form .filepond-upload-area {
-            background-color: white;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-        }
-
-        /* Alert styling */
-        .alert-sm {
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .alert-sm i {
-            font-size: 0.75rem;
-        }
-
-        /* Upload method button styling */
-        .btn-group .btn {
-            transition: all 0.2s ease-in-out;
-        }
-
-        .btn-group .btn.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-
-        .btn-group .btn:hover:not(.active) {
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .filepond--drop-label {
-                min-height: 80px !important;
-            }
-
-            .filepond--panel-root {
-                min-height: 80px !important;
-            }
-
-            .filepond-upload-area {
-                min-height: 100px;
-            }
-        }
-    </style>
-@endpush
