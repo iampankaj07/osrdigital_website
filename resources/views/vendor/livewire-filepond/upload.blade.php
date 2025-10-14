@@ -38,39 +38,28 @@ $pondLocalizations = __('livewire-filepond::filepond');
     x-data="{
         model: null,
         isMultiple: @js($multiple),
-        current: undefined,
-        files: [],
-        async loadModel() {
-            if (! this.model) {
-              return;
-            }
-
-            if (this.isMultiple) {
-              await Promise.all(Object.values(this.model).map(async (picture) => this.files.push(await URLtoFile(picture))))
-              return;
-            }
-
-            this.files.push(await URLtoFile(this.model))
-        }
+        files: []
     }"
-    x-init="async () => {
-      console.log('FilePond component initializing (v2)...');
+    x-init="async function() {
+      try {
+        console.log('FilePond component initializing (v3)...');
 
-      // Wait for $wire to be available
-      let wireAttempts = 0;
-      while (typeof $wire === 'undefined' && wireAttempts < 50) {
-        wireAttempts++;
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
+        // Wait for $wire to be available
+        let wireAttempts = 0;
+        while (typeof $wire === 'undefined' && wireAttempts < 50) {
+          wireAttempts++;
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
 
-      if (typeof $wire === 'undefined') {
-        console.error('$wire not available after 5 seconds');
-        return;
-      }
+        if (typeof $wire === 'undefined') {
+          console.error('$wire not available after 5 seconds');
+          return;
+        }
 
-      console.log('$wire is ready (v2)');
-      this.model = $wire.entangle('{{ $wireModelAttribute }}');
-      await this.loadModel();      // Wait for LivewireFilePond to be available
+        console.log('$wire is ready (v3)');
+
+        // Simple entanglement without complex model loading
+        this.model = $wire.entangle('{{ $wireModelAttribute }}');      // Wait for LivewireFilePond to be available
       let pondAttempts = 0;
       while (typeof LivewireFilePond === 'undefined' && pondAttempts < 50) {
         pondAttempts++;
@@ -128,7 +117,7 @@ $pondLocalizations = __('livewire-filepond::filepond');
       pond.setOptions({ labelIdle: @js($placeholder) });
       @endif
 
-      pond.addFiles(files)
+      // Skip adding files from model to avoid initialization issues
       pond.on('addfile', (error, file) => {
           if (error) console.log(error);
       });
@@ -141,6 +130,10 @@ $pondLocalizations = __('livewire-filepond::filepond');
       $wire.on('filepond-reset-{{ $wireModelAttribute }}', () => {
           pond.removeFiles();
       });
+
+      } catch (initError) {
+        console.error('FilePond initialization error:', initError);
+      }
     }"
 >
     <input type="file" x-ref="input">
