@@ -71,11 +71,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Settings Management
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
-    // Footer Settings Management (Livewire)
-    Route::get('/footer', function() {
-        return view('admin.footer.index-livewire');
-    })->name('footer.index');
-
 
 
 

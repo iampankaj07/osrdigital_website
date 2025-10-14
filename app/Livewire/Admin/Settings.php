@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Setting;
+use App\Models\FooterSettings as FooterSettingsModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -38,9 +39,27 @@ class Settings extends Component
     public $linkedin_url = '';
     public $youtube_url = '';
 
-    // Footer Settings
+    // Footer Settings (Enhanced from FooterSettings component)
     public $footer_text = '';
     public $footer_copyright = '';
+    public $footer_company_name = '';
+    public $footer_company_description = '';
+    public $footer_email = '';
+    public $footer_phone = '';
+    public $footer_website = '';
+    public $footer_address = '';
+    public $footer_quick_links = [];
+    public $footer_services = [];
+    public $footer_copyright_text = '';
+    public $footer_is_active = true;
+    public $footerSettings;
+
+    // Contact Page Settings
+    public $contact_hero_title = '';
+    public $contact_hero_subtitle = '';
+    public $contact_hero_description = '';
+    public $contact_form_title = '';
+    public $contact_form_description = '';
 
     // Hero Section Settings
     public $hero_badge_text = '';
@@ -103,17 +122,33 @@ class Settings extends Component
         'youtube_url' => 'nullable|url|max:255',
         'footer_text' => 'nullable|string|max:1000',
         'footer_copyright' => 'nullable|string|max:255',
+        'footer_company_name' => 'nullable|string|max:255',
+        'footer_company_description' => 'nullable|string|max:1000',
+        'footer_email' => 'nullable|email|max:255',
+        'footer_phone' => 'nullable|string|max:255',
+        'footer_website' => 'nullable|url|max:255',
+        'footer_address' => 'nullable|string|max:500',
+        'footer_copyright_text' => 'nullable|string|max:255',
+        'footer_quick_links' => 'array',
+        'footer_services' => 'array',
+        'contact_hero_title' => 'nullable|string|max:255',
+        'contact_hero_subtitle' => 'nullable|string|max:255',
+        'contact_hero_description' => 'nullable|string|max:1000',
+        'contact_form_title' => 'nullable|string|max:255',
+        'contact_form_description' => 'nullable|string|max:1000',
     ];
 
     public function mount()
     {
-        $this->loadSettings();
-    }
+        // Initialize arrays first
+        $this->footer_quick_links = [];
+        $this->footer_services = [];
 
-    public function loadSettings()
+        $this->loadSettings();
+    }    public function loadSettings()
     {
         $settings = Setting::all()->pluck('value', 'key');
-        
+
         // General Settings
         $this->site_name = $settings->get('site_name', '');
         $this->site_title = $settings->get('site_title', '');
@@ -138,9 +173,12 @@ class Settings extends Component
         $this->linkedin_url = $settings->get('linkedin_url', '');
         $this->youtube_url = $settings->get('youtube_url', '');
 
-        // Footer Settings
+        // Footer Settings (Basic)
         $this->footer_text = $settings->get('footer_text', '');
         $this->footer_copyright = $settings->get('footer_copyright', '');
+
+        // Enhanced Footer Settings (from FooterSettings model)
+        $this->loadFooterSettings();
 
         // Hero Section Settings
         $this->hero_badge_text = $settings->get('hero_badge_text', '');
@@ -176,6 +214,13 @@ class Settings extends Component
         $this->cta_feature_2_description = $settings->get('cta_feature_2_description', '');
         $this->cta_feature_3_title = $settings->get('cta_feature_3_title', '');
         $this->cta_feature_3_description = $settings->get('cta_feature_3_description', '');
+
+        // Contact Page Settings
+        $this->contact_hero_title = $settings->get('contact_hero_title', 'Let\'s Connect');
+        $this->contact_hero_subtitle = $settings->get('contact_hero_subtitle', 'Get In Touch');
+        $this->contact_hero_description = $settings->get('contact_hero_description', 'Ready to bring your content to global audiences? Get in touch with our team and let\'s discuss how we can help you achieve your distribution goals.');
+        $this->contact_form_title = $settings->get('contact_form_title', 'Send us a Message');
+        $this->contact_form_description = $settings->get('contact_form_description', 'Fill out the form below and we\'ll get back to you within 24 hours');
 
         // Branding Settings
     }
@@ -283,20 +328,148 @@ class Settings extends Component
         }
     }
 
+    public function loadFooterSettings()
+    {
+        $this->footerSettings = FooterSettingsModel::getActive();
+
+        if ($this->footerSettings) {
+            $this->footer_company_name = $this->footerSettings->company_name ?? '';
+            $this->footer_company_description = $this->footerSettings->company_description ?? '';
+            $this->footer_email = $this->footerSettings->email ?? '';
+            $this->footer_phone = $this->footerSettings->phone ?? '';
+            $this->footer_website = $this->footerSettings->website ?? '';
+            $this->footer_address = $this->footerSettings->address ?? '';
+            $this->footer_copyright_text = $this->footerSettings->copyright_text ?? '';
+            $this->footer_is_active = $this->footerSettings->is_active ?? true;
+
+            // Load quick links
+            $this->footer_quick_links = [];
+            if ($this->footerSettings->quick_links && is_array($this->footerSettings->quick_links)) {
+                foreach ($this->footerSettings->quick_links as $link) {
+                    $this->footer_quick_links[] = [
+                        'title' => $link['title'] ?? '',
+                        'url' => $link['url'] ?? '',
+                        'icon' => $link['icon'] ?? ''
+                    ];
+                }
+            }
+
+            // Load services
+            $this->footer_services = [];
+            if ($this->footerSettings->services && is_array($this->footerSettings->services)) {
+                foreach ($this->footerSettings->services as $service) {
+                    $this->footer_services[] = [
+                        'text' => $service['text'] ?? '',
+                        'icon' => $service['icon'] ?? ''
+                    ];
+                }
+            }
+        } else {
+            // Set default values
+            $this->footer_company_name = 'OSR Digital';
+            $this->footer_company_description = 'Bringing Stories to Screens Worldwide';
+            $this->footer_email = 'info@osrdigital.com';
+            $this->footer_phone = '+1 (555) 123-4567';
+            $this->footer_website = 'https://osrdigital.com';
+            $this->footer_address = 'Your Company Address';
+            $this->footer_copyright_text = '© 2024 OSR Digital. All rights reserved.';
+            $this->footer_quick_links = [];
+            $this->footer_services = [];
+        }
+    }
+
     public function saveFooter()
     {
         $this->validate([
             'footer_text' => 'nullable|string|max:1000',
             'footer_copyright' => 'nullable|string|max:255',
+            'footer_company_name' => 'nullable|string|max:255',
+            'footer_company_description' => 'nullable|string|max:1000',
+            'footer_email' => 'nullable|email|max:255',
+            'footer_phone' => 'nullable|string|max:255',
+            'footer_website' => 'nullable|url|max:255',
+            'footer_address' => 'nullable|string|max:500',
+            'footer_copyright_text' => 'nullable|string|max:255',
         ]);
 
         try {
+            // Save basic footer settings to Settings table
             $this->updateSetting('footer_text', $this->footer_text);
             $this->updateSetting('footer_copyright', $this->footer_copyright);
+
+            // Save enhanced footer settings to FooterSettings table
+            $data = [
+                'company_name' => $this->footer_company_name,
+                'company_description' => $this->footer_company_description,
+                'email' => $this->footer_email,
+                'phone' => $this->footer_phone,
+                'website' => $this->footer_website,
+                'address' => $this->footer_address,
+                'copyright_text' => $this->footer_copyright_text,
+                'quick_links' => $this->formatQuickLinks(),
+                'services' => $this->formatServices(),
+                'is_active' => $this->footer_is_active,
+            ];
+
+            if ($this->footerSettings) {
+                $this->footerSettings->update($data);
+            } else {
+                FooterSettingsModel::create($data);
+            }
+
+            // Clear cache
+            \Illuminate\Support\Facades\Cache::forget('footer_settings');
 
             session()->flash('success', 'Footer settings updated successfully!');
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to update footer settings: ' . $e->getMessage());
+        }
+    }
+
+    private function formatQuickLinks()
+    {
+        return array_filter($this->footer_quick_links, function($link) {
+            return !empty($link['title']) && !empty($link['url']);
+        });
+    }
+
+    private function formatServices()
+    {
+        return array_filter($this->footer_services, function($service) {
+            return !empty($service['text']);
+        });
+    }
+
+    public function addQuickLink()
+    {
+        $this->footer_quick_links[] = [
+            'title' => '',
+            'url' => '',
+            'icon' => ''
+        ];
+    }
+
+    public function removeQuickLink($index)
+    {
+        if (isset($this->footer_quick_links[$index])) {
+            unset($this->footer_quick_links[$index]);
+            $this->footer_quick_links = array_values($this->footer_quick_links);
+        }
+    }
+
+    public function addService()
+    {
+        $this->footer_services[] = [
+            'text' => '',
+            'icon' => ''
+        ];
+    }
+
+    public function removeService($index)
+    {
+        if (isset($this->footer_services[$index])) {
+            unset($this->footer_services[$index]);
+            $this->footer_services = array_values($this->footer_services);
         }
     }
 
@@ -397,6 +570,28 @@ class Settings extends Component
         }
     }
 
+    public function saveContactPage()
+    {
+        $this->validate([
+            'contact_hero_title' => 'nullable|string|max:255',
+            'contact_hero_subtitle' => 'nullable|string|max:255',
+            'contact_hero_description' => 'nullable|string|max:1000',
+            'contact_form_title' => 'nullable|string|max:255',
+            'contact_form_description' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $this->updateSetting('contact_hero_title', $this->contact_hero_title);
+            $this->updateSetting('contact_hero_subtitle', $this->contact_hero_subtitle);
+            $this->updateSetting('contact_hero_description', $this->contact_hero_description);
+            $this->updateSetting('contact_form_title', $this->contact_form_title);
+            $this->updateSetting('contact_form_description', $this->contact_form_description);
+
+            session()->flash('success', 'Contact page settings updated successfully!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to update contact settings: ' . $e->getMessage());
+        }
+    }
 
     private function updateSetting($key, $value)
     {
@@ -408,7 +603,6 @@ class Settings extends Component
 
     public function render()
     {
-        return view('livewire.admin.settings')
-            ->layout('admin.layout', ['title' => 'Settings']);
+        return view('livewire.admin.settings');
     }
 }
