@@ -8,19 +8,14 @@ use Livewire\WithFileUploads;
 use App\Models\Testimonial;
 use Spatie\LivewireFilepond\WithFilePond;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
     use WithPagination, WithFileUploads, WithFilePond;
 
-    public $search = '';
-    public $perPage = 10;
-    public $sortField = 'sort_order';
-    public $sortDirection = 'asc';
-
-    // Inline editing properties
-    public $editingId = null;
-    public $isCreating = false;
+    // Form properties
     public $form = [
         'name' => '',
         'role' => '',
@@ -28,24 +23,30 @@ class Index extends Component
         'content' => '',
         'project' => '',
         'avatar_url' => '',
-        'is_featured' => false,
-        'is_published' => true,
         'sort_order' => 0,
+        'is_featured' => false,
+        'is_published' => false,
+        'media_id' => null,
     ];
 
-    // FilePond uploads
-    public $filepondUploads = [];
+    // Component state
+    public $isCreating = false;
+    public $editingId = null;
 
-    // Media library selection
+    // Search and filtering
+    public $search = '';
+    public $perPage = 10;
+    public $sortField = 'sort_order';
+    public $sortDirection = 'asc';
+
+    // Media handling
+    public $uploadMethod = 'media_library';
     public $selectedMediaId = null;
     public $selectedMediaUrl = null;
-
-    // Upload method preference
-    public $uploadMethod = 'filepond'; // 'filepond' or 'media_library'
+    public $filepondUploads = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'perPage' => ['except' => 10],
         'sortField' => ['except' => 'sort_order'],
         'sortDirection' => ['except' => 'asc'],
     ];
@@ -54,14 +55,185 @@ class Index extends Component
         'mediaSelected' => 'handleMediaSelection',
     ];
 
-    public function updatingSearch()
+    protected function rules()
     {
-        $this->resetPage();
+        return [
+            'form.name' => 'required|string|max:255',
+            'form.role' => 'nullable|string|max:255',
+            'form.company' => 'nullable|string|max:255',
+            'form.content' => 'required|string',
+            'form.project' => 'nullable|string|max:255',
+            'form.avatar_url' => 'nullable|url',
+            'form.sort_order' => 'required|integer|min:0',
+            'form.is_featured' => 'boolean',
+            'form.is_published' => 'boolean',
+            'form.media_id' => 'nullable|exists:media,id',
+        ];
     }
 
-    public function updatingPerPage()
+    public function mount()
     {
-        $this->resetPage();
+        $this->form['sort_order'] = Testimonial::max('sort_order') + 1 ?? 0;
+    }
+
+    public function updated($property)
+    {
+        if (str_starts_with($property, 'form.')) {
+            $this->validateOnly($property);
+        }
+    }
+
+    public function create()
+    {
+        $this->resetForm();
+        $this->form['sort_order'] = Testimonial::max('sort_order') + 1 ?? 0;
+        $this->isCreating = true;
+        $this->editingId = null;
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        try {
+            $testimonialData = $this->form;
+
+            // Handle media attachment
+            if ($this->uploadMethod === 'filepond' && !empty($this->filepondUploads)) {
+                $upload = $this->filepondUploads[0] ?? null;
+                if ($upload) {
+                    $testimonialData['media_id'] = $upload['id'] ?? null;
+                }
+            } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $testimonialData['media_id'] = $this->selectedMediaId;
+            }
+
+            Testimonial::create($testimonialData);
+
+            $this->resetForm();
+            $this->isCreating = false;
+
+            session()->flash('success', 'Testimonial created successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial Creation Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to create testimonial. Please try again.');
+        }
+    }
+
+    public function edit($testimonialId)
+    {
+        try {
+            $testimonial = Testimonial::findOrFail($testimonialId);
+
+            $this->form = [
+                'name' => $testimonial->name,
+                'role' => $testimonial->role,
+                'company' => $testimonial->company,
+                'content' => $testimonial->content,
+                'project' => $testimonial->project,
+                'avatar_url' => $testimonial->avatar_url,
+                'sort_order' => $testimonial->sort_order,
+                'is_featured' => $testimonial->is_featured,
+                'is_published' => $testimonial->is_published,
+                'media_id' => $testimonial->media_id,
+            ];
+
+            // Set media selection state
+            if ($testimonial->media_id) {
+                $this->selectedMediaId = $testimonial->media_id;
+                $this->selectedMediaUrl = $testimonial->avatar_url;
+            }
+
+            $this->editingId = $testimonialId;
+            $this->isCreating = false;
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial Edit Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to load testimonial data.');
+        }
+    }
+
+    public function update()
+    {
+        $this->validate();
+
+        try {
+            $testimonial = Testimonial::findOrFail($this->editingId);
+            $testimonialData = $this->form;
+
+            // Handle media attachment
+            if ($this->uploadMethod === 'filepond' && !empty($this->filepondUploads)) {
+                $upload = $this->filepondUploads[0] ?? null;
+                if ($upload) {
+                    $testimonialData['media_id'] = $upload['id'] ?? null;
+                }
+            } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $testimonialData['media_id'] = $this->selectedMediaId;
+            }
+
+            $testimonial->update($testimonialData);
+
+            $this->resetForm();
+            $this->editingId = null;
+
+            session()->flash('success', 'Testimonial updated successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial Update Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update testimonial. Please try again.');
+        }
+    }
+
+    public function delete($testimonialId)
+    {
+        try {
+            $testimonial = Testimonial::findOrFail($testimonialId);
+            $testimonial->delete();
+
+            session()->flash('success', 'Testimonial deleted successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial Delete Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to delete testimonial.');
+        }
+    }
+
+    public function cancelEdit()
+    {
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+    }
+
+    public function toggleFeatured($testimonialId)
+    {
+        try {
+            $testimonial = Testimonial::findOrFail($testimonialId);
+            $testimonial->update(['is_featured' => !$testimonial->is_featured]);
+
+            $message = $testimonial->is_featured ? 'Testimonial marked as featured.' : 'Testimonial removed from featured.';
+            session()->flash('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial Toggle Featured Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update featured status.');
+        }
+    }
+
+    public function togglePublished($testimonialId)
+    {
+        try {
+            $testimonial = Testimonial::findOrFail($testimonialId);
+            $testimonial->update(['is_published' => !$testimonial->is_published]);
+
+            $message = $testimonial->is_published ? 'Testimonial published successfully.' : 'Testimonial unpublished successfully.';
+            session()->flash('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial Toggle Published Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update publication status.');
+        }
     }
 
     public function sortBy($field)
@@ -74,204 +246,95 @@ class Index extends Component
         }
     }
 
-    public function create()
+    public function openMediaSelector()
     {
-        $this->isCreating = true;
-        $this->editingId = null;
-        $this->reset('form');
-        $this->resetUploadStates();
-        $this->form['sort_order'] = Testimonial::max('sort_order') + 1;
-    }
-
-    public function edit($id)
-    {
-        $this->editingId = $id;
-        $this->isCreating = false;
-        $testimonial = Testimonial::findOrFail($id);
-
-        $this->form = [
-            'name' => $testimonial->name,
-            'role' => $testimonial->role,
-            'company' => $testimonial->company,
-            'content' => $testimonial->content,
-            'project' => $testimonial->project,
-            'avatar_url' => $testimonial->avatar_url,
-            'is_featured' => $testimonial->is_featured,
-            'is_published' => $testimonial->is_published,
-            'sort_order' => $testimonial->sort_order,
-        ];
-
-        $this->resetUploadStates();
-
-        // Load existing media selection if available
-        if ($testimonial->media_id) {
-            $this->selectedMediaId = $testimonial->media_id;
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($testimonial->media_id);
-            if ($media) {
-                $this->selectedMediaUrl = $media->getFullUrl();
-                $this->uploadMethod = 'media_library';
-            }
-        } else {
-            // Default to filepond for existing testimonials without media
-            $this->uploadMethod = 'filepond';
-        }
-    }
-
-    public function cancelEdit()
-    {
-        $this->editingId = null;
-        $this->isCreating = false;
-        $this->reset('form');
-        $this->resetUploadStates();
-    }
-
-    public function store()
-    {
-        $this->validate([
-            'form.name' => 'required|string|max:255',
-            'form.role' => 'nullable|string|max:255',
-            'form.company' => 'nullable|string|max:255',
-            'form.content' => 'required|string',
-            'form.project' => 'nullable|string|max:255',
-            'form.avatar_url' => 'nullable|string|max:255',
-            'form.is_featured' => 'boolean',
-            'form.is_published' => 'boolean',
-            'form.sort_order' => 'required|integer|min:0',
-        ]);
-
-        $user = Auth::user();
-        $testimonialData = $this->form;
-
-        // Handle media uploads
-        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
-            $testimonialData['media_id'] = $this->selectedMediaId;
-            $testimonialData['avatar_url'] = null; // Clear avatar_url field when using media library
-        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
-            // Process FilePond uploads
-            foreach ($this->filepondUploads as $upload) {
-                $media = $user->addMedia($upload->getRealPath())
-                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($upload->getClientOriginalName())
-                    ->toMediaCollection('media-library');
-
-                $testimonialData['media_id'] = $media->id;
-                $testimonialData['avatar_url'] = null; // Clear avatar_url field when using FilePond
-                break; // Only take the first file for avatar
-            }
-        }
-
-        Testimonial::create($testimonialData);
-
-        $this->isCreating = false;
-        $this->reset('form');
-        $this->resetUploadStates();
-
-        session()->flash('success', 'Testimonial created successfully!');
-    }
-
-    public function update()
-    {
-        $this->validate([
-            'form.name' => 'required|string|max:255',
-            'form.role' => 'nullable|string|max:255',
-            'form.company' => 'nullable|string|max:255',
-            'form.content' => 'required|string',
-            'form.project' => 'nullable|string|max:255',
-            'form.avatar_url' => 'nullable|string|max:255',
-            'form.is_featured' => 'boolean',
-            'form.is_published' => 'boolean',
-            'form.sort_order' => 'required|integer|min:0',
-        ]);
-
-        $user = Auth::user();
-        $testimonial = Testimonial::findOrFail($this->editingId);
-        $testimonialData = $this->form;
-
-        // Handle media uploads
-        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
-            $testimonialData['media_id'] = $this->selectedMediaId;
-            $testimonialData['avatar_url'] = null; // Clear avatar_url field when using media library
-        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
-            // Process FilePond uploads
-            foreach ($this->filepondUploads as $upload) {
-                $media = $user->addMedia($upload->getRealPath())
-                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($upload->getClientOriginalName())
-                    ->toMediaCollection('media-library');
-
-                $testimonialData['media_id'] = $media->id;
-                $testimonialData['avatar_url'] = null; // Clear avatar_url field when using FilePond
-                break; // Only take the first file for avatar
-            }
-        }
-
-        $testimonial->update($testimonialData);
-
-        $this->editingId = null;
-        $this->reset('form');
-        $this->resetUploadStates();
-
-        session()->flash('success', 'Testimonial updated successfully!');
-    }
-
-    public function delete($id)
-    {
-        $testimonial = Testimonial::findOrFail($id);
-        $testimonial->delete();
-
-        session()->flash('success', 'Testimonial deleted successfully!');
-    }
-
-    public function toggleFeatured($id)
-    {
-        $testimonial = Testimonial::findOrFail($id);
-        $testimonial->update(['is_featured' => !$testimonial->is_featured]);
-
-        session()->flash('success', 'Testimonial featured status updated successfully!');
-    }
-
-    public function togglePublished($id)
-    {
-        $testimonial = Testimonial::findOrFail($id);
-        $testimonial->update(['is_published' => !$testimonial->is_published]);
-
-        session()->flash('success', 'Testimonial published status updated successfully!');
-    }
-
-    public function resetUploadStates()
-    {
-        $this->filepondUploads = [];
-        $this->selectedMediaId = null;
-        $this->selectedMediaUrl = null;
-        $this->uploadMethod = 'filepond';
-    }
-
-    public function validateUploadedFile($filename)
-    {
-        return true;
+        $this->dispatch('openMediaSelector');
     }
 
     public function handleMediaSelection($data)
     {
-        if (isset($data['id']) && isset($data['url'])) {
-            $this->selectedMediaId = $data['id'];
-            $this->selectedMediaUrl = $data['url'];
+        try {
+            Log::info('Testimonial - Media selection received:', ['data' => $data]);
+
+            // Handle case where data is an indexed array containing the media data
+            if (is_array($data) && isset($data[0]) && is_array($data[0])) {
+                $data = $data[0];
+            }
+
+            // Add defensive programming to handle missing keys
+            if (isset($data['mediaId'])) {
+                $this->selectedMediaId = $data['mediaId'];
+                $this->form['media_id'] = $data['mediaId'];
+                Log::info('Testimonial - Media ID set to:', ['mediaId' => $data['mediaId']]);
+            } else {
+                Log::warning('Testimonial - mediaId not found in data:', ['data' => $data]);
+            }
+
+            if (isset($data['mediaUrl'])) {
+                $this->selectedMediaUrl = $data['mediaUrl'];
+                Log::info('Testimonial - Media URL set to:', ['mediaUrl' => $data['mediaUrl']]);
+            } else {
+                Log::warning('Testimonial - mediaUrl not found in data:', ['data' => $data]);
+            }
+
+            Log::info('Testimonial - Media selection completed', [
+                'media_id' => $this->selectedMediaId,
+                'url' => $this->selectedMediaUrl
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Testimonial - Media selection error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to select media. Please try again.');
         }
+    }
+
+    public function clearSelectedMedia()
+    {
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->form['media_id'] = null;
+    }
+
+    private function resetForm()
+    {
+        $this->form = [
+            'name' => '',
+            'role' => '',
+            'company' => '',
+            'content' => '',
+            'project' => '',
+            'avatar_url' => '',
+            'sort_order' => Testimonial::max('sort_order') + 1 ?? 0,
+            'is_featured' => false,
+            'is_published' => false,
+            'media_id' => null,
+        ];
+
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->filepondUploads = [];
+        $this->uploadMethod = 'media_library';
     }
 
     public function render()
     {
-        $testimonials = Testimonial::query()
-            ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('content', 'like', '%' . $this->search . '%')
-                      ->orWhere('company', 'like', '%' . $this->search . '%')
-                      ->orWhere('project', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
+        $query = Testimonial::query()->with('media');
 
-        return view('livewire.admin.testimonials.index', compact('testimonials'))
-            ->layout('admin.layout', ['title' => 'Testimonials']);
+        // Apply search filter
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('company', 'like', '%' . $this->search . '%')
+                  ->orWhere('content', 'like', '%' . $this->search . '%')
+                  ->orWhere('project', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        // Apply sorting
+        $query->orderBy($this->sortField, $this->sortDirection);
+
+        $testimonials = $query->paginate($this->perPage);
+
+        return view('livewire.admin.testimonials.index', compact('testimonials'));
     }
 }

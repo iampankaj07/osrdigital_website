@@ -31,6 +31,7 @@ function HeroSlider() {
 
                 const data = await response.json();
                 if (data.success) {
+                    console.log('Hero Slider data received:', data.data);
                     setSliders(data.data);
                 } else {
                     throw new Error(data.message || 'Failed to fetch slider data');
@@ -156,15 +157,22 @@ function HeroSlider() {
                 loop={sliders.length > 1}
                 className="w-full h-full hero-slider"
             >
-                {sliders.map((slider, index) => (
+                {sliders.map((slider, index) => {
+                    console.log(`Slider ${index}:`, {
+                        id: slider.id,
+                        title: slider.title,
+                        image_url: slider.image_url,
+                        media_id: slider.media_id
+                    });
+                    return (
                     <SwiperSlide key={slider.id || index} className="w-full h-screen">
                         <div className="relative w-full h-full min-h-screen">
                             {/* Background Image */}
-                            {slider.image ? (
+                            {slider.image_url ? (
                                 <div
                                     className="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full"
                                     style={{
-                                        backgroundImage: `url(${slider.image.startsWith('http') ? slider.image : `/storage/${slider.image}`})`,
+                                        backgroundImage: `url(${slider.image_url})`,
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center center',
                                         backgroundRepeat: 'no-repeat'
@@ -230,7 +238,8 @@ function HeroSlider() {
                             </div>
                         </div>
                     </SwiperSlide>
-                ))}
+                    );
+                })}
             </Swiper>
         </section>
     );

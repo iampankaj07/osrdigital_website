@@ -15,6 +15,7 @@ class HeroSliderController extends Controller
     {
         try {
             $sliders = HeroSlider::where('is_active', true)
+                ->with(['mediaRecord', 'media']) // Load both relationships
                 ->orderBy('sort_order', 'asc')
                 ->get();
 
