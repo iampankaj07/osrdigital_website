@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Setting extends Model
+class Setting extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'key',
@@ -24,6 +27,20 @@ class Setting extends Model
     protected $casts = [
         'is_public' => 'boolean',
     ];
+
+    /**
+     * Register media collections for settings assets
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']);
+
+        $this->addMediaCollection('favicon')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/x-icon', 'image/png', 'image/gif']);
+    }
 
     /**
      * Get a setting value by key

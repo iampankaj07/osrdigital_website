@@ -35,6 +35,25 @@ class ThemeHelper
      */
     public static function logo(): ?string
     {
+        // First try to get logo from media library via Settings model
+        try {
+            $settingsModel = \App\Models\Setting::where('key', 'app_settings')->first();
+            if ($settingsModel) {
+                $logoMedia = $settingsModel->getFirstMedia('logo');
+                if ($logoMedia) {
+                    return $logoMedia->getUrl();
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("Failed to get logo from media library", ['error' => $e->getMessage()]);
+        }
+
+        // Fallback to Settings model value
+        $logoUrl = \App\Models\Setting::getValue('site_logo');
+        if ($logoUrl && str_starts_with($logoUrl, 'http')) {
+            return $logoUrl;
+        }
+
         // Always use static logo file for cloud deployment reliability
         if (file_exists(public_path('images/logo.png'))) {
             return asset('images/logo.png');
@@ -67,6 +86,25 @@ class ThemeHelper
      */
     public static function favicon(): ?string
     {
+        // First try to get favicon from media library via Settings model
+        try {
+            $settingsModel = \App\Models\Setting::where('key', 'app_settings')->first();
+            if ($settingsModel) {
+                $faviconMedia = $settingsModel->getFirstMedia('favicon');
+                if ($faviconMedia) {
+                    return $faviconMedia->getUrl();
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning("Failed to get favicon from media library", ['error' => $e->getMessage()]);
+        }
+
+        // Fallback to Settings model value
+        $faviconUrl = \App\Models\Setting::getValue('site_favicon');
+        if ($faviconUrl && str_starts_with($faviconUrl, 'http')) {
+            return $faviconUrl;
+        }
+
         $faviconPath = static::get('site_favicon');
         if ($faviconPath) {
             // Handle both relative and absolute paths

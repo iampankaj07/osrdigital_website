@@ -110,6 +110,268 @@
     .shadow-minimal-lg {
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
+
+    /* Custom Form Select Styling */
+    .form-select-custom {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300 bg-white;
+        @apply focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:border-transparent;
+        @apply transition-all duration-200 appearance-none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px 12px;
+        padding-right: 40px;
+        height: 48px;
+        min-height: 48px;
+    }
+
+    .form-select-custom:focus {
+        @apply border-brand-orange-500 ring-2 ring-brand-orange-500;
+        --tw-ring-opacity: 0.2;
+    }
+
+    .form-select-custom-lg {
+        @apply text-lg;
+        padding-right: 48px;
+        background-position: right 16px center;
+        background-size: 20px 16px;
+        height: 56px;
+        min-height: 56px;
+    }
+
+    /* Custom Radio Button Group Styling */
+    .radio-group-custom {
+        @apply flex gap-2;
+    }
+
+    .radio-group-custom .btn-check {
+        @apply absolute opacity-0 pointer-events-none;
+    }
+
+    .radio-group-custom .btn-check + .btn {
+        @apply px-4 py-2 rounded-lg border-2 transition-all duration-200;
+        @apply bg-white border-gray-300 text-gray-700;
+        @apply hover:border-brand-orange-300 hover:text-brand-orange-700;
+    }
+
+    .radio-group-custom .btn-check:checked + .btn {
+        @apply bg-brand-orange-500 border-brand-orange-500 text-white;
+        @apply shadow-md transform scale-105;
+    }
+
+    .radio-group-custom .btn-check:focus + .btn {
+        @apply ring-2 ring-brand-orange-500;
+        --tw-ring-opacity: 0.5;
+    }
+
+    /* Hide default radio buttons */
+    .btn-check {
+        @apply absolute opacity-0 pointer-events-none;
+    }
+
+    /* Custom Input Styling */
+    .form-input-custom {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300 bg-white;
+        @apply focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:border-transparent;
+        @apply transition-all duration-200 placeholder-gray-400;
+        @apply hover:border-brand-orange-300;
+        height: 48px;
+        min-height: 48px;
+    }
+
+    .form-input-custom:focus {
+        @apply border-brand-orange-500 ring-2 ring-brand-orange-500;
+        --tw-ring-opacity: 0.2;
+    }
+
+    .form-input-custom-lg {
+        @apply px-5 text-lg;
+        height: 56px;
+        min-height: 56px;
+    }
+
+    .form-input-custom-sm {
+        @apply px-3 text-sm;
+        height: 40px;
+        min-height: 40px;
+    }
+
+    /* Custom Textarea Styling */
+    .form-textarea-custom {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300 bg-white;
+        @apply focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:border-transparent;
+        @apply transition-all duration-200 placeholder-gray-400;
+        @apply hover:border-brand-orange-300;
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-textarea-custom:focus {
+        @apply border-brand-orange-500 ring-2 ring-brand-orange-500;
+        --tw-ring-opacity: 0.2;
+    }
+
+    .form-textarea-custom-lg {
+        @apply py-4 px-5 text-lg;
+        min-height: 120px;
+    }
+
+    .form-textarea-custom-sm {
+        @apply py-2 px-3 text-sm;
+        min-height: 80px;
+    }
+
+    /* Custom DateTime Input Styling */
+    .form-datetime-custom {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300 bg-white;
+        @apply focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:border-transparent;
+        @apply transition-all duration-200;
+        @apply hover:border-brand-orange-300;
+        height: 48px;
+        min-height: 48px;
+    }
+
+    .form-datetime-custom:focus {
+        @apply border-brand-orange-500 ring-2 ring-brand-orange-500;
+        --tw-ring-opacity: 0.2;
+    }
+
+    /* Custom URL Input Styling */
+    .form-url-custom {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300 bg-white;
+        @apply focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:border-transparent;
+        @apply transition-all duration-200 placeholder-gray-400;
+        @apply hover:border-brand-orange-300;
+        height: 48px;
+        min-height: 48px;
+    }
+
+    .form-url-custom:focus {
+        @apply border-brand-orange-500 ring-2 ring-brand-orange-500;
+        --tw-ring-opacity: 0.2;
+    }
+
+    /* Custom Checkbox Styling */
+    .form-check-custom {
+        @apply relative inline-flex items-center;
+    }
+
+    .form-check-custom .form-check-input {
+        @apply w-5 h-5 text-brand-orange-500 bg-gray-100 border-gray-300 rounded;
+        @apply focus:ring-brand-orange-500 focus:ring-2;
+        @apply transition-all duration-200;
+    }
+
+    .form-check-custom .form-check-input:checked {
+        @apply bg-brand-orange-500 border-brand-orange-500;
+    }
+
+    .form-check-custom .form-check-input:focus {
+        @apply ring-brand-orange-500;
+        --tw-ring-opacity: 0.5;
+    }
+
+    /* Custom Switch Styling */
+    .form-switch-custom .form-check-input {
+        @apply w-11 h-6 bg-gray-200 border-0 rounded-full;
+        @apply focus:ring-brand-orange-500 focus:ring-2;
+        @apply transition-all duration-200;
+    }
+
+    .form-switch-custom .form-check-input:checked {
+        @apply bg-brand-orange-500;
+    }
+
+    .form-switch-custom .form-check-input:focus {
+        @apply ring-brand-orange-500;
+        --tw-ring-opacity: 0.5;
+    }
+
+    /* Removed custom form control height styling to use Bootstrap defaults */
+
+    .form-select-sm {
+        height: 40px;
+        min-height: 40px;
+    }
+
+    .form-select-lg {
+        height: 56px;
+        min-height: 56px;
+    }
+
+    /* Quill.js Editor Styling */
+    .ql-editor {
+        @apply min-h-[400px] p-4;
+        font-family: inherit;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .ql-toolbar {
+        @apply border-b border-gray-200 bg-gray-50;
+        padding: 8px 12px;
+    }
+
+    .ql-container {
+        @apply border-0;
+        font-family: inherit;
+    }
+
+    .ql-snow .ql-tooltip {
+        z-index: 9999;
+    }
+
+    .ql-snow .ql-picker {
+        color: #374151;
+    }
+
+    .ql-snow .ql-stroke {
+        stroke: #6b7280;
+    }
+
+    .ql-snow .ql-fill {
+        fill: #6b7280;
+    }
+
+    .ql-snow.ql-toolbar button:hover,
+    .ql-snow .ql-toolbar button:hover,
+    .ql-snow.ql-toolbar button.ql-active,
+    .ql-snow .ql-toolbar .ql-picker-label:hover,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+    .ql-snow .ql-toolbar .ql-picker-item:hover,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+        color: #f97316;
+    }
+
+    .ql-snow.ql-toolbar button:hover .ql-stroke,
+    .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+    .ql-snow.ql-toolbar button:hover .ql-stroke-miter,
+    .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+        stroke: #f97316;
+    }
+
+    .ql-snow.ql-toolbar button:hover .ql-fill,
+    .ql-snow .ql-toolbar button.ql-active .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+    .ql-snow.ql-toolbar button:hover .ql-fill-miter,
+    .ql-snow .ql-toolbar button.ql-active .ql-fill-miter,
+    .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill-miter,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill-miter,
+    .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill-miter,
+    .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill-miter {
+        fill: #f97316;
+    }
 }
 
 @layer utilities {

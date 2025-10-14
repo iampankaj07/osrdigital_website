@@ -15,7 +15,7 @@ function MoviePortfolio() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                
+
                 // Fetch categories and films in parallel
                 const [categoriesResponse, filmsResponse] = await Promise.all([
                     fetch('/api/film-categories'),
@@ -31,7 +31,7 @@ function MoviePortfolio() {
                         { id: 'all', name: 'All Films', slug: 'all', color: '#6B7280' },
                         ...categoriesData.data
                     ];
-                    
+
                     setCategories(allCategories);
                     setMovies(filmsData.data);
                 } else {
@@ -109,7 +109,7 @@ function MoviePortfolio() {
                     <p className={`text-xl max-w-3xl mx-auto mb-8 ${
                         isDark ? 'text-gray-300' : 'text-gray-600'
                     }`}>
-                        Discover our curated collection of exceptional films, documentaries, and series 
+                        Discover our curated collection of exceptional films, documentaries, and series
                         that have captivated audiences worldwide.
                     </p>
 
@@ -135,9 +135,10 @@ function MoviePortfolio() {
                 {/* Movies Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {filteredMovies.map((movie) => (
-                        <div
+                        <Link
                             key={movie.id}
-                            className={`group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${
+                            to={`/portfolio/${movie.id}`}
+                            className={`block group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${
                                 isDark ? 'bg-gray-800' : 'bg-white'
                             }`}
                         >
@@ -167,12 +168,9 @@ function MoviePortfolio() {
 
                                 {/* Overlay */}
                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <Link
-                                        to={`/portfolio/${movie.id}`}
-                                        className="bg-brand-orange-500 hover:bg-brand-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform translate-y-4 group-hover:translate-y-0"
-                                    >
+                                    <span className="bg-brand-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 pointer-events-none">
                                         View Details
-                                    </Link>
+                                    </span>
                                 </div>
 
                                 {/* Rating Badge */}
@@ -193,7 +191,7 @@ function MoviePortfolio() {
                                         {movie.year}
                                     </span>
                                 </div>
-                                
+
                                 <div className="mb-2">
                                     <span className="text-brand-orange-500 font-semibold text-sm uppercase tracking-wide">
                                         {movie.genre}
@@ -224,7 +222,7 @@ function MoviePortfolio() {
                                     )}
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 

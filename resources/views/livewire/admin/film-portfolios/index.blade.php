@@ -144,7 +144,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="form.description">Description</label>
-                                <textarea wire:model="form.description" class="form-control" rows="4" placeholder="Enter film description"></textarea>
+                                <div id="quill-editor-create" style="height: 200px;"></div>
+                                <textarea wire:model="form.description" id="quill-textarea-create" style="display: none;"></textarea>
                                 @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -442,7 +443,8 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for="form.description">Description</label>
-                                                            <textarea wire:model="form.description" class="form-control" rows="3"></textarea>
+                                                            <div id="quill-editor-edit" style="height: 200px;"></div>
+                                                            <textarea wire:model="form.description" id="quill-textarea-edit" style="display: none;"></textarea>
                                                             @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
@@ -583,6 +585,87 @@ document.addEventListener('livewire:initialized', function() {
     // Handle media selection events
     window.addEventListener('mediaSelected', function(event) {
         @this.call('handleMediaSelection', event.detail);
+    });
+
+    // Initialize Quill editors
+    let quillCreate = null;
+    let quillEdit = null;
+
+    function initializeQuillEditors() {
+        // Initialize create editor
+        if (document.getElementById('quill-editor-create') && !quillCreate) {
+            quillCreate = new Quill('#quill-editor-create', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Sync create editor with Livewire
+            quillCreate.on('text-change', function() {
+                const html = quillCreate.root.innerHTML;
+                document.getElementById('quill-textarea-create').value = html;
+                @this.set('form.description', html);
+            });
+        }
+
+        // Initialize edit editor
+        if (document.getElementById('quill-editor-edit') && !quillEdit) {
+            quillEdit = new Quill('#quill-editor-edit', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Sync edit editor with Livewire
+            quillEdit.on('text-change', function() {
+                const html = quillEdit.root.innerHTML;
+                document.getElementById('quill-textarea-edit').value = html;
+                @this.set('form.description', html);
+            });
+        }
+    }
+
+    // Initialize editors when component loads
+    initializeQuillEditors();
+
+    // Re-initialize editors when forms are shown
+    Livewire.on('$refresh', function() {
+        setTimeout(initializeQuillEditors, 100);
+    });
+
+    // Handle form switching
+    Livewire.on('formReset', function() {
+        if (quillCreate) {
+            quillCreate.setContents([]);
+        }
+        if (quillEdit) {
+            quillEdit.setContents([]);
+        }
+    });
+
+    // Handle edit form population
+    Livewire.on('editFormPopulated', function(data) {
+        if (quillEdit && data.description) {
+            quillEdit.root.innerHTML = data.description;
+        }
     });
 });
 </script>

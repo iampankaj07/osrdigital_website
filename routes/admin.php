@@ -77,9 +77,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // News Management
     Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
+    Route::get('/news/{id}/edit', [NewsController::class, 'edit'])->name('news.edit');
 
     // News Categories Management
     Route::get('/news-categories', [NewsCategoryController::class, 'index'])->name('news-categories.index');
+
+    // Legal Pages Management (Livewire)
+    Route::get('/legal-pages', function() {
+        return view('admin.legal-pages.index');
+    })->name('legal-pages.index');
 
     // User Roles Management
     Route::get('/user-roles', [UserRoleController::class, 'index'])->name('user-roles.index');

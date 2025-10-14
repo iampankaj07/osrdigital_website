@@ -5,7 +5,7 @@ import Header from './sections/Header';
 import Footer from './sections/Footer';
 import Home from '../pages/Home';
 import About from '../pages/About';
-import Business from '../pages/Business';
+
 import Portfolio from '../pages/Portfolio';
 import PortfolioItem from '../pages/PortfolioItem';
 import Partners from '../pages/Partners';
@@ -15,6 +15,7 @@ import Contact from '../pages/Contact';
 import Team from '../pages/Team';
 import TeamMember from '../pages/TeamMember';
 import DynamicPage from '../pages/DynamicPage';
+import LegalPage from '../pages/LegalPage';
 
 function AppContent() {
     const { isDark } = useTheme();
@@ -28,7 +29,7 @@ function AppContent() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/business" element={<Business />} />
+
                     <Route path="/portfolio" element={<Portfolio />} />
                     <Route path="/portfolio/:slug" element={<PortfolioItem />} />
                     <Route path="/partners" element={<Partners />} />
@@ -38,6 +39,10 @@ function AppContent() {
                     <Route path="/news/:slug" element={<NewsPost />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/page/:slug" element={<DynamicPage />} />
+                    <Route path="/privacy-policy" element={<LegalPage />} />
+                    <Route path="/terms-of-service" element={<LegalPage />} />
+                    <Route path="/cookies-policy" element={<LegalPage />} />
+                    <Route path="/legal/:slug" element={<LegalPage />} />
                 </Routes>
             </main>
             <Footer />

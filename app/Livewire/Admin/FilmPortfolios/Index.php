@@ -161,6 +161,11 @@ class Index extends Component
             $this->editingId = $filmId;
             $this->isCreating = false;
 
+            // Dispatch event to populate Quill editor
+            $this->dispatch('editFormPopulated', [
+                'description' => $film->description
+            ]);
+
         } catch (\Exception $e) {
             Log::error('Film Portfolio Edit Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to load film portfolio data.');
@@ -327,6 +332,9 @@ class Index extends Component
         $this->selectedMediaUrl = null;
         $this->filepondUploads = [];
         $this->uploadMethod = 'media_library';
+
+        // Dispatch event to reset Quill editors
+        $this->dispatch('formReset');
     }
 
     public function render()
