@@ -17,6 +17,8 @@ class VerifyCsrfToken extends Middleware
         'admin/*/upload',
         'admin/film-portfolios/upload',
         'admin/testimonials/upload',
+        'admin/media/upload',
+        'admin/media/revert',
     ];
 
     /**
@@ -25,13 +27,13 @@ class VerifyCsrfToken extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function shouldPassThrough($request)
+    protected function inExceptArray($request)
     {
         // Always exclude API routes
         if (str_starts_with($request->path(), 'api/')) {
             return true;
         }
 
-        return parent::shouldPassThrough($request);
+        return parent::inExceptArray($request);
     }
 }

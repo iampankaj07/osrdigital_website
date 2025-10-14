@@ -15,6 +15,7 @@ class Testimonial extends Model
         'content',
         'project',
         'avatar_url',
+        'media_id',
         'is_featured',
         'is_published',
         'sort_order',
@@ -29,13 +30,13 @@ class Testimonial extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::saved(function ($testimonial) {
             Cache::forget('testimonials');
             Cache::forget('testimonials_featured');
             Cache::forget('testimonials_published');
         });
-        
+
         static::deleted(function ($testimonial) {
             Cache::forget('testimonials');
             Cache::forget('testimonials_featured');
@@ -58,8 +59,18 @@ class Testimonial extends Model
         return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
     }
 
+    public function media()
+    {
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class);
+    }
+
     public function getAvatarUrlAttribute($value)
     {
+        // Use media library first, then fallback to existing logic
+        if ($this->media) {
+            return $this->media->getFullUrl();
+        }
+
         // Use ImageHelper for dynamic image handling
         return ImageHelper::getContextualImage(
             $value,

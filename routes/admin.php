@@ -69,6 +69,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Settings Management
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
+    // Footer Settings Management (Livewire)
+    Route::get('/footer', function() {
+        return view('admin.footer.index-livewire');
+    })->name('footer.index');
+
+
+
 
 
     // News Management
@@ -96,5 +103,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return view('admin.media-library.index');
     })->name('media-library.index');
 
-    // Media Upload Routes are handled by spatie/livewire-filepond automatically
+    // Media Upload and API Routes
+    Route::get('/media-library/api', [\App\Http\Controllers\Admin\MediaUploadController::class, 'api'])->name('media-library.api');
+    Route::post('/media/upload', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('media.upload');
+    Route::delete('/media/revert', [\App\Http\Controllers\Admin\MediaUploadController::class, 'revert'])->name('media.revert');
+    Route::get('/media/load/{id}', [\App\Http\Controllers\Admin\MediaUploadController::class, 'load'])->name('media.load');
 });

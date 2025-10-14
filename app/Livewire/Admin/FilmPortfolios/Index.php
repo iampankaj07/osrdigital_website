@@ -4,19 +4,22 @@ namespace App\Livewire\Admin\FilmPortfolios;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\FilmPortfolio;
 use App\Models\FilmCategory;
+use Spatie\LivewireFilepond\WithFilePond;
+use Illuminate\Support\Facades\Auth;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads, WithFilePond;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
     public $categoryFilter = '';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -37,12 +40,26 @@ class Index extends Component
         'sort_order' => 0,
     ];
 
+    // FilePond uploads
+    public $filepondUploads = [];
+
+    // Media library selection
+    public $selectedMediaId = null;
+    public $selectedMediaUrl = null;
+
+    // Upload method preference
+    public $uploadMethod = 'filepond'; // 'filepond' or 'media_library'
+
     protected $queryString = [
         'search' => ['except' => ''],
         'perPage' => ['except' => 10],
         'sortField' => ['except' => 'sort_order'],
         'sortDirection' => ['except' => 'asc'],
         'categoryFilter' => ['except' => ''],
+    ];
+
+    protected $listeners = [
+        'mediaSelected' => 'handleMediaSelection',
     ];
 
     public function updatingSearch()
@@ -75,6 +92,7 @@ class Index extends Component
         $this->isCreating = true;
         $this->editingId = null;
         $this->reset('form');
+        $this->resetUploadStates();
         $this->form['sort_order'] = FilmPortfolio::max('sort_order') + 1;
         $this->form['year'] = date('Y');
     }
@@ -84,7 +102,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $film = FilmPortfolio::findOrFail($id);
-        
+
         $this->form = [
             'title' => $film->title,
             'slug' => $film->slug,
@@ -101,6 +119,21 @@ class Index extends Component
             'is_published' => $film->is_published,
             'sort_order' => $film->sort_order,
         ];
+
+        $this->resetUploadStates();
+
+        // Load existing media selection if available
+        if ($film->media_id) {
+            $this->selectedMediaId = $film->media_id;
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($film->media_id);
+            if ($media) {
+                $this->selectedMediaUrl = $media->getFullUrl();
+                $this->uploadMethod = 'media_library';
+            }
+        } else {
+            // Default to filepond for existing films without media
+            $this->uploadMethod = 'filepond';
+        }
     }
 
     public function cancelEdit()
@@ -108,6 +141,7 @@ class Index extends Component
         $this->editingId = null;
         $this->isCreating = false;
         $this->reset('form');
+        $this->resetUploadStates();
     }
 
     public function store()
@@ -129,11 +163,35 @@ class Index extends Component
             'form.sort_order' => 'required|integer|min:0',
         ]);
 
-        FilmPortfolio::create($this->form);
-        
+        $user = Auth::user();
+        $filmData = $this->form;
+
+        // Handle media uploads
+        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+            $filmData['media_id'] = $this->selectedMediaId;
+            $filmData['featured_image'] = null; // Clear featured_image field when using media library
+            $filmData['image_url'] = null; // Clear image_url field when using media library
+        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+            // Process FilePond uploads
+            foreach ($this->filepondUploads as $upload) {
+                $media = $user->addMedia($upload->getRealPath())
+                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($upload->getClientOriginalName())
+                    ->toMediaCollection('media-library');
+
+                $filmData['media_id'] = $media->id;
+                $filmData['featured_image'] = null; // Clear featured_image field when using FilePond
+                $filmData['image_url'] = null; // Clear image_url field when using FilePond
+                break; // Only take the first file for featured image
+            }
+        }
+
+        FilmPortfolio::create($filmData);
+
         $this->isCreating = false;
         $this->reset('form');
-        
+        $this->resetUploadStates();
+
         session()->flash('success', 'Film Portfolio created successfully!');
     }
 
@@ -156,12 +214,36 @@ class Index extends Component
             'form.sort_order' => 'required|integer|min:0',
         ]);
 
+        $user = Auth::user();
         $film = FilmPortfolio::findOrFail($this->editingId);
-        $film->update($this->form);
-        
+        $filmData = $this->form;
+
+        // Handle media uploads
+        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+            $filmData['media_id'] = $this->selectedMediaId;
+            $filmData['featured_image'] = null; // Clear featured_image field when using media library
+            $filmData['image_url'] = null; // Clear image_url field when using media library
+        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+            // Process FilePond uploads
+            foreach ($this->filepondUploads as $upload) {
+                $media = $user->addMedia($upload->getRealPath())
+                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($upload->getClientOriginalName())
+                    ->toMediaCollection('media-library');
+
+                $filmData['media_id'] = $media->id;
+                $filmData['featured_image'] = null; // Clear featured_image field when using FilePond
+                $filmData['image_url'] = null; // Clear image_url field when using FilePond
+                break; // Only take the first file for featured image
+            }
+        }
+
+        $film->update($filmData);
+
         $this->editingId = null;
         $this->reset('form');
-        
+        $this->resetUploadStates();
+
         session()->flash('success', 'Film Portfolio updated successfully!');
     }
 
@@ -169,7 +251,7 @@ class Index extends Component
     {
         $film = FilmPortfolio::findOrFail($id);
         $film->delete();
-        
+
         session()->flash('success', 'Film Portfolio deleted successfully!');
     }
 
@@ -177,7 +259,7 @@ class Index extends Component
     {
         $film = FilmPortfolio::findOrFail($id);
         $film->update(['is_featured' => !$film->is_featured]);
-        
+
         session()->flash('success', 'Film Portfolio featured status updated successfully!');
     }
 
@@ -185,8 +267,29 @@ class Index extends Component
     {
         $film = FilmPortfolio::findOrFail($id);
         $film->update(['is_published' => !$film->is_published]);
-        
+
         session()->flash('success', 'Film Portfolio published status updated successfully!');
+    }
+
+    public function resetUploadStates()
+    {
+        $this->filepondUploads = [];
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->uploadMethod = 'filepond';
+    }
+
+    public function validateUploadedFile($filename)
+    {
+        return true;
+    }
+
+    public function handleMediaSelection($data)
+    {
+        if (isset($data['id']) && isset($data['url'])) {
+            $this->selectedMediaId = $data['id'];
+            $this->selectedMediaUrl = $data['url'];
+        }
     }
 
     public function render()

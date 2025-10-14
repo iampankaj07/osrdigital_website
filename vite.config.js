@@ -15,18 +15,7 @@ export default defineConfig({
             refresh: true,
         }),
         react({
-            jsxRuntime: 'classic',
-            jsxImportSource: 'react',
-            babel: {
-                presets: [
-                    ['@babel/preset-react', {
-                        runtime: 'classic',
-                        pragma: 'React.createElement',
-                        pragmaFrag: 'React.Fragment'
-                    }]
-                ],
-                plugins: []
-            },
+            jsxRuntime: 'automatic',
             include: "**/*.{jsx,tsx}",
         }),
         tailwindcss(),
@@ -40,9 +29,5 @@ export default defineConfig({
         hmr: {
             host: 'localhost',
         },
-    },
-    esbuild: {
-        jsxFactory: 'React.createElement',
-        jsxFragment: 'React.Fragment',
     },
 });

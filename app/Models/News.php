@@ -14,6 +14,7 @@ class News extends Model
         'excerpt',
         'content',
         'featured_image',
+        'media_id',
         'author_name',
         'tags',
         'status',
@@ -60,6 +61,21 @@ class News extends Model
     public function category()
     {
         return $this->belongsTo(NewsCategory::class, 'category_id');
+    }
+
+    public function media()
+    {
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class);
+    }
+
+    public function getFeaturedImageUrlAttribute()
+    {
+        // Use media library first, then fallback to existing logic
+        if ($this->media) {
+            return $this->media->getFullUrl();
+        }
+
+        return $this->featured_image;
     }
 
     public function scopePublished($query)
