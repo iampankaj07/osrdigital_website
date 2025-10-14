@@ -10,6 +10,7 @@ import Portfolio from '../pages/Portfolio';
 import PortfolioItem from '../pages/PortfolioItem';
 import Partners from '../pages/Partners';
 import News from '../pages/News';
+import NewsPost from '../pages/NewsPost';
 import Contact from '../pages/Contact';
 import Team from '../pages/Team';
 import TeamMember from '../pages/TeamMember';
@@ -34,6 +35,7 @@ function AppContent() {
                     <Route path="/team" element={<Team />} />
                     <Route path="/team/:slug" element={<TeamMember />} />
                     <Route path="/news" element={<News />} />
+                    <Route path="/news/:slug" element={<NewsPost />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/page/:slug" element={<DynamicPage />} />
                 </Routes>

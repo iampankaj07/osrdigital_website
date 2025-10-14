@@ -29,5 +29,12 @@ export default defineConfig({
         hmr: {
             host: 'localhost',
         },
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8003',
+                changeOrigin: true,
+                secure: false,
+            },
+        },
     },
 });

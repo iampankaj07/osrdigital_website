@@ -423,9 +423,11 @@ function News() {
                                         </span>
                                     </div>
 
-                                    <h3 className={`text-3xl lg:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                        {featuredArticle.title}
-                                    </h3>
+                                    <Link to={`/news/${featuredArticle.slug}`}>
+                                        <h3 className={`text-3xl lg:text-4xl font-bold mb-4 hover:text-brand-orange-600 transition-colors cursor-pointer ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                            {featuredArticle.title}
+                                        </h3>
+                                    </Link>
 
                                     <p className={`text-lg mb-6 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                                         {featuredArticle.excerpt}
@@ -441,14 +443,17 @@ function News() {
                                                 {Math.ceil(featuredArticle.content?.split(' ').length / 200) || 5} min read
                                             </span>
                                         </div>
-                                        <button className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                                            isDark
-                                                ? 'bg-brand-orange-500 text-white hover:bg-brand-orange-600'
-                                                : 'bg-brand-orange-500 text-white hover:bg-brand-orange-600'
-                                        }`}>
+                                        <Link
+                                            to={`/news/${featuredArticle.slug}`}
+                                            className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                                                isDark
+                                                    ? 'bg-brand-orange-500 text-white hover:bg-brand-orange-600'
+                                                    : 'bg-brand-orange-500 text-white hover:bg-brand-orange-600'
+                                            }`}
+                                        >
                                             Read More
                                             <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -500,9 +505,11 @@ function News() {
                                             {article.author_name}
                                         </div>
 
-                                        <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                            {article.title}
-                                        </h3>
+                                        <Link to={`/news/${article.slug}`}>
+                                            <h3 className={`text-xl font-bold mb-3 hover:text-brand-orange-600 transition-colors cursor-pointer ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                                {article.title}
+                                            </h3>
+                                        </Link>
 
                                         <p className={`text-sm mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                                             {article.excerpt}
@@ -512,12 +519,15 @@ function News() {
                                             <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                                 {Math.ceil(article.content?.split(' ').length / 200) || 5} min read
                                             </span>
-                                            <button className={`flex items-center text-sm font-medium transition-colors ${
-                                                isDark ? 'text-brand-orange-400 hover:text-brand-orange-300' : 'text-brand-orange-600 hover:text-brand-orange-700'
-                                            }`}>
+                                            <Link
+                                                to={`/news/${article.slug}`}
+                                                className={`flex items-center text-sm font-medium transition-colors ${
+                                                    isDark ? 'text-brand-orange-400 hover:text-brand-orange-300' : 'text-brand-orange-600 hover:text-brand-orange-700'
+                                                }`}
+                                            >
                                                 Read More
                                                 <FontAwesomeIcon icon={faArrowRight} className="ml-1" />
-                                            </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 </article>
