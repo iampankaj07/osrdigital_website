@@ -43,7 +43,7 @@
                     <i class="fas fa-plus mr-2"></i>
                     Create New Trusted Partner
                 </h5>
-                
+
                 <form wire:submit.prevent="store">
                     <div class="row">
                         <div class="col-md-6">
@@ -68,24 +68,75 @@
                             </div>
                         </div>
                     </div>
-                    
+
+                    <!-- Logo Upload Options -->
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
-                                <label for="form.description">Description</label>
-                                <textarea wire:model="form.description" class="form-control" rows="3" placeholder="Enter partner description"></textarea>
-                                @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.logo">Logo URL</label>
-                                <input type="text" wire:model="form.logo" class="form-control" placeholder="Enter logo URL or path">
-                                @error('form.logo') <span class="text-danger small">{{ $message }}</span> @enderror
+                                <label>Logo Upload Method</label>
+                                <div class="btn-group d-block">
+                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
+                                    </label>
+                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
+
+                    @if($uploadMethod === 'media_library')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Select from Media Library</label>
+                                    <div class="d-flex align-items-center">
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-images mr-1"></i>Browse Media
+                                        </button>
+                                        @if($selectedMediaUrl)
+                                            <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                    @if($selectedMediaUrl)
+                                        <div class="mt-2">
+                                            <img src="{{ $selectedMediaUrl }}" alt="Selected" class="img-thumbnail" style="max-height: 60px;">
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="form.description">Description</label>
+                                    <textarea wire:model="form.description" class="form-control" rows="3" placeholder="Enter partner description"></textarea>
+                                    @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($uploadMethod === 'filepond')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Upload Logo</label>
+                                    <div style="max-height: 100px;">
+                                        <x-filepond::upload
+                                            wire:model="filepondUploads"
+                                            multiple="false"
+                                            accepted-file-types="image/*"
+                                            max-file-size="10MB"
+                                            placeholder="Drop logo here or <span class='filepond--label-action'>Browse</span>"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -96,7 +147,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-right">
                         <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
                             <i class="fas fa-times mr-1"></i>
@@ -152,8 +203,8 @@
                                 </td>
                                 <td class="py-3 px-3">
                                     <div class="d-flex align-items-start">
-                                        @if($partner->logo)
-                                            <img src="{{ $partner->logo }}" alt="{{ $partner->name }}" class="rounded mr-2" style="width: 32px; height: 32px; object-fit: cover;">
+                                        @if($partner->logo_from_media || $partner->logo)
+                                            <img src="{{ $partner->logo_from_media ?: $partner->logo }}" alt="{{ $partner->name }}" class="rounded mr-2" style="width: 32px; height: 32px; object-fit: cover;">
                                         @else
                                             <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                                                 <i class="fas fa-building text-muted"></i>
@@ -180,17 +231,17 @@
                                 </td>
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $partner->id }})" 
-                                                class="btn btn-dark btn-sm border-0" 
+                                        <button wire:click="edit({{ $partner->id }})"
+                                                class="btn btn-dark btn-sm border-0"
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button wire:click="toggleActive({{ $partner->id }})" 
-                                                class="btn btn-outline-{{ $partner->is_active ? 'warning' : 'success' }} btn-sm border-0" 
+                                        <button wire:click="toggleActive({{ $partner->id }})"
+                                                class="btn btn-outline-{{ $partner->is_active ? 'warning' : 'success' }} btn-sm border-0"
                                                 title="{{ $partner->is_active ? 'Deactivate' : 'Activate' }}">
                                             <i class="fas fa-{{ $partner->is_active ? 'pause' : 'play' }}"></i>
                                         </button>
-                                        <button wire:click="delete({{ $partner->id }})" 
+                                        <button wire:click="delete({{ $partner->id }})"
                                                 class="btn btn-danger btn-sm border-0"
                                                 title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this trusted partner?')">
@@ -199,7 +250,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                             <!-- Inline Edit Form -->
                             @if($editingId === $partner->id)
                                 <tr class="bg-light">
@@ -209,7 +260,7 @@
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit Trusted Partner
                                             </h5>
-                                            
+
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -234,24 +285,85 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
+                                                <!-- Logo Upload Options for Edit -->
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Logo Upload Method</label>
+                                                            <div class="btn-group d-block">
+                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
+                                                                </label>
+                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @if($uploadMethod === 'media_library')
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Select from Media Library</label>
+                                                                <div class="d-flex align-items-center">
+                                                                    <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                                        <i class="fas fa-images mr-1"></i>Browse Media
+                                                                    </button>
+                                                                    @if($selectedMediaUrl)
+                                                                        <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    @endif
+                                                                </div>
+                                                                @if($selectedMediaUrl)
+                                                                    <div class="mt-2">
+                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected" class="img-thumbnail" style="max-height: 60px;">
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="form.description">Description</label>
+                                                                <textarea wire:model="form.description" class="form-control" rows="3"></textarea>
+                                                                @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                @if($uploadMethod === 'filepond')
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Upload Logo</label>
+                                                                <div style="max-height: 100px;">
+                                                                    <x-filepond::upload
+                                                                        wire:model="filepondUploads"
+                                                                        multiple="false"
+                                                                        accepted-file-types="image/*"
+                                                                        max-file-size="10MB"
+                                                                        placeholder="Drop logo here or <span class='filepond--label-action'>Browse</span>"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for="form.description">Description</label>
                                                             <textarea wire:model="form.description" class="form-control" rows="3"></textarea>
                                                             @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="form.logo">Logo URL</label>
-                                                            <input type="text" wire:model="form.logo" class="form-control" placeholder="Enter logo URL or path">
-                                                            @error('form.logo') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -261,7 +373,7 @@
                                                             </label>
                                                         </div>
                                                     </div>
-</div>
+                                                </div>
 
                                                 <div class="form-group text-right">
                                                     <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
@@ -306,4 +418,19 @@
             @endif
         </div>
     </div>
+
+    @livewire('components.media-selector')
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('livewire:initialized', function() {
+    console.log('Trusted Partners - Livewire initialized');
+
+    // Handle media selection events
+    window.addEventListener('mediaSelected', function(event) {
+        @this.call('handleMediaSelection', event.detail);
+    });
+});
+</script>
+@endpush
