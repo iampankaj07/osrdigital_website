@@ -64,7 +64,8 @@ Route::get('/news', function () {
 Route::get('/news/{slug}', function ($slug) {
     // If you want Laravel to handle individual news items, keep this
     // Otherwise, let React handle it and remove this route
-    $news = \App\Models\News::where('slug', $slug)
+    $news = \App\Models\News::with(['category', 'media'])
+        ->where('slug', $slug)
         ->where('status', 'published')
         ->where('published_at', '<=', now())
         ->firstOrFail();

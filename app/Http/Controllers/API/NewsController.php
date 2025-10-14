@@ -13,7 +13,7 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = News::with('category')->published()->recent();
+        $query = News::with(['category', 'media'])->published()->recent();
 
         // Filter by category if provided
         if ($request->has('category') && $request->category !== 'all') {
@@ -52,7 +52,7 @@ class NewsController extends Controller
      */
     public function show($slug)
     {
-        $news = News::with('category')->published()->where('slug', $slug)->first();
+        $news = News::with(['category', 'media'])->published()->where('slug', $slug)->first();
 
         if (!$news) {
             return response()->json([
@@ -72,7 +72,7 @@ class NewsController extends Controller
      */
     public function featured()
     {
-        $featured = News::with('category')
+        $featured = News::with(['category', 'media'])
             ->published()
             ->where('featured', true)
             ->recent()
@@ -90,7 +90,7 @@ class NewsController extends Controller
      */
     public function latest()
     {
-        $latest = News::with('category')
+        $latest = News::with(['category', 'media'])
             ->published()
             ->recent()
             ->limit(10)

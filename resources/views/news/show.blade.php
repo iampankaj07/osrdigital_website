@@ -37,9 +37,9 @@
             <!-- Article -->
             <article class="prose prose-lg max-w-none">
                 <!-- Featured Image -->
-                @if($news->featured_image)
+                @if($news->featured_image_url)
                     <div class="mb-6">
-                        <img src="{{ Storage::url($news->featured_image) }}" alt="{{ $news->title }}" class="w-full rounded-lg">
+                        <img src="{{ $news->featured_image_url }}" alt="{{ $news->title }}" class="w-full rounded-lg">
                     </div>
                 @endif
 

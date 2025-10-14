@@ -405,7 +405,7 @@ function News() {
                             <div className="lg:flex">
                                 <div className="lg:w-1/2">
                                     <img
-                                        src={featuredArticle.featured_image ? `/storage/${featuredArticle.featured_image}` : 'https://via.placeholder.com/800x400/EC681D/FFFFFF?text=Featured+Article'}
+                                        src={featuredArticle.featured_image_url || 'https://via.placeholder.com/800x400/EC681D/FFFFFF?text=Featured+Article'}
                                         alt={featuredArticle.title}
                                         className="w-full h-64 lg:h-full object-cover"
                                     />
@@ -478,7 +478,7 @@ function News() {
                                 }`}>
                                     <div className="relative">
                                         <img
-                                            src={article.featured_image ? `/storage/${article.featured_image}` : 'https://via.placeholder.com/400x300/EC681D/FFFFFF?text=News+Article'}
+                                            src={article.featured_image_url || 'https://via.placeholder.com/400x300/EC681D/FFFFFF?text=News+Article'}
                                             alt={article.title}
                                             className="w-full h-48 object-cover"
                                         />

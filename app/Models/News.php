@@ -29,6 +29,10 @@ class News extends Model
         'published_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'featured_image_url'
+    ];
+
     // Cache frequently accessed data
     protected static $cacheTags = ['news'];
 
@@ -71,11 +75,17 @@ class News extends Model
     public function getFeaturedImageUrlAttribute()
     {
         // Use media library first, then fallback to existing logic
-        if ($this->media) {
+        if ($this->media_id && $this->media) {
             return $this->media->getFullUrl();
         }
 
-        return $this->featured_image;
+        // If no media relationship but we have a featured_image URL, use that
+        if ($this->featured_image) {
+            return $this->featured_image;
+        }
+
+        // Return null if no image available
+        return null;
     }
 
     public function scopePublished($query)
@@ -94,9 +104,10 @@ class News extends Model
     {
         return Cache::remember('news.published.' . $limit, 3600, function () use ($limit) {
             return static::published()
+                ->with(['category', 'media'])
                 ->recent()
                 ->limit($limit)
-                ->select(['id', 'title', 'slug', 'excerpt', 'featured_image', 'published_at', 'author_name'])
+                ->select(['id', 'title', 'slug', 'excerpt', 'featured_image', 'media_id', 'published_at', 'author_name', 'category_id'])
                 ->get();
         });
     }
@@ -105,6 +116,8 @@ class News extends Model
     {
         return Cache::remember('news.featured.' . $limit, 3600, function () use ($limit) {
             return static::published()
+                ->with(['category', 'media'])
+                ->where('featured', true)
                 ->recent()
                 ->limit($limit)
                 ->get();
