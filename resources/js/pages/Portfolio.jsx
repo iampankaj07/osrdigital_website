@@ -79,7 +79,7 @@ function Portfolio() {
                 </section>
 
                 {/* Portfolio Grid Skeleton */}
-                <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-16">
                             <div className={`h-10 w-64 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
@@ -106,7 +106,7 @@ function Portfolio() {
                 </section>
 
                 {/* Stats Skeleton */}
-                <section className={`py-20 ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-16">
                             <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
@@ -157,10 +157,6 @@ function Portfolio() {
                 title="Our Portfolio"
                 subtitle="Content Showcase"
                 description="Explore our diverse collection of movies, documentaries, short films, and series that we've successfully distributed to global audiences."
-                breadcrumbs={[
-                    { label: 'Home', href: '/', icon: 'fas fa-home' },
-                    { label: 'Portfolio' }
-                ]}
             />
 
             {/* Movie Portfolio Section */}
