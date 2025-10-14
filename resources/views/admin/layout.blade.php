@@ -581,6 +581,14 @@
                                 <p>Settings</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.legal-pages.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.legal-pages*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-gavel"></i>
+                                <p>Legal Pages</p>
+                            </a>
+                        </li>
                         <!-- User Management Section -->
                         <li class="nav-header">USER MANAGEMENT</li>
 

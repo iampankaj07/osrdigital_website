@@ -54,6 +54,12 @@ const getIconByName = (iconName) => {
         'faMusic': faMusic,
         'faCircle': faCircle,
         'faYoutube': faYoutubeBrand,
+        'faFacebookBrand': faFacebookBrand,
+        'faTwitterBrand': faTwitterBrand,
+        'faLinkedinBrand': faLinkedinBrand,
+        'faInstagramBrand': faInstagramBrand,
+        'faYoutubeBrand': faYoutubeBrand,
+        'faTiktokBrand': faTiktokBrand,
     };
 
     return iconMap[iconName] || faCircle;
@@ -91,7 +97,6 @@ function Footer() {
             { text: 'Home', url: '/', icon: faGlobe },
             { text: 'About', url: '/about', icon: faUsers },
             { text: 'Films', url: '/portfolio', icon: faFilm },
-            { text: 'Distribution', url: '/business', icon: faTv },
             { text: 'Partners', url: '/partners', icon: faHandshake },
             { text: 'Team', url: '/team', icon: faUsers },
             { text: 'News', url: '/news', icon: faNewspaper },
@@ -105,7 +110,13 @@ function Footer() {
             { text: 'Marketing Strategy', icon: faChartLine },
             { text: 'Rights Management', icon: faShieldAlt }
         ],
-        social_links: {},
+        social_links: {
+            facebook: 'https://facebook.com/osrdigital',
+            twitter: 'https://twitter.com/osrdigital',
+            linkedin: 'https://linkedin.com/company/osrdigital',
+            youtube: 'https://youtube.com/osrdigital',
+            instagram: 'https://instagram.com/osrdigital'
+        },
         legal_links: [
             { text: 'Privacy Policy', url: '/privacy', icon: faShieldAlt },
             { text: 'Terms of Service', url: '/terms', icon: faShieldAlt },
@@ -135,6 +146,11 @@ function Footer() {
                             }));
                         }
 
+                        // Ensure social links are properly formatted
+                        if (apiData.social_links && typeof apiData.social_links === 'object') {
+                            // Keep the original format with url and icon properties
+                            // The component can handle both formats
+                        }
                         setFooterData({
                             ...defaultData,
                             ...apiData
@@ -162,7 +178,7 @@ function Footer() {
     const copyrightText = data.copyright_text;
 
     return (
-        <footer className={`${isDark ? 'bg-gray-900' : 'bg-gray-50'} relative overflow-hidden`}>
+        <footer className={`${isDark ? 'bg-gray-900' : 'bg-white'} relative overflow-hidden`}>
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -320,60 +336,86 @@ function Footer() {
                 </div>
 
                 {/* Social Links */}
-                <div className="py-8 border-t divider-minimal">
+                <div className={`py-8 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <h4 className={`font-semibold text-lg flex items-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             <FontAwesomeIcon icon={faHeart} className="w-5 h-5 mr-2 text-brand-orange-500" />
                             Follow Us
                         </h4>
                         <div className="flex flex-wrap items-center gap-4">
-                            {Object.entries(socialLinks).map(([platform, data]) => {
-                                // Handle both data structures: {url, icon} or just URL string
-                                const url = typeof data === 'string' ? data : data?.url;
-                                const icon = typeof data === 'object' ? data?.icon : null;
+                            {Object.entries(socialLinks).length > 0 ? (
+                                Object.entries(socialLinks).map(([platform, data]) => {
+                                    // Handle both data structures: {url, icon} or just URL string
+                                    const url = typeof data === 'string' ? data : data?.url;
+                                    const icon = typeof data === 'object' ? data?.icon : null;
 
-                                if (!url) return null;
+                                    if (!url) return null;
 
-                                // Get the appropriate icon for the platform
-                                const platformIcon = icon ? getIconByName(icon) : getSocialIcon(platform);
+                                    // Get the appropriate icon for the platform
+                                    const platformIcon = icon ? getIconByName(icon) : getSocialIcon(platform);
 
-                                return (
-                                    <a
-                                        key={platform}
-                                        href={url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 hover-subtle group ${
-                                            isDark
-                                                ? 'bg-gray-800 text-gray-400 hover:text-white hover:bg-brand-orange-500/20 hover:border-brand-orange-500/30 border border-gray-700'
-                                                : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-brand-orange-50 hover:border-brand-orange-200 border border-gray-200'
-                                        }`}
-                                        title={`Follow us on ${platform.charAt(0).toUpperCase() + platform.slice(1)}`}
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={platformIcon}
-                                            className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
-                                        />
-                                    </a>
-                                );
-                            })}
+                                    return (
+                                        <a
+                                            key={platform}
+                                            href={url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 hover-subtle group ${
+                                                isDark
+                                                    ? 'bg-gray-800 text-gray-400 hover:text-white hover:bg-brand-orange-500/20 hover:border-brand-orange-500/30 border border-gray-700'
+                                                    : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-brand-orange-50 hover:border-brand-orange-200 border border-gray-200'
+                                            }`}
+                                            title={`Follow us on ${platform.charAt(0).toUpperCase() + platform.slice(1)}`}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={platformIcon}
+                                                className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                                            />
+                                        </a>
+                                    );
+                                })
+                            ) : (
+                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                    No social media links available
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Section */}
-                <div className={`py-8 border-t divider-minimal flex flex-col md:flex-row justify-between items-center gap-4`}>
+                <div className={`py-8 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'} flex flex-col md:flex-row justify-between items-center gap-4 min-h-[80px]`}>
                     <div className="flex items-center space-x-2">
-                        <FontAwesomeIcon
-                            icon={faCopyright}
-                            className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
-                        />
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             {copyrightText}
                         </p>
+                  
+                        <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            Built with
+                        </span>
+                        <FontAwesomeIcon
+                            icon={faHeart}
+                            className="w-4 h-4 text-red-500 animate-pulse"
+                        />
+                        <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                            by
+                        </span>
+                        <a
+                            href="https://codebundles.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm font-medium transition-colors duration-200 ${
+                                isDark
+                                    ? 'text-brand-orange-400 hover:text-brand-orange-300'
+                                    : 'text-brand-orange-600 hover:text-brand-orange-700'
+                            }`}
+                        >
+                            CodeBundles
+                        </a>
                     </div>
+
                     {legalLinks && legalLinks.length > 0 && (
-                        <div className="flex items-center space-x-6 text-sm">
+                        <div className="flex flex-wrap items-center justify-center md:justify-end gap-4 text-sm">
                             {legalLinks.map((link, index) => (
                                 <a
                                     key={index}
@@ -384,7 +426,7 @@ function Footer() {
                                             : 'text-gray-500 hover:text-brand-orange-600'
                                     }`}
                                 >
-                                    <FontAwesomeIcon icon={link.icon} className="w-3 h-3" />
+                                 
                                     <span>{link.text}</span>
                                 </a>
                             ))}

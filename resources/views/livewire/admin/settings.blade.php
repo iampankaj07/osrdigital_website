@@ -1,5 +1,6 @@
 <div>
 
+
     <!-- Settings Tabs -->
     <div class="card">
         <div class="card-header">
@@ -25,13 +26,7 @@
                         <i class="fas fa-share-alt mr-2"></i>Social Media
                     </button>
                 </li>
-                <li class="nav-item">
-                    <button wire:click="switchTab('hero')"
-                            class="nav-link {{ $activeTab === 'hero' ? 'active' : '' }}"
-                            type="button">
-                        <i class="fas fa-star mr-2"></i>Hero Section
-                    </button>
-                </li>
+
                 <li class="nav-item">
                     <button wire:click="switchTab('footer')"
                             class="nav-link {{ $activeTab === 'footer' ? 'active' : '' }}"
@@ -89,6 +84,7 @@
                                     @if($old_site_logo)
                                         <div class="mb-2">
                                             <img src="{{ Storage::url($old_site_logo) }}" alt="Current Logo" class="img-fluid" style="max-height: 100px;">
+                                            <p class="text-muted small mt-1">Current logo</p>
                                         </div>
                                     @endif
                                     <div class="custom-file">
@@ -98,8 +94,11 @@
                                         </label>
                                     </div>
                                     @error('site_logo')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
+                                    <small class="form-text text-muted">
+                                        Upload a logo image (JPEG, PNG, SVG). Max size: 2MB
+                                    </small>
                                 </div>
 
                                 <!-- Site Favicon -->
@@ -108,6 +107,7 @@
                                     @if($old_site_favicon)
                                         <div class="mb-2">
                                             <img src="{{ Storage::url($old_site_favicon) }}" alt="Current Favicon" class="img-fluid" style="max-height: 32px;">
+                                            <p class="text-muted small mt-1">Current favicon</p>
                                         </div>
                                     @endif
                                     <div class="custom-file">
@@ -117,8 +117,11 @@
                                         </label>
                                     </div>
                                     @error('site_favicon')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
+                                    <small class="form-text text-muted">
+                                        Upload a favicon image (ICO, PNG). Recommended: 32x32px. Max size: 1MB
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -449,72 +452,7 @@
                 </div>
                 @endif
 
-                <!-- Hero Section Settings -->
-                @if($activeTab === 'hero')
-                <div class="tab-pane fade show active" id="hero" role="tabpanel">
-                    <form wire:submit.prevent="saveHero">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="hero_badge_text">Badge Text</label>
-                                    <input type="text" wire:model="hero_badge_text" class="form-control @error('hero_badge_text') is-invalid @enderror" placeholder="e.g., Digital Media Excellence">
-                                    @error('hero_badge_text')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
 
-                                <div class="form-group">
-                                    <label for="hero_main_title">Main Title</label>
-                                    <input type="text" wire:model="hero_main_title" class="form-control @error('hero_main_title') is-invalid @enderror" placeholder="e.g., Bringing Stories to">
-                                    @error('hero_main_title')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="hero_highlighted_title">Highlighted Title</label>
-                                    <input type="text" wire:model="hero_highlighted_title" class="form-control @error('hero_highlighted_title') is-invalid @enderror" placeholder="e.g., Global Screens">
-                                    @error('hero_highlighted_title')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="hero_primary_button_text">Primary Button Text</label>
-                                    <input type="text" wire:model="hero_primary_button_text" class="form-control @error('hero_primary_button_text') is-invalid @enderror" placeholder="e.g., Partner With Us">
-                                    @error('hero_primary_button_text')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="hero_secondary_button_text">Secondary Button Text</label>
-                                    <input type="text" wire:model="hero_secondary_button_text" class="form-control @error('hero_secondary_button_text') is-invalid @enderror" placeholder="e.g., Explore Portfolio">
-                                    @error('hero_secondary_button_text')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="hero_description">Description</label>
-                            <textarea wire:model="hero_description" class="form-control @error('hero_description') is-invalid @enderror" rows="4" placeholder="Hero section description text"></textarea>
-                            @error('hero_description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-dark btn-sm">
-                                <i class="fas fa-save mr-2"></i>Save Hero Section Settings
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                @endif
 
 
                 <!-- Call to Action Settings -->

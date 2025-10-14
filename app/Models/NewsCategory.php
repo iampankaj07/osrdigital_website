@@ -11,7 +11,6 @@ class NewsCategory extends Model
         'name',
         'slug',
         'description',
-        'color',
         'is_active',
         'sort_order',
     ];

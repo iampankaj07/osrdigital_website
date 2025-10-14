@@ -182,6 +182,11 @@ class Index extends Component
             $this->editingId = $newsId;
             $this->isCreating = false;
 
+            // Dispatch event to populate Quill editor
+            $this->dispatch('editFormPopulated', [
+                'content' => $news->content
+            ]);
+
         } catch (\Exception $e) {
             Log::error('News Edit Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to load news article data.');
@@ -357,6 +362,9 @@ class Index extends Component
         $this->selectedMediaUrl = null;
         $this->filepondUploads = [];
         $this->uploadMethod = 'media_library';
+
+        // Dispatch event to reset Quill editors
+        $this->dispatch('formReset');
     }
 
     public function render()

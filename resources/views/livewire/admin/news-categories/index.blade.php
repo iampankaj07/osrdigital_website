@@ -43,32 +43,25 @@
                     <i class="fas fa-plus mr-2"></i>
                     Create New News Category
                 </h5>
-                
+
                 <form wire:submit.prevent="store">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label for="form.name">Category Name</label>
                                 <input type="text" wire:model="form.name" class="form-control" placeholder="Enter category name">
                                 @error('form.name') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="form.sort_order">Sort Order</label>
                                 <input type="number" wire:model="form.sort_order" class="form-control" min="0">
                                 @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.color">Color</label>
-                                <input type="color" wire:model="form.color" class="form-control" style="height: 38px;">
-                                @error('form.color') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -86,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -96,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-right">
                         <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
                             <i class="fas fa-times mr-1"></i>
@@ -151,8 +144,7 @@
                                     <span class="badge badge-light text-dark border small">{{ $category->sort_order }}</span>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rounded-circle mr-2" style="width: 12px; height: 12px; background-color: {{ $category->color }};"></div>
+                                    <div class="flex items-center">
                                         <div class="font-weight-medium text-dark">{{ $category->name }}</div>
                                     </div>
                                 </td>
@@ -166,17 +158,17 @@
                                 </td>
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $category->id }})" 
-                                                class="btn btn-dark btn-sm border-0" 
+                                        <button wire:click="edit({{ $category->id }})"
+                                                class="btn btn-dark btn-sm border-0"
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button wire:click="toggleActive({{ $category->id }})" 
-                                                class="btn btn-outline-{{ $category->is_active ? 'warning' : 'success' }} btn-sm border-0" 
+                                        <button wire:click="toggleActive({{ $category->id }})"
+                                                class="btn btn-outline-{{ $category->is_active ? 'warning' : 'success' }} btn-sm border-0"
                                                 title="{{ $category->is_active ? 'Deactivate' : 'Activate' }}">
                                             <i class="fas fa-{{ $category->is_active ? 'pause' : 'play' }}"></i>
                                         </button>
-                                        <button wire:click="delete({{ $category->id }})" 
+                                        <button wire:click="delete({{ $category->id }})"
                                                 class="btn btn-danger btn-sm border-0"
                                                 title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this category?')">
@@ -185,7 +177,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                             <!-- Inline Edit Form -->
                             @if($editingId === $category->id)
                                 <tr class="bg-light">
@@ -195,32 +187,25 @@
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit News Category
                                             </h5>
-                                            
+
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-8">
                                                         <div class="form-group">
                                                             <label for="form.name">Category Name</label>
                                                             <input type="text" wire:model="form.name" class="form-control">
                                                             @error('form.name') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="form.sort_order">Sort Order</label>
                                                             <input type="number" wire:model="form.sort_order" class="form-control" min="0">
                                                             @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.color">Color</label>
-                                                            <input type="color" wire:model="form.color" class="form-control" style="height: 38px;">
-                                                            @error('form.color') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -238,7 +223,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -248,7 +233,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="form-group text-right">
                                                     <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
                                                         <i class="fas fa-times mr-1"></i>

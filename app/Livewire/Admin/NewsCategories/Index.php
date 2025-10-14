@@ -14,7 +14,7 @@ class Index extends Component
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -22,7 +22,6 @@ class Index extends Component
         'name' => '',
         'slug' => '',
         'description' => '',
-        'color' => '#007bff',
         'sort_order' => 0,
         'is_active' => true,
     ];
@@ -67,12 +66,11 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $category = NewsCategory::findOrFail($id);
-        
+
         $this->form = [
             'name' => $category->name,
             'slug' => $category->slug,
             'description' => $category->description,
-            'color' => $category->color,
             'sort_order' => $category->sort_order,
             'is_active' => $category->is_active,
         ];
@@ -91,16 +89,15 @@ class Index extends Component
             'form.name' => 'required|string|max:255',
             'form.slug' => 'nullable|string|max:255',
             'form.description' => 'nullable|string',
-            'form.color' => 'required|string|max:7',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
         ]);
 
         NewsCategory::create($this->form);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'News Category created successfully!');
     }
 
@@ -110,17 +107,16 @@ class Index extends Component
             'form.name' => 'required|string|max:255',
             'form.slug' => 'nullable|string|max:255',
             'form.description' => 'nullable|string',
-            'form.color' => 'required|string|max:7',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
         ]);
 
         $category = NewsCategory::findOrFail($this->editingId);
         $category->update($this->form);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
+
         session()->flash('success', 'News Category updated successfully!');
     }
 
@@ -128,7 +124,7 @@ class Index extends Component
     {
         $category = NewsCategory::findOrFail($id);
         $category->delete();
-        
+
         session()->flash('success', 'News Category deleted successfully!');
     }
 
@@ -136,7 +132,7 @@ class Index extends Component
     {
         $category = NewsCategory::findOrFail($id);
         $category->update(['is_active' => !$category->is_active]);
-        
+
         session()->flash('success', 'News Category status updated successfully!');
     }
 
@@ -150,7 +146,6 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.admin.news-categories.index', compact('categories'))
-            ->layout('admin.layout', ['title' => 'News Categories']);
+        return view('livewire.admin.news-categories.index', compact('categories'));
     }
 }

@@ -264,6 +264,12 @@ require __DIR__.'/admin.php';
 Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
 Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
 
+// Legal Pages routes
+Route::get('/privacy-policy', [App\Http\Controllers\LegalPageController::class, 'privacyPolicy'])->name('legal.privacy-policy');
+Route::get('/terms-of-service', [App\Http\Controllers\LegalPageController::class, 'termsOfService'])->name('legal.terms-of-service');
+Route::get('/cookies-policy', [App\Http\Controllers\LegalPageController::class, 'cookiesPolicy'])->name('legal.cookies-policy');
+Route::get('/legal/{slug}', [App\Http\Controllers\LegalPageController::class, 'show'])->name('legal.show');
+
 // Catch-all route for React SPA (place this at the end)
 Route::get('/{any}', function () {
     return view('app');

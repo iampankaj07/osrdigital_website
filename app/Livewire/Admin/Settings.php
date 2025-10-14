@@ -8,10 +8,11 @@ use App\Models\Setting;
 use App\Models\FooterSettings as FooterSettingsModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\LivewireFilepond\WithFilePond;
 
 class Settings extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithFilePond;
 
     // General Settings
     public $site_name = '';
@@ -60,14 +61,6 @@ class Settings extends Component
     public $contact_hero_description = '';
     public $contact_form_title = '';
     public $contact_form_description = '';
-
-    // Hero Section Settings
-    public $hero_badge_text = '';
-    public $hero_main_title = '';
-    public $hero_highlighted_title = '';
-    public $hero_description = '';
-    public $hero_primary_button_text = '';
-    public $hero_secondary_button_text = '';
 
     // Statistics Settings
     public $stats_movies_count = '';
@@ -180,14 +173,6 @@ class Settings extends Component
         // Enhanced Footer Settings (from FooterSettings model)
         $this->loadFooterSettings();
 
-        // Hero Section Settings
-        $this->hero_badge_text = $settings->get('hero_badge_text', '');
-        $this->hero_main_title = $settings->get('hero_main_title', '');
-        $this->hero_highlighted_title = $settings->get('hero_highlighted_title', '');
-        $this->hero_description = $settings->get('hero_description', '');
-        $this->hero_primary_button_text = $settings->get('hero_primary_button_text', '');
-        $this->hero_secondary_button_text = $settings->get('hero_secondary_button_text', '');
-
         // Statistics Settings
         $this->stats_movies_count = $settings->get('stats_movies_count', '');
         $this->stats_movies_label = $settings->get('stats_movies_label', '');
@@ -247,24 +232,37 @@ class Settings extends Component
         ]);
 
         try {
-            // Handle logo upload
+            // Get or create the settings instance for media library
+            $settingsModel = Setting::firstOrCreate(['key' => 'app_settings']);
+
+            // Handle logo upload via media library
             if ($this->site_logo) {
-                if ($this->old_site_logo && Storage::disk('public')->exists($this->old_site_logo)) {
-                    Storage::disk('public')->delete($this->old_site_logo);
-                }
-                $filename = 'settings/' . Str::uuid() . '.' . $this->site_logo->getClientOriginalExtension();
-                $this->site_logo->storeAs('public', $filename);
-                $this->updateSetting('site_logo', $filename);
+                // Remove old logo if exists
+                $settingsModel->clearMediaCollection('logo');
+
+                // Add new logo from Livewire upload
+                $media = $settingsModel->addMedia($this->site_logo->getRealPath())
+                    ->usingName('Site Logo')
+                    ->usingFileName($this->site_logo->getClientOriginalName())
+                    ->toMediaCollection('logo');
+
+                $this->updateSetting('site_logo', $media->getUrl());
+                \App\Helpers\ThemeHelper::clearCache();
             }
 
-            // Handle favicon upload
+            // Handle favicon upload via media library
             if ($this->site_favicon) {
-                if ($this->old_site_favicon && Storage::disk('public')->exists($this->old_site_favicon)) {
-                    Storage::disk('public')->delete($this->old_site_favicon);
-                }
-                $filename = 'settings/' . Str::uuid() . '.' . $this->site_favicon->getClientOriginalExtension();
-                $this->site_favicon->storeAs('public', $filename);
-                $this->updateSetting('site_favicon', $filename);
+                // Remove old favicon if exists
+                $settingsModel->clearMediaCollection('favicon');
+
+                // Add new favicon from Livewire upload
+                $media = $settingsModel->addMedia($this->site_favicon->getRealPath())
+                    ->usingName('Site Favicon')
+                    ->usingFileName($this->site_favicon->getClientOriginalName())
+                    ->toMediaCollection('favicon');
+
+                $this->updateSetting('site_favicon', $media->getUrl());
+                \App\Helpers\ThemeHelper::clearCache();
             }
 
             $this->updateSetting('site_name', $this->site_name);
@@ -470,31 +468,6 @@ class Settings extends Component
         if (isset($this->footer_services[$index])) {
             unset($this->footer_services[$index]);
             $this->footer_services = array_values($this->footer_services);
-        }
-    }
-
-    public function saveHero()
-    {
-        $this->validate([
-            'hero_badge_text' => 'nullable|string|max:255',
-            'hero_main_title' => 'nullable|string|max:255',
-            'hero_highlighted_title' => 'nullable|string|max:255',
-            'hero_description' => 'nullable|string|max:1000',
-            'hero_primary_button_text' => 'nullable|string|max:255',
-            'hero_secondary_button_text' => 'nullable|string|max:255',
-        ]);
-
-        try {
-            $this->updateSetting('hero_badge_text', $this->hero_badge_text);
-            $this->updateSetting('hero_main_title', $this->hero_main_title);
-            $this->updateSetting('hero_highlighted_title', $this->hero_highlighted_title);
-            $this->updateSetting('hero_description', $this->hero_description);
-            $this->updateSetting('hero_primary_button_text', $this->hero_primary_button_text);
-            $this->updateSetting('hero_secondary_button_text', $this->hero_secondary_button_text);
-
-            session()->flash('success', 'Hero section settings updated successfully!');
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update hero section settings: ' . $e->getMessage());
         }
     }
 

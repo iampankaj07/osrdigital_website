@@ -201,7 +201,7 @@ function Partners() {
                                                 } hover:opacity-80 transition-opacity`}
                                             >
                                                 <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-1" />
-                                                Visit Website
+                                                Visit
                                             </a>
                                         )}
                                     </div>

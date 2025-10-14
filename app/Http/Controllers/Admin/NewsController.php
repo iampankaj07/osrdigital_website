@@ -21,4 +21,21 @@ class NewsController extends Controller
         return view('admin.news.index');
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('admin.news.create');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $news = News::findOrFail($id);
+        return view('admin.news.edit', compact('news'));
+    }
+
 }
