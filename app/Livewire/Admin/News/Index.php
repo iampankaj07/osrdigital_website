@@ -9,76 +9,272 @@ use App\Models\News;
 use App\Models\NewsCategory;
 use Spatie\LivewireFilepond\WithFilePond;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
     use WithPagination, WithFileUploads, WithFilePond;
 
-    public $search = '';
-    public $perPage = 10;
-    public $sortField = 'published_at';
-    public $sortDirection = 'desc';
-    public $statusFilter = '';
-    public $categoryFilter = '';
-
-    // Inline editing properties
-    public $editingId = null;
-    public $isCreating = false;
+    // Form properties
     public $form = [
         'title' => '',
         'slug' => '',
         'excerpt' => '',
         'content' => '',
         'featured_image' => '',
+        'media_id' => null,
         'author_name' => '',
-        'tags' => [],
+        'tags' => '',
         'status' => 'draft',
         'featured' => false,
-        'category_id' => '',
-        'published_at' => '',
+        'category_id' => null,
+        'published_at' => null,
     ];
 
-    // FilePond uploads
-    public $filepondUploads = [];
+    // Component state
+    public $isCreating = false;
+    public $editingId = null;
 
-    // Media library selection
+    // Search and filtering
+    public $search = '';
+    public $statusFilter = '';
+    public $categoryFilter = '';
+    public $perPage = 10;
+    public $sortField = 'created_at';
+    public $sortDirection = 'desc';
+
+    // Media handling
+    public $uploadMethod = 'media_library';
     public $selectedMediaId = null;
     public $selectedMediaUrl = null;
-
-    // Upload method preference
-    public $uploadMethod = 'filepond'; // 'filepond' or 'media_library'
+    public $filepondUploads = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'perPage' => ['except' => 10],
-        'sortField' => ['except' => 'published_at'],
-        'sortDirection' => ['except' => 'desc'],
         'statusFilter' => ['except' => ''],
         'categoryFilter' => ['except' => ''],
+        'sortField' => ['except' => 'created_at'],
+        'sortDirection' => ['except' => 'desc'],
     ];
 
     protected $listeners = [
         'mediaSelected' => 'handleMediaSelection',
     ];
 
-    public function updatingSearch()
+    protected function rules()
     {
-        $this->resetPage();
+        $rules = [
+            'form.title' => 'required|string|max:255',
+            'form.slug' => 'required|string|max:255|unique:news,slug',
+            'form.excerpt' => 'nullable|string|max:500',
+            'form.content' => 'required|string',
+            'form.featured_image' => 'nullable|url',
+            'form.author_name' => 'required|string|max:255',
+            'form.tags' => 'nullable|string',
+            'form.status' => 'required|in:draft,published,archived',
+            'form.featured' => 'boolean',
+            'form.category_id' => 'nullable|exists:news_categories,id',
+            'form.published_at' => 'nullable|date',
+            'form.media_id' => 'nullable|exists:media,id',
+        ];
+
+        if ($this->editingId) {
+            $rules['form.slug'] = 'required|string|max:255|unique:news,slug,' . $this->editingId;
+        }
+
+        return $rules;
     }
 
-    public function updatingPerPage()
+    public function mount()
     {
-        $this->resetPage();
+        $this->form['author_name'] = Auth::user()->name ?? '';
+        $this->form['published_at'] = now()->format('Y-m-d\TH:i');
     }
 
-    public function updatingStatusFilter()
+    public function updated($property)
     {
-        $this->resetPage();
+        if (str_starts_with($property, 'form.')) {
+            if ($property === 'form.title' && empty($this->form['slug'])) {
+                $this->form['slug'] = Str::slug($this->form['title']);
+            }
+            $this->validateOnly($property);
+        }
     }
 
-    public function updatingCategoryFilter()
+    public function create()
     {
-        $this->resetPage();
+        $this->resetForm();
+        $this->form['author_name'] = Auth::user()->name ?? '';
+        $this->form['published_at'] = now()->format('Y-m-d\TH:i');
+        $this->isCreating = true;
+        $this->editingId = null;
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        try {
+            $newsData = $this->form;
+
+            // Convert tags string to array
+            if (!empty($newsData['tags'])) {
+                $newsData['tags'] = array_map('trim', explode(',', $newsData['tags']));
+            } else {
+                $newsData['tags'] = [];
+            }
+
+            // Handle media attachment
+            if ($this->uploadMethod === 'filepond' && !empty($this->filepondUploads)) {
+                $upload = $this->filepondUploads[0] ?? null;
+                if ($upload) {
+                    $newsData['media_id'] = $upload['id'] ?? null;
+                }
+            } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $newsData['media_id'] = $this->selectedMediaId;
+            }
+
+            // Auto-generate slug if empty
+            if (empty($newsData['slug'])) {
+                $newsData['slug'] = Str::slug($newsData['title']);
+            }
+
+            News::create($newsData);
+
+            $this->resetForm();
+            $this->isCreating = false;
+
+            session()->flash('success', 'News article created successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('News Creation Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to create news article. Please try again.');
+        }
+    }
+
+    public function edit($newsId)
+    {
+        try {
+            $news = News::findOrFail($newsId);
+
+            $this->form = [
+                'title' => $news->title,
+                'slug' => $news->slug,
+                'excerpt' => $news->excerpt,
+                'content' => $news->content,
+                'featured_image' => $news->featured_image,
+                'media_id' => $news->media_id,
+                'author_name' => $news->author_name,
+                'tags' => is_array($news->tags) ? implode(', ', $news->tags) : $news->tags,
+                'status' => $news->status,
+                'featured' => $news->featured,
+                'category_id' => $news->category_id,
+                'published_at' => $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : null,
+            ];
+
+            // Set media selection state
+            if ($news->media_id) {
+                $this->selectedMediaId = $news->media_id;
+                $this->selectedMediaUrl = $news->featured_image_url;
+            }
+
+            $this->editingId = $newsId;
+            $this->isCreating = false;
+
+        } catch (\Exception $e) {
+            Log::error('News Edit Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to load news article data.');
+        }
+    }
+
+    public function update()
+    {
+        $this->validate();
+
+        try {
+            $news = News::findOrFail($this->editingId);
+            $newsData = $this->form;
+
+            // Convert tags string to array
+            if (!empty($newsData['tags'])) {
+                $newsData['tags'] = array_map('trim', explode(',', $newsData['tags']));
+            } else {
+                $newsData['tags'] = [];
+            }
+
+            // Handle media attachment
+            if ($this->uploadMethod === 'filepond' && !empty($this->filepondUploads)) {
+                $upload = $this->filepondUploads[0] ?? null;
+                if ($upload) {
+                    $newsData['media_id'] = $upload['id'] ?? null;
+                }
+            } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $newsData['media_id'] = $this->selectedMediaId;
+            }
+
+            $news->update($newsData);
+
+            $this->resetForm();
+            $this->editingId = null;
+
+            session()->flash('success', 'News article updated successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('News Update Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update news article. Please try again.');
+        }
+    }
+
+    public function delete($newsId)
+    {
+        try {
+            $news = News::findOrFail($newsId);
+            $news->delete();
+
+            session()->flash('success', 'News article deleted successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('News Delete Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to delete news article.');
+        }
+    }
+
+    public function cancelEdit()
+    {
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+    }
+
+    public function toggleFeatured($newsId)
+    {
+        try {
+            $news = News::findOrFail($newsId);
+            $news->update(['featured' => !$news->featured]);
+
+            $message = $news->featured ? 'News marked as featured.' : 'News removed from featured.';
+            session()->flash('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error('News Toggle Featured Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update featured status.');
+        }
+    }
+
+    public function changeStatus($newsId, $status)
+    {
+        try {
+            $news = News::findOrFail($newsId);
+            $news->update(['status' => $status]);
+
+            $message = ucfirst($status) . ' status applied successfully.';
+            session()->flash('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error('News Change Status Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to update status.');
+        }
     }
 
     public function sortBy($field)
@@ -91,233 +287,108 @@ class Index extends Component
         }
     }
 
-    public function create()
+    public function openMediaSelector()
     {
-        $this->isCreating = true;
-        $this->editingId = null;
-        $this->reset('form');
-        $this->resetUploadStates();
-        $this->form['published_at'] = now()->format('Y-m-d\TH:i');
-        $this->form['tags'] = [];
-    }
-
-    public function edit($id)
-    {
-        $this->editingId = $id;
-        $this->isCreating = false;
-        $news = News::findOrFail($id);
-
-        $this->form = [
-            'title' => $news->title,
-            'slug' => $news->slug,
-            'excerpt' => $news->excerpt,
-            'content' => $news->content,
-            'featured_image' => $news->featured_image,
-            'author_name' => $news->author_name,
-            'tags' => $news->tags ?? [],
-            'status' => $news->status,
-            'featured' => $news->featured,
-            'category_id' => $news->category_id,
-            'published_at' => $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : '',
-        ];
-
-        $this->resetUploadStates();
-
-        // Load existing media selection if available
-        if ($news->media_id) {
-            $this->selectedMediaId = $news->media_id;
-            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($news->media_id);
-            if ($media) {
-                $this->selectedMediaUrl = $media->getFullUrl();
-                $this->uploadMethod = 'media_library';
-            }
-        } else {
-            // Default to filepond for existing news without media
-            $this->uploadMethod = 'filepond';
-        }
-    }
-
-    public function cancelEdit()
-    {
-        $this->editingId = null;
-        $this->isCreating = false;
-        $this->reset('form');
-        $this->resetUploadStates();
-    }
-
-    public function store()
-    {
-        $this->validate([
-            'form.title' => 'required|string|max:255',
-            'form.slug' => 'nullable|string|max:255',
-            'form.excerpt' => 'nullable|string',
-            'form.content' => 'required|string',
-            'form.featured_image' => 'nullable|string|max:255',
-            'form.author_name' => 'required|string|max:255',
-            'form.tags' => 'nullable|array',
-            'form.status' => 'required|in:draft,published',
-            'form.featured' => 'boolean',
-            'form.category_id' => 'nullable|exists:news_categories,id',
-            'form.published_at' => 'nullable|date',
-        ]);
-
-        $user = Auth::user();
-        $newsData = $this->form;
-
-        // Handle media uploads
-        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
-            $newsData['media_id'] = $this->selectedMediaId;
-            $newsData['featured_image'] = null; // Clear featured_image field when using media library
-        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
-            // Process FilePond uploads
-            foreach ($this->filepondUploads as $upload) {
-                $media = $user->addMedia($upload->getRealPath())
-                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($upload->getClientOriginalName())
-                    ->toMediaCollection('media-library');
-
-                $newsData['media_id'] = $media->id;
-                $newsData['featured_image'] = null; // Clear featured_image field when using FilePond
-                break; // Only take the first file for featured image
-            }
-        }
-
-        if (empty($newsData['slug'])) {
-            $newsData['slug'] = \Str::slug($newsData['title']);
-        }
-        if ($newsData['published_at']) {
-            $newsData['published_at'] = \Carbon\Carbon::parse($newsData['published_at']);
-        }
-
-        News::create($newsData);
-
-        $this->isCreating = false;
-        $this->reset('form');
-        $this->resetUploadStates();
-
-        session()->flash('success', 'News article created successfully!');
-    }
-
-    public function update()
-    {
-        $this->validate([
-            'form.title' => 'required|string|max:255',
-            'form.slug' => 'nullable|string|max:255',
-            'form.excerpt' => 'nullable|string',
-            'form.content' => 'required|string',
-            'form.featured_image' => 'nullable|string|max:255',
-            'form.author_name' => 'required|string|max:255',
-            'form.tags' => 'nullable|array',
-            'form.status' => 'required|in:draft,published',
-            'form.featured' => 'boolean',
-            'form.category_id' => 'nullable|exists:news_categories,id',
-            'form.published_at' => 'nullable|date',
-        ]);
-
-        $user = Auth::user();
-        $news = News::findOrFail($this->editingId);
-        $newsData = $this->form;
-
-        // Handle media uploads
-        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
-            $newsData['media_id'] = $this->selectedMediaId;
-            $newsData['featured_image'] = null; // Clear featured_image field when using media library
-        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
-            // Process FilePond uploads
-            foreach ($this->filepondUploads as $upload) {
-                $media = $user->addMedia($upload->getRealPath())
-                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($upload->getClientOriginalName())
-                    ->toMediaCollection('media-library');
-
-                $newsData['media_id'] = $media->id;
-                $newsData['featured_image'] = null; // Clear featured_image field when using FilePond
-                break; // Only take the first file for featured image
-            }
-        }
-
-        if (empty($newsData['slug'])) {
-            $newsData['slug'] = \Str::slug($newsData['title']);
-        }
-        if ($newsData['published_at']) {
-            $newsData['published_at'] = \Carbon\Carbon::parse($newsData['published_at']);
-        }
-
-        $news->update($newsData);
-
-        $this->editingId = null;
-        $this->reset('form');
-        $this->resetUploadStates();
-
-        session()->flash('success', 'News article updated successfully!');
-    }
-
-    public function delete($id)
-    {
-        $news = News::findOrFail($id);
-        $news->delete();
-
-        session()->flash('success', 'News article deleted successfully!');
-    }
-
-    public function toggleFeatured($id)
-    {
-        $news = News::findOrFail($id);
-        $news->update(['featured' => !$news->featured]);
-
-        session()->flash('success', 'News article featured status updated successfully!');
-    }
-
-    public function toggleStatus($id)
-    {
-        $news = News::findOrFail($id);
-        $newStatus = $news->status === 'published' ? 'draft' : 'published';
-        $news->update(['status' => $newStatus]);
-
-        session()->flash('success', 'News article status updated successfully!');
-    }
-
-    public function resetUploadStates()
-    {
-        $this->filepondUploads = [];
-        $this->selectedMediaId = null;
-        $this->selectedMediaUrl = null;
-        $this->uploadMethod = 'filepond';
-    }
-
-    public function validateUploadedFile($filename)
-    {
-        return true;
+        $this->dispatch('openMediaSelector');
     }
 
     public function handleMediaSelection($data)
     {
-        if (isset($data['id']) && isset($data['url'])) {
-            $this->selectedMediaId = $data['id'];
-            $this->selectedMediaUrl = $data['url'];
+        try {
+            Log::info('News - Media selection received:', ['data' => $data]);
+
+            // Handle case where data is an indexed array containing the media data
+            if (is_array($data) && isset($data[0]) && is_array($data[0])) {
+                $data = $data[0];
+            }
+
+            // Add defensive programming to handle missing keys
+            if (isset($data['mediaId'])) {
+                $this->selectedMediaId = $data['mediaId'];
+                $this->form['media_id'] = $data['mediaId'];
+                Log::info('News - Media ID set to:', ['mediaId' => $data['mediaId']]);
+            } else {
+                Log::warning('News - mediaId not found in data:', ['data' => $data]);
+            }
+
+            if (isset($data['mediaUrl'])) {
+                $this->selectedMediaUrl = $data['mediaUrl'];
+                Log::info('News - Media URL set to:', ['mediaUrl' => $data['mediaUrl']]);
+            } else {
+                Log::warning('News - mediaUrl not found in data:', ['data' => $data]);
+            }
+
+            Log::info('News - Media selection completed', [
+                'media_id' => $this->selectedMediaId,
+                'url' => $this->selectedMediaUrl
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('News - Media selection error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to select media. Please try again.');
         }
+    }
+
+    public function clearSelectedMedia()
+    {
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->form['media_id'] = null;
+    }
+
+    private function resetForm()
+    {
+        $this->form = [
+            'title' => '',
+            'slug' => '',
+            'excerpt' => '',
+            'content' => '',
+            'featured_image' => '',
+            'media_id' => null,
+            'author_name' => Auth::user()->name ?? '',
+            'tags' => '',
+            'status' => 'draft',
+            'featured' => false,
+            'category_id' => null,
+            'published_at' => now()->format('Y-m-d\TH:i'),
+        ];
+
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->filepondUploads = [];
+        $this->uploadMethod = 'media_library';
     }
 
     public function render()
     {
-        $news = News::with('category')
-            ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('excerpt', 'like', '%' . $this->search . '%')
-                      ->orWhere('author_name', 'like', '%' . $this->search . '%');
-            })
-            ->when($this->statusFilter, function ($query) {
-                $query->where('status', $this->statusFilter);
-            })
-            ->when($this->categoryFilter, function ($query) {
-                $query->where('category_id', $this->categoryFilter);
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate($this->perPage);
+        $query = News::query()->with(['media', 'category']);
 
-        $categories = NewsCategory::orderBy('name')->get();
+        // Apply search filter
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->search . '%')
+                  ->orWhere('excerpt', 'like', '%' . $this->search . '%')
+                  ->orWhere('content', 'like', '%' . $this->search . '%')
+                  ->orWhere('author_name', 'like', '%' . $this->search . '%');
+            });
+        }
 
-        return view('livewire.admin.news.index', compact('news', 'categories'))
-            ->layout('admin.layout', ['title' => 'News']);
+        // Apply status filter
+        if ($this->statusFilter) {
+            $query->where('status', $this->statusFilter);
+        }
+
+        // Apply category filter
+        if ($this->categoryFilter) {
+            $query->where('category_id', $this->categoryFilter);
+        }
+
+        // Apply sorting
+        $query->orderBy($this->sortField, $this->sortDirection);
+
+        $news = $query->paginate($this->perPage);
+        $categories = NewsCategory::active()->ordered()->get();
+
+        return view('livewire.admin.news.index', compact('news', 'categories'));
     }
 }
