@@ -16,6 +16,9 @@ class WebAssetsController extends Controller
     {
         $footer = FooterSettings::getActive();
 
+        // Get social media from main Settings table (social media tab)
+        $socialMediaSettings = $this->getSocialMediaFromSettings();
+
         // Transform data to match React component structure
         $data = [
             'company' => [
@@ -27,16 +30,9 @@ class WebAssetsController extends Controller
                 'phone' => $footer->phone ?? '+1 (555) 123-4567',
                 'address' => $footer->address ?? 'Los Angeles, CA'
             ],
-            'quick_links' => $footer->quick_links ?? [],
-            'services' => [
-                ['text' => 'Digital Streaming', 'icon' => 'faPlay'],
-                ['text' => 'Theatrical Release', 'icon' => 'faFilm'],
-                ['text' => 'Global Distribution', 'icon' => 'faGlobeAmericas'],
-                ['text' => 'Content Acquisition', 'icon' => 'faShoppingCart'],
-                ['text' => 'Marketing Strategy', 'icon' => 'faChartLine'],
-                ['text' => 'Rights Management', 'icon' => 'faShieldAlt']
-            ],
-            'social_links' => $this->formatSocialLinks($footer->social_links ?? []),
+            'quick_links' => $this->formatQuickLinks($footer->quick_links ?? []),
+            'services' => $this->formatServices($footer->services ?? []),
+            'social_links' => $socialMediaSettings,
             'legal_links' => [
                 ['text' => 'Privacy Policy', 'url' => '/privacy', 'icon' => 'faShieldAlt'],
                 ['text' => 'Terms of Service', 'url' => '/terms', 'icon' => 'faShieldAlt'],
@@ -52,7 +48,80 @@ class WebAssetsController extends Controller
     }
 
     /**
-     * Format social links for React component
+     * Get social media URLs from main Settings table
+     */
+    private function getSocialMediaFromSettings(): array
+    {
+        $settings = \App\Models\Setting::all()->pluck('value', 'key');
+
+        $socialLinks = [];
+
+        $socialPlatforms = [
+            'facebook' => 'facebook_url',
+            'twitter' => 'twitter_url',
+            'instagram' => 'instagram_url',
+            'linkedin' => 'linkedin_url',
+            'youtube' => 'youtube_url'
+        ];
+
+        foreach ($socialPlatforms as $platform => $settingKey) {
+            $url = $settings->get($settingKey);
+            if ($url) {
+                $socialLinks[$platform] = [
+                    'url' => $url,
+                    'icon' => $this->getSocialIcon($platform)
+                ];
+            }
+        }
+
+        return $socialLinks;
+    }
+
+    /**
+     * Format quick links for React component
+     */
+    private function formatQuickLinks($quickLinks): array
+    {
+        if (!is_array($quickLinks)) {
+            return [];
+        }
+
+        return array_map(function($link) {
+            return [
+                'text' => $link['title'] ?? $link['text'] ?? '',
+                'url' => $link['url'] ?? '',
+                'icon' => $link['icon'] ?? 'faGlobe'
+            ];
+        }, $quickLinks);
+    }
+
+    /**
+     * Format services for React component
+     */
+    private function formatServices($services): array
+    {
+        // If no services in footer settings, use defaults
+        if (!is_array($services) || empty($services)) {
+            return [
+                ['text' => 'Digital Streaming', 'icon' => 'faPlay'],
+                ['text' => 'Theatrical Release', 'icon' => 'faFilm'],
+                ['text' => 'Global Distribution', 'icon' => 'faGlobeAmericas'],
+                ['text' => 'Content Acquisition', 'icon' => 'faShoppingCart'],
+                ['text' => 'Marketing Strategy', 'icon' => 'faChartLine'],
+                ['text' => 'Rights Management', 'icon' => 'faShieldAlt']
+            ];
+        }
+
+        return array_map(function($service) {
+            return [
+                'text' => $service['text'] ?? $service['name'] ?? '',
+                'icon' => $service['icon'] ?? 'faCircle'
+            ];
+        }, $services);
+    }
+
+    /**
+     * Format social links for React component (legacy method)
      */
     private function formatSocialLinks($socialLinks): array
     {
@@ -120,4 +189,34 @@ class WebAssetsController extends Controller
             'url' => $url,
         ]);
     }
+
+    /**
+     * Return contact page configuration for frontend contact component
+     */
+    public function contactPage(): JsonResponse
+    {
+        // Transform data to match React component structure
+        $data = [
+            'hero' => [
+                'title' => SettingsHelper::get('contact_hero_title', 'Contact Us'),
+                'subtitle' => SettingsHelper::get('contact_hero_subtitle', 'Get in Touch'),
+                'description' => SettingsHelper::get('contact_hero_description', 'We\'d love to hear from you. Send us a message and we\'ll respond as soon as possible.')
+            ],
+            'form' => [
+                'title' => SettingsHelper::get('contact_form_title', 'Send us a Message'),
+                'description' => SettingsHelper::get('contact_form_description', 'Fill out the form below and we\'ll get back to you within 24 hours.')
+            ],
+            'contact' => [
+                'email' => SettingsHelper::get('contact_email', 'hello@osrdigital.com'),
+                'phone' => SettingsHelper::get('contact_phone', '+1 (555) 123-4567'),
+                'address' => SettingsHelper::get('contact_address', 'Los Angeles, CA')
+            ]
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
+    }
+
 }

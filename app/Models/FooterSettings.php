@@ -18,6 +18,7 @@ class FooterSettings extends Model
         'copyright_text',
         'social_links',
         'quick_links',
+        'services',
         'contact_info',
         'newsletter_title',
         'newsletter_description',
@@ -28,6 +29,7 @@ class FooterSettings extends Model
     protected $casts = [
         'social_links' => 'array',
         'quick_links' => 'array',
+        'services' => 'array',
         'contact_info' => 'array',
         'is_active' => 'boolean',
     ];
@@ -61,7 +63,7 @@ class FooterSettings extends Model
     public static function getDefault()
     {
         $footer = static::where('is_active', true)->first();
-        
+
         if (!$footer) {
             $footer = static::create([
                 'company_name' => 'OSR Digital',

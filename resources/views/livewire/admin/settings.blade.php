@@ -5,36 +5,36 @@
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item">
-                    <button wire:click="switchTab('general')" 
-                            class="nav-link {{ $activeTab === 'general' ? 'active' : '' }}" 
+                    <button wire:click="switchTab('general')"
+                            class="nav-link {{ $activeTab === 'general' ? 'active' : '' }}"
                             type="button">
                         <i class="fas fa-cog mr-2"></i>General
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button wire:click="switchTab('contact')" 
-                            class="nav-link {{ $activeTab === 'contact' ? 'active' : '' }}" 
+                    <button wire:click="switchTab('contact')"
+                            class="nav-link {{ $activeTab === 'contact' ? 'active' : '' }}"
                             type="button">
                         <i class="fas fa-phone mr-2"></i>Contact
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button wire:click="switchTab('social')" 
-                            class="nav-link {{ $activeTab === 'social' ? 'active' : '' }}" 
+                    <button wire:click="switchTab('social')"
+                            class="nav-link {{ $activeTab === 'social' ? 'active' : '' }}"
                             type="button">
                         <i class="fas fa-share-alt mr-2"></i>Social Media
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button wire:click="switchTab('hero')" 
-                            class="nav-link {{ $activeTab === 'hero' ? 'active' : '' }}" 
+                    <button wire:click="switchTab('hero')"
+                            class="nav-link {{ $activeTab === 'hero' ? 'active' : '' }}"
                             type="button">
                         <i class="fas fa-star mr-2"></i>Hero Section
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button wire:click="switchTab('footer')" 
-                            class="nav-link {{ $activeTab === 'footer' ? 'active' : '' }}" 
+                    <button wire:click="switchTab('footer')"
+                            class="nav-link {{ $activeTab === 'footer' ? 'active' : '' }}"
                             type="button">
                         <i class="fas fa-window-maximize mr-2"></i>Footer
                     </button>
@@ -132,85 +132,76 @@
                 </div>
                 @endif
 
-                <!-- Contact Settings -->
+                <!-- Contact Page Settings -->
                 @if($activeTab === 'contact')
                 <div class="tab-pane fade show active" id="contact" role="tabpanel">
-                    <form wire:submit.prevent="saveContact">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="contact_email">Email</label>
-                                    <input type="email" wire:model="contact_email" class="form-control @error('contact_email') is-invalid @enderror">
-                                    @error('contact_email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                    <form wire:submit.prevent="saveContactPage">
+                        <!-- Hero Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-star mr-2"></i>Contact Hero Section</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="contact_hero_title">Hero Title</label>
+                                            <input type="text" wire:model="contact_hero_title" class="form-control @error('contact_hero_title') is-invalid @enderror" placeholder="Contact Us">
+                                            @error('contact_hero_title')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="contact_hero_subtitle">Hero Subtitle</label>
+                                            <input type="text" wire:model="contact_hero_subtitle" class="form-control @error('contact_hero_subtitle') is-invalid @enderror" placeholder="Get in Touch">
+                                            @error('contact_hero_subtitle')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
-
                                 <div class="form-group">
-                                    <label for="contact_phone">Phone</label>
-                                    <input type="text" wire:model="contact_phone" class="form-control @error('contact_phone') is-invalid @enderror">
-                                    @error('contact_phone')
+                                    <label for="contact_hero_description">Hero Description</label>
+                                    <textarea wire:model="contact_hero_description" class="form-control @error('contact_hero_description') is-invalid @enderror" rows="3" placeholder="Contact description..."></textarea>
+                                    @error('contact_hero_description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-6">
+                        <!-- Contact Form Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-envelope mr-2"></i>Contact Form Section</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="contact_form_title">Form Title</label>
+                                            <input type="text" wire:model="contact_form_title" class="form-control @error('contact_form_title') is-invalid @enderror" placeholder="Send us a Message">
+                                            @error('contact_form_title')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
-                                    <label for="contact_address">Address</label>
-                                    <input type="text" wire:model="contact_address" class="form-control @error('contact_address') is-invalid @enderror">
-                                    @error('contact_address')
+                                    <label for="contact_form_description">Form Description</label>
+                                    <textarea wire:model="contact_form_description" class="form-control @error('contact_form_description') is-invalid @enderror" rows="3" placeholder="Form description..."></textarea>
+                                    @error('contact_form_description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="contact_city">City</label>
-                                            <input type="text" wire:model="contact_city" class="form-control @error('contact_city') is-invalid @enderror">
-                                            @error('contact_city')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="contact_state">State</label>
-                                            <input type="text" wire:model="contact_state" class="form-control @error('contact_state') is-invalid @enderror">
-                                            @error('contact_state')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="contact_zip">ZIP Code</label>
-                                            <input type="text" wire:model="contact_zip" class="form-control @error('contact_zip') is-invalid @enderror">
-                                            @error('contact_zip')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="contact_country">Country</label>
-                                            <input type="text" wire:model="contact_country" class="form-control @error('contact_country') is-invalid @enderror">
-                                            @error('contact_country')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-dark btn-sm">
-                                <i class="fas fa-save mr-2"></i>Save Contact Settings
+                                <i class="fas fa-save mr-2"></i>Save Contact Page Settings
                             </button>
                         </div>
                     </form>
@@ -280,8 +271,161 @@
                 @if($activeTab === 'footer')
                 <div class="tab-pane fade show active" id="footer" role="tabpanel">
                     <form wire:submit.prevent="saveFooter">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="mb-3">Company Information</h5>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="footer_company_name">Company Name</label>
+                                    <input type="text" wire:model="footer_company_name" class="form-control @error('footer_company_name') is-invalid @enderror" placeholder="OSR Digital">
+                                    @error('footer_company_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="footer_email">Email</label>
+                                    <input type="email" wire:model="footer_email" class="form-control @error('footer_email') is-invalid @enderror" placeholder="info@osrdigital.com">
+                                    @error('footer_email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label for="footer_text">Footer Text</label>
+                            <label for="footer_company_description">Company Description</label>
+                            <textarea wire:model="footer_company_description" class="form-control @error('footer_company_description') is-invalid @enderror" rows="3" placeholder="Brief description of your company"></textarea>
+                            @error('footer_company_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="footer_phone">Phone</label>
+                                    <input type="text" wire:model="footer_phone" class="form-control @error('footer_phone') is-invalid @enderror" placeholder="+1 (555) 123-4567">
+                                    @error('footer_phone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="footer_website">Website</label>
+                                    <input type="url" wire:model="footer_website" class="form-control @error('footer_website') is-invalid @enderror" placeholder="https://osrdigital.com">
+                                    @error('footer_website')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="footer_address">Address</label>
+                            <textarea wire:model="footer_address" class="form-control @error('footer_address') is-invalid @enderror" rows="2" placeholder="Company address"></textarea>
+                            @error('footer_address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Services -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="mb-3">Services</h5>
+                                <p class="text-muted small">Manage the services displayed in the footer</p>
+                            </div>
+                        </div>
+
+                        <div id="servicesContainer">
+                            @foreach($footer_services as $index => $service)
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <input type="text" wire:model="footer_services.{{ $index }}.text" class="form-control" placeholder="Service name (e.g., Digital Streaming)">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" wire:model="footer_services.{{ $index }}.icon" class="form-control" placeholder="Icon name">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" wire:click="removeService({{ $index }})" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" wire:click="addService" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-plus mr-2"></i>Add Service
+                            </button>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Social Media Links:</strong> Social media links are managed from the "Social Media" tab above and will automatically appear in the footer.
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Quick Links -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="mb-3">Quick Links</h5>
+                            </div>
+                        </div>
+
+                        <div id="quickLinksContainer">
+                            @foreach($footer_quick_links as $index => $link)
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" wire:model="footer_quick_links.{{ $index }}.title" class="form-control" placeholder="Link Title">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="url" wire:model="footer_quick_links.{{ $index }}.url" class="form-control" placeholder="URL">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" wire:click="removeQuickLink({{ $index }})" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" wire:click="addQuickLink" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-plus mr-2"></i>Add Quick Link
+                            </button>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Legacy Footer Settings (keep for compatibility) -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="mb-3">Additional Settings</h5>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="footer_copyright_text">Copyright Text</label>
+                            <input type="text" wire:model="footer_copyright_text" class="form-control @error('footer_copyright_text') is-invalid @enderror" placeholder="© 2024 Your Company Name. All rights reserved.">
+                            @error('footer_copyright_text')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="footer_text">Footer Text (Legacy)</label>
                             <textarea wire:model="footer_text" class="form-control @error('footer_text') is-invalid @enderror" rows="4" placeholder="Enter footer description or additional information"></textarea>
                             @error('footer_text')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -289,7 +433,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="footer_copyright">Copyright Text</label>
+                            <label for="footer_copyright">Footer Copyright (Legacy)</label>
                             <input type="text" wire:model="footer_copyright" class="form-control @error('footer_copyright') is-invalid @enderror" placeholder="© 2024 Your Company Name. All rights reserved.">
                             @error('footer_copyright')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -297,7 +441,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-dark btn-sm">
+                            <button type="submit" class="btn btn-dark">
                                 <i class="fas fa-save mr-2"></i>Save Footer Settings
                             </button>
                         </div>

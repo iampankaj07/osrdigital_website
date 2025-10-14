@@ -581,14 +581,6 @@
                                 <p>Settings</p>
                             </a>
                         </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.footer.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.footer*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-anchor"></i>
-                                <p>Footer</p>
-                            </a>
-                        </li>
                         <!-- User Management Section -->
                         <li class="nav-header">USER MANAGEMENT</li>
 

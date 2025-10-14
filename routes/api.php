@@ -51,9 +51,10 @@ Route::prefix('settings')->group(function () {
     Route::get('/{key}', [SettingsController::class, 'show']);
 });
 
-// Web assets (footer, logo) routes for frontend
+// Web assets (footer, contact, logo) routes for frontend
 Route::get('/footer', [WebAssetsController::class, 'footer']);
 Route::get('/settings/footer', [WebAssetsController::class, 'footer']);
+Route::get('/contact-page', [WebAssetsController::class, 'contactPage']);
 Route::get('/logo/{type}', [WebAssetsController::class, 'logo']);
 
 // Pages API routes

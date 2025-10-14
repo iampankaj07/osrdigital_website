@@ -21,12 +21,14 @@ class News extends Model
         'featured',
         'category_id',
         'published_at',
+        'views',
     ];
 
     protected $casts = [
         'tags' => 'array',
         'featured' => 'boolean',
         'published_at' => 'datetime',
+        'views' => 'integer',
     ];
 
     protected $appends = [
