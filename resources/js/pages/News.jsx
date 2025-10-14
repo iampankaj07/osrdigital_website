@@ -302,14 +302,10 @@ function News() {
                 title="Latest News"
                 subtitle="Industry Updates"
                 description="Stay updated with the latest news, insights, and announcements from OSR Digital and the entertainment industry."
-                breadcrumbs={[
-                    { label: 'Home', href: '/', icon: 'fas fa-home' },
-                    { label: 'News' }
-                ]}
             />
 
             {/* Category Filter */}
-            <section className={`py-8 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-8 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="flex flex-wrap justify-center gap-4">
                         {categories.map((category) => (
@@ -334,7 +330,7 @@ function News() {
 
             {/* Loading State */}
             {loading && (
-                <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     <div className="container-minimal">
                         {/* Featured Article Skeleton */}
                         <div className="mb-16">
@@ -366,7 +362,7 @@ function News() {
 
             {/* Error State */}
             {error && (
-                <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     <div className="container-minimal">
                         <div className="text-center">
                             <div className={`text-6xl mb-4 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
@@ -464,7 +460,7 @@ function News() {
 
             {/* Articles Grid */}
             {!loading && !error && (
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="mb-12">
                         <h2 className={`text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -552,7 +548,7 @@ function News() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <section className={`py-8 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <section className={`py-8 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     <div className="container-minimal">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                             {/* Page Info */}

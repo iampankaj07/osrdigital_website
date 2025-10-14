@@ -136,14 +136,10 @@ function Partners() {
                 title="Our Partners"
                 subtitle="Strategic Partnerships"
                 description="Discover our network of trusted partners and collaborators who help us bring exceptional content to global audiences."
-                breadcrumbs={[
-                    { label: 'Home', href: '/', icon: 'fas fa-home' },
-                    { label: 'Partners' }
-                ]}
             />
 
             {/* Partners Grid Section */}
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -218,7 +214,7 @@ function Partners() {
 
 
             {/* Partnership Benefits Section */}
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>

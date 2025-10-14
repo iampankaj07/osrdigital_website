@@ -120,7 +120,7 @@ function Contact() {
             </section>
 
             {/* Contact Form Section - Full Width */}
-            <section id="contact-form" className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+            <section id="contact-form" className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="max-w-4xl mx-auto">
                         <div className="text-center mb-16">
@@ -132,7 +132,7 @@ function Contact() {
                             </p>
                         </div>
 
-                        <div className={`p-8 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                        <div className={`p-8 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white border border-gray-200'}`}>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div>

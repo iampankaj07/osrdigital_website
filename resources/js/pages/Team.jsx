@@ -181,14 +181,10 @@ function Team() {
                 title="Our Team"
                 subtitle="Meet the Experts"
                 description="Get to know the talented individuals who make OSR Digital a leader in content distribution and digital media."
-                breadcrumbs={[
-                    { label: 'Home', href: '/', icon: 'fas fa-home' },
-                    { label: 'Team' }
-                ]}
             />
 
             {/* Team Members Section */}
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -330,7 +326,7 @@ function Team() {
             </section>
 
             {/* Company Culture Section */}
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h2 className={`text-4xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>

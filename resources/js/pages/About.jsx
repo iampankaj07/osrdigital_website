@@ -220,10 +220,6 @@ function About() {
                 title="About OSR Digital"
                 subtitle="Movie Distribution Excellence"
                 description="Learn more about our mission, vision, and the team behind OSR Digital's success in global content distribution."
-                breadcrumbs={[
-                    { label: 'Home', href: '/', icon: 'fas fa-home' },
-                    { label: 'About Us' }
-                ]}
             />
 
 
@@ -310,7 +306,7 @@ function About() {
             )}
 
             {/* Values Section */}
-            <section className={`py-20 ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal">
                     <div className="text-center mb-16">
                         <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
