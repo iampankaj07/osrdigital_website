@@ -4,12 +4,15 @@ namespace App\Livewire\Admin\News;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\News;
 use App\Models\NewsCategory;
+use Spatie\LivewireFilepond\WithFilePond;
+use Illuminate\Support\Facades\Auth;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads, WithFilePond;
 
     public $search = '';
     public $perPage = 10;
@@ -17,7 +20,7 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $statusFilter = '';
     public $categoryFilter = '';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -35,6 +38,16 @@ class Index extends Component
         'published_at' => '',
     ];
 
+    // FilePond uploads
+    public $filepondUploads = [];
+
+    // Media library selection
+    public $selectedMediaId = null;
+    public $selectedMediaUrl = null;
+
+    // Upload method preference
+    public $uploadMethod = 'filepond'; // 'filepond' or 'media_library'
+
     protected $queryString = [
         'search' => ['except' => ''],
         'perPage' => ['except' => 10],
@@ -42,6 +55,10 @@ class Index extends Component
         'sortDirection' => ['except' => 'desc'],
         'statusFilter' => ['except' => ''],
         'categoryFilter' => ['except' => ''],
+    ];
+
+    protected $listeners = [
+        'mediaSelected' => 'handleMediaSelection',
     ];
 
     public function updatingSearch()
@@ -79,6 +96,7 @@ class Index extends Component
         $this->isCreating = true;
         $this->editingId = null;
         $this->reset('form');
+        $this->resetUploadStates();
         $this->form['published_at'] = now()->format('Y-m-d\TH:i');
         $this->form['tags'] = [];
     }
@@ -88,7 +106,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $news = News::findOrFail($id);
-        
+
         $this->form = [
             'title' => $news->title,
             'slug' => $news->slug,
@@ -102,6 +120,21 @@ class Index extends Component
             'category_id' => $news->category_id,
             'published_at' => $news->published_at ? $news->published_at->format('Y-m-d\TH:i') : '',
         ];
+
+        $this->resetUploadStates();
+
+        // Load existing media selection if available
+        if ($news->media_id) {
+            $this->selectedMediaId = $news->media_id;
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($news->media_id);
+            if ($media) {
+                $this->selectedMediaUrl = $media->getFullUrl();
+                $this->uploadMethod = 'media_library';
+            }
+        } else {
+            // Default to filepond for existing news without media
+            $this->uploadMethod = 'filepond';
+        }
     }
 
     public function cancelEdit()
@@ -109,6 +142,7 @@ class Index extends Component
         $this->editingId = null;
         $this->isCreating = false;
         $this->reset('form');
+        $this->resetUploadStates();
     }
 
     public function store()
@@ -127,7 +161,27 @@ class Index extends Component
             'form.published_at' => 'nullable|date',
         ]);
 
+        $user = Auth::user();
         $newsData = $this->form;
+
+        // Handle media uploads
+        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+            $newsData['media_id'] = $this->selectedMediaId;
+            $newsData['featured_image'] = null; // Clear featured_image field when using media library
+        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+            // Process FilePond uploads
+            foreach ($this->filepondUploads as $upload) {
+                $media = $user->addMedia($upload->getRealPath())
+                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($upload->getClientOriginalName())
+                    ->toMediaCollection('media-library');
+
+                $newsData['media_id'] = $media->id;
+                $newsData['featured_image'] = null; // Clear featured_image field when using FilePond
+                break; // Only take the first file for featured image
+            }
+        }
+
         if (empty($newsData['slug'])) {
             $newsData['slug'] = \Str::slug($newsData['title']);
         }
@@ -136,10 +190,11 @@ class Index extends Component
         }
 
         News::create($newsData);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
+        $this->resetUploadStates();
+
         session()->flash('success', 'News article created successfully!');
     }
 
@@ -159,8 +214,28 @@ class Index extends Component
             'form.published_at' => 'nullable|date',
         ]);
 
+        $user = Auth::user();
         $news = News::findOrFail($this->editingId);
         $newsData = $this->form;
+
+        // Handle media uploads
+        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+            $newsData['media_id'] = $this->selectedMediaId;
+            $newsData['featured_image'] = null; // Clear featured_image field when using media library
+        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+            // Process FilePond uploads
+            foreach ($this->filepondUploads as $upload) {
+                $media = $user->addMedia($upload->getRealPath())
+                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                    ->usingFileName($upload->getClientOriginalName())
+                    ->toMediaCollection('media-library');
+
+                $newsData['media_id'] = $media->id;
+                $newsData['featured_image'] = null; // Clear featured_image field when using FilePond
+                break; // Only take the first file for featured image
+            }
+        }
+
         if (empty($newsData['slug'])) {
             $newsData['slug'] = \Str::slug($newsData['title']);
         }
@@ -169,10 +244,11 @@ class Index extends Component
         }
 
         $news->update($newsData);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
+        $this->resetUploadStates();
+
         session()->flash('success', 'News article updated successfully!');
     }
 
@@ -180,7 +256,7 @@ class Index extends Component
     {
         $news = News::findOrFail($id);
         $news->delete();
-        
+
         session()->flash('success', 'News article deleted successfully!');
     }
 
@@ -188,7 +264,7 @@ class Index extends Component
     {
         $news = News::findOrFail($id);
         $news->update(['featured' => !$news->featured]);
-        
+
         session()->flash('success', 'News article featured status updated successfully!');
     }
 
@@ -197,8 +273,29 @@ class Index extends Component
         $news = News::findOrFail($id);
         $newStatus = $news->status === 'published' ? 'draft' : 'published';
         $news->update(['status' => $newStatus]);
-        
+
         session()->flash('success', 'News article status updated successfully!');
+    }
+
+    public function resetUploadStates()
+    {
+        $this->filepondUploads = [];
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->uploadMethod = 'filepond';
+    }
+
+    public function validateUploadedFile($filename)
+    {
+        return true;
+    }
+
+    public function handleMediaSelection($data)
+    {
+        if (isset($data['id']) && isset($data['url'])) {
+            $this->selectedMediaId = $data['id'];
+            $this->selectedMediaUrl = $data['url'];
+        }
     }
 
     public function render()

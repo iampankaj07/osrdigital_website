@@ -14,12 +14,20 @@ class ThemeHelper
      */
     public static function get(string $key, $default = null)
     {
-        // If db_config function doesn't exist OR table doesn't exist → fallback
-        if (!function_exists('db_config') || !Schema::hasTable('db_config')) {
-            return config("general.{$key}", $default);
+        // Try to get from GeneralSetting model first
+        if (Schema::hasTable('general_settings')) {
+            try {
+                $setting = \App\Models\GeneralSetting::first();
+                if ($setting && isset($setting->{$key})) {
+                    return $setting->{$key};
+                }
+            } catch (\Exception $e) {
+                Log::warning("Failed to get setting from GeneralSetting: {$key}", ['error' => $e->getMessage()]);
+            }
         }
 
-        return db_config("general.{$key}", $default);
+        // Final fallback to config file
+        return config("general.{$key}", $default);
     }
 
     /**
@@ -191,20 +199,21 @@ class ThemeHelper
                 'theme_color' => static::get('theme_color'),
                 'support_email' => static::get('support_email'),
                 'support_phone' => static::get('support_phone'),
-                'seo_title' => static::get('seo_title'),
-                'seo_keywords' => static::get('seo_keywords'),
-                'google_analytics_id' => static::get('google_analytics_id'),
+                'contact_email' => static::get('contact_email'),
+                'contact_phone' => static::get('contact_phone'),
+                'office_address' => static::get('office_address'),
             ];
 
-            // Add logo and favicon URLs
-            $logoPath = static::get('site_logo');
-            if ($logoPath) {
-                $result['site_logo'] = Storage::url($logoPath);
+            // Add logo URL using the logo() method
+            $logoUrl = static::logo();
+            if ($logoUrl) {
+                $result['site_logo'] = $logoUrl;
             }
 
-            $faviconPath = static::get('site_favicon');
-            if ($faviconPath) {
-                $result['site_favicon'] = Storage::url($faviconPath);
+            // Add favicon URL using the favicon() method
+            $faviconUrl = static::favicon();
+            if ($faviconUrl) {
+                $result['site_favicon'] = $faviconUrl;
             }
 
             // Add social networks
@@ -214,16 +223,6 @@ class ThemeHelper
                     $result['social_network'] = json_decode($socialNetwork, true);
                 } else {
                     $result['social_network'] = $socialNetwork;
-                }
-            }
-
-            // Add SEO metadata
-            $seoMetadata = static::get('seo_metadata');
-            if ($seoMetadata) {
-                if (is_string($seoMetadata)) {
-                    $result['seo_metadata'] = json_decode($seoMetadata, true);
-                } else {
-                    $result['seo_metadata'] = $seoMetadata;
                 }
             }
 

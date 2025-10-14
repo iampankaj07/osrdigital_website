@@ -26,7 +26,7 @@
     @livewireStyles
 
     <!-- FilePond Styles -->
-    <link href="{{ asset('vendor/livewire-filepond/filepond.css') }}?v={{ time() }}" rel="stylesheet">
+    <link href="{{ asset('vendor/livewire-filepond/filepond.css') }}" rel="stylesheet">
 
     <!-- Quill Editor -->
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
@@ -365,8 +365,8 @@
         <aside class="main-sidebar sidebar-dark-white elevation-4">
             <!-- Brand Logo -->
             <a href="{{ route('admin.dashboard') }}" class="brand-link">
-                <i class="fas fa-video brand-image img-circle elevation-3 ml-3 mr-2"
-                    style="font-size: 2rem; color: #007bff;"></i>
+                <img src="{{ asset('images/logo.png') }}" alt="OSR Logo"
+                    class="brand-image " style="opacity: .8; background: white;">
                 <span class="brand-text font-weight-light">OSR Digital</span>
             </a>
 
@@ -574,12 +574,19 @@
                         <!-- System Section -->
                         <li class="nav-header">Configuration</li>
 
-
                         <li class="nav-item">
                             <a href="{{ route('admin.settings') }}"
                                 class="nav-link {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cog"></i>
                                 <p>Settings</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.footer.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.footer*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-anchor"></i>
+                                <p>Footer</p>
                             </a>
                         </li>
                         <!-- User Management Section -->
@@ -704,7 +711,7 @@
     @livewireScripts
 
     <!-- FilePond Scripts AFTER Livewire -->
-    <script src="{{ asset('vendor/livewire-filepond/filepond.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('vendor/livewire-filepond/filepond.js') }}"></script>
 
     <!-- Alpine.js - Load with defer to ensure Livewire loads first -->
     <script>

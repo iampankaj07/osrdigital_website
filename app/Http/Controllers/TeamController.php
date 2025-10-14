@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
+use App\Models\TeamMember;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -13,7 +13,7 @@ class TeamController extends Controller
      */
     public function index(): View
     {
-        $teams = Team::active()
+        $teams = TeamMember::active()
             ->ordered()
             ->get();
 
@@ -23,7 +23,7 @@ class TeamController extends Controller
     /**
      * Display the specified team member.
      */
-    public function show(Team $team): View
+    public function show(TeamMember $team): View
     {
         abort_if(!$team->is_active, 404);
 

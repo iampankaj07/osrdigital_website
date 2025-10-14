@@ -85,4 +85,35 @@ class MediaUploadController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function api(Request $request)
+    {
+        try {
+            // Fetch all media files, ordered by most recent first
+            $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::where('collection_name', 'media-library')
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'file_name' => $item->file_name,
+                        'mime_type' => $item->mime_type,
+                        'size' => $item->size,
+                        'original_url' => $item->getFullUrl(),
+                        'created_at' => $item->created_at->format('Y-m-d H:i:s'),
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'media' => $media
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

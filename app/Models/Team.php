@@ -19,6 +19,7 @@ class Team extends Model
         'email',
         'phone',
         'image',
+        'media_id',
         'social_links',
         'is_active',
         'sort_order',
@@ -52,11 +53,22 @@ class Team extends Model
 
     public function getImageUrlAttribute()
     {
-        if (!$this->image) {
-            return null;
+        // Try media library first
+        if ($this->media_id && $this->media) {
+            return $this->media->getFullUrl();
         }
 
-        return Storage::url($this->image);
+        // Fallback to direct image field
+        if ($this->image) {
+            return Storage::url($this->image);
+        }
+
+        return null;
+    }
+
+    public function media()
+    {
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class);
     }
 
     public function getRouteKeyName()

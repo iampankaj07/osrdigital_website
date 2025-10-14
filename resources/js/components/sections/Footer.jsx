@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import Logo from '../Logo';
 import { useTheme } from '../../contexts/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faEnvelope, 
-    faPhone, 
-    faMapMarkerAlt, 
+import {
+    faEnvelope,
+    faPhone,
+    faMapMarkerAlt,
     faGlobe,
     faPlay,
     faUsers,
@@ -23,7 +23,7 @@ import {
     faMusic,
     faCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { 
+import {
     faYoutube as faYoutubeBrand,
     faTwitter as faTwitterBrand,
     faLinkedin as faLinkedinBrand,
@@ -55,7 +55,7 @@ const getIconByName = (iconName) => {
         'faCircle': faCircle,
         'faYoutube': faYoutubeBrand,
     };
-    
+
     return iconMap[iconName] || faCircle;
 };
 
@@ -69,14 +69,14 @@ const getSocialIcon = (platform) => {
         'facebook': faFacebookBrand,
         'tiktok': faTiktokBrand,
     };
-    
+
     return socialIconMap[platform] || faCircle;
 };
 
 function Footer() {
     const { isDark } = useTheme();
 
-    // Default footer data with icons
+    // Default footer data with icons (fallback only)
     const defaultData = {
         company: {
             name: 'OSR Digital',
@@ -105,14 +105,7 @@ function Footer() {
             { text: 'Marketing Strategy', icon: faChartLine },
             { text: 'Rights Management', icon: faShieldAlt }
         ],
-        social_links: {
-            youtube: { url: 'https://youtube.com/@osrdigital', icon: faYoutubeBrand },
-            twitter: { url: 'https://twitter.com/osrdigital', icon: faTwitterBrand },
-            linkedin: { url: 'https://linkedin.com/company/osrdigital', icon: faLinkedinBrand },
-            instagram: { url: 'https://instagram.com/osrdigital', icon: faInstagramBrand },
-            facebook: { url: 'https://facebook.com/osrdigital', icon: faFacebookBrand },
-            tiktok: { url: 'https://tiktok.com/@osrdigital', icon: faTiktokBrand }
-        },
+        social_links: {},
         legal_links: [
             { text: 'Privacy Policy', url: '/privacy', icon: faShieldAlt },
             { text: 'Terms of Service', url: '/terms', icon: faShieldAlt },
@@ -122,6 +115,7 @@ function Footer() {
     };
 
     const [footerData, setFooterData] = useState(defaultData);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchFooterData = async () => {
@@ -130,11 +124,28 @@ function Footer() {
                 if (response.ok) {
                     const result = await response.json();
                     if (result.success) {
-                        setFooterData(result.data);
+                        // Merge API data with default icons for quick links
+                        const apiData = result.data;
+
+                        // Add icons to quick links if they don't have them
+                        if (apiData.quick_links && Array.isArray(apiData.quick_links)) {
+                            apiData.quick_links = apiData.quick_links.map((link, index) => ({
+                                ...link,
+                                icon: link.icon || defaultData.quick_links[index]?.icon || faGlobe
+                            }));
+                        }
+
+                        setFooterData({
+                            ...defaultData,
+                            ...apiData
+                        });
                     }
                 }
             } catch (error) {
                 console.error('Failed to fetch footer data:', error);
+                // Keep default data on error
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -180,8 +191,8 @@ function Footer() {
                         <div className="space-y-4">
                             <div className="flex items-center space-x-3">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                    isDark 
-                                        ? 'bg-brand-orange-500/20 text-brand-orange-400' 
+                                    isDark
+                                        ? 'bg-brand-orange-500/20 text-brand-orange-400'
                                         : 'bg-brand-orange-100 text-brand-orange-600'
                                 }`}>
                                     <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4" />
@@ -190,7 +201,7 @@ function Footer() {
                                     <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                         Email
                                     </p>
-                                    <a 
+                                    <a
                                         href={`mailto:${contactInfo.email}`}
                                         className={`text-sm transition-colors duration-200 hover-subtle ${
                                             isDark ? 'text-gray-400 hover:text-brand-orange-400' : 'text-gray-600 hover:text-brand-orange-600'
@@ -203,8 +214,8 @@ function Footer() {
 
                             <div className="flex items-center space-x-3">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                    isDark 
-                                        ? 'bg-brand-orange-500/20 text-brand-orange-400' 
+                                    isDark
+                                        ? 'bg-brand-orange-500/20 text-brand-orange-400'
                                         : 'bg-brand-orange-100 text-brand-orange-600'
                                 }`}>
                                     <FontAwesomeIcon icon={faPhone} className="w-4 h-4" />
@@ -213,7 +224,7 @@ function Footer() {
                                     <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                         Phone
                                     </p>
-                                    <a 
+                                    <a
                                         href={`tel:${contactInfo.phone}`}
                                         className={`text-sm transition-colors duration-200 hover-subtle ${
                                             isDark ? 'text-gray-400 hover:text-brand-orange-400' : 'text-gray-600 hover:text-brand-orange-600'
@@ -226,8 +237,8 @@ function Footer() {
 
                             <div className="flex items-center space-x-3">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                    isDark 
-                                        ? 'bg-brand-orange-500/20 text-brand-orange-400' 
+                                    isDark
+                                        ? 'bg-brand-orange-500/20 text-brand-orange-400'
                                         : 'bg-brand-orange-100 text-brand-orange-600'
                                 }`}>
                                     <FontAwesomeIcon icon={faMapMarkerAlt} className="w-4 h-4" />
@@ -256,18 +267,18 @@ function Footer() {
                                     <a
                                         href={link.url}
                                         className={`flex items-center space-x-3 text-sm transition-colors duration-200 hover-subtle group ${
-                                            isDark 
-                                                ? 'text-gray-400 hover:text-white' 
+                                            isDark
+                                                ? 'text-gray-400 hover:text-white'
                                                 : 'text-gray-600 hover:text-gray-900'
                                         }`}
                                     >
-                                        <FontAwesomeIcon 
-                                            icon={link.icon} 
+                                        <FontAwesomeIcon
+                                            icon={link.icon}
                                             className={`w-4 h-4 transition-colors duration-200 ${
-                                                isDark 
-                                                    ? 'text-gray-500 group-hover:text-brand-orange-400' 
+                                                isDark
+                                                    ? 'text-gray-500 group-hover:text-brand-orange-400'
                                                     : 'text-gray-400 group-hover:text-brand-orange-600'
-                                            }`} 
+                                            }`}
                                         />
                                         <span>{link.text}</span>
                                     </a>
@@ -287,18 +298,18 @@ function Footer() {
                                 // Handle both object format {text, icon} and string format
                                 const serviceText = typeof service === 'string' ? service : service.text;
                                 const serviceIcon = typeof service === 'string' ? 'faCircle' : service.icon;
-                                
+
                                 return (
                                     <li key={index} className={`flex items-center space-x-3 text-sm ${
-                                        isDark 
-                                            ? 'text-gray-400' 
+                                        isDark
+                                            ? 'text-gray-400'
                                             : 'text-gray-600'
                                     }`}>
-                                        <FontAwesomeIcon 
-                                            icon={getIconByName(serviceIcon)} 
+                                        <FontAwesomeIcon
+                                            icon={getIconByName(serviceIcon)}
                                             className={`w-4 h-4 ${
                                                 isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'
-                                            }`} 
+                                            }`}
                                         />
                                         <span>{serviceText}</span>
                                     </li>
@@ -320,7 +331,7 @@ function Footer() {
                                 // Handle both data structures: {url, icon} or just URL string
                                 const url = typeof data === 'string' ? data : data?.url;
                                 const icon = typeof data === 'object' ? data?.icon : null;
-                                
+
                                 if (!url) return null;
 
                                 // Get the appropriate icon for the platform
@@ -333,15 +344,15 @@ function Footer() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 hover-subtle group ${
-                                            isDark 
-                                                ? 'bg-gray-800 text-gray-400 hover:text-white hover:bg-brand-orange-500/20 hover:border-brand-orange-500/30 border border-gray-700' 
+                                            isDark
+                                                ? 'bg-gray-800 text-gray-400 hover:text-white hover:bg-brand-orange-500/20 hover:border-brand-orange-500/30 border border-gray-700'
                                                 : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-brand-orange-50 hover:border-brand-orange-200 border border-gray-200'
                                         }`}
                                         title={`Follow us on ${platform.charAt(0).toUpperCase() + platform.slice(1)}`}
                                     >
-                                        <FontAwesomeIcon 
-                                            icon={platformIcon} 
-                                            className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" 
+                                        <FontAwesomeIcon
+                                            icon={platformIcon}
+                                            className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
                                         />
                                     </a>
                                 );
@@ -353,9 +364,9 @@ function Footer() {
                 {/* Bottom Section */}
                 <div className={`py-8 border-t divider-minimal flex flex-col md:flex-row justify-between items-center gap-4`}>
                     <div className="flex items-center space-x-2">
-                        <FontAwesomeIcon 
-                            icon={faCopyright} 
-                            className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} 
+                        <FontAwesomeIcon
+                            icon={faCopyright}
+                            className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
                         />
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             {copyrightText}
@@ -368,8 +379,8 @@ function Footer() {
                                     key={index}
                                     href={link.url}
                                     className={`flex items-center space-x-2 transition-colors duration-200 hover-subtle ${
-                                        isDark 
-                                            ? 'text-gray-400 hover:text-brand-orange-400' 
+                                        isDark
+                                            ? 'text-gray-400 hover:text-brand-orange-400'
                                             : 'text-gray-500 hover:text-brand-orange-600'
                                     }`}
                                 >

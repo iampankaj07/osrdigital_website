@@ -17,6 +17,7 @@ class FilmPortfolio extends Model
         'year',
         'image_url',
         'featured_image',
+        'media_id',
         'gallery_images',
         'video_url',
         'rating',
@@ -40,19 +41,19 @@ class FilmPortfolio extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($film) {
             if (empty($film->slug)) {
                 $film->slug = Str::slug($film->title);
             }
         });
-        
+
         static::saved(function ($film) {
             Cache::forget('film_portfolios');
             Cache::forget('film_portfolios_featured');
             Cache::forget('film_portfolios_published');
         });
-        
+
         static::deleted(function ($film) {
             Cache::forget('film_portfolios');
             Cache::forget('film_portfolios_featured');
@@ -63,6 +64,11 @@ class FilmPortfolio extends Model
     public function category()
     {
         return $this->belongsTo(FilmCategory::class, 'category_id');
+    }
+
+    public function media()
+    {
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class);
     }
 
     public function scopeFeatured($query)
@@ -87,6 +93,11 @@ class FilmPortfolio extends Model
 
     public function getImageUrlAttribute($value)
     {
+        // Use media library first, then fallback to existing logic
+        if ($this->media) {
+            return $this->media->getFullUrl();
+        }
+
         // Use ImageHelper for dynamic image handling
         return ImageHelper::getContextualImage(
             $this->attributes['featured_image'] ?? $value,
@@ -97,6 +108,11 @@ class FilmPortfolio extends Model
 
     public function getFeaturedImageUrlAttribute()
     {
+        // Use media library first, then fallback to existing logic
+        if ($this->media) {
+            return $this->media->getFullUrl();
+        }
+
         return ImageHelper::getContextualImage(
             $this->attributes['featured_image'],
             'hero',
@@ -106,6 +122,11 @@ class FilmPortfolio extends Model
 
     public function getThumbnailUrlAttribute()
     {
+        // Use media library first, then fallback to existing logic
+        if ($this->media) {
+            return $this->media->getFullUrl();
+        }
+
         return ImageHelper::getContextualImage(
             $this->attributes['featured_image'],
             'thumbnail',

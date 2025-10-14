@@ -259,6 +259,10 @@ Route::post('/logout', function (Illuminate\Http\Request $request) {
 // Admin routes
 require __DIR__.'/admin.php';
 
+// Team routes
+Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+
 // Catch-all route for React SPA (place this at the end)
 Route::get('/{any}', function () {
     return view('app');

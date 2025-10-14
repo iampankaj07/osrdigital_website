@@ -54,7 +54,7 @@
                     <i class="fas fa-plus mr-2"></i>
                     Create New Film Portfolio
                 </h5>
-                
+
                 <form wire:submit.prevent="store">
                     <div class="row">
                         <div class="col-md-6">
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -138,7 +138,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -148,18 +148,105 @@
                             </div>
                         </div>
                     </div>
-                    
+
+                    <!-- Featured Image Upload Options -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Featured Image Upload Method</label>
+                                <div class="btn-group d-block" role="group">
+                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
+                                        <i class="fas fa-folder-open mr-1"></i>
+                                        Media Library
+                                    </label>
+                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
+                                        <i class="fas fa-cloud-upload-alt mr-1"></i>
+                                        Upload New
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if($uploadMethod === 'media_library')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Select from Media Library</label>
+                                    <div class="d-flex align-items-center">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('featured_image')">
+                                            <i class="fas fa-folder-open mr-1"></i>
+                                            Browse Media
+                                        </button>
+                                        @if($selectedMediaUrl)
+                                            <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @if($selectedMediaUrl)
+                                    <div class="form-group">
+                                        <label>Selected Image</label>
+                                        <div class="border rounded p-2">
+                                            <img src="{{ $selectedMediaUrl }}" alt="Selected image" class="img-fluid rounded" style="max-height: 150px;">
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @elseif($uploadMethod === 'filepond')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Upload New Featured Image</label>
+                                    <div class="filepond-upload-area">
+                                        <x-filepond::upload wire:model="filepondUploads" multiple="false"
+                                            accepted-file-types="image/*" max-file-size="10MB"
+                                            placeholder="Drop featured image here or <span class='filepond--label-action'>Browse</span>" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @if (!empty($filepondUploads))
+                                    <div class="form-group">
+                                        <label>Uploaded Image Preview</label>
+                                        <div class="border rounded p-2 bg-light">
+                                            <div class="text-center">
+                                                <i class="fas fa-check-circle text-success mb-2"></i>
+                                                <p class="mb-0 small text-muted">Featured image uploaded successfully</p>
+                                                <small class="text-muted d-block mt-1">Ready to save</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @error('filepondUploads')
+                                    <div class="form-group">
+                                        <div class="alert alert-danger alert-sm">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                                            {{ $message }}
+                                        </div>
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="form.image_url">Image URL</label>
+                                <label for="form.image_url">Image URL (Alternative)</label>
                                 <input type="text" wire:model="form.image_url" class="form-control" placeholder="Enter image URL">
                                 @error('form.image_url') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="form.featured_image">Featured Image URL</label>
+                                <label for="form.featured_image">Featured Image URL (Alternative)</label>
                                 <input type="text" wire:model="form.featured_image" class="form-control" placeholder="Enter featured image URL">
                                 @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
@@ -172,7 +259,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-right">
                         <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
                             <i class="fas fa-times mr-1"></i>
@@ -277,22 +364,22 @@
                                 </td>
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $film->id }})" 
-                                                class="btn btn-dark btn-sm border-0" 
+                                        <button wire:click="edit({{ $film->id }})"
+                                                class="btn btn-dark btn-sm border-0"
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button wire:click="toggleFeatured({{ $film->id }})" 
-                                                class="btn btn-outline-{{ $film->is_featured ? 'warning' : 'secondary' }} btn-sm border-0" 
+                                        <button wire:click="toggleFeatured({{ $film->id }})"
+                                                class="btn btn-outline-{{ $film->is_featured ? 'warning' : 'secondary' }} btn-sm border-0"
                                                 title="{{ $film->is_featured ? 'Remove Featured' : 'Make Featured' }}">
                                             <i class="fas fa-star"></i>
                                         </button>
-                                        <button wire:click="togglePublished({{ $film->id }})" 
-                                                class="btn btn-outline-{{ $film->is_published ? 'success' : 'info' }} btn-sm border-0" 
+                                        <button wire:click="togglePublished({{ $film->id }})"
+                                                class="btn btn-outline-{{ $film->is_published ? 'success' : 'info' }} btn-sm border-0"
                                                 title="{{ $film->is_published ? 'Unpublish' : 'Publish' }}">
                                             <i class="fas fa-{{ $film->is_published ? 'eye-slash' : 'eye' }}"></i>
                                         </button>
-                                        <button wire:click="delete({{ $film->id }})" 
+                                        <button wire:click="delete({{ $film->id }})"
                                                 class="btn btn-danger btn-sm border-0"
                                                 title="Delete"
                                                 onclick="return confirm('Are you sure you want to delete this film portfolio?')">
@@ -301,7 +388,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                             <!-- Inline Edit Form -->
                             @if($editingId === $film->id)
                                 <tr class="bg-light">
@@ -311,7 +398,7 @@
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit Film Portfolio
                                             </h5>
-                                            
+
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -336,7 +423,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -360,7 +447,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
@@ -395,7 +482,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -405,18 +492,105 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
+                                                <!-- Featured Image Upload Options for Edit -->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label>Featured Image Upload Method</label>
+                                                            <div class="btn-group d-block" role="group">
+                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
+                                                                    <i class="fas fa-folder-open mr-1"></i>
+                                                                    Media Library
+                                                                </label>
+                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
+                                                                    <i class="fas fa-cloud-upload-alt mr-1"></i>
+                                                                    Upload New
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @if($uploadMethod === 'media_library')
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Select from Media Library</label>
+                                                                <div class="d-flex align-items-center">
+                                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('featured_image')">
+                                                                        <i class="fas fa-folder-open mr-1"></i>
+                                                                        Browse Media
+                                                                    </button>
+                                                                    @if($selectedMediaUrl)
+                                                                        <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            @if($selectedMediaUrl)
+                                                                <div class="form-group">
+                                                                    <label>Selected Image</label>
+                                                                    <div class="border rounded p-2">
+                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected image" class="img-fluid rounded" style="max-height: 150px;">
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @elseif($uploadMethod === 'filepond')
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Upload New Featured Image</label>
+                                                                <div class="filepond-upload-area">
+                                                                    <x-filepond::upload wire:model="filepondUploads" multiple="false"
+                                                                        accepted-file-types="image/*" max-file-size="10MB"
+                                                                        placeholder="Drop featured image here or <span class='filepond--label-action'>Browse</span>" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            @if (!empty($filepondUploads))
+                                                                <div class="form-group">
+                                                                    <label>Uploaded Image Preview</label>
+                                                                    <div class="border rounded p-2 bg-light">
+                                                                        <div class="text-center">
+                                                                            <i class="fas fa-check-circle text-success mb-2"></i>
+                                                                            <p class="mb-0 small text-muted">Featured image uploaded successfully</p>
+                                                                            <small class="text-muted d-block mt-1">Ready to save</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                            @error('filepondUploads')
+                                                                <div class="form-group">
+                                                                    <div class="alert alert-danger alert-sm">
+                                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                                        {{ $message }}
+                                                                    </div>
+                                                                </div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                @endif
+
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label for="form.image_url">Image URL</label>
+                                                            <label for="form.image_url">Image URL (Alternative)</label>
                                                             <input type="text" wire:model="form.image_url" class="form-control">
                                                             @error('form.image_url') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label for="form.featured_image">Featured Image URL</label>
+                                                            <label for="form.featured_image">Featured Image URL (Alternative)</label>
                                                             <input type="text" wire:model="form.featured_image" class="form-control">
                                                             @error('form.featured_image') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
@@ -473,4 +647,233 @@
             @endif
         </div>
     </div>
+
+    <!-- Media Library Modal -->
+    <div wire:ignore>
+        @include('admin.media-library.modal')
+    </div>
 </div>
+
+@push('scripts')
+<script>
+function openMediaLibrary(field) {
+    if (typeof window.mediaLibraryModal !== 'undefined') {
+        window.mediaLibraryModal.show();
+        window.currentMediaField = field;
+    }
+}
+
+// Listen for media selection events
+document.addEventListener('livewire:initialized', function () {
+    window.addEventListener('media-selected', function(e) {
+        if (window.currentMediaField === 'featured_image') {
+            @this.call('handleMediaSelection', {
+                id: e.detail.id,
+                url: e.detail.url
+            });
+        }
+        if (typeof window.mediaLibraryModal !== 'undefined') {
+            window.mediaLibraryModal.hide();
+        }
+    });
+
+    // Enhanced FilePond event handling
+    window.addEventListener('filepond-upload-started', function(e) {
+        console.log('Upload started:', e.detail);
+        // Show loading state
+        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
+        uploadAreas.forEach(area => {
+            area.classList.add('uploading');
+        });
+    });
+
+    window.addEventListener('filepond-upload-finished', function(e) {
+        console.log('Upload finished:', e.detail);
+        // Remove loading state
+        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
+        uploadAreas.forEach(area => {
+            area.classList.remove('uploading');
+            area.classList.add('upload-success');
+        });
+
+        // Trigger Livewire refresh for preview
+        @this.$refresh();
+    });
+
+    window.addEventListener('filepond-upload-reset', function(e) {
+        console.log('Upload reset:', e.detail);
+        // Reset states
+        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
+        uploadAreas.forEach(area => {
+            area.classList.remove('uploading', 'upload-success', 'upload-error');
+        });
+    });
+
+    window.addEventListener('filepond-upload-reverted', function(e) {
+        console.log('Upload reverted:', e.detail);
+        // Reset preview
+        @this.$refresh();
+    });
+});
+</script>
+@endpush
+
+@push('styles')
+    <style>
+        /* FilePond styling for film portfolios */
+        .filepond-upload-area {
+            min-height: 120px;
+        }
+
+        .filepond--root {
+            font-size: 0.875rem;
+        }
+
+        /* Drop area styling */
+        .filepond--drop-label {
+            height: auto !important;
+            min-height: 100px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .filepond--panel-root {
+            min-height: 100px !important;
+            border-radius: 0.375rem;
+            border: 2px dashed #e9ecef;
+            background-color: #f8f9fa;
+        }
+
+        /* File item styling */
+        .filepond--item {
+            height: auto !important;
+            min-height: 80px !important;
+        }
+
+        .filepond--item-panel {
+            height: auto !important;
+            min-height: 80px !important;
+        }
+
+        /* Image preview styling */
+        .filepond--image-preview-wrapper {
+            height: auto !important;
+            min-height: 80px !important;
+        }
+
+        .filepond--image-preview {
+            height: auto !important;
+            min-height: 80px !important;
+            max-height: 120px !important;
+            border-radius: 0.375rem;
+        }
+
+        /* Process indicator styling */
+        .filepond--file-action-button {
+            width: 26px;
+            height: 26px;
+        }
+
+        /* Loading state */
+        .filepond--item-panel .filepond--item-process {
+            background-color: rgba(0, 123, 255, 0.1);
+            border-radius: 0.375rem;
+        }
+
+        /* Success state */
+        .filepond--item[data-filepond-item-state="processing-complete"] .filepond--item-panel {
+            background-color: rgba(40, 167, 69, 0.1);
+            border-color: #28a745;
+        }
+
+        /* Error state */
+        .filepond--item[data-filepond-item-state="processing-error"] .filepond--item-panel {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-color: #dc3545;
+        }
+
+        /* Upload area states */
+        .filepond-upload-area.uploading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .filepond-upload-area.uploading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 123, 255, 0.1);
+            border-radius: 0.375rem;
+            z-index: 1;
+        }
+
+        .filepond-upload-area.upload-success {
+            animation: uploadSuccess 0.5s ease-in-out;
+        }
+
+        @keyframes uploadSuccess {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(40, 167, 69, 0.1); }
+            100% { background-color: transparent; }
+        }
+
+        /* Inline edit form improvements */
+        .inline-edit-form {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .inline-edit-form .filepond-upload-area {
+            background-color: white;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+        }
+
+        /* Alert styling */
+        .alert-sm {
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-sm i {
+            font-size: 0.75rem;
+        }
+
+        /* Upload method button styling */
+        .btn-group .btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-group .btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .btn-group .btn:hover:not(.active) {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .filepond--drop-label {
+                min-height: 80px !important;
+            }
+
+            .filepond--panel-root {
+                min-height: 80px !important;
+            }
+
+            .filepond-upload-area {
+                min-height: 100px;
+            }
+        }
+    </style>
+@endpush

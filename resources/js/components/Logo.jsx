@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function Logo({ type = 'seeklogo', className = '', width = 'auto', height = '40' }) {
     const [imageError, setImageError] = useState(false);
 
-    // Use static logo file for better cloud deployment reliability
-    const logoUrl = '/images/logo.png';
+    // Get site logo from window.siteSettings or fallback to static logo
+    const siteLogo = window.siteSettings?.site_logo;
+    const logoUrl = siteLogo || '/images/logo.png';
 
     const handleImageError = () => {
         setImageError(true);
@@ -18,8 +19,8 @@ function Logo({ type = 'seeklogo', className = '', width = 'auto', height = '40'
         return (
             <div
                 className={`bg-gradient-to-r from-brand-orange-500 to-red-600 rounded flex items-center justify-center ${className}`}
-                style={{ 
-                    width: widthNum, 
+                style={{
+                    width: widthNum,
                     height: heightNum,
                     minWidth: '80px',
                     minHeight: '32px'
@@ -35,8 +36,8 @@ function Logo({ type = 'seeklogo', className = '', width = 'auto', height = '40'
             src={logoUrl}
             alt="OSR Digital Logo"
             className={`object-contain ${className}`}
-            style={{ 
-                width: widthNum, 
+            style={{
+                width: widthNum,
                 height: heightNum,
                 maxHeight: heightNum,
                 maxWidth: widthNum,
