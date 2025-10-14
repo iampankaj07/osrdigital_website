@@ -32,6 +32,7 @@ class Index extends Component
         'email' => '',
         'sort_order' => 0,
         'is_active' => true,
+        'media_id' => null,
     ];
 
     // FilePond uploads
@@ -53,7 +54,6 @@ class Index extends Component
 
     protected $listeners = [
         'mediaSelected' => 'handleMediaSelection',
-        'fileUploaded' => 'handleFileUploaded',
     ];
 
     public function updatingSearch()
@@ -85,6 +85,14 @@ class Index extends Component
         $this->form['sort_order'] = TeamMember::max('sort_order') + 1;
     }
 
+    public function resetUploadStates()
+    {
+        $this->filepondUploads = [];
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->uploadMethod = 'filepond';
+    }
+
     public function edit($id)
     {
         $this->editingId = $id;
@@ -101,11 +109,12 @@ class Index extends Component
             'email' => $teamMember->email,
             'sort_order' => $teamMember->sort_order,
             'is_active' => $teamMember->is_active,
+            'media_id' => $teamMember->media_id,
         ];
 
         $this->resetUploadStates();
 
-        // Load existing media selection if available
+        // Load existing media selection
         if ($teamMember->media_id) {
             $this->selectedMediaId = $teamMember->media_id;
             $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($teamMember->media_id);
@@ -127,6 +136,50 @@ class Index extends Component
         $this->resetUploadStates();
     }
 
+    public function validateUploadedFile($filename)
+    {
+        return true;
+    }
+
+    public function handleMediaSelection($data)
+    {
+        // Log the data structure for debugging
+        Log::info('Media selection data received:', ['data' => $data]);
+
+        // Handle case where data is an indexed array containing the media data
+        if (is_array($data) && isset($data[0]) && is_array($data[0])) {
+            $data = $data[0];
+        }
+
+        // Add defensive programming to handle missing keys
+        if (isset($data['mediaId'])) {
+            $this->selectedMediaId = $data['mediaId'];
+            $this->form['media_id'] = $data['mediaId'];
+            Log::info('Media ID set to:', ['mediaId' => $data['mediaId']]);
+        } else {
+            Log::warning('mediaId not found in data:', ['data' => $data]);
+        }
+
+        if (isset($data['mediaUrl'])) {
+            $this->selectedMediaUrl = $data['mediaUrl'];
+            Log::info('Media URL set to:', ['mediaUrl' => $data['mediaUrl']]);
+        } else {
+            Log::warning('mediaUrl not found in data:', ['data' => $data]);
+        }
+    }
+
+    public function openMediaSelector()
+    {
+        $this->dispatch('openMediaSelector');
+    }
+
+    public function clearSelectedMedia()
+    {
+        $this->selectedMediaId = null;
+        $this->selectedMediaUrl = null;
+        $this->form['media_id'] = null;
+    }
+
     public function store()
     {
         $this->validate([
@@ -141,33 +194,39 @@ class Index extends Component
             'form.is_active' => 'boolean',
         ]);
 
-        $teamMemberData = $this->form;
-
-        // Create team member first
-        $teamMember = TeamMember::create($teamMemberData);
-
-        // Handle media uploads after team member creation
-        if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
-            $teamMember->update(['media_id' => $this->selectedMediaId]);
-        } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
-            // Process FilePond uploads using Spatie Media Library
+        try {
             $user = Auth::user();
-            foreach ($this->filepondUploads as $upload) {
-                $media = $user->addMedia($upload->getRealPath())
-                    ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($upload->getClientOriginalName())
-                    ->toMediaCollection('media-library');
+            $memberData = $this->form;
 
-                $teamMember->update(['media_id' => $media->id]);
-                break; // Only take the first file for avatar
+            // Handle avatar upload based on method
+            if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+                $memberData['media_id'] = $this->selectedMediaId;
+                $memberData['avatar'] = null; // Clear avatar field when using media library
+            } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+                // Process FilePond uploads
+                foreach ($this->filepondUploads as $upload) {
+                    $media = $user->addMedia($upload->getRealPath())
+                        ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
+                        ->usingFileName($upload->getClientOriginalName())
+                        ->toMediaCollection('media-library');
+
+                    $memberData['media_id'] = $media->id;
+                    $memberData['avatar'] = null; // Clear avatar field when using FilePond
+                    break; // Only take the first file for avatar
+                }
             }
+
+            TeamMember::create($memberData);
+
+            $this->isCreating = false;
+            $this->reset('form');
+            $this->resetUploadStates();
+
+            session()->flash('success', 'Team Member created successfully!');
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error creating team member: ' . $e->getMessage());
         }
-
-        $this->isCreating = false;
-        $this->reset('form');
-        $this->resetUploadStates();
-
-        session()->flash('success', 'Team Member created successfully!');
     }
 
     public function update()
@@ -184,54 +243,46 @@ class Index extends Component
             'form.is_active' => 'boolean',
         ]);
 
-        if (!$this->editingId) {
-            session()->flash('error', 'No team member selected for editing.');
-            return;
-        }
-
-        $teamMember = TeamMember::findOrFail($this->editingId);
-        $teamMemberData = $this->form;
-
-        // Update team member first
-        $teamMember->update($teamMemberData);
-
-        // Handle media uploads after team member update
         try {
+            $user = Auth::user();
+            $teamMember = TeamMember::findOrFail($this->editingId);
+            $memberData = $this->form;
+
+            // Handle avatar update based on method
             if ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
-                $teamMember->update(['media_id' => $this->selectedMediaId]);
-            } elseif ($this->uploadMethod === 'filepond' && is_array($this->filepondUploads) && count($this->filepondUploads) > 0) {
-                // Process FilePond uploads using Spatie Media Library (same as TrustedPartners)
-                $user = Auth::user();
+                $memberData['media_id'] = $this->selectedMediaId;
+                $memberData['avatar'] = null;
+            } elseif ($this->uploadMethod === 'filepond' && count($this->filepondUploads) > 0) {
+                // Process FilePond uploads
                 foreach ($this->filepondUploads as $upload) {
                     $media = $user->addMedia($upload->getRealPath())
                         ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
                         ->usingFileName($upload->getClientOriginalName())
                         ->toMediaCollection('media-library');
 
-                    $teamMember->update(['media_id' => $media->id]);
-                    break; // Only take the first file for avatar
+                    $memberData['media_id'] = $media->id;
+                    $memberData['avatar'] = null;
+                    break;
                 }
             }
+
+            $teamMember->update($memberData);
+
+            $this->editingId = null;
+            $this->reset('form');
+            $this->resetUploadStates();
+
+            session()->flash('success', 'Team Member updated successfully!');
+
         } catch (\Exception $e) {
-            Log::error('Media upload error in team member update: ' . $e->getMessage());
-            session()->flash('error', 'Error uploading file: ' . $e->getMessage());
-            return;
+            session()->flash('error', 'Error updating team member: ' . $e->getMessage());
         }
-
-        $this->editingId = null;
-        $this->reset('form');
-        $this->resetUploadStates();
-
-        // Dispatch an event to refresh the component
-        $this->dispatch('teamMemberUpdated');
-
-        session()->flash('success', 'Team Member updated successfully!');
     }
 
-    public function deleteTeamMember($id)
+    public function delete($id)
     {
         $teamMember = TeamMember::findOrFail($id);
-        $teamMember->delete(); // This calls Eloquent's delete method, not our method
+        $teamMember->delete();
 
         session()->flash('success', 'Team Member deleted successfully!');
     }
@@ -242,69 +293,6 @@ class Index extends Component
         $teamMember->update(['is_active' => !$teamMember->is_active]);
 
         session()->flash('success', 'Team Member status updated successfully!');
-    }
-
-    public function resetUploadStates()
-    {
-        // Clear FilePond uploads
-        $this->filepondUploads = [];
-
-        // Clear media library selection
-        $this->selectedMediaId = null;
-        $this->selectedMediaUrl = null;
-
-        // Reset to default upload method
-        $this->uploadMethod = 'filepond';
-
-        // Dispatch event to reset FilePond components
-        $this->dispatch('reset-filepond');
-    }
-
-    // Method to handle FilePond file removal
-    public function updatedFilepondUploads()
-    {
-        // This method is called when filepondUploads is updated
-        // Can be used for additional processing if needed
-    }
-
-    // Debug method to check component state
-    public function debugState()
-    {
-        Log::info('TeamMembers Component Debug State', [
-            'editingId' => $this->editingId,
-            'isCreating' => $this->isCreating,
-            'form' => $this->form,
-            'uploadMethod' => $this->uploadMethod,
-            'filepondUploads_count' => is_array($this->filepondUploads) ? count($this->filepondUploads) : 0,
-            'selectedMediaId' => $this->selectedMediaId,
-            'selectedMediaUrl' => $this->selectedMediaUrl,
-        ]);
-    }    public function validateUploadedFile($filename)
-    {
-        return true;
-    }
-
-    public function handleMediaSelection($data)
-    {
-        if (isset($data['id']) && isset($data['url'])) {
-            $this->selectedMediaId = $data['id'];
-            $this->selectedMediaUrl = $data['url'];
-
-            // Update upload method to media_library when media is selected
-            $this->uploadMethod = 'media_library';
-        }
-    }
-
-    public function clearSelectedMedia()
-    {
-        $this->selectedMediaId = null;
-        $this->selectedMediaUrl = null;
-    }
-
-    public function handleFileUploaded()
-    {
-        // This method can be called when FilePond finishes uploading
-        // The component will automatically refresh when filepondUploads changes
     }
 
     public function render()
