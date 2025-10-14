@@ -268,7 +268,7 @@ class Index extends Component
     {
         try {
             Log::info('Film Portfolio - Media selection received:', ['data' => $data]);
-            
+
             // Handle case where data is an indexed array containing the media data
             if (is_array($data) && isset($data[0]) && is_array($data[0])) {
                 $data = $data[0];
@@ -289,12 +289,12 @@ class Index extends Component
             } else {
                 Log::warning('Film Portfolio - mediaUrl not found in data:', ['data' => $data]);
             }
-            
+
             Log::info('Film Portfolio - Media selection completed', [
                 'media_id' => $this->selectedMediaId,
                 'url' => $this->selectedMediaUrl
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error('Film Portfolio - Media selection error: ' . $e->getMessage());
             session()->flash('error', 'Failed to select media. Please try again.');

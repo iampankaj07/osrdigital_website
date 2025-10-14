@@ -3,13 +3,34 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h4 mb-1 font-weight-normal">Testimonials</h1>
-            <p class="text-muted small mb-0">Manage client testimonials and reviews</p>
+            <p class="text-muted small mb-0">Manage customer testimonials and reviews</p>
         </div>
         <button wire:click="create" class="btn btn-dark btn-sm">
             <i class="fas fa-plus mr-1"></i>
             Add Testimonial
         </button>
     </div>
+
+    <!-- Flash Messages -->
+    @if (session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle mr-2"></i>
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
 
     <!-- Filters -->
     <div class="card border-0 shadow-sm mb-4">
@@ -18,10 +39,10 @@
                 <div class="col-md-6">
                     <div class="form-group mb-0">
                         <label for="search" class="small text-muted mb-1">Search</label>
-                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search by name, content, company, or project...">
+                        <input type="text" wire:model.live="search" class="form-control form-control-sm" placeholder="Search by name, company, content, or project...">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group mb-0">
                         <label for="perPage" class="small text-muted mb-1">Per Page</label>
                         <select wire:model.live="perPage" class="form-control form-control-sm">
@@ -48,15 +69,15 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="form.name">Client Name</label>
-                                <input type="text" wire:model="form.name" class="form-control" placeholder="Enter client name">
+                                <label for="form.name">Customer Name</label>
+                                <input type="text" wire:model="form.name" class="form-control" placeholder="Enter customer name">
                                 @error('form.name') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="form.role">Role/Title</label>
-                                <input type="text" wire:model="form.role" class="form-control" placeholder="e.g., CEO, Director">
+                                <label for="form.role">Role/Position</label>
+                                <input type="text" wire:model="form.role" class="form-control" placeholder="e.g., CEO, Manager">
                                 @error('form.role') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -72,8 +93,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="form.project">Project</label>
-                                <input type="text" wire:model="form.project" class="form-control" placeholder="Project name or type">
+                                <label for="form.project">Project Name</label>
+                                <input type="text" wire:model="form.project" class="form-control" placeholder="Project or service provided">
                                 @error('form.project') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -86,15 +107,9 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-check-label">
-                                    <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
-                                    Featured
-                                </label>
-                                <br>
-                                <label class="form-check-label">
-                                    <input type="checkbox" wire:model="form.is_published" class="form-check-input">
-                                    Published
-                                </label>
+                                <label for="form.avatar_url">Avatar URL (Alternative)</label>
+                                <input type="url" wire:model="form.avatar_url" class="form-control" placeholder="https://...">
+                                @error('form.avatar_url') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
@@ -103,7 +118,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="form.content">Testimonial Content</label>
-                                <textarea wire:model="form.content" class="form-control" rows="4" placeholder="Enter testimonial content"></textarea>
+                                <textarea wire:model="form.content" class="form-control" rows="4" placeholder="Enter the testimonial content..."></textarea>
                                 @error('form.content') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -114,16 +129,12 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Avatar Upload Method</label>
-                                <div class="btn-group d-block" role="group">
+                                <div class="btn-group d-block">
                                     <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
-                                        <i class="fas fa-folder-open mr-1"></i>
-                                        Media Library
+                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                     </label>
                                     <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
-                                        <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                        Upload New
+                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                     </label>
                                 </div>
                             </div>
@@ -136,72 +147,59 @@
                                 <div class="form-group">
                                     <label>Select from Media Library</label>
                                     <div class="d-flex align-items-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('avatar')">
-                                            <i class="fas fa-folder-open mr-1"></i>
-                                            Browse Media
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-images mr-1"></i>Browse Media
                                         </button>
                                         @if($selectedMediaUrl)
-                                            <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
+                                            <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         @endif
                                     </div>
+                                    @if($selectedMediaUrl)
+                                        <div class="mt-2">
+                                            <img src="{{ $selectedMediaUrl }}" alt="Selected Avatar" class="img-thumbnail rounded-circle" style="max-height: 80px; width: 80px; object-fit: cover;">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                @if($selectedMediaUrl)
-                                    <div class="form-group">
-                                        <label>Selected Avatar</label>
-                                        <div class="border rounded p-2">
-                                            <img src="{{ $selectedMediaUrl }}" alt="Selected avatar" class="img-fluid rounded" style="max-height: 100px;">
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
                         </div>
-                    @elseif($uploadMethod === 'filepond')
+                    @endif
+
+                    @if($uploadMethod === 'filepond')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Upload New Avatar</label>
-                                    <div class="filepond-upload-area">
-                                        <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                            accepted-file-types="image/*" max-file-size="10MB"
-                                            placeholder="Drop avatar here or <span class='filepond--label-action'>Browse</span>" />
+                                    <label>Upload Avatar Image</label>
+                                    <div style="max-height: 120px;">
+                                        <x-filepond::upload
+                                            wire:model="filepondUploads"
+                                            multiple="false"
+                                            accepted-file-types="image/*"
+                                            max-file-size="5MB"
+                                            placeholder="Drop avatar image here or <span class='filepond--label-action'>Browse</span>"
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                @if (!empty($filepondUploads))
-                                    <div class="form-group">
-                                        <label>Uploaded Avatar Preview</label>
-                                        <div class="border rounded p-2 bg-light">
-                                            <div class="text-center">
-                                                <i class="fas fa-check-circle text-success mb-2"></i>
-                                                <p class="mb-0 small text-muted">Avatar uploaded successfully</p>
-                                                <small class="text-muted d-block mt-1">Ready to save</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                                @error('filepondUploads')
-                                    <div class="form-group">
-                                        <div class="alert alert-danger alert-sm">
-                                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                                            {{ $message }}
-                                        </div>
-                                    </div>
-                                @enderror
                             </div>
                         </div>
                     @endif
 
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="form.avatar_url">Avatar URL (Alternative)</label>
-                                <input type="text" wire:model="form.avatar_url" class="form-control" placeholder="Enter avatar image URL">
-                                @error('form.avatar_url') <span class="text-danger small">{{ $message }}</span> @enderror
+                                <label class="form-check-label">
+                                    <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
+                                    Featured Testimonial
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-check-label">
+                                    <input type="checkbox" wire:model="form.is_published" class="form-check-input">
+                                    Published
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -238,9 +236,9 @@
                                     @endif
                                 </span>
                             </th>
-                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 25%;">
+                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 30%;">
                                 <span class="d-flex align-items-center">
-                                    Client
+                                    Customer
                                     @if($sortField === 'name')
                                         <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
                                     @else
@@ -248,10 +246,10 @@
                                     @endif
                                 </span>
                             </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Company/Project</th>
                             <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 35%;">Testimonial</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 7%;">Actions</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Project</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 12%;">Status</th>
+                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 20%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -271,33 +269,34 @@
                                         @endif
                                         <div>
                                             <div class="font-weight-medium text-dark">{{ $testimonial->name }}</div>
-                                            @if($testimonial->role)
-                                                <div class="text-muted small">{{ $testimonial->role }}</div>
-                                            @endif
+                                            <div class="text-muted small">
+                                                @if($testimonial->role && $testimonial->company)
+                                                    {{ $testimonial->role }} at {{ $testimonial->company }}
+                                                @elseif($testimonial->role)
+                                                    {{ $testimonial->role }}
+                                                @elseif($testimonial->company)
+                                                    {{ $testimonial->company }}
+                                                @else
+                                                    Customer
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="small">
-                                        @if($testimonial->company)
-                                            <div class="font-weight-medium text-dark">{{ $testimonial->company }}</div>
-                                        @endif
-                                        @if($testimonial->project)
-                                            <div class="text-muted">{{ $testimonial->project }}</div>
-                                        @endif
-                                    </div>
+                                    <div class="text-muted small">{{ Str::limit($testimonial->content, 80) }}</div>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div class="text-muted small">{{ Str::limit($testimonial->content, 100) }}</div>
+                                    <div class="text-muted small">{{ $testimonial->project ?: '-' }}</div>
                                 </td>
                                 <td class="py-3 px-3 text-center">
-                                    <div class="d-flex flex-column align-items-center">
-                                        @if($testimonial->is_featured)
-                                            <span class="badge badge-warning badge-sm mb-1">Featured</span>
-                                        @endif
-                                        <span class="badge badge-{{ $testimonial->is_published ? 'success' : 'light' }} badge-sm">
+                                    <div class="d-flex flex-column">
+                                        <span class="badge badge-{{ $testimonial->is_published ? 'success' : 'light' }} badge-sm mb-1">
                                             {{ $testimonial->is_published ? 'Published' : 'Draft' }}
                                         </span>
+                                        @if($testimonial->is_featured)
+                                            <span class="badge badge-warning badge-sm">Featured</span>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="py-3 px-3 text-center">
@@ -309,11 +308,11 @@
                                         </button>
                                         <button wire:click="toggleFeatured({{ $testimonial->id }})"
                                                 class="btn btn-outline-{{ $testimonial->is_featured ? 'warning' : 'secondary' }} btn-sm border-0"
-                                                title="{{ $testimonial->is_featured ? 'Remove Featured' : 'Make Featured' }}">
+                                                title="{{ $testimonial->is_featured ? 'Remove from Featured' : 'Mark as Featured' }}">
                                             <i class="fas fa-star"></i>
                                         </button>
                                         <button wire:click="togglePublished({{ $testimonial->id }})"
-                                                class="btn btn-outline-{{ $testimonial->is_published ? 'success' : 'info' }} btn-sm border-0"
+                                                class="btn btn-outline-{{ $testimonial->is_published ? 'warning' : 'success' }} btn-sm border-0"
                                                 title="{{ $testimonial->is_published ? 'Unpublish' : 'Publish' }}">
                                             <i class="fas fa-{{ $testimonial->is_published ? 'eye-slash' : 'eye' }}"></i>
                                         </button>
@@ -341,14 +340,14 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="form.name">Client Name</label>
+                                                            <label for="form.name">Customer Name</label>
                                                             <input type="text" wire:model="form.name" class="form-control">
                                                             @error('form.name') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="form.role">Role/Title</label>
+                                                            <label for="form.role">Role/Position</label>
                                                             <input type="text" wire:model="form.role" class="form-control">
                                                             @error('form.role') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
@@ -365,7 +364,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="form.project">Project</label>
+                                                            <label for="form.project">Project Name</label>
                                                             <input type="text" wire:model="form.project" class="form-control">
                                                             @error('form.project') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
@@ -379,15 +378,9 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-check-label">
-                                                                <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
-                                                                Featured
-                                                            </label>
-                                                            <br>
-                                                            <label class="form-check-label">
-                                                                <input type="checkbox" wire:model="form.is_published" class="form-check-input">
-                                                                Published
-                                                            </label>
+                                                            <label for="form.avatar_url">Avatar URL</label>
+                                                            <input type="url" wire:model="form.avatar_url" class="form-control">
+                                                            @error('form.avatar_url') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                 </div>
@@ -396,7 +389,7 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for="form.content">Testimonial Content</label>
-                                                            <textarea wire:model="form.content" class="form-control" rows="4"></textarea>
+                                                            <textarea wire:model="form.content" class="form-control" rows="3"></textarea>
                                                             @error('form.content') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
@@ -407,16 +400,12 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label>Avatar Upload Method</label>
-                                                            <div class="btn-group d-block" role="group">
+                                                            <div class="btn-group d-block">
                                                                 <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;">
-                                                                    <i class="fas fa-folder-open mr-1"></i>
-                                                                    Media Library
+                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                                                 </label>
                                                                 <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;">
-                                                                    <i class="fas fa-cloud-upload-alt mr-1"></i>
-                                                                    Upload New
+                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                                                 </label>
                                                             </div>
                                                         </div>
@@ -429,72 +418,59 @@
                                                             <div class="form-group">
                                                                 <label>Select from Media Library</label>
                                                                 <div class="d-flex align-items-center">
-                                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="openMediaLibrary('avatar')">
-                                                                        <i class="fas fa-folder-open mr-1"></i>
-                                                                        Browse Media
+                                                                    <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                                        <i class="fas fa-images mr-1"></i>Browse Media
                                                                     </button>
                                                                     @if($selectedMediaUrl)
-                                                                        <button type="button" class="btn btn-outline-danger btn-sm ml-2" wire:click="$set('selectedMediaId', null)">
+                                                                        <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
                                                                             <i class="fas fa-times"></i>
                                                                         </button>
                                                                     @endif
                                                                 </div>
+                                                                @if($selectedMediaUrl)
+                                                                    <div class="mt-2">
+                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected Avatar" class="img-thumbnail rounded-circle" style="max-height: 80px; width: 80px; object-fit: cover;">
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            @if($selectedMediaUrl)
-                                                                <div class="form-group">
-                                                                    <label>Selected Avatar</label>
-                                                                    <div class="border rounded p-2">
-                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected avatar" class="img-fluid rounded" style="max-height: 100px;">
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
                                                     </div>
-                                                @elseif($uploadMethod === 'filepond')
+                                                @endif
+
+                                                @if($uploadMethod === 'filepond')
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Upload New Avatar</label>
-                                                                <div class="filepond-upload-area">
-                                                                    <x-filepond::upload wire:model="filepondUploads" multiple="false"
-                                                                        accepted-file-types="image/*" max-file-size="10MB"
-                                                                        placeholder="Drop avatar here or <span class='filepond--label-action'>Browse</span>" />
+                                                                <label>Upload Avatar Image</label>
+                                                                <div style="max-height: 120px;">
+                                                                    <x-filepond::upload
+                                                                        wire:model="filepondUploads"
+                                                                        multiple="false"
+                                                                        accepted-file-types="image/*"
+                                                                        max-file-size="5MB"
+                                                                        placeholder="Drop avatar image here or <span class='filepond--label-action'>Browse</span>"
+                                                                    />
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            @if (!empty($filepondUploads))
-                                                                <div class="form-group">
-                                                                    <label>Uploaded Avatar Preview</label>
-                                                                    <div class="border rounded p-2 bg-light">
-                                                                        <div class="text-center">
-                                                                            <i class="fas fa-check-circle text-success mb-2"></i>
-                                                                            <p class="mb-0 small text-muted">Avatar uploaded successfully</p>
-                                                                            <small class="text-muted d-block mt-1">Ready to save</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                            @error('filepondUploads')
-                                                                <div class="form-group">
-                                                                    <div class="alert alert-danger alert-sm">
-                                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                                        {{ $message }}
-                                                                    </div>
-                                                                </div>
-                                                            @enderror
                                                         </div>
                                                     </div>
                                                 @endif
 
                                                 <div class="row">
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="form.avatar_url">Avatar URL (Alternative)</label>
-                                                            <input type="text" wire:model="form.avatar_url" class="form-control">
-                                                            @error('form.avatar_url') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" wire:model="form.is_featured" class="form-check-input">
+                                                                Featured Testimonial
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-check-label">
+                                                                <input type="checkbox" wire:model="form.is_published" class="form-check-input">
+                                                                Published
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -543,232 +519,18 @@
         </div>
     </div>
 
-    <!-- Media Library Modal -->
-    <div wire:ignore>
-        @include('admin.media-library.modal')
-    </div>
+    @livewire('components.media-selector')
 </div>
 
 @push('scripts')
 <script>
-function openMediaLibrary(field) {
-    if (typeof window.mediaLibraryModal !== 'undefined') {
-        window.mediaLibraryModal.show();
-        window.currentMediaField = field;
-    }
-}
+document.addEventListener('livewire:initialized', function() {
+    console.log('Testimonials - Livewire initialized');
 
-// Listen for media selection events
-document.addEventListener('livewire:initialized', function () {
-    window.addEventListener('media-selected', function(e) {
-        if (window.currentMediaField === 'avatar') {
-            @this.call('handleMediaSelection', {
-                id: e.detail.id,
-                url: e.detail.url
-            });
-        }
-        if (typeof window.mediaLibraryModal !== 'undefined') {
-            window.mediaLibraryModal.hide();
-        }
-    });
-
-    // Enhanced FilePond event handling
-    window.addEventListener('filepond-upload-started', function(e) {
-        console.log('Upload started:', e.detail);
-        // Show loading state
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.add('uploading');
-        });
-    });
-
-    window.addEventListener('filepond-upload-finished', function(e) {
-        console.log('Upload finished:', e.detail);
-        // Remove loading state
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.remove('uploading');
-            area.classList.add('upload-success');
-        });
-
-        // Trigger Livewire refresh for preview
-        @this.$refresh();
-    });
-
-    window.addEventListener('filepond-upload-reset', function(e) {
-        console.log('Upload reset:', e.detail);
-        // Reset states
-        const uploadAreas = document.querySelectorAll('.filepond-upload-area');
-        uploadAreas.forEach(area => {
-            area.classList.remove('uploading', 'upload-success', 'upload-error');
-        });
-    });
-
-    window.addEventListener('filepond-upload-reverted', function(e) {
-        console.log('Upload reverted:', e.detail);
-        // Reset preview
-        @this.$refresh();
+    // Handle media selection events
+    window.addEventListener('mediaSelected', function(event) {
+        @this.call('handleMediaSelection', event.detail);
     });
 });
 </script>
-@endpush
-
-@push('styles')
-    <style>
-        /* FilePond styling for testimonials */
-        .filepond-upload-area {
-            min-height: 120px;
-        }
-
-        .filepond--root {
-            font-size: 0.875rem;
-        }
-
-        /* Drop area styling */
-        .filepond--drop-label {
-            height: auto !important;
-            min-height: 100px !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .filepond--panel-root {
-            min-height: 100px !important;
-            border-radius: 0.375rem;
-            border: 2px dashed #e9ecef;
-            background-color: #f8f9fa;
-        }
-
-        /* File item styling */
-        .filepond--item {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        .filepond--item-panel {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        /* Image preview styling */
-        .filepond--image-preview-wrapper {
-            height: auto !important;
-            min-height: 80px !important;
-        }
-
-        .filepond--image-preview {
-            height: auto !important;
-            min-height: 80px !important;
-            max-height: 120px !important;
-            border-radius: 0.375rem;
-        }
-
-        /* Process indicator styling */
-        .filepond--file-action-button {
-            width: 26px;
-            height: 26px;
-        }
-
-        /* Loading state */
-        .filepond--item-panel .filepond--item-process {
-            background-color: rgba(0, 123, 255, 0.1);
-            border-radius: 0.375rem;
-        }
-
-        /* Success state */
-        .filepond--item[data-filepond-item-state="processing-complete"] .filepond--item-panel {
-            background-color: rgba(40, 167, 69, 0.1);
-            border-color: #28a745;
-        }
-
-        /* Error state */
-        .filepond--item[data-filepond-item-state="processing-error"] .filepond--item-panel {
-            background-color: rgba(220, 53, 69, 0.1);
-            border-color: #dc3545;
-        }
-
-        /* Upload area states */
-        .filepond-upload-area.uploading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .filepond-upload-area.uploading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 123, 255, 0.1);
-            border-radius: 0.375rem;
-            z-index: 1;
-        }
-
-        .filepond-upload-area.upload-success {
-            animation: uploadSuccess 0.5s ease-in-out;
-        }
-
-        @keyframes uploadSuccess {
-            0% { background-color: transparent; }
-            50% { background-color: rgba(40, 167, 69, 0.1); }
-            100% { background-color: transparent; }
-        }
-
-        /* Inline edit form improvements */
-        .inline-edit-form {
-            background-color: #f8f9fa;
-            border-radius: 0.5rem;
-            margin: 0.5rem 0;
-        }
-
-        .inline-edit-form .filepond-upload-area {
-            background-color: white;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-        }
-
-        /* Alert styling */
-        .alert-sm {
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .alert-sm i {
-            font-size: 0.75rem;
-        }
-
-        /* Upload method button styling */
-        .btn-group .btn {
-            transition: all 0.2s ease-in-out;
-        }
-
-        .btn-group .btn.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-
-        .btn-group .btn:hover:not(.active) {
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .filepond--drop-label {
-                min-height: 80px !important;
-            }
-
-            .filepond--panel-root {
-                min-height: 80px !important;
-            }
-
-            .filepond-upload-area {
-                min-height: 100px;
-            }
-        }
-    </style>
 @endpush

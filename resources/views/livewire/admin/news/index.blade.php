@@ -119,7 +119,7 @@
                                 <!-- Featured Image -->
                                 <div class="form-group mb-3">
                                     <label class="form-label">Featured Image</label>
-                                    
+
                                     <!-- Upload Method Selection -->
                                     <div class="mb-2">
                                         <div class="btn-group d-block">
@@ -413,7 +413,7 @@
                                                                 <!-- Featured Image Upload -->
                                                                 <div class="form-group mb-3">
                                                                     <label class="form-label">Featured Image</label>
-                                                                    
+
                                                                     <!-- Upload Method Selection -->
                                                                     <div class="mb-2">
                                                                         <div class="btn-group d-block">
