@@ -85,7 +85,7 @@ class InstallationSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         
         $tables = [
-            'associates', 'mission_visions', 'portfolios', 'about_pages', 'legal_pages',
+            'associates', 'mission_visions', 'portfolios', 'legal_pages',
             'content_blocks', 'dynamic_pages', 'testimonials', 'partnership_benefits',
             'trusted_partners', 'distribution_services', 'services', 'core_values',
             'team_values', 'team_members', 'teams', 'news', 'news_categories',
@@ -205,7 +205,6 @@ class InstallationSeeder extends Seeder
                 'button_text_secondary' => 'Explore Portfolio',
                 'button_url_secondary' => '/portfolio',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'page' => 'about',
@@ -213,7 +212,6 @@ class InstallationSeeder extends Seeder
                 'subtitle' => 'Your Digital Partner',
                 'content' => 'We are passionate about helping creators and businesses reach their full potential through innovative digital solutions.',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'page' => 'portfolio',
@@ -221,7 +219,6 @@ class InstallationSeeder extends Seeder
                 'subtitle' => 'Content Showcase',
                 'content' => 'Explore our diverse collection of movies, documentaries, short films, and series that we\'ve successfully distributed to global audiences.',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'page' => 'contact',
@@ -229,7 +226,6 @@ class InstallationSeeder extends Seeder
                 'subtitle' => 'We\'d love to hear from you',
                 'content' => 'Ready to start your digital content journey? Contact us today and let\'s discuss how we can help you reach your goals.',
                 'is_active' => true,
-                'sort_order' => 1
             ]
         ];
         
@@ -252,7 +248,6 @@ class InstallationSeeder extends Seeder
                 'button_text_secondary' => 'View Films',
                 'button_url_secondary' => '/portfolio',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'Global Film Network',
@@ -263,7 +258,6 @@ class InstallationSeeder extends Seeder
                 'button_text_secondary' => 'Our Network',
                 'button_url_secondary' => '/services',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Award-Winning Content',
@@ -274,7 +268,6 @@ class InstallationSeeder extends Seeder
                 'button_text_secondary' => 'Contact Us',
                 'button_url_secondary' => '/contact',
                 'is_active' => true,
-                'sort_order' => 3
             ]
         ];
         
@@ -316,7 +309,6 @@ class InstallationSeeder extends Seeder
                 'category_id' => 1,
                 'is_featured' => true,
                 'is_published' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'Urban Legends',
@@ -329,7 +321,6 @@ class InstallationSeeder extends Seeder
                 'category_id' => 1,
                 'is_featured' => true,
                 'is_published' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Rising Stars',
@@ -342,7 +333,6 @@ class InstallationSeeder extends Seeder
                 'category_id' => 2,
                 'is_featured' => true,
                 'is_published' => true,
-                'sort_order' => 3
             ],
             [
                 'title' => 'Digital Dreams',
@@ -417,8 +407,8 @@ class InstallationSeeder extends Seeder
                 'excerpt' => 'We are excited to announce the expansion of our global distribution network to reach audiences in 50+ new countries.',
                 'content' => '<p>OSR Digital is proud to announce a significant expansion of our global distribution network. This expansion will allow us to reach audiences in over 50 new countries, bringing our total reach to more than 100 countries worldwide.</p><p>This strategic move enables us to provide even better service to our content creators and partners, ensuring their stories reach the right audiences at the right time.</p>',
                 'category_id' => 2,
-                'is_published' => true,
-                'is_featured' => true,
+                'status' => 'published',
+                'featured' => true,
                 'published_at' => now()->subDays(5)
             ],
             [
@@ -427,8 +417,8 @@ class InstallationSeeder extends Seeder
                 'excerpt' => 'OSR Digital partners with a leading streaming platform to enhance content distribution capabilities.',
                 'content' => '<p>We are thrilled to announce our new partnership with one of the world\'s leading streaming platforms. This collaboration will significantly enhance our content distribution capabilities and provide our partners with access to millions of new viewers.</p><p>The partnership includes exclusive content deals, advanced analytics, and enhanced monetization opportunities for our content creators.</p>',
                 'category_id' => 3,
-                'is_published' => true,
-                'is_featured' => true,
+                'status' => 'published',
+                'featured' => true,
                 'published_at' => now()->subDays(10)
             ],
             [
@@ -437,8 +427,8 @@ class InstallationSeeder extends Seeder
                 'excerpt' => 'Industry experts share insights on the latest trends shaping digital content distribution in 2025.',
                 'content' => '<p>As we look ahead to 2025, several key trends are emerging in the digital content distribution landscape. From AI-powered content optimization to immersive viewing experiences, the industry continues to evolve rapidly.</p><p>Our team of experts has compiled insights from industry leaders to help content creators and distributors stay ahead of the curve.</p>',
                 'category_id' => 1,
-                'is_published' => true,
-                'is_featured' => false,
+                'status' => 'published',
+                'featured' => false,
                 'published_at' => now()->subDays(15)
             ]
         ];
@@ -457,19 +447,16 @@ class InstallationSeeder extends Seeder
                 'name' => 'Leadership Team',
                 'description' => 'Our executive leadership team driving OSR Digital\'s strategic vision.',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'name' => 'Content Team',
                 'description' => 'Creative professionals responsible for content acquisition and curation.',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'name' => 'Technical Team',
                 'description' => 'Technology experts ensuring seamless digital distribution.',
                 'is_active' => true,
-                'sort_order' => 3
             ]
         ];
         
@@ -486,34 +473,30 @@ class InstallationSeeder extends Seeder
             [
                 'name' => 'Sarah Johnson',
                 'position' => 'CEO & Founder',
-                'bio' => 'Sarah founded OSR Digital with a vision to democratize content distribution. With over 15 years in the entertainment industry, she leads our strategic initiatives.',
-                'team_id' => 1,
+                'department' => 'Executive',
+                'description' => 'Sarah founded OSR Digital with a vision to democratize content distribution. With over 15 years in the entertainment industry, she leads our strategic initiatives.',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'name' => 'Michael Chen',
                 'position' => 'CTO',
-                'bio' => 'Michael oversees our technology infrastructure and digital platform development. He brings 12 years of experience in scalable systems architecture.',
-                'team_id' => 1,
+                'department' => 'Technology',
+                'description' => 'Michael oversees our technology infrastructure and digital platform development. He brings 12 years of experience in scalable systems architecture.',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'name' => 'Emily Rodriguez',
                 'position' => 'Head of Content',
-                'bio' => 'Emily leads our content acquisition and curation efforts. Her keen eye for quality content has helped us build an impressive portfolio.',
-                'team_id' => 2,
+                'department' => 'Content',
+                'description' => 'Emily leads our content acquisition and curation efforts. Her keen eye for quality content has helped us build an impressive portfolio.',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'name' => 'David Kim',
                 'position' => 'Lead Developer',
-                'bio' => 'David leads our development team, ensuring our platforms are robust, scalable, and user-friendly.',
-                'team_id' => 3,
+                'department' => 'Technology',
+                'description' => 'David leads our development team, ensuring our platforms are robust, scalable, and user-friendly.',
                 'is_active' => true,
-                'sort_order' => 1
             ]
         ];
         
@@ -532,21 +515,18 @@ class InstallationSeeder extends Seeder
                 'description' => 'We constantly push the boundaries of what\'s possible in digital content distribution.',
                 'icon' => '🚀',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'Quality',
                 'description' => 'We maintain the highest standards in everything we do, from content selection to platform performance.',
                 'icon' => '⭐',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Partnership',
                 'description' => 'We believe in building lasting relationships with creators, partners, and audiences.',
                 'icon' => '🤝',
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'title' => 'Transparency',
@@ -572,21 +552,18 @@ class InstallationSeeder extends Seeder
                 'description' => 'We strive for excellence in every aspect of our work, from content curation to customer service.',
                 'icon' => '🏆',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'Integrity',
                 'description' => 'We conduct business with the highest ethical standards and complete honesty.',
                 'icon' => '⚖️',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Innovation',
                 'description' => 'We embrace new technologies and creative approaches to solve complex challenges.',
                 'icon' => '💡',
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'title' => 'Collaboration',
@@ -609,27 +586,28 @@ class InstallationSeeder extends Seeder
         $services = [
             [
                 'title' => 'Content Distribution',
+                'slug' => 'content-distribution',
                 'description' => 'Distribute your content across multiple platforms worldwide with our comprehensive distribution network.',
                 'icon' => '🌐',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'Digital Marketing',
+                'slug' => 'digital-marketing',
                 'description' => 'Promote your content effectively with our targeted digital marketing strategies.',
                 'icon' => '📈',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Content Optimization',
+                'slug' => 'content-optimization',
                 'description' => 'Optimize your content for maximum reach and engagement across all platforms.',
                 'icon' => '⚡',
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'title' => 'Analytics & Reporting',
+                'slug' => 'analytics-reporting',
                 'description' => 'Get detailed insights into your content performance with our advanced analytics tools.',
                 'icon' => '📊',
                 'is_active' => true,
@@ -650,28 +628,29 @@ class InstallationSeeder extends Seeder
             [
                 'title' => 'Streaming Platforms',
                 'description' => 'Distribute to major streaming platforms including Netflix, Amazon Prime, and Hulu.',
-                'icon' => '📺',
+                'icon_type' => 'emoji',
+                'icon_data' => '📺',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'YouTube Publishing',
                 'description' => 'Professional YouTube channel management and monetization services.',
-                'icon' => '🎥',
+                'icon_type' => 'emoji',
+                'icon_data' => '🎥',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Social Media Distribution',
                 'description' => 'Cross-platform social media content distribution and management.',
-                'icon' => '📱',
+                'icon_type' => 'emoji',
+                'icon_data' => '📱',
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'title' => 'International Markets',
                 'description' => 'Expand your reach to international markets with localized content strategies.',
-                'icon' => '🌍',
+                'icon_type' => 'emoji',
+                'icon_data' => '🌍',
                 'is_active' => true,
                 'sort_order' => 4
             ]
@@ -693,7 +672,6 @@ class InstallationSeeder extends Seeder
                 'logo' => null,
                 'website_url' => 'https://netflix.com',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'name' => 'Amazon Prime Video',
@@ -701,7 +679,6 @@ class InstallationSeeder extends Seeder
                 'logo' => null,
                 'website_url' => 'https://primevideo.com',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'name' => 'YouTube',
@@ -709,7 +686,6 @@ class InstallationSeeder extends Seeder
                 'logo' => null,
                 'website_url' => 'https://youtube.com',
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'name' => 'Hulu',
@@ -736,21 +712,18 @@ class InstallationSeeder extends Seeder
                 'description' => 'Access to audiences in over 100 countries worldwide.',
                 'icon' => '🌍',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'title' => 'Revenue Sharing',
                 'description' => 'Competitive revenue sharing rates for content creators.',
                 'icon' => '💰',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'title' => 'Marketing Support',
                 'description' => 'Comprehensive marketing support to maximize your content\'s reach.',
                 'icon' => '📈',
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'title' => 'Analytics Dashboard',
@@ -773,30 +746,27 @@ class InstallationSeeder extends Seeder
         $testimonials = [
             [
                 'name' => 'John Smith',
-                'position' => 'Independent Filmmaker',
+                'role' => 'Independent Filmmaker',
+                'company' => 'Smith Productions',
                 'content' => 'OSR Digital transformed our content distribution strategy. Their platform made it easy to reach global audiences we never thought possible.',
-                'rating' => 5,
                 'is_featured' => true,
-                'is_active' => true,
-                'sort_order' => 1
+                'is_published' => true,
             ],
             [
                 'name' => 'Maria Garcia',
-                'position' => 'Content Creator',
+                'role' => 'Content Creator',
+                'company' => 'Creative Studios',
                 'content' => 'The team at OSR Digital is incredibly professional and supportive. They helped us optimize our content for maximum engagement.',
-                'rating' => 5,
                 'is_featured' => true,
-                'is_active' => true,
-                'sort_order' => 2
+                'is_published' => true,
             ],
             [
                 'name' => 'David Wilson',
-                'position' => 'Studio Executive',
+                'role' => 'Studio Executive',
+                'company' => 'Paramount Pictures',
                 'content' => 'Working with OSR Digital has been a game-changer for our studio. Their distribution network is unmatched in the industry.',
-                'rating' => 5,
                 'is_featured' => true,
-                'is_active' => true,
-                'sort_order' => 3
+                'is_published' => true,
             ]
         ];
         
@@ -816,9 +786,9 @@ class InstallationSeeder extends Seeder
                 'meta_title' => 'OSR Digital - Leading Digital Content Distribution',
                 'meta_description' => 'Leading digital content distribution company helping creators and businesses reach global audiences across multiple platforms.',
                 'template' => 'landing',
+                'content_blocks' => [],
                 'is_published' => true,
                 'is_homepage' => true,
-                'sort_order' => 1
             ],
             [
                 'slug' => 'about',
@@ -826,9 +796,9 @@ class InstallationSeeder extends Seeder
                 'meta_title' => 'About OSR Digital - Your Digital Content Partner',
                 'meta_description' => 'Learn about OSR Digital\'s mission to make content distribution accessible to everyone. Discover our story, values, and commitment to creators.',
                 'template' => 'about',
+                'content_blocks' => [],
                 'is_published' => true,
                 'is_homepage' => false,
-                'sort_order' => 2
             ],
             [
                 'slug' => 'portfolio',
@@ -836,9 +806,9 @@ class InstallationSeeder extends Seeder
                 'meta_title' => 'Our Portfolio - OSR Digital',
                 'meta_description' => 'Explore our portfolio of successful digital content distribution projects and client work.',
                 'template' => 'portfolio',
+                'content_blocks' => [],
                 'is_published' => true,
                 'is_homepage' => false,
-                'sort_order' => 3
             ],
             [
                 'slug' => 'contact',
@@ -846,6 +816,7 @@ class InstallationSeeder extends Seeder
                 'meta_title' => 'Contact OSR Digital - Get In Touch Today',
                 'meta_description' => 'Ready to start your digital content journey? Contact OSR Digital today and let\'s discuss how we can help you reach your goals.',
                 'template' => 'contact',
+                'content_blocks' => [],
                 'is_published' => true,
                 'is_homepage' => false,
                 'sort_order' => 4
@@ -856,6 +827,7 @@ class InstallationSeeder extends Seeder
                 'meta_title' => 'Our Team - OSR Digital',
                 'meta_description' => 'Meet the talented team behind OSR Digital\'s success in digital content distribution.',
                 'template' => 'team',
+                'content_blocks' => [],
                 'is_published' => true,
                 'is_homepage' => false,
                 'sort_order' => 5
@@ -866,6 +838,7 @@ class InstallationSeeder extends Seeder
                 'meta_title' => 'Our Partners - OSR Digital',
                 'meta_description' => 'Meet our trusted partners who help us deliver exceptional digital content distribution services.',
                 'template' => 'partners',
+                'content_blocks' => [],
                 'is_published' => true,
                 'is_homepage' => false,
                 'sort_order' => 6
@@ -897,7 +870,6 @@ class InstallationSeeder extends Seeder
                 'category' => 'homepage',
                 'is_reusable' => true,
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'type' => 'stats',
@@ -917,7 +889,6 @@ class InstallationSeeder extends Seeder
                 'category' => 'homepage',
                 'is_reusable' => true,
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'type' => 'features',
@@ -927,12 +898,14 @@ class InstallationSeeder extends Seeder
                     'subtitle' => 'Comprehensive digital content solutions',
                     'features' => [
                         [
-                            'icon' => '🎬',
+                            'icon_type' => 'emoji',
+                'icon_data' => '🎬',
                             'title' => 'Content Distribution',
                             'description' => 'Distribute your content across multiple platforms worldwide'
                         ],
                         [
-                            'icon' => '📱',
+                            'icon_type' => 'emoji',
+                'icon_data' => '📱',
                             'title' => 'Mobile Optimization',
                             'description' => 'Optimized for all mobile devices and screen sizes'
                         ],
@@ -947,7 +920,6 @@ class InstallationSeeder extends Seeder
                 'category' => 'homepage',
                 'is_reusable' => true,
                 'is_active' => true,
-                'sort_order' => 3
             ],
             [
                 'type' => 'cta',
@@ -979,23 +951,23 @@ class InstallationSeeder extends Seeder
             [
                 'slug' => 'privacy-policy',
                 'title' => 'Privacy Policy',
+                'page_type' => 'privacy_policy',
                 'content' => '<h1>Privacy Policy</h1><p>This privacy policy explains how OSR Digital collects, uses, and protects your information when you use our services.</p><h2>Information We Collect</h2><p>We collect information you provide directly to us, such as when you create an account, contact us, or use our services.</p><h2>How We Use Your Information</h2><p>We use the information we collect to provide, maintain, and improve our services.</p>',
                 'is_published' => true,
-                'sort_order' => 1
             ],
             [
                 'slug' => 'terms-of-service',
                 'title' => 'Terms of Service',
+                'page_type' => 'terms_of_service',
                 'content' => '<h1>Terms of Service</h1><p>These terms of service govern your use of OSR Digital\'s website and services.</p><h2>Acceptance of Terms</h2><p>By accessing or using our services, you agree to be bound by these terms.</p><h2>Use of Services</h2><p>You may use our services only for lawful purposes and in accordance with these terms.</p>',
                 'is_published' => true,
-                'sort_order' => 2
             ],
             [
                 'slug' => 'cookie-policy',
                 'title' => 'Cookie Policy',
+                'page_type' => 'cookies_policy',
                 'content' => '<h1>Cookie Policy</h1><p>This cookie policy explains how OSR Digital uses cookies and similar technologies on our website.</p><h2>What Are Cookies</h2><p>Cookies are small text files that are stored on your device when you visit our website.</p><h2>How We Use Cookies</h2><p>We use cookies to improve your experience on our website and to analyze how our website is used.</p>',
                 'is_published' => true,
-                'sort_order' => 3
             ]
         ];
         
@@ -1011,7 +983,6 @@ class InstallationSeeder extends Seeder
         
         Portfolio::create([
             'title' => 'Our Portfolio',
-            'subtitle' => 'Content Showcase',
             'description' => 'Explore our diverse collection of movies, documentaries, short films, and series that we\'ve successfully distributed to global audiences.',
             'is_published' => true
         ]);
@@ -1022,9 +993,13 @@ class InstallationSeeder extends Seeder
         $this->command->info('🎯 Creating mission and vision...');
         
         MissionVision::create([
-            'mission' => 'To democratize content distribution and empower creators to reach global audiences through innovative digital solutions.',
-            'vision' => 'To be the world\'s leading platform for digital content distribution, connecting creators with audiences everywhere.',
-            'is_published' => true
+            'mission_title' => 'Our Mission',
+            'mission_description' => 'To democratize content distribution and empower creators to reach global audiences through innovative digital solutions.',
+            'mission_icon' => '🎯',
+            'vision_title' => 'Our Vision',
+            'vision_description' => 'To be the world\'s leading platform for digital content distribution, connecting creators with audiences everywhere.',
+            'vision_icon' => '👁️',
+            'is_active' => true
         ]);
     }
 
@@ -1035,27 +1010,21 @@ class InstallationSeeder extends Seeder
         $associates = [
             [
                 'name' => 'Creative Studios Alliance',
-                'description' => 'A network of independent studios working together to create exceptional content.',
                 'logo' => null,
-                'website_url' => 'https://creativestudiosalliance.com',
+                'website' => 'https://creativestudiosalliance.com',
                 'is_active' => true,
-                'sort_order' => 1
             ],
             [
                 'name' => 'Digital Content Network',
-                'description' => 'Leading network of digital content creators and distributors.',
                 'logo' => null,
-                'website_url' => 'https://digitalcontentnetwork.com',
+                'website' => 'https://digitalcontentnetwork.com',
                 'is_active' => true,
-                'sort_order' => 2
             ],
             [
                 'name' => 'Global Media Partners',
-                'description' => 'International media partnership network for content distribution.',
                 'logo' => null,
-                'website_url' => 'https://globalmediapartners.com',
+                'website' => 'https://globalmediapartners.com',
                 'is_active' => true,
-                'sort_order' => 3
             ]
         ];
         

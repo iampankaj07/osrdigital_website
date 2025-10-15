@@ -260,9 +260,7 @@ Route::post('/logout', function (Illuminate\Http\Request $request) {
 // Admin routes
 require __DIR__.'/admin.php';
 
-// Team routes
-Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
-Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+// Team routes are handled by API routes (apiResource)
 
 // Legal Pages routes
 Route::get('/privacy-policy', [App\Http\Controllers\LegalPageController::class, 'privacyPolicy'])->name('legal.privacy-policy');
