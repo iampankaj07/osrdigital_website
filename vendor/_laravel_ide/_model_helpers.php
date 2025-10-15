@@ -3332,8 +3332,10 @@ namespace App\Models {
      * @property string $content
      * @property string|null $subtitle
      * @property string $title
+     * @property string|null $page
      * @property int $id
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection wherePage($value)
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereTitle($value)
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereSubtitle($value)
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereContent($value)
