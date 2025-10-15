@@ -34,11 +34,11 @@ return new class extends Migration
     {
         Schema::table('pages', function (Blueprint $table) {
             // Restore old individual service columns
-            $table->text('about_service_1_title')->nullable();
+            $table->string('about_service_1_title')->nullable();
             $table->text('about_service_1_description')->nullable();
-            $table->text('about_service_2_title')->nullable();
+            $table->string('about_service_2_title')->nullable();
             $table->text('about_service_2_description')->nullable();
-            $table->text('about_service_3_title')->nullable();
+            $table->string('about_service_3_title')->nullable();
             $table->text('about_service_3_description')->nullable();
 
             // Remove JSON column
