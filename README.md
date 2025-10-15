@@ -49,9 +49,25 @@ A comprehensive digital content distribution platform built with Laravel 11, Rea
 - **Settings Management** - Centralized configuration
 - **Analytics Integration** - Built-in analytics and reporting
 
-## 🚀 Quick Start
+## 📚 Documentation
 
-### Prerequisites
+### 📖 Complete Documentation Suite
+
+- **[📋 Installation Guide](INSTALLATION.md)** - Step-by-step installation instructions
+- **[🚀 Deployment Guide](SHARED_HOSTING_DEPLOYMENT.md)** - Production deployment on shared hosting
+- **[📋 Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Pre-deployment checklist
+- **[✅ Ready for Deployment](READY_FOR_DEPLOYMENT.md)** - Final deployment summary
+- **[🏠 Root Directory Setup](ROOT_DIRECTORY_SETUP.md)** - Setup when domain points to root
+- **[🔧 Local Development](LOCAL_DEVELOPMENT_SETUP.md)** - Local development environment setup
+- **[🌐 Subdomain Fix Guide](SUBDOMAIN_FIX_GUIDE.md)** - Troubleshooting subdomain issues
+- **[🔌 API Documentation](API.md)** - Complete API reference
+- **[🤝 Contributing Guidelines](CONTRIBUTING.md)** - How to contribute to the project
+- **[📝 Code of Conduct](CODE_OF_CONDUCT.md)** - Community standards
+- **[📊 Changelog](CHANGELOG.md)** - Version history and updates
+
+### 🚀 Quick Start
+
+#### Prerequisites
 
 - **PHP 8.1+** with required extensions
 - **Composer** (latest version)
@@ -59,7 +75,7 @@ A comprehensive digital content distribution platform built with Laravel 11, Rea
 - **MySQL 8.0+** or **PostgreSQL 13+**
 - **Web Server** (Apache/Nginx) or Laravel's built-in server
 
-### Installation
+#### Installation
 
 1. **Clone the repository**
    ```bash
@@ -106,6 +122,8 @@ A comprehensive digital content distribution platform built with Laravel 11, Rea
    - **Default Admin Login**:
      - Email: `admin@osrdigital.com`
      - Password: `password`
+
+> 📖 **For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md)**
 
 ## 📋 What's Included
 
@@ -194,6 +212,14 @@ osr-digital/
 
 ## 🚀 Deployment
 
+### 📚 Deployment Documentation
+
+- **[🚀 Shared Hosting Deployment](SHARED_HOSTING_DEPLOYMENT.md)** - Complete guide for shared hosting
+- **[📋 Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Pre-deployment checklist
+- **[✅ Ready for Deployment](READY_FOR_DEPLOYMENT.md)** - Final deployment summary
+- **[🏠 Root Directory Setup](ROOT_DIRECTORY_SETUP.md)** - Setup when domain points to root
+- **[🌐 Subdomain Fix Guide](SUBDOMAIN_FIX_GUIDE.md)** - Troubleshooting subdomain issues
+
 ### Production Requirements
 - PHP 8.1+
 - MySQL 8.0+ or PostgreSQL 13+
@@ -201,7 +227,7 @@ osr-digital/
 - SSL Certificate
 - Domain name
 
-### Deployment Steps
+### Quick Deployment Steps
 
 1. **Upload files to server**
 2. **Set up database**
@@ -231,6 +257,8 @@ osr-digital/
    ```bash
    * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
    ```
+
+> 📖 **For detailed deployment instructions, see [SHARED_HOSTING_DEPLOYMENT.md](SHARED_HOSTING_DEPLOYMENT.md)**
 
 ## 🔧 Configuration
 
@@ -262,29 +290,33 @@ QUEUE_CONNECTION=database
 
 ## 📚 API Documentation
 
-### Authentication
+> 📖 **For complete API documentation, see [API.md](API.md)**
+
+### Quick API Reference
+
+#### Authentication
 All API endpoints require authentication. Include the API token in the header:
 ```
 Authorization: Bearer your-api-token
 ```
 
-### Endpoints
+#### Key Endpoints
 
-#### Films
+**Films**
 - `GET /api/film-portfolios` - Get all films
 - `GET /api/film-portfolios/{id}` - Get specific film
 - `GET /api/film-categories` - Get film categories
 
-#### News
+**News**
 - `GET /api/news` - Get all news articles
 - `GET /api/news/{id}` - Get specific article
 - `GET /api/news-categories` - Get news categories
 
-#### Team
+**Team**
 - `GET /api/team` - Get team information
 - `GET /api/team-members` - Get team members
 
-#### Settings
+**Settings**
 - `GET /api/settings` - Get public settings
 - `GET /api/hero-sections` - Get hero sections
 
@@ -323,9 +355,18 @@ php artisan test --group=admin
 - Check if admin user was created
 - Reset admin password if needed
 
+**Subdomain issues**
+- See [Subdomain Fix Guide](SUBDOMAIN_FIX_GUIDE.md) for detailed troubleshooting
+
+**Local development issues**
+- See [Local Development Setup](LOCAL_DEVELOPMENT_SETUP.md) for setup help
+
 ### Getting Help
 
-- 📖 **Documentation**: [INSTALLATION.md](INSTALLATION.md)
+- 📖 **Installation Guide**: [INSTALLATION.md](INSTALLATION.md)
+- 🚀 **Deployment Guide**: [SHARED_HOSTING_DEPLOYMENT.md](SHARED_HOSTING_DEPLOYMENT.md)
+- 🌐 **Subdomain Issues**: [SUBDOMAIN_FIX_GUIDE.md](SUBDOMAIN_FIX_GUIDE.md)
+- 🔧 **Local Development**: [LOCAL_DEVELOPMENT_SETUP.md](LOCAL_DEVELOPMENT_SETUP.md)
 - 💬 **Support**: https://codebundles.com/support
 - 🐛 **Issues**: [GitHub Issues](https://github.com/your-username/osr-digital/issues)
 - 📧 **Email**: support@codebundles.com
@@ -357,6 +398,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Email**: support@codebundles.com
 - **Documentation**: https://codebundles.com/docs/osr-digital
 - **GitHub**: https://github.com/your-username/osr-digital
+
+## 📚 Complete Documentation Index
+
+### 🚀 Getting Started
+- **[📋 Installation Guide](INSTALLATION.md)** - Complete installation instructions
+- **[🔧 Local Development](LOCAL_DEVELOPMENT_SETUP.md)** - Local development environment
+- **[📊 Changelog](CHANGELOG.md)** - Version history and updates
+
+### 🚀 Deployment & Production
+- **[🚀 Shared Hosting Deployment](SHARED_HOSTING_DEPLOYMENT.md)** - Production deployment guide
+- **[📋 Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Pre-deployment checklist
+- **[✅ Ready for Deployment](READY_FOR_DEPLOYMENT.md)** - Final deployment summary
+- **[🏠 Root Directory Setup](ROOT_DIRECTORY_SETUP.md)** - Root directory configuration
+- **[🌐 Subdomain Fix Guide](SUBDOMAIN_FIX_GUIDE.md)** - Subdomain troubleshooting
+
+### 🔌 Development & API
+- **[🔌 API Documentation](API.md)** - Complete API reference
+- **[🤝 Contributing Guidelines](CONTRIBUTING.md)** - How to contribute
+- **[📝 Code of Conduct](CODE_OF_CONDUCT.md)** - Community standards
+
+### 📄 Legal & License
+- **[📄 License](LICENSE)** - MIT License details
 
 ---
 
