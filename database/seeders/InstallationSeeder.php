@@ -89,7 +89,7 @@ class InstallationSeeder extends Seeder
             'content_blocks', 'dynamic_pages', 'testimonials', 'partnership_benefits',
             'trusted_partners', 'distribution_services', 'services', 'core_values',
             'team_values', 'team_members', 'teams', 'news', 'news_categories',
-            'film_portfolios', 'film_categories', 'hero_sliders', 'hero_sections',
+            'film_portfolios', 'film_categories', 'hero_sliders',
             'settings', 'footer_settings', 'general_settings', 'permissions', 'roles',
             'users'
         ];
