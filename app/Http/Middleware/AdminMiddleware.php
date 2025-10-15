@@ -25,7 +25,7 @@ class AdminMiddleware
         $user->load('roles');
 
         // Check if user has admin role or is super admin
-        if (!$user->hasRole('Admin') && !$user->hasRole('Super Admin')) {
+        if (!$user->hasRole('admin') && !$user->hasRole('super-admin')) {
             abort(403, 'Access denied. Admin privileges required.');
         }
 
