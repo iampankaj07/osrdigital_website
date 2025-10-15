@@ -22,6 +22,12 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Handle JavaScript and CSS files first
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} \.(js|css|map|woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico)$ [NC]
+    RewriteRule ^ - [L]
+    
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -71,6 +77,15 @@
     
     # HTML
     ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# MIME Types
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType application/json .json
+    AddType application/font-woff .woff
+    AddType application/font-woff2 .woff2
 </IfModule>
 
 # Gzip Compression
