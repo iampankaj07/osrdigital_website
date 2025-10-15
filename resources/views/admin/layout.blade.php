@@ -875,11 +875,11 @@
         <!-- /.control-sidebar -->
 
         <!-- Main Footer -->
-        <footer class="main-footer">
+        <footer class="main-footer mt-5">
             <strong>Copyright &copy; {{ date('Y') }} <a href="#">OSR Digital</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 3.2.0
+                <b>Version</b> 1 | <a href="https://codebundles.com" target="_blank" class="text-primary">Built by CodeBundles</a>
             </div>
         </footer>
     </div>
