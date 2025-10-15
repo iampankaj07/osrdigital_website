@@ -164,60 +164,55 @@ function Team() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {teamMembers.map((member, index) => (
-                            <div key={index} className={`p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl ${
-                                isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
-                            }`}>
-                                <div className="text-center mb-6">
-                                    <img
-                                        src={getSafeImageUrl(member.avatar, member.name, 300, 300)}
-                                        alt={`${member.name} avatar`}
-                                        className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                                        onError={(e) => handleAvatarError(e, member.name, 300)}
-                                    />
-                                    <h3 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                        {member.name}
-                                    </h3>
-                                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 ${
-                                        isDark ? 'bg-brand-orange-500/20 text-brand-orange-400' : 'bg-brand-orange-100 text-brand-orange-600'
+                                <div key={index} className={`p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl ${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
                                     }`}>
-                                        {member.position}
+                                    <div className="text-center mb-6">
+                                        <img
+                                            src={getSafeImageUrl(member.avatar, member.name, 300, 300)}
+                                            alt={`${member.name} avatar`}
+                                            className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                                            onError={(e) => handleAvatarError(e, member.name, 300)}
+                                        />
+                                        <h3 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                            {member.name}
+                                        </h3>
+                                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 ${isDark ? 'bg-brand-orange-500/20 text-brand-orange-400' : 'bg-brand-orange-100 text-brand-orange-600'
+                                            }`}>
+                                            {member.position}
+                                        </div>
+                                        <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                            {member.department}
+                                        </div>
                                     </div>
-                                    <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                        {member.department}
-                                    </div>
-                                </div>
 
-                                <div className="flex justify-center space-x-4">
-                                    <a
-                                        href={member.linkedin}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`p-2 rounded-full transition-colors ${
-                                            isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
-                                        }`}
-                                    >
-                                        <FontAwesomeIcon icon={faLinkedinBrand} />
-                                    </a>
-                                    <a
-                                        href={member.twitter}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`p-2 rounded-full transition-colors ${
-                                            isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
-                                        }`}
-                                    >
-                                        <FontAwesomeIcon icon={faTwitterBrand} />
-                                    </a>
-                                    <a
-                                        href={`mailto:${member.email}`}
-                                        className={`p-2 rounded-full transition-colors ${
-                                            isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-brand-orange-400' : 'hover:bg-gray-200 text-gray-500 hover:text-brand-orange-600'
-                                        }`}
-                                    >
-                                        <FontAwesomeIcon icon={faEnvelope} />
-                                    </a>
+                                    <div className="flex justify-center space-x-4">
+                                        <a
+                                            href={member.linkedin}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            <FontAwesomeIcon icon={faLinkedinBrand} />
+                                        </a>
+                                        <a
+                                            href={member.twitter}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            <FontAwesomeIcon icon={faTwitterBrand} />
+                                        </a>
+                                        <a
+                                            href={`mailto:${member.email}`}
+                                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-brand-orange-400' : 'hover:bg-gray-200 text-gray-500 hover:text-brand-orange-600'
+                                                }`}
+                                        >
+                                            <FontAwesomeIcon icon={faEnvelope} />
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
                             ))}
                         </div>
                     )}
@@ -250,10 +245,9 @@ function Team() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {values.map((value, index) => (
-                                <div key={index} className={`p-6 rounded-lg shadow-lg text-center ${
-                                    isDark ? 'bg-gray-800' : 'bg-gray-50'
-                                }`}>
-                                    <div className="text-4xl mb-4" style={{color: '#EC681D'}}>
+                                <div key={index} className={`p-6 rounded-lg shadow-lg text-center ${isDark ? 'bg-gray-800' : 'bg-gray-50'
+                                    }`}>
+                                    <div className="text-4xl mb-4" style={{ color: '#EC681D' }}>
                                         <i className={value.icon}></i>
                                     </div>
                                     <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -283,9 +277,8 @@ function Team() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {culture.map((item, index) => (
-                            <div key={index} className={`p-6 rounded-lg shadow-lg text-center ${
-                                isDark ? 'bg-gray-700' : 'bg-white'
-                            }`}>
+                            <div key={index} className={`p-6 rounded-lg shadow-lg text-center ${isDark ? 'bg-gray-700' : 'bg-white'
+                                }`}>
                                 <div className={`text-4xl mb-4 ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`}>
                                     <FontAwesomeIcon icon={item.icon} />
                                 </div>
@@ -304,9 +297,8 @@ function Team() {
             {/* CTA Section */}
             <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 <div className="container-minimal text-center max-w-4xl mx-auto">
-                    <div className={`p-12 rounded-2xl ${
-                        isDark ? 'bg-gradient-to-br from-gray-800 to-gray-700' : 'bg-gradient-to-br from-gray-50 to-gray-100'
-                    }`}>
+                    <div className={`p-12 rounded-2xl ${isDark ? 'bg-gradient-to-br from-gray-800 to-gray-700' : 'bg-gradient-to-br from-gray-50 to-gray-100'
+                        }`}>
                         <h2 className={`text-4xl font-extrabold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             Ready to Join Our Team?
                         </h2>
