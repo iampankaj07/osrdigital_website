@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\View\Composers\SettingsComposer;
+use App\Helpers\HostingHelper;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Apply hosting environment optimizations
+        HostingHelper::applyOptimizations();
+        
         // Register view composer for settings
         View::composer('*', SettingsComposer::class);
         

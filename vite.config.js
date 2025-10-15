@@ -37,6 +37,9 @@ export default defineConfig({
         },
         chunkSizeWarningLimit: 1000,
         minify: 'esbuild',
+        // Ensure assets are built for production
+        assetsDir: 'assets',
+        sourcemap: false,
     },
     server: {
         hmr: {
@@ -50,4 +53,6 @@ export default defineConfig({
             },
         },
     },
+    // Base URL for production builds
+    base: process.env.NODE_ENV === 'production' ? '/' : '/',
 });
