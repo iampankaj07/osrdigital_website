@@ -3,18 +3,36 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import Breadcrumbs from '../common/Breadcrumbs';
 
-function CompactHero({ page = 'page', title, subtitle, description, breadcrumbs }) {
+function CompactHero({ page = 'page', title, subtitle, description, breadcrumbs, skipApi = false }) {
     const { isDark } = useTheme();
     const [isVisible, setIsVisible] = useState(false);
     const [heroData, setHeroData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!skipApi);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (skipApi) {
+            setLoading(false);
+            setIsVisible(true);
+            return;
+        }
+
         const fetchHeroData = async () => {
             try {
                 setLoading(true);
                 setError(null);
+
+                // Use cached data if available
+                const cacheKey = `hero_section_${page}`;
+                const cachedData = sessionStorage.getItem(cacheKey);
+                
+                if (cachedData) {
+                    const parsedData = JSON.parse(cachedData);
+                    setHeroData(parsedData);
+                    setLoading(false);
+                    setIsVisible(true);
+                    return;
+                }
 
                 const response = await fetch(`/api/hero-sections/page/${page}`);
                 if (!response.ok) {
@@ -24,6 +42,8 @@ function CompactHero({ page = 'page', title, subtitle, description, breadcrumbs 
                 const data = await response.json();
                 if (data.success) {
                     setHeroData(data.data);
+                    // Cache the data for this session
+                    sessionStorage.setItem(cacheKey, JSON.stringify(data.data));
                 } else {
                     throw new Error(data.message || 'Failed to fetch hero data');
                 }
@@ -32,32 +52,27 @@ function CompactHero({ page = 'page', title, subtitle, description, breadcrumbs 
                 setError(err.message);
             } finally {
                 setLoading(false);
+                setIsVisible(true);
             }
         };
 
+        // Fetch data immediately for faster loading
         fetchHeroData();
-        setIsVisible(true);
-    }, [page]);
+    }, [page, skipApi]);
 
     if (loading) {
         return (
             <section className={`py-20 pt-32 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="container-minimal">
                     <div className="text-center max-w-4xl mx-auto">
-                        {/* Breadcrumbs Skeleton */}
-                        <div className="mb-8">
-                            <div className={`h-5 w-48 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
-                        </div>
-
-                        {/* Title Skeleton */}
+                        {/* Minimal Title Skeleton */}
                         <div className="mb-6">
-                            <div className={`h-12 w-3/4 mx-auto mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-10 w-2/3 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
                         </div>
 
-                        {/* Description Skeleton */}
+                        {/* Minimal Description Skeleton */}
                         <div className="mb-8">
-                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
-                            <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-5 w-1/2 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
                         </div>
                     </div>
                 </div>

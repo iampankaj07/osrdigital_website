@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FilmPortfolio;
 use App\Models\FilmCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class FilmPortfolioController extends Controller
 {
@@ -14,49 +15,53 @@ class FilmPortfolioController extends Controller
      */
     public function index(Request $request)
     {
-        $query = FilmPortfolio::with('category')->published()->ordered();
+        $cacheKey = 'film_portfolios_' . md5(serialize($request->all()));
+        
+        return Cache::remember($cacheKey, 300, function () use ($request) {
+            $query = FilmPortfolio::with('category')->published()->ordered();
 
-        // Filter by category if provided
-        if ($request->has('category') && $request->category !== 'all') {
-            $query->byCategory($request->category);
-        }
+            // Filter by category if provided
+            if ($request->has('category') && $request->category !== 'all') {
+                $query->byCategory($request->category);
+            }
 
-        // Filter by featured if provided
-        if ($request->has('featured') && $request->boolean('featured')) {
-            $query->featured();
-        }
+            // Filter by featured if provided
+            if ($request->has('featured') && $request->boolean('featured')) {
+                $query->featured();
+            }
 
-        $limit = $request->get('limit', 12);
-        $films = $query->limit($limit)->get();
+            $limit = $request->get('limit', 12);
+            $films = $query->limit($limit)->get();
 
-        // Transform data to include image_url for frontend compatibility
-        $transformedFilms = $films->map(function ($film) {
-            return [
-                'id' => $film->id,
-                'title' => $film->title,
-                'slug' => $film->slug,
-                'description' => $film->description,
-                'genre' => $film->genre,
-                'year' => $film->year,
-                'image_url' => $film->image_url,
-                'video_url' => $film->video_url,
-                'link' => $film->link,
-                'rating' => $film->rating,
-                'duration' => $film->duration,
-                'category' => $film->category,
-                'category_id' => $film->category_id,
-                'is_featured' => $film->is_featured,
-                'is_published' => $film->is_published,
-                'views' => $film->views ?? 0,
-                'created_at' => $film->created_at,
-                'updated_at' => $film->updated_at,
-            ];
+            // Transform data to include image_url for frontend compatibility
+            $transformedFilms = $films->map(function ($film) {
+                return [
+                    'id' => $film->id,
+                    'title' => $film->title,
+                    'slug' => $film->slug,
+                    'description' => $film->description,
+                    'genre' => $film->genre,
+                    'year' => $film->year,
+                    'image_url' => $film->image_url,
+                    'video_url' => $film->video_url,
+                    'link' => $film->link,
+                    'rating' => $film->rating,
+                    'duration' => $film->duration,
+                    'category' => $film->category,
+                    'category_id' => $film->category_id,
+                    'is_featured' => $film->is_featured,
+                    'is_published' => $film->is_published,
+                    'views' => $film->views ?? 0,
+                    'created_at' => $film->created_at,
+                    'updated_at' => $film->updated_at,
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $transformedFilms
+            ]);
         });
-
-        return response()->json([
-            'success' => true,
-            'data' => $transformedFilms
-        ]);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HeroSectionController extends Controller
 {
@@ -13,23 +14,27 @@ class HeroSectionController extends Controller
      */
     public function getByPage($page)
     {
-        $heroSection = HeroSection::getByPage($page);
+        $cacheKey = "hero_section_page_{$page}";
         
-        if (!$heroSection) {
+        return Cache::remember($cacheKey, 1800, function () use ($page) {
+            $heroSection = HeroSection::getByPage($page);
+            
+            if (!$heroSection) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hero section not found for page: ' . $page
+                ], 404);
+            }
+
+            // Add computed properties for frontend
+            $heroSection->shouldShowButton = $heroSection->shouldShowButton();
+            $heroSection->shouldShowSecondaryButton = $heroSection->shouldShowSecondaryButton();
+
             return response()->json([
-                'success' => false,
-                'message' => 'Hero section not found for page: ' . $page
-            ], 404);
-        }
-
-        // Add computed properties for frontend
-        $heroSection->shouldShowButton = $heroSection->shouldShowButton();
-        $heroSection->shouldShowSecondaryButton = $heroSection->shouldShowSecondaryButton();
-
-        return response()->json([
-            'success' => true,
-            'data' => $heroSection
-        ]);
+                'success' => true,
+                'data' => $heroSection
+            ]);
+        });
     }
 
     /**
