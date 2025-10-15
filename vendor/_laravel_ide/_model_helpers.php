@@ -2301,6 +2301,7 @@ namespace App\Models {
      * @property int $category_id
      * @property string|null $duration
      * @property decimal:1|null $rating
+     * @property string|null $link
      * @property string|null $video_url
      * @property array|null $gallery_images
      * @property int|null $media_id
@@ -2326,6 +2327,7 @@ namespace App\Models {
      * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereMediaId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereGalleryImages($value)
      * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereVideoUrl($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereLink($value)
      * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereRating($value)
      * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereDuration($value)
      * @method static \Illuminate\Database\Eloquent\Builder<FilmPortfolio>|FilmPortfolio whereCategoryId($value)
