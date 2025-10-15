@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Cache;
 
 class ImageHelper
 {
@@ -227,5 +228,48 @@ class ImageHelper
         $height = $options['height'] ?? $config['height'];
 
         return self::getOptimizedImageUrl($path, $width, $height, '');
+    }
+
+
+    /**
+     * Generate responsive image srcset
+     * 
+     * @param string|null $path
+     * @param array $sizes
+     * @return string
+     */
+    public static function getResponsiveSrcset(?string $path, array $sizes = [320, 640, 768, 1024, 1280]): string
+    {
+        if (empty($path)) {
+            return '';
+        }
+
+        $srcset = [];
+        foreach ($sizes as $size) {
+            $optimizedUrl = self::getOptimizedImageUrl($path, $size, $size * 0.75, '');
+            if ($optimizedUrl) {
+                $srcset[] = "{$optimizedUrl} {$size}w";
+            }
+        }
+
+        return implode(', ', $srcset);
+    }
+
+    /**
+     * Preload critical images
+     * 
+     * @param array $imagePaths
+     * @return string
+     */
+    public static function generatePreloadTags(array $imagePaths): string
+    {
+        $tags = [];
+        foreach ($imagePaths as $path) {
+            if (!empty($path)) {
+                $url = self::getImageUrl($path);
+                $tags[] = "<link rel=\"preload\" as=\"image\" href=\"{$url}\">";
+            }
+        }
+        return implode("\n", $tags);
     }
 }

@@ -25,6 +25,19 @@ export default defineConfig({
             '@': '/resources/js',
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom'],
+                    router: ['react-router-dom'],
+                    icons: ['@fortawesome/react-fontawesome', '@fortawesome/free-solid-svg-icons', '@fortawesome/free-brands-svg-icons']
+                }
+            }
+        },
+        chunkSizeWarningLimit: 1000,
+        minify: 'esbuild',
+    },
     server: {
         hmr: {
             host: 'localhost',

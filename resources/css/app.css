@@ -417,7 +417,11 @@
 
     /* Fast Skeleton Loader */
     .skeleton-fast {
-        animation: skeleton-pulse 1s ease-in-out infinite;
+        animation: skeleton-pulse 0.8s ease-in-out infinite;
+    }
+
+    .skeleton-ultra-fast {
+        animation: skeleton-pulse 0.4s ease-in-out infinite;
     }
 
     .skeleton-wave {
@@ -1092,4 +1096,53 @@ body {
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
+}
+
+/* Performance optimizations */
+@layer utilities {
+    /* GPU acceleration for animations */
+    .gpu-accelerated {
+        transform: translateZ(0);
+        will-change: transform;
+    }
+    
+    /* Optimize repaints */
+    .optimize-repaint {
+        contain: layout style paint;
+    }
+    
+    /* Critical above-the-fold styles */
+    .critical-content {
+        content-visibility: auto;
+        contain-intrinsic-size: 0 500px;
+    }
+    
+    /* Optimize font loading */
+    .font-display-optimized {
+        font-display: swap;
+    }
+    
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* Optimize images */
+    img {
+        content-visibility: auto;
+    }
+    
+    /* Lazy loading styles */
+    .lazy-load {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    
+    .lazy-load.loaded {
+        opacity: 1;
+    }
 }

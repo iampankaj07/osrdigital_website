@@ -58,22 +58,22 @@ function MoviePortfolio() {
             <section className={`py-20 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
-                        <div className={`h-6 w-96 mx-auto mb-8 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
+                        <div className={`h-6 w-96 mx-auto mb-8 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
                         <div className="flex flex-wrap justify-center gap-4">
                             {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className={`h-12 w-24 rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div key={i} className={`h-12 w-24 rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
                             ))}
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                                <div className={`h-48 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-48 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
                                 <div className="p-4">
-                                    <div className={`h-6 w-3/4 mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
-                                    <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
-                                    <div className={`h-4 w-2/3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                    <div className={`h-6 w-3/4 mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
+                                    <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
+                                    <div className={`h-4 w-2/3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-ultra-fast`}></div>
                                 </div>
                             </div>
                         ))}
