@@ -54,5 +54,5 @@ export default defineConfig({
         },
     },
     // Base URL for production builds
-    base: process.env.NODE_ENV === 'production' ? '/' : '/',
+    base: process.env.NODE_ENV === 'production' ? '/public/' : '/',
 });

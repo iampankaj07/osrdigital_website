@@ -85,6 +85,14 @@ class HostingHelper
         if (self::isSharedHosting()) {
             $protocol = request()->secure() ? 'https' : 'http';
             $host = request()->getHost();
+            
+            // Check if we're running from root directory (no /public in URL)
+            $currentPath = request()->getPathInfo();
+            if (!str_contains($currentPath, '/public/')) {
+                // Running from root, assets are in /public/build/
+                return "{$protocol}://{$host}/public";
+            }
+            
             return "{$protocol}://{$host}";
         }
 
