@@ -5,16 +5,17 @@ namespace App\Livewire\Admin\CoreValues;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\CoreValue;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -66,7 +67,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $coreValue = CoreValue::findOrFail($id);
-        
+
         $this->form = [
             'title' => $coreValue->title,
             'description' => $coreValue->description,
@@ -94,11 +95,11 @@ class Index extends Component
         ]);
 
         CoreValue::create($this->form);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
-        session()->flash('success', 'Core Value created successfully!');
+
+        $this->flashSuccess('Core Value created successfully!');
     }
 
     public function update()
@@ -113,27 +114,29 @@ class Index extends Component
 
         $coreValue = CoreValue::findOrFail($this->editingId);
         $coreValue->update($this->form);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
-        session()->flash('success', 'Core Value updated successfully!');
+
+        $this->flashSuccess('Core Value updated successfully!');
     }
 
     public function delete($id)
     {
         $coreValue = CoreValue::findOrFail($id);
+        $coreValueTitle = $coreValue->title;
         $coreValue->delete();
-        
-        session()->flash('success', 'Core Value deleted successfully!');
+
+        $this->flashDelete("Core Value '{$coreValueTitle}' has been successfully deleted.");
     }
 
     public function toggleActive($id)
     {
         $coreValue = CoreValue::findOrFail($id);
         $coreValue->update(['is_active' => !$coreValue->is_active]);
-        
-        session()->flash('success', 'Core Value status updated successfully!');
+
+        $status = $coreValue->is_active ? 'activated' : 'deactivated';
+        $this->dispatchSuccessEvent("Core Value '{$coreValue->title}' has been {$status}.");
     }
 
     public function render()

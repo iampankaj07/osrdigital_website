@@ -2,9 +2,6 @@
 
 namespace App\Livewire\Admin\HeroSections;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use App\Models\HeroSection;
 
 class Index extends Component
 {

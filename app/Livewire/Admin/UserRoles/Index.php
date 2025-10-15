@@ -6,10 +6,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -116,7 +117,7 @@ class Index extends Component
         $this->isCreating = false;
         $this->reset('form');
         
-        session()->flash('success', 'Role created successfully!');
+        $this->flashSuccess('Role created successfully!');
     }
 
     public function update()
@@ -145,7 +146,7 @@ class Index extends Component
         $this->editingId = null;
         $this->reset('form');
         
-        session()->flash('success', 'Role updated successfully!');
+        $this->flashSuccess('Role updated successfully!');
     }
 
     public function delete($id)
@@ -153,7 +154,7 @@ class Index extends Component
         $role = Role::findOrFail($id);
         $role->delete();
         
-        session()->flash('success', 'Role deleted successfully!');
+        $this->flashDelete('Role has been successfully deleted.');
     }
 
     public function mount()
@@ -199,7 +200,7 @@ class Index extends Component
         
         $this->closePermissionModal();
         
-        session()->flash('success', 'Role permissions updated successfully!');
+        $this->flashSuccess('Role permissions updated successfully!');
     }
 
     public function getFilteredPermissions()
@@ -250,7 +251,8 @@ class Index extends Component
     public function openBulkDeleteModal()
     {
         if (empty($this->selectedItems)) {
-            session()->flash('error', 'Please select items to delete.');
+            $this->dispatchErrorEvent('Please select items to delete.');
+            
             return;
         }
         $this->showBulkDeleteModal = true;
@@ -264,7 +266,8 @@ class Index extends Component
     public function bulkDelete()
     {
         if (empty($this->selectedItems)) {
-            session()->flash('error', 'No items selected for deletion.');
+            $this->dispatchErrorEvent('No items selected for deletion.');
+            
             return;
         }
 
@@ -274,7 +277,7 @@ class Index extends Component
         $this->selectAll = false;
         $this->showBulkDeleteModal = false;
         
-        session()->flash('success', 'Selected roles deleted successfully!');
+        $this->flashSuccess('Selected roles deleted successfully!');
     }
 
     public function render()

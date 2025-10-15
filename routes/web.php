@@ -13,7 +13,7 @@ Route::get('/', function () {
 // Image serving routes - MUST be before catch-all route
 Route::get('/images/{path}', [ImageController::class, 'serve'])->where('path', '.*');
 Route::get('/images/optimized/{width}x{height}/{path}', [ImageController::class, 'optimized'])->where('path', '.*');
-Route::get('/placeholder/{width}x{height}', [ImageController::class, 'placeholder'])->where(['width' => '[0-9]+', 'height' => '[0-9]+']);
+// Placeholder route removed - no longer generating placeholder images
 Route::get('/api/images/{path}/info', [ImageController::class, 'info'])->where('path', '.*');
 
 // Public image testing endpoints

@@ -112,7 +112,7 @@ class Create extends Component
             $associate->save();
 
             session()->flash('success', 'Associate created successfully!');
-            return redirect()->route('admin.associates.index');
+            $this->redirect(route('admin.associates.index'));
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to create associate: ' . $e->getMessage());

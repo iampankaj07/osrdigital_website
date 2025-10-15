@@ -51,9 +51,9 @@ function DistributionServices() {
                 <div className="container-minimal">
                     {/* Header Skeleton */}
                     <div className="text-center mb-16">
-                        <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                        <div className={`h-6 w-96 mx-auto mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                        <div className={`h-6 w-64 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                        <div className={`h-6 w-96 mx-auto mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                        <div className={`h-6 w-64 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                     </div>
 
                     {/* Services Grid Skeleton */}
@@ -61,11 +61,11 @@ function DistributionServices() {
                         {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div key={i} className={`p-8 rounded-xl border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
                                 <div className="flex items-start space-x-4">
-                                    <div className={`w-12 h-12 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse flex-shrink-0`}></div>
+                                    <div className={`w-12 h-12 rounded-lg ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast flex-shrink-0`}></div>
                                     <div className="flex-1">
-                                        <div className={`h-6 w-32 mb-3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-6 w-32 mb-3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
                             </div>

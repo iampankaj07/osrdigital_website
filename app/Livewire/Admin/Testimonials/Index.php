@@ -5,15 +5,13 @@ namespace App\Livewire\Admin\Testimonials;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\Testimonial;
 use Spatie\LivewireFilepond\WithFilePond;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use App\Models\Testimonial;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
 
     // Form properties
     public $form = [
@@ -113,11 +111,12 @@ class Index extends Component
             $this->resetForm();
             $this->isCreating = false;
 
-            session()->flash('success', 'Testimonial created successfully.');
+            $this->flashSuccess('Testimonial created successfully.');
 
         } catch (\Exception $e) {
             Log::error('Testimonial Creation Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to create testimonial. Please try again.');
+            $this->dispatchErrorEvent('Failed to create testimonial. Please try again.');
+            
         }
     }
 
@@ -150,7 +149,8 @@ class Index extends Component
 
         } catch (\Exception $e) {
             Log::error('Testimonial Edit Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to load testimonial data.');
+            $this->dispatchErrorEvent('Failed to load testimonial data.');
+            
         }
     }
 
@@ -177,11 +177,12 @@ class Index extends Component
             $this->resetForm();
             $this->editingId = null;
 
-            session()->flash('success', 'Testimonial updated successfully.');
+            $this->flashSuccess('Testimonial updated successfully.');
 
         } catch (\Exception $e) {
             Log::error('Testimonial Update Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update testimonial. Please try again.');
+            $this->dispatchErrorEvent('Failed to update testimonial. Please try again.');
+            
         }
     }
 
@@ -191,11 +192,12 @@ class Index extends Component
             $testimonial = Testimonial::findOrFail($testimonialId);
             $testimonial->delete();
 
-            session()->flash('success', 'Testimonial deleted successfully.');
+            $this->flashDelete('Testimonial has been successfully deleted.');
 
         } catch (\Exception $e) {
             Log::error('Testimonial Delete Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to delete testimonial.');
+            $this->dispatchErrorEvent('Failed to delete testimonial.');
+            
         }
     }
 
@@ -213,11 +215,12 @@ class Index extends Component
             $testimonial->update(['is_featured' => !$testimonial->is_featured]);
 
             $message = $testimonial->is_featured ? 'Testimonial marked as featured.' : 'Testimonial removed from featured.';
-            session()->flash('success', $message);
+            $this->dispatchSuccessEvent($message);
 
         } catch (\Exception $e) {
             Log::error('Testimonial Toggle Featured Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update featured status.');
+            $this->dispatchErrorEvent('Failed to update featured status.');
+            
         }
     }
 
@@ -228,11 +231,12 @@ class Index extends Component
             $testimonial->update(['is_published' => !$testimonial->is_published]);
 
             $message = $testimonial->is_published ? 'Testimonial published successfully.' : 'Testimonial unpublished successfully.';
-            session()->flash('success', $message);
+            $this->dispatchSuccessEvent($message);
 
         } catch (\Exception $e) {
             Log::error('Testimonial Toggle Published Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update publication status.');
+            $this->dispatchErrorEvent('Failed to update publication status.');
+            
         }
     }
 
@@ -284,7 +288,8 @@ class Index extends Component
 
         } catch (\Exception $e) {
             Log::error('Testimonial - Media selection error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to select media. Please try again.');
+            $this->dispatchErrorEvent('Failed to select media. Please try again.');
+            
         }
     }
 

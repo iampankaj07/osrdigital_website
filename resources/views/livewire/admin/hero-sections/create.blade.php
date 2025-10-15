@@ -12,8 +12,16 @@
     </div>
 
     <!-- Form -->
-    <div class="card">
-        <div class="card-body">
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-plus text-brand-orange-600 text-sm"></i>
+                </div>
+                <h5 class="text-lg font-medium text-gray-900">Create New Hero Section</h5>
+            </div>
+        </div>
+        <div class="p-6">
             <form wire:submit.prevent="save">
                 <div class="row">
                     <div class="col-md-8">
@@ -140,14 +148,12 @@
                 </div>
 
                 <!-- Form Actions -->
-                <div class="form-group mt-4">
-                    <div class="d-flex justify-content-end">
-                        <a href="{{ route('admin.hero-sections.index') }}" class="btn btn-secondary mr-2">Cancel</a>
-                        <button type="submit" class="btn btn-dark">
-                            <i class="fas fa-save mr-2"></i>
-                            Create Hero Section
-                        </button>
-                    </div>
+                <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                    <a href="{{ route('admin.hero-sections.index') }}" class="btn-slate">Cancel</a>
+                    <button type="submit" class="btn btn-dark px-6 py-2">
+                        <i class="fas fa-save mr-2"></i>
+                        Create Hero Section
+                    </button>
                 </div>
             </form>
         </div>

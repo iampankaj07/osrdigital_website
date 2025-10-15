@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\FilmCategories;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\FilmCategory;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
@@ -94,6 +95,27 @@ class Index extends Component
             'form.color' => 'required|string|max:7',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
+        ], [
+            'form.name.required' => 'The category name is required.',
+            'form.name.string' => 'The category name must be a valid text.',
+            'form.name.max' => 'The category name may not be greater than 255 characters.',
+            'form.slug.string' => 'The slug must be a valid text.',
+            'form.slug.max' => 'The slug may not be greater than 255 characters.',
+            'form.description.string' => 'The description must be a valid text.',
+            'form.color.required' => 'The color is required.',
+            'form.color.string' => 'The color must be a valid text.',
+            'form.color.max' => 'The color may not be greater than 7 characters.',
+            'form.sort_order.required' => 'The sort order is required.',
+            'form.sort_order.integer' => 'The sort order must be a valid number.',
+            'form.sort_order.min' => 'The sort order must be at least 0.',
+            'form.is_active.boolean' => 'The active status must be true or false.',
+        ], [
+            'form.name' => 'category name',
+            'form.slug' => 'slug',
+            'form.description' => 'description',
+            'form.color' => 'color',
+            'form.sort_order' => 'sort order',
+            'form.is_active' => 'active status',
         ]);
 
         FilmCategory::create($this->form);
@@ -113,6 +135,27 @@ class Index extends Component
             'form.color' => 'required|string|max:7',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
+        ], [
+            'form.name.required' => 'The category name is required.',
+            'form.name.string' => 'The category name must be a valid text.',
+            'form.name.max' => 'The category name may not be greater than 255 characters.',
+            'form.slug.string' => 'The slug must be a valid text.',
+            'form.slug.max' => 'The slug may not be greater than 255 characters.',
+            'form.description.string' => 'The description must be a valid text.',
+            'form.color.required' => 'The color is required.',
+            'form.color.string' => 'The color must be a valid text.',
+            'form.color.max' => 'The color may not be greater than 7 characters.',
+            'form.sort_order.required' => 'The sort order is required.',
+            'form.sort_order.integer' => 'The sort order must be a valid number.',
+            'form.sort_order.min' => 'The sort order must be at least 0.',
+            'form.is_active.boolean' => 'The active status must be true or false.',
+        ], [
+            'form.name' => 'category name',
+            'form.slug' => 'slug',
+            'form.description' => 'description',
+            'form.color' => 'color',
+            'form.sort_order' => 'sort order',
+            'form.is_active' => 'active status',
         ]);
 
         $category = FilmCategory::findOrFail($this->editingId);
@@ -150,7 +193,6 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.admin.film-categories.index', compact('categories'))
-            ->layout('admin.layout', ['title' => 'Film Categories']);
+        return view('livewire.admin.film-categories.index', compact('categories'));
     }
 }

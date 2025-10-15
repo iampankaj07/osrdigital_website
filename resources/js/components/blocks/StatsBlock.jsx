@@ -99,7 +99,7 @@ function StatsBlock({ data, settings, pageSettings }) {
                 {[...Array(20)].map((_, i) => (
                     <div
                         key={i}
-                        className="absolute w-2 h-2 bg-white/10 rounded-full animate-pulse"
+                        className="absolute w-2 h-2 bg-white/10 rounded-full skeleton-fast"
                         style={{
                             left: `${Math.random() * 100}%`,
                             top: `${Math.random() * 100}%`,

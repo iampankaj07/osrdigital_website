@@ -4,17 +4,16 @@ namespace App\Livewire\Admin\FilmPortfolios;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\WithFileUploads;
 use App\Models\FilmPortfolio;
 use App\Models\FilmCategory;
-use Spatie\LivewireFilepond\WithFilePond;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination;
 
     // Form properties
     public $form = [
@@ -25,6 +24,7 @@ class Index extends Component
         'year' => null,
         'duration' => '',
         'rating' => null,
+        'link' => '',
         'category_id' => null,
         'sort_order' => 0,
         'is_featured' => false,
@@ -44,10 +44,8 @@ class Index extends Component
     public $sortDirection = 'asc';
 
     // Media handling
-    public $uploadMethod = 'media_library';
     public $selectedMediaId = null;
     public $selectedMediaUrl = null;
-    public $filepondUploads = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -70,11 +68,63 @@ class Index extends Component
             'form.year' => 'nullable|integer|min:1900|max:' . (date('Y') + 5),
             'form.duration' => 'nullable|string|max:50',
             'form.rating' => 'nullable|numeric|min:0|max:10',
+            'form.link' => 'nullable|url|max:500',
             'form.category_id' => 'nullable|exists:film_categories,id',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_featured' => 'boolean',
             'form.is_published' => 'boolean',
             'form.media_id' => 'nullable|exists:media,id',
+        ];
+    }
+
+    protected function messages()
+    {
+        return [
+            'form.title.required' => 'The film title is required.',
+            'form.title.string' => 'The film title must be a valid text.',
+            'form.title.max' => 'The film title may not be greater than 255 characters.',
+            'form.slug.string' => 'The slug must be a valid text.',
+            'form.slug.max' => 'The slug may not be greater than 255 characters.',
+            'form.slug.unique' => 'This slug is already taken.',
+            'form.description.string' => 'The description must be a valid text.',
+            'form.genre.string' => 'The genre must be a valid text.',
+            'form.genre.max' => 'The genre may not be greater than 100 characters.',
+            'form.year.integer' => 'The year must be a valid number.',
+            'form.year.min' => 'The year must be at least 1900.',
+            'form.year.max' => 'The year may not be greater than ' . (date('Y') + 5) . '.',
+            'form.duration.string' => 'The duration must be a valid text.',
+            'form.duration.max' => 'The duration may not be greater than 50 characters.',
+            'form.rating.numeric' => 'The rating must be a valid number.',
+            'form.rating.min' => 'The rating must be at least 0.',
+            'form.rating.max' => 'The rating may not be greater than 10.',
+            'form.link.url' => 'The link must be a valid URL.',
+            'form.link.max' => 'The link may not be greater than 500 characters.',
+            'form.category_id.exists' => 'The selected category is invalid.',
+            'form.sort_order.required' => 'The sort order is required.',
+            'form.sort_order.integer' => 'The sort order must be a valid number.',
+            'form.sort_order.min' => 'The sort order must be at least 0.',
+            'form.is_featured.boolean' => 'The featured status must be true or false.',
+            'form.is_published.boolean' => 'The published status must be true or false.',
+            'form.media_id.exists' => 'The selected media is invalid.',
+        ];
+    }
+
+    protected function attributes()
+    {
+        return [
+            'form.title' => 'film title',
+            'form.slug' => 'slug',
+            'form.description' => 'description',
+            'form.genre' => 'genre',
+            'form.year' => 'year',
+            'form.duration' => 'duration',
+            'form.rating' => 'rating',
+            'form.link' => 'link',
+            'form.category_id' => 'category',
+            'form.sort_order' => 'sort order',
+            'form.is_featured' => 'featured status',
+            'form.is_published' => 'published status',
+            'form.media_id' => 'media',
         ];
     }
 
@@ -110,16 +160,14 @@ class Index extends Component
             $filmData = $this->form;
 
             // Handle media attachment
-            if ($this->uploadMethod === 'filepond' && !empty($this->filepondUploads)) {
-                $upload = $this->filepondUploads[0] ?? null;
-                if ($upload) {
-                    $filmData['media_id'] = $upload['id'] ?? null;
-                }
-            } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+            if ($this->selectedMediaId) {
                 $filmData['media_id'] = $this->selectedMediaId;
             }
 
             FilmPortfolio::create($filmData);
+
+            // Dispatch create event
+            $this->dispatch('create');
 
             $this->resetForm();
             $this->isCreating = false;
@@ -129,6 +177,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Creation Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to create film portfolio. Please try again.');
+            
         }
     }
 
@@ -145,6 +194,7 @@ class Index extends Component
                 'year' => $film->year,
                 'duration' => $film->duration,
                 'rating' => $film->rating,
+                'link' => $film->link,
                 'category_id' => $film->category_id,
                 'sort_order' => $film->sort_order,
                 'is_featured' => $film->is_featured,
@@ -161,14 +211,12 @@ class Index extends Component
             $this->editingId = $filmId;
             $this->isCreating = false;
 
-            // Dispatch event to populate Quill editor
-            $this->dispatch('editFormPopulated', [
-                'description' => $film->description
-            ]);
+            // Form populated with film data
 
         } catch (\Exception $e) {
             Log::error('Film Portfolio Edit Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to load film portfolio data.');
+            
         }
     }
 
@@ -181,16 +229,14 @@ class Index extends Component
             $filmData = $this->form;
 
             // Handle media attachment
-            if ($this->uploadMethod === 'filepond' && !empty($this->filepondUploads)) {
-                $upload = $this->filepondUploads[0] ?? null;
-                if ($upload) {
-                    $filmData['media_id'] = $upload['id'] ?? null;
-                }
-            } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
+            if ($this->selectedMediaId) {
                 $filmData['media_id'] = $this->selectedMediaId;
             }
 
             $film->update($filmData);
+
+            // Dispatch update event
+            $this->dispatch('update');
 
             $this->resetForm();
             $this->editingId = null;
@@ -200,6 +246,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Update Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to update film portfolio. Please try again.');
+            
         }
     }
 
@@ -214,6 +261,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Delete Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to delete film portfolio.');
+            
         }
     }
 
@@ -236,6 +284,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Toggle Featured Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to update featured status.');
+            
         }
     }
 
@@ -251,6 +300,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Toggle Published Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to update publication status.');
+            
         }
     }
 
@@ -303,6 +353,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio - Media selection error: ' . $e->getMessage());
             session()->flash('error', 'Failed to select media. Please try again.');
+            
         }
     }    public function clearSelectedMedia()
     {
@@ -321,6 +372,7 @@ class Index extends Component
             'year' => null,
             'duration' => '',
             'rating' => null,
+            'link' => '',
             'category_id' => null,
             'sort_order' => FilmPortfolio::max('sort_order') + 1 ?? 0,
             'is_featured' => false,
@@ -330,11 +382,8 @@ class Index extends Component
 
         $this->selectedMediaId = null;
         $this->selectedMediaUrl = null;
-        $this->filepondUploads = [];
-        $this->uploadMethod = 'media_library';
 
-        // Dispatch event to reset Quill editors
-        $this->dispatch('formReset');
+        // Form has been reset
     }
 
     public function render()

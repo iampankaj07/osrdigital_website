@@ -29,9 +29,33 @@ class FilmPortfolioController extends Controller
         $limit = $request->get('limit', 12);
         $films = $query->limit($limit)->get();
 
+        // Transform data to include image_url for frontend compatibility
+        $transformedFilms = $films->map(function ($film) {
+            return [
+                'id' => $film->id,
+                'title' => $film->title,
+                'slug' => $film->slug,
+                'description' => $film->description,
+                'genre' => $film->genre,
+                'year' => $film->year,
+                'image_url' => $film->image_url,
+                'video_url' => $film->video_url,
+                'link' => $film->link,
+                'rating' => $film->rating,
+                'duration' => $film->duration,
+                'category' => $film->category,
+                'category_id' => $film->category_id,
+                'is_featured' => $film->is_featured,
+                'is_published' => $film->is_published,
+                'views' => $film->views ?? 0,
+                'created_at' => $film->created_at,
+                'updated_at' => $film->updated_at,
+            ];
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $films
+            'data' => $transformedFilms
         ]);
     }
 

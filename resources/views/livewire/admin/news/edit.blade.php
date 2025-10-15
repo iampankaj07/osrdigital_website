@@ -26,8 +26,16 @@
     @endif
 
     <!-- Edit Article Form -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-edit text-brand-orange-600 text-sm"></i>
+                </div>
+                <h5 class="text-lg font-medium text-gray-900">Edit Article</h5>
+            </div>
+        </div>
+        <div class="p-6">
             <form wire:submit="update">
                 <div class="row">
                     <!-- Left Column - Main Content -->
@@ -81,7 +89,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <label class="mb-0">Article Content <span class="text-danger">*</span></label>
                             </div>
-                            <div class="border rounded bg-white quill-container" style="min-height: 400px; position: relative; z-index: 1;">
+                            <div class="border rounded bg-white quill-container" style="min-height: 400px; position: relative; z-index: 1;" wire:ignore>
                                 <div id="quill-editor-edit" class="quill-editor" style="height: 400px; min-height: 400px; background: white; position: relative; z-index: 2;"></div>
                             </div>
                             <textarea wire:model.defer="form.content" id="quill-textarea-edit" style="display: none;"></textarea>
@@ -116,7 +124,7 @@
                                 <div class="form-group mb-3">
                                     <div class="btn-group btn-group-sm w-100" role="group">
                                         <input type="radio" class="btn-check" wire:model="uploadMethod" value="media_library" id="media_library_edit" name="upload_method_edit">
-                                        <label class="btn btn-outline-secondary" for="media_library_edit">
+                                        <label class="btn btn-slate btn-sm" for="media_library_edit">
                                             <i class="fas fa-folder mr-1"></i>Library
                                         </label>
 
@@ -256,12 +264,12 @@
                     <a href="{{ route('admin.news.index') }}" class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-arrow-left mr-1"></i>Back to News
                     </a>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="window.location.reload()">
-                            <i class="fas fa-undo mr-1"></i>Reset
+                    <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                        <button type="button" class="btn-slate" onclick="window.location.reload()">
+                            <i class="fas fa-undo mr-2"></i>Reset
                         </button>
-                        <button type="submit" class="btn btn-dark">
-                            <i class="fas fa-save mr-1"></i>Update Article
+                        <button type="submit" class="btn btn-dark px-6 py-2">
+                            <i class="fas fa-save mr-2"></i>Update Article
                         </button>
                     </div>
                 </div>
@@ -283,21 +291,27 @@
 
         // Initialize Quill editor
         let quillEdit = null;
+        let isInitializing = false;
 
         function initializeQuillEditor() {
-            // Destroy existing editor if it exists
-            if (quillEdit) {
-                try {
-                    quillEdit = null;
-                } catch (e) {
-                    console.log('Error destroying existing editor:', e);
-                }
+            // Prevent multiple simultaneous initializations
+            if (isInitializing) {
+                console.log('Editor initialization already in progress');
+                return;
             }
+
+            // Don't destroy existing editor if it's working
+            if (quillEdit && quillEdit.container && document.getElementById('quill-editor-edit')) {
+                console.log('Editor already exists and is working');
+                return;
+            }
+
+            isInitializing = true;
 
             // Wait for DOM to be ready and Quill to be available
             function tryInitialize() {
                 const editorElement = document.getElementById('quill-editor-edit');
-                if (editorElement && typeof Quill !== 'undefined' && !quillEdit) {
+                if (editorElement && typeof Quill !== 'undefined') {
                     console.log('Initializing Quill editor for edit page');
 
                     try {
@@ -442,8 +456,10 @@
                         });
 
                         console.log('Quill editor initialized successfully');
+                        isInitializing = false;
                     } catch (error) {
                         console.error('Error initializing Quill editor:', error);
+                        isInitializing = false;
                         // Retry after a short delay
                         setTimeout(tryInitialize, 100);
                     }
@@ -514,7 +530,7 @@
         Livewire.on('$refresh', function() {
             console.log('Livewire refresh detected');
             // Don't reinitialize editor, just ensure it's still visible
-            if (quillEdit) {
+            if (quillEdit && quillEdit.container) {
                 setTimeout(() => {
                     // Restore focus if we had a cursor position
                     if (window.quillCursorPosition) {
@@ -529,10 +545,35 @@
                         editorContainer.style.opacity = '1';
                         editorContainer.style.zIndex = '1';
                     }
+                    console.log('Editor maintained after Livewire refresh');
                 }, 100);
             } else {
                 // Only reinitialize if editor doesn't exist
+                console.log('Editor not found after refresh, reinitializing...');
                 setTimeout(initializeQuillEditor, 500);
+            }
+        });
+
+        // Handle specific update events to preserve editor
+        Livewire.on('update', function() {
+            console.log('Update event detected, preserving editor');
+            // Don't reinitialize editor during updates
+            if (quillEdit && quillEdit.container) {
+                console.log('Editor preserved during update');
+            }
+        });
+
+        // Handle editor content refresh without destroying editor
+        Livewire.on('refreshEditorContent', function(data) {
+            console.log('Refreshing editor content:', data);
+            if (quillEdit && quillEdit.container && data.content) {
+                try {
+                    // Update editor content without destroying it
+                    quillEdit.root.innerHTML = data.content;
+                    console.log('Editor content refreshed successfully');
+                } catch (e) {
+                    console.error('Error refreshing editor content:', e);
+                }
             }
         });
 

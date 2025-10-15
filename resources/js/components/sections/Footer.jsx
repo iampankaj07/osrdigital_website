@@ -395,7 +395,7 @@ function Footer() {
                         </span>
                         <FontAwesomeIcon
                             icon={faHeart}
-                            className="w-4 h-4 text-red-500 animate-pulse"
+                            className="w-4 h-4 text-red-500 skeleton-fast"
                         />
                         <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             by

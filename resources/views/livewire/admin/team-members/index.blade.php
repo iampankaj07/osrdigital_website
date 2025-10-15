@@ -58,12 +58,16 @@
 
     <!-- Create Form -->
     @if($isCreating)
-        <div class="card mb-4">
-            <div class="card-body inline-edit-form">
-                <h5 class="mb-3">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create New Team Member
-                </h5>
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm mb-6 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-plus text-brand-orange-600 text-sm"></i>
+                    </div>
+                    <h5 class="text-lg font-medium text-gray-900">Create New Team Member</h5>
+                </div>
+            </div>
+            <div class="p-6">
 
                 <form wire:submit.prevent="store">
                     <div class="row">
@@ -130,7 +134,7 @@
                             <div class="form-group">
                                 <label>Avatar Upload Method</label>
                                 <div class="btn-group d-block">
-                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                    <label class="btn btn-slate btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
                                         <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                     </label>
                                     <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
@@ -196,143 +200,155 @@
                         </div>
                     </div>
 
-                    <div class="form-group text-right">
-                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                            <i class="fas fa-times mr-1"></i>
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save mr-1"></i>
-                            Create Team Member
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                    <button type="button" wire:click="cancelEdit" class="btn-slate">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-dark px-6 py-2">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Team Member
+                    </button>
+                </div>
+            </form>
         </div>
-    @endif
+    </div>
+@endif
 
     <!-- Team Members Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th wire:click="sortBy('sort_order')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 10%;">
-                                <span class="d-flex align-items-center">
-                                    Order
-                                    @if($sortField === 'sort_order')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th wire:click="sortBy('name')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 30%;">
-                                <span class="d-flex align-items-center">
-                                    Member
-                                    @if($sortField === 'name')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th wire:click="sortBy('position')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 25%;">
-                                <span class="d-flex align-items-center">
-                                    Position
-                                    @if($sortField === 'position')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Department</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Status</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 10%;">Actions</th>
-                        </tr>
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50/50 border-b border-gray-100">
+                    <tr>
+                        <th wire:click="sortBy('sort_order')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Order</span>
+                                @if($sortField === 'sort_order')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th wire:click="sortBy('name')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Member</span>
+                                @if($sortField === 'name')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th wire:click="sortBy('position')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Position</span>
+                                @if($sortField === 'position')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
                     </thead>
-                    <tbody>
-                        @forelse($teamMembers as $member)
-                            <tr class="border-bottom">
-                                <td class="py-3 px-3">
-                                    <span class="badge badge-light text-dark border small">{{ $member->sort_order }}</span>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="d-flex align-items-start">
+                <tbody class="bg-white divide-y divide-gray-100">
+                    @forelse($teamMembers as $member)
+                        <tr class="hover:bg-gray-50/50 transition-colors duration-150 group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        {{ $member->sort_order }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
                                         @if($member->image_url)
-                                            <img src="{{ $member->image_url }}" alt="{{ $member->name }}" class="rounded-circle mr-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <img src="{{ $member->image_url }}" alt="{{ $member->name }}" class="w-12 h-12 rounded-full object-cover shadow-sm">
                                         @else
-                                            <div class="bg-light rounded-circle mr-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <i class="fas fa-user text-muted"></i>
+                                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-user text-gray-400 text-sm"></i>
                                             </div>
                                         @endif
-                                        <div>
-                                            <div class="font-weight-medium text-dark">{{ $member->name }}</div>
-                                            @if($member->email)
-                                                <div class="text-muted small">
-                                                    <i class="fas fa-envelope mr-1"></i>
-                                                    {{ $member->email }}
-                                                </div>
-                                            @endif
-                                            <div class="d-flex align-items-center mt-1">
-                                                @if($member->linkedin)
-                                                    <a href="{{ $member->linkedin }}" target="_blank" class="text-primary mr-2" title="LinkedIn">
-                                                        <i class="fab fa-linkedin"></i>
-                                                    </a>
-                                                @endif
-                                                @if($member->twitter)
-                                                    <a href="{{ $member->twitter }}" target="_blank" class="text-info" title="Twitter">
-                                                        <i class="fab fa-twitter"></i>
-                                                    </a>
-                                                @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-gray-900 truncate">
+                                            {{ $member->name }}
+                                        </div>
+                                        @if($member->email)
+                                            <div class="text-sm text-gray-500 truncate">
+                                                <i class="fas fa-envelope mr-1"></i>
+                                                {{ $member->email }}
                                             </div>
+                                        @endif
+                                        <div class="flex items-center mt-1 space-x-2">
+                                            @if($member->linkedin)
+                                                <a href="{{ $member->linkedin }}" target="_blank" class="text-blue-500 hover:text-blue-600" title="LinkedIn">
+                                                    <i class="fab fa-linkedin text-sm"></i>
+                                                </a>
+                                            @endif
+                                            @if($member->twitter)
+                                                <a href="{{ $member->twitter }}" target="_blank" class="text-blue-400 hover:text-blue-500" title="Twitter">
+                                                    <i class="fab fa-twitter text-sm"></i>
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="font-weight-medium">{{ $member->position }}</div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="text-muted small">{{ $member->department ?: '-' }}</div>
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <span class="badge badge-{{ $member->is_active ? 'success' : 'light' }} badge-sm">
-                                        {{ $member->is_active ? 'Active' : 'Inactive' }}
-                                    </span>
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $member->id }})"
-                                                class="btn btn-dark btn-sm border-0"
-                                                title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button wire:click="toggleActive({{ $member->id }})"
-                                                class="btn btn-outline-{{ $member->is_active ? 'warning' : 'success' }} btn-sm border-0"
-                                                title="{{ $member->is_active ? 'Deactivate' : 'Activate' }}">
-                                            <i class="fas fa-{{ $member->is_active ? 'pause' : 'play' }}"></i>
-                                        </button>
-                                        <button wire:click="delete({{ $member->id }})"
-                                                class="btn btn-danger btn-sm border-0"
-                                                title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this team member?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $member->position }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $member->department ?: '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $member->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                    {{ $member->is_active ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="flex items-center justify-center space-x-1">
+                                    <button wire:click="edit({{ $member->id }})"
+                                            class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                            title="Edit">
+                                        <i class="fas fa-edit text-sm"></i>
+                                    </button>
+                                    <button wire:click="toggleActive({{ $member->id }})"
+                                            class="inline-flex items-center p-2 {{ $member->is_active ? 'text-yellow-500 hover:text-yellow-600' : 'text-green-500 hover:text-green-600' }} hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                            title="{{ $member->is_active ? 'Deactivate' : 'Activate' }}">
+                                        <i class="fas fa-{{ $member->is_active ? 'pause' : 'play' }} text-sm"></i>
+                                    </button>
+                                    <button wire:click="delete({{ $member->id }})"
+                                            class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                                            title="Delete"
+                                            onclick="return confirm('Are you sure you want to delete this team member?')">
+                                        <i class="fas fa-trash text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
 
-                            <!-- Inline Edit Form -->
-                            @if($editingId === $member->id)
-                                <tr class="bg-light">
-                                    <td colspan="6">
-                                        <div class="p-3 inline-edit-form">
-                                            <h5 class="mb-3">
-                                                <i class="fas fa-edit mr-2"></i>
-                                                Edit Team Member
-                                            </h5>
+                        <!-- Inline Edit Form -->
+                        @if($editingId === $member->id)
+                            <tr class="bg-gray-50/50">
+                                <td colspan="6" class="px-0">
+                                    <div class="bg-white border border-gray-200 rounded-lg mx-6 my-4 shadow-sm">
+                                        <div class="px-6 py-4 border-b border-gray-100">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                                                    <i class="fas fa-edit text-brand-orange-600 text-sm"></i>
+                                                </div>
+                                                <h5 class="text-lg font-medium text-gray-900">Edit Team Member</h5>
+                                            </div>
+                                        </div>
+                                        <div class="p-6">
 
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
@@ -399,7 +415,7 @@
                                                         <div class="form-group">
                                                             <label>Avatar Upload Method</label>
                                                             <div class="btn-group d-block">
-                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                                                <label class="btn btn-slate btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
                                                                     <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                                                 </label>
                                                                 <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
@@ -465,49 +481,53 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group text-right">
-                                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                                                        <i class="fas fa-times mr-1"></i>
-                                                        Cancel
-                                                    </button>
-                                                    <button type="submit" class="btn btn-dark">
-                                                        <i class="fas fa-save mr-1"></i>
-                                                        Update
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-users fa-lg mb-2 opacity-50"></i>
-                                        <p class="mb-1 small">No team members found</p>
-                                        <small class="text-muted">Click "Add Team Member" to create your first one</small>
+                                            <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                                                <button type="button" wire:click="cancelEdit" class="btn-slate">
+                                                    <i class="fas fa-times mr-2"></i>
+                                                    Cancel
+                                                </button>
+                                                <button type="submit" class="btn btn-dark px-6 py-2">
+                                                    <i class="fas fa-save mr-2"></i>
+                                                    Update Team Member
+                                                </button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            @if($teamMembers->hasPages())
-                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top bg-light">
-                    <div class="text-muted small">
-                        {{ $teamMembers->firstItem() }}-{{ $teamMembers->lastItem() }} of {{ $teamMembers->total() }}
-                    </div>
-                    <div>
-                        {{ $teamMembers->links() }}
-                    </div>
-                </div>
-            @endif
-        </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                    <i class="fas fa-users text-gray-400 text-xl"></i>
+                                </div>
+                                <h3 class="text-sm font-medium text-gray-900 mb-1">No team members found</h3>
+                                <p class="text-sm text-gray-500">Create your first team member to get started.</p>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+
+    <!-- Pagination -->
+    @if($teamMembers->hasPages())
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+            <div class="flex items-center justify-between">
+                <div class="text-sm text-gray-500">
+                    Showing {{ $teamMembers->firstItem() }} to {{ $teamMembers->lastItem() }} of {{ $teamMembers->total() }} results
+                </div>
+                <div>
+                    {{ $teamMembers->links() }}
+                </div>
+            </div>
+        </div>
+    @endif
+</div>
 
     @livewire('components.media-selector')
 </div>

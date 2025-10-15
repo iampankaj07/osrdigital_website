@@ -159,14 +159,14 @@ function NewsPost() {
             <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                     {/* Header Skeleton */}
                     <div className="relative h-96 overflow-hidden">
-                        <div className={`absolute inset-0 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+                        <div className={`absolute inset-0 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <div className="relative z-10 h-full flex items-end">
                             <div className="container mx-auto px-4 pb-12">
                                 <div className="max-w-4xl">
-                                    <div className={`h-4 w-32 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                    <div className={`h-12 w-3/4 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                    <div className={`h-6 w-1/2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-4 w-32 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                    <div className={`h-12 w-3/4 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                    <div className={`h-6 w-1/2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                 </div>
                             </div>
                         </div>
@@ -179,14 +179,14 @@ function NewsPost() {
                                 <div className="lg:col-span-2">
                                     {[1, 2, 3, 4, 5].map((i) => (
                                         <div key={i} className="mb-4">
-                                            <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
-                                            <div className={`h-4 w-5/6 mb-2 rounded ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
-                                            <div className={`h-4 w-4/6 mb-4 rounded ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+                                            <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                            <div className={`h-4 w-5/6 mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                            <div className={`h-4 w-4/6 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="lg:col-span-1">
-                                    <div className={`h-64 w-full rounded ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+                                    <div className={`h-64 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +236,7 @@ function NewsPost() {
                                 onLoad={() => setIsImageLoaded(true)}
                             />
                             {!isImageLoaded && (
-                                <div className={`absolute inset-0 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+                                <div className={`absolute inset-0 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                             )}
                         </>
                     ) : (

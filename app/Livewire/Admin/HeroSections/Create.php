@@ -19,7 +19,7 @@ class Create extends Component
     public $sort_order = 0;
 
     protected $rules = [
-        'page' => 'required|string|in:home,about,partners,team,news,portfolio,contact,business|unique:hero_sections,page',
+        'page' => 'required|string|in:home,about,partners,team,news,portfolio,contact|unique:hero_sections,page',
         'title' => 'required|string|max:255',
         'subtitle' => 'nullable|string|max:500',
         'content' => 'required|string',
@@ -55,7 +55,7 @@ class Create extends Component
             ]);
 
             session()->flash('success', 'Hero section created successfully!');
-            return redirect()->route('admin.hero-sections.index');
+            $this->redirect(route('admin.hero-sections.index'));
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to create hero section: ' . $e->getMessage());

@@ -69,12 +69,16 @@
 
     <!-- Create Form -->
     @if($isCreating)
-        <div class="card mb-4">
-            <div class="card-body inline-edit-form">
-                <h5 class="mb-3">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create New Film Portfolio
-                </h5>
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm mb-6 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-plus text-brand-orange-600 text-sm"></i>
+                    </div>
+                    <h5 class="text-lg font-medium text-gray-900">Create New Film Portfolio</h5>
+                </div>
+            </div>
+            <div class="p-6">
 
                 <form wire:submit.prevent="store">
                     <div class="row">
@@ -143,74 +147,56 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
+                                <label for="form.link">Link (Optional)</label>
+                                <input type="url" wire:model="form.link" class="form-control" placeholder="https://example.com">
+                                @error('form.link') <span class="text-danger small">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
                                 <label for="form.description">Description</label>
-                                <div id="quill-editor-create" style="height: 200px;"></div>
-                                <textarea wire:model="form.description" id="quill-textarea-create" style="display: none;"></textarea>
+                                <textarea wire:model="form.description" class="form-control" rows="5" placeholder="Enter film description..."></textarea>
                                 @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
                             </div>
                         </div>
                     </div>
 
-                    <!-- Featured Image Upload Options -->
+                    <!-- Featured Image Upload -->
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Featured Image Upload Method</label>
-                                <div class="btn-group d-block">
-                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                        <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
-                                    </label>
-                                    <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                        <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
-                                    </label>
+                                <label>Featured Image</label>
+                                <div class="border rounded p-3" style="border-style: dashed !important;">
+                                    <div class="text-center">
+                                        @if($selectedMediaUrl)
+                                            <div class="mb-3">
+                                                <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 150px;">
+                                            </div>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-images mr-1"></i>Change Image
+                                                </button>
+                                                <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-trash mr-1"></i>Remove
+                                                </button>
+                                            </div>
+                                        @else
+                                            <div class="py-4">
+                                                <i class="fas fa-cloud-upload-alt text-muted mb-3" style="font-size: 2rem;"></i>
+                                                <p class="text-muted mb-3">No image selected</p>
+                                                <button type="button" wire:click="openMediaSelector" class="btn-slate">
+                                                    <i class="fas fa-images mr-1"></i>Select Image
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    @if($uploadMethod === 'media_library')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Select from Media Library</label>
-                                    <div class="d-flex align-items-center">
-                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-images mr-1"></i>Browse Media
-                                        </button>
-                                        @if($selectedMediaUrl)
-                                            <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        @endif
-                                    </div>
-                                    @if($selectedMediaUrl)
-                                        <div class="mt-2">
-                                            <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 100px;">
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if($uploadMethod === 'filepond')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Upload Featured Image</label>
-                                    <div style="max-height: 120px;">
-                                        <x-filepond::upload
-                                            wire:model="filepondUploads"
-                                            multiple="false"
-                                            accepted-file-types="image/*"
-                                            max-file-size="10MB"
-                                            placeholder="Drop image here or <span class='filepond--label-action'>Browse</span>"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
 
                     <div class="row">
                         <div class="col-md-6">
@@ -231,13 +217,13 @@
                         </div>
                     </div>
 
-                    <div class="form-group text-right">
-                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                            <i class="fas fa-times mr-1"></i>
+                    <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                        <button type="button" wire:click="cancelEdit" class="btn-slate">
+                            <i class="fas fa-times mr-2"></i>
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save mr-1"></i>
+                        <button type="submit" class="btn btn-dark px-6 py-2">
+                            <i class="fas fa-plus mr-2"></i>
                             Create Film Portfolio
                         </button>
                     </div>
@@ -247,133 +233,156 @@
     @endif
 
     <!-- Film Portfolios Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th wire:click="sortBy('sort_order')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 8%;">
-                                <span class="d-flex align-items-center">
-                                    Order
-                                    @if($sortField === 'sort_order')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 35%;">
-                                <span class="d-flex align-items-center">
-                                    Film
-                                    @if($sortField === 'title')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Category</th>
-                            <th wire:click="sortBy('year')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 10%;">
-                                <span class="d-flex align-items-center">
-                                    Year
-                                    @if($sortField === 'year')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 12%;">Status</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 20%;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($films as $film)
-                            <tr class="border-bottom">
-                                <td class="py-3 px-3">
-                                    <span class="badge badge-light text-dark border small">{{ $film->sort_order }}</span>
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="d-flex align-items-start">
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50/50 border-b border-gray-100">
+                    <tr>
+                        <th wire:click="sortBy('sort_order')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Order</span>
+                                @if($sortField === 'sort_order')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th wire:click="sortBy('title')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Film</span>
+                                @if($sortField === 'title')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th wire:click="sortBy('year')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Year</span>
+                                @if($sortField === 'year')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-100">
+                    @forelse($films as $film)
+                        <tr class="hover:bg-gray-50/50 transition-colors duration-150 group">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        {{ $film->sort_order }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
                                         @if($film->featured_image_url)
-                                            <img src="{{ $film->featured_image_url }}" alt="{{ $film->title }}" class="rounded mr-2" style="width: 50px; height: 35px; object-fit: cover;">
+                                            <img src="{{ $film->featured_image_url }}" alt="{{ $film->title }}" class="w-12 h-16 rounded-lg object-cover shadow-sm">
                                         @else
-                                            <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" style="width: 50px; height: 35px;">
-                                                <i class="fas fa-film text-muted"></i>
+                                            <div class="w-12 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-film text-gray-400 text-sm"></i>
                                             </div>
                                         @endif
-                                        <div>
-                                            <div class="font-weight-medium text-dark">{{ Str::limit($film->title, 40) }}</div>
-                                            <div class="text-muted small">{{ Str::limit($film->genre, 20) ?: 'No genre' }}</div>
-                                            @if($film->rating)
-                                                <div class="text-warning small">
-                                                    <i class="fas fa-star mr-1"></i>
-                                                    {{ $film->rating }}/10
-                                                </div>
-                                            @endif
-                                        </div>
                                     </div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    @if($film->category)
-                                        <span class="badge badge-info badge-sm">{{ $film->category->name }}</span>
-                                    @else
-                                        <span class="text-muted small">-</span>
-                                    @endif
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="text-muted small">{{ $film->year ?: '-' }}</div>
-                                    @if($film->duration)
-                                        <div class="text-muted small">{{ $film->duration }}</div>
-                                    @endif
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <div class="d-flex flex-column">
-                                        <span class="badge badge-{{ $film->is_published ? 'success' : 'light' }} badge-sm mb-1">
-                                            {{ $film->is_published ? 'Published' : 'Draft' }}
-                                        </span>
-                                        @if($film->is_featured)
-                                            <span class="badge badge-warning badge-sm">Featured</span>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-gray-900 truncate">
+                                            {{ $film->title }}
+                                        </div>
+                                        <div class="text-sm text-gray-500 truncate">
+                                            {{ $film->genre ?: 'No genre' }}
+                                        </div>
+                                        @if($film->rating)
+                                            <div class="flex items-center mt-1">
+                                                <div class="flex items-center">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <i class="fas fa-star text-xs {{ $i <= ($film->rating / 2) ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                                                    @endfor
+                                                </div>
+                                                <span class="ml-1 text-xs text-gray-500">{{ $film->rating }}/10</span>
+                                            </div>
                                         @endif
                                     </div>
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $film->id }})"
-                                                class="btn btn-dark btn-sm border-0"
-                                                title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button wire:click="toggleFeatured({{ $film->id }})"
-                                                class="btn btn-outline-{{ $film->is_featured ? 'warning' : 'secondary' }} btn-sm border-0"
-                                                title="{{ $film->is_featured ? 'Remove from Featured' : 'Mark as Featured' }}">
-                                            <i class="fas fa-star"></i>
-                                        </button>
-                                        <button wire:click="togglePublished({{ $film->id }})"
-                                                class="btn btn-outline-{{ $film->is_published ? 'warning' : 'success' }} btn-sm border-0"
-                                                title="{{ $film->is_published ? 'Unpublish' : 'Publish' }}">
-                                            <i class="fas fa-{{ $film->is_published ? 'eye-slash' : 'eye' }}"></i>
-                                        </button>
-                                        <button wire:click="delete({{ $film->id }})"
-                                                class="btn btn-danger btn-sm border-0"
-                                                title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this film portfolio?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($film->category)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ $film->category->name }}
+                                    </span>
+                                @else
+                                    <span class="text-sm text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $film->year ?: '-' }}</div>
+                                @if($film->duration)
+                                    <div class="text-xs text-gray-500">{{ $film->duration }}</div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="flex flex-col items-center space-y-1">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $film->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                        {{ $film->is_published ? 'Published' : 'Draft' }}
+                                    </span>
+                                    @if($film->is_featured)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-star mr-1"></i>
+                                            Featured
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="flex items-center justify-center space-x-1">
+                                    <button wire:click="edit({{ $film->id }})"
+                                            class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                            title="Edit">
+                                        <i class="fas fa-edit text-sm"></i>
+                                    </button>
+                                    <button wire:click="toggleFeatured({{ $film->id }})"
+                                            class="inline-flex items-center p-2 {{ $film->is_featured ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-gray-600' }} hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                            title="{{ $film->is_featured ? 'Remove from Featured' : 'Mark as Featured' }}">
+                                        <i class="fas fa-star text-sm"></i>
+                                    </button>
+                                    <button wire:click="togglePublished({{ $film->id }})"
+                                            class="inline-flex items-center p-2 {{ $film->is_published ? 'text-green-500 hover:text-green-600' : 'text-gray-400 hover:text-gray-600' }} hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                            title="{{ $film->is_published ? 'Unpublish' : 'Publish' }}">
+                                        <i class="fas fa-{{ $film->is_published ? 'eye-slash' : 'eye' }} text-sm"></i>
+                                    </button>
+                                    <button wire:click="delete({{ $film->id }})"
+                                            class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                                            title="Delete"
+                                            onclick="return confirm('Are you sure you want to delete this film portfolio?')">
+                                        <i class="fas fa-trash text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
 
                             <!-- Inline Edit Form -->
                             @if($editingId === $film->id)
-                                <tr class="bg-light">
-                                    <td colspan="6">
-                                        <div class="p-3 inline-edit-form">
-                                            <h5 class="mb-3">
-                                                <i class="fas fa-edit mr-2"></i>
-                                                Edit Film Portfolio
-                                            </h5>
+                                <tr class="bg-gray-50/50">
+                                    <td colspan="6" class="px-0">
+                                        <div class="bg-white border border-gray-200 rounded-lg mx-6 my-4 shadow-sm">
+                                            <div class="px-6 py-4 border-b border-gray-100">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                                                        <i class="fas fa-edit text-brand-orange-600 text-sm"></i>
+                                                    </div>
+                                                    <h5 class="text-lg font-medium text-gray-900">Edit Film Portfolio</h5>
+                                                </div>
+                                            </div>
+                                            <div class="p-6">
 
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
@@ -442,74 +451,56 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
+                                                            <label for="form.link">Link (Optional)</label>
+                                                            <input type="url" wire:model="form.link" class="form-control" placeholder="https://example.com">
+                                                            @error('form.link') <span class="text-danger small">{{ $message }}</span> @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
                                                             <label for="form.description">Description</label>
-                                                            <div id="quill-editor-edit" style="height: 200px;"></div>
-                                                            <textarea wire:model="form.description" id="quill-textarea-edit" style="display: none;"></textarea>
+                                                            <textarea wire:model="form.description" class="form-control" rows="5" placeholder="Enter film description..."></textarea>
                                                             @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <!-- Featured Image Upload Options for Edit -->
+                                                <!-- Featured Image Upload for Edit -->
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label>Featured Image Upload Method</label>
-                                                            <div class="btn-group d-block">
-                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
-                                                                </label>
-                                                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
-                                                                    <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
-                                                                </label>
+                                                            <label>Featured Image</label>
+                                                            <div class="border rounded p-3" style="border-style: dashed !important;">
+                                                                <div class="text-center">
+                                                                    @if($selectedMediaUrl)
+                                                                        <div class="mb-3">
+                                                                            <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 150px;">
+                                                                        </div>
+                                                                        <div class="d-flex justify-content-center gap-2">
+                                                                            <button type="button" wire:click="openMediaSelector" class="btn-slate btn-sm">
+                                                                                <i class="fas fa-images mr-1"></i>Change Image
+                                                                            </button>
+                                                                            <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm">
+                                                                                <i class="fas fa-trash mr-1"></i>Remove
+                                                                            </button>
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="py-4">
+                                                                            <i class="fas fa-cloud-upload-alt text-muted mb-3" style="font-size: 2rem;"></i>
+                                                                            <p class="text-muted mb-3">No image selected</p>
+                                                                            <button type="button" wire:click="openMediaSelector" class="btn-slate">
+                                                                                <i class="fas fa-images mr-1"></i>Select Image
+                                                                            </button>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                @if($uploadMethod === 'media_library')
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>Select from Media Library</label>
-                                                                <div class="d-flex align-items-center">
-                                                                    <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
-                                                                        <i class="fas fa-images mr-1"></i>Browse Media
-                                                                    </button>
-                                                                    @if($selectedMediaUrl)
-                                                                        <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm ml-2">
-                                                                            <i class="fas fa-times"></i>
-                                                                        </button>
-                                                                    @endif
-                                                                </div>
-                                                                @if($selectedMediaUrl)
-                                                                    <div class="mt-2">
-                                                                        <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 100px;">
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-
-                                                @if($uploadMethod === 'filepond')
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>Upload Featured Image</label>
-                                                                <div style="max-height: 120px;">
-                                                                    <x-filepond::upload
-                                                                        wire:model="filepondUploads"
-                                                                        multiple="false"
-                                                                        accepted-file-types="image/*"
-                                                                        max-file-size="10MB"
-                                                                        placeholder="Drop image here or <span class='filepond--label-action'>Browse</span>"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
 
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -530,14 +521,14 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group text-right">
-                                                    <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                                                        <i class="fas fa-times mr-1"></i>
+                                                <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                                                    <button type="button" wire:click="cancelEdit" class="btn-slate">
+                                                        <i class="fas fa-times mr-2"></i>
                                                         Cancel
                                                     </button>
-                                                    <button type="submit" class="btn btn-dark">
-                                                        <i class="fas fa-save mr-1"></i>
-                                                        Update
+                                                    <button type="submit" class="btn btn-dark px-6 py-2">
+                                                        <i class="fas fa-save mr-2"></i>
+                                                        Update Film
                                                     </button>
                                                 </div>
                                             </form>
@@ -545,33 +536,36 @@
                                     </td>
                                 </tr>
                             @endif
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-film fa-lg mb-2 opacity-50"></i>
-                                        <p class="mb-1 small">No film portfolios found</p>
-                                        <small class="text-muted">Click "Add Film Portfolio" to create your first one</small>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <i class="fas fa-film text-gray-400 text-xl"></i>
                                     </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                    <h3 class="text-sm font-medium text-gray-900 mb-1">No film portfolios found</h3>
+                                    <p class="text-sm text-gray-500">Get started by creating your first film portfolio.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-            <!-- Pagination -->
-            @if($films->hasPages())
-                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top bg-light">
-                    <div class="text-muted small">
-                        {{ $films->firstItem() }}-{{ $films->lastItem() }} of {{ $films->total() }}
+        <!-- Pagination -->
+        @if($films->hasPages())
+            <div class="bg-white px-6 py-4 border-t border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-700">
+                        Showing <span class="font-medium">{{ $films->firstItem() }}</span> to <span class="font-medium">{{ $films->lastItem() }}</span> of <span class="font-medium">{{ $films->total() }}</span> results
                     </div>
-                    <div>
+                    <div class="flex items-center space-x-2">
                         {{ $films->links() }}
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 
     @livewire('components.media-selector')
@@ -585,87 +579,6 @@ document.addEventListener('livewire:initialized', function() {
     // Handle media selection events
     window.addEventListener('mediaSelected', function(event) {
         @this.call('handleMediaSelection', event.detail);
-    });
-
-    // Initialize Quill editors
-    let quillCreate = null;
-    let quillEdit = null;
-
-    function initializeQuillEditors() {
-        // Initialize create editor
-        if (document.getElementById('quill-editor-create') && !quillCreate) {
-            quillCreate = new Quill('#quill-editor-create', {
-                theme: 'snow',
-                modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'color': [] }, { 'background': [] }],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        [{ 'indent': '-1'}, { 'indent': '+1' }],
-                        ['link', 'image'],
-                        ['clean']
-                    ]
-                }
-            });
-
-            // Sync create editor with Livewire
-            quillCreate.on('text-change', function() {
-                const html = quillCreate.root.innerHTML;
-                document.getElementById('quill-textarea-create').value = html;
-                @this.set('form.description', html);
-            });
-        }
-
-        // Initialize edit editor
-        if (document.getElementById('quill-editor-edit') && !quillEdit) {
-            quillEdit = new Quill('#quill-editor-edit', {
-                theme: 'snow',
-                modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'color': [] }, { 'background': [] }],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        [{ 'indent': '-1'}, { 'indent': '+1' }],
-                        ['link', 'image'],
-                        ['clean']
-                    ]
-                }
-            });
-
-            // Sync edit editor with Livewire
-            quillEdit.on('text-change', function() {
-                const html = quillEdit.root.innerHTML;
-                document.getElementById('quill-textarea-edit').value = html;
-                @this.set('form.description', html);
-            });
-        }
-    }
-
-    // Initialize editors when component loads
-    initializeQuillEditors();
-
-    // Re-initialize editors when forms are shown
-    Livewire.on('$refresh', function() {
-        setTimeout(initializeQuillEditors, 100);
-    });
-
-    // Handle form switching
-    Livewire.on('formReset', function() {
-        if (quillCreate) {
-            quillCreate.setContents([]);
-        }
-        if (quillEdit) {
-            quillEdit.setContents([]);
-        }
-    });
-
-    // Handle edit form population
-    Livewire.on('editFormPopulated', function(data) {
-        if (quillEdit && data.description) {
-            quillEdit.root.innerHTML = data.description;
-        }
     });
 });
 </script>

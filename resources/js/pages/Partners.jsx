@@ -38,35 +38,11 @@ function Partners() {
                 setPartners(data.partners || []);
             } else {
                 console.error('Failed to fetch partners');
-                // Fallback to static data
-                setPartners([
-                    {
-                        name: "Netflix",
-                        logo: "https://via.placeholder.com/200x100/000000/FFFFFF?text=Netflix",
-                        description: "Leading streaming platform"
-                    },
-                    {
-                        name: "Amazon Prime Video",
-                        logo: "https://via.placeholder.com/200x100/00A8E1/FFFFFF?text=Prime+Video",
-                        description: "Streaming service"
-                    },
-                    {
-                        name: "Disney+",
-                        logo: "https://via.placeholder.com/200x100/113CCF/FFFFFF?text=Disney%2B",
-                        description: "Family entertainment platform"
-                    }
-                ]);
+                setPartners([]);
             }
         } catch (error) {
             console.error('Error fetching partners:', error);
-            // Fallback to static data
-            setPartners([
-                {
-                    name: "Netflix",
-                    logo: "https://via.placeholder.com/200x100/000000/FFFFFF?text=Netflix",
-                    description: "Leading streaming platform"
-                }
-            ]);
+            setPartners([]);
         } finally {
             setIsLoading(false);
         }
@@ -155,17 +131,17 @@ function Partners() {
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div key={i} className={`p-8 rounded-lg shadow-lg ${isDark ? 'bg-gray-700' : 'bg-white'}`}>
                                     <div className="text-center mb-6">
-                                        <div className={`h-16 w-32 mx-auto mb-4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-6 w-24 mx-auto mb-2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-32 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-16 w-32 mx-auto mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-6 w-24 mx-auto mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-32 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                     <div className="space-y-3">
-                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-1/2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-1/2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                     <div className="flex justify-center mt-6">
-                                        <div className={`h-10 w-24 rounded-lg ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-10 w-24 rounded-lg ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
                             ))}

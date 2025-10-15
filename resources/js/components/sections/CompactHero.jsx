@@ -46,18 +46,18 @@ function CompactHero({ page = 'page', title, subtitle, description, breadcrumbs 
                     <div className="text-center max-w-4xl mx-auto">
                         {/* Breadcrumbs Skeleton */}
                         <div className="mb-8">
-                            <div className={`h-5 w-48 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-5 w-48 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
 
                         {/* Title Skeleton */}
                         <div className="mb-6">
-                            <div className={`h-12 w-3/4 mx-auto mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-12 w-3/4 mx-auto mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
 
                         {/* Description Skeleton */}
                         <div className="mb-8">
-                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
                     </div>
                 </div>

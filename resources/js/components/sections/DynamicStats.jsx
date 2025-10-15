@@ -56,7 +56,7 @@ function DynamicStats() {
             }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <div className="animate-pulse">
+                        <div className="skeleton-fast">
                             <div className="h-12 bg-gray-700/50 rounded-lg mb-6 max-w-md mx-auto"></div>
                             <div className="h-6 bg-gray-700/50 rounded-lg max-w-3xl mx-auto"></div>
                         </div>
@@ -64,7 +64,7 @@ function DynamicStats() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                         {[1, 2, 3, 4].map(i => (
                             <div key={i} className="text-center">
-                                <div className="animate-pulse">
+                                <div className="skeleton-fast">
                                     <div className="h-16 w-16 bg-gray-700/50 rounded-2xl mx-auto mb-6"></div>
                                     <div className="h-8 bg-gray-700/50 rounded-lg mb-3"></div>
                                     <div className="h-4 bg-gray-700/50 rounded"></div>

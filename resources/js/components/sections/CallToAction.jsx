@@ -13,17 +13,17 @@ function CallToAction() {
         return (
             <section className={`py-32 ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
                 <div className="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-                    <div className="animate-pulse">
-                        <div className={`h-8 rounded-full w-48 mx-auto mb-8 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
-                        <div className={`h-16 rounded-lg mb-8 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
-                        <div className={`h-6 rounded-lg mb-12 max-w-4xl mx-auto ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                    <div className="skeleton-fast">
+                        <div className={`h-8 rounded-full w-48 mx-auto mb-8 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'}`}></div>
+                        <div className={`h-16 rounded-lg mb-8 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'}`}></div>
+                        <div className={`h-6 rounded-lg mb-12 max-w-4xl mx-auto ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'}`}></div>
                         <div className="flex gap-6 justify-center mb-16">
-                            <div className={`h-12 rounded-lg w-32 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
-                            <div className={`h-12 rounded-lg w-32 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                            <div className={`h-12 rounded-lg w-32 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'}`}></div>
+                            <div className={`h-12 rounded-lg w-32 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'}`}></div>
                         </div>
                         <div className="grid md:grid-cols-3 gap-8">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className={`h-32 rounded-2xl ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`}></div>
+                                <div key={i} className={`h-32 rounded-2xl ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'}`}></div>
                             ))}
                         </div>
                     </div>

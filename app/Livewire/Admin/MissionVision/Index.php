@@ -4,9 +4,12 @@ namespace App\Livewire\Admin\MissionVision;
 
 use Livewire\Component;
 use App\Models\MissionVision;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
+    use DispatchesAlertEvents;
+
     public $form = [
         'mission_title' => '',
         'mission_description' => '',
@@ -97,7 +100,7 @@ class Index extends Component
             MissionVision::create($this->form);
         }
         
-        session()->flash('success', 'Mission & Vision saved successfully!');
+        $this->flashSuccess('Mission & Vision saved successfully!');
     }
 
     public function openIconDropdown($field)
@@ -150,7 +153,6 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.admin.mission-vision.index')
-            ->layout('admin.layout', ['title' => 'Mission & Vision']);
+        return view('livewire.admin.mission-vision.index');
     }
 }

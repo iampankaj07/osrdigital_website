@@ -67,7 +67,7 @@ function HeroBlock({ data, settings, pageSettings }) {
                         {[...Array(100)].map((_, i) => (
                             <div
                                 key={i}
-                                className="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse"
+                                className="absolute w-1 h-1 bg-white/20 rounded-full skeleton-fast"
                                 style={{
                                     left: `${Math.random() * 100}%`,
                                     top: `${Math.random() * 100}%`,
@@ -157,7 +157,7 @@ function HeroBlock({ data, settings, pageSettings }) {
             {/* Scroll indicator */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
                 <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-                    <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
+                    <div className="w-1 h-3 bg-white/60 rounded-full mt-2 skeleton-fast"></div>
                 </div>
             </div>
         </section>

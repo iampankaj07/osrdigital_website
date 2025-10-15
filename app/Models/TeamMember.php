@@ -47,7 +47,7 @@ class TeamMember extends Model
 
     public function media()
     {
-        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class);
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class, 'media_id');
     }
 
     protected static function boot()
@@ -74,12 +74,21 @@ class TeamMember extends Model
 
     public function getAvatarUrlAttribute()
     {
-        if ($this->media) {
+        // First check if we have a media library item
+        if ($this->media_id && $this->media) {
             return $this->media->getFullUrl();
         }
+
+        // Then check if we have a direct avatar path
         if ($this->avatar) {
+            // If it's already a full URL, return it
+            if (filter_var($this->avatar, FILTER_VALIDATE_URL)) {
+                return $this->avatar;
+            }
+            // Otherwise, generate storage URL
             return Storage::url($this->avatar);
         }
+
         return null;
     }
 

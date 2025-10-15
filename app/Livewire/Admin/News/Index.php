@@ -11,10 +11,11 @@ use Spatie\LivewireFilepond\WithFilePond;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
 
     // Form properties
     public $form = [
@@ -145,11 +146,11 @@ class Index extends Component
             $this->resetForm();
             $this->isCreating = false;
 
-            session()->flash('success', 'News article created successfully.');
+            $this->dispatchSuccessEvent('News article created successfully!');
 
         } catch (\Exception $e) {
             Log::error('News Creation Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to create news article. Please try again.');
+            $this->dispatchErrorEvent('Failed to create news article. Please try again.');
         }
     }
 
@@ -189,7 +190,6 @@ class Index extends Component
 
         } catch (\Exception $e) {
             Log::error('News Edit Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to load news article data.');
         }
     }
 
@@ -223,11 +223,9 @@ class Index extends Component
             $this->resetForm();
             $this->editingId = null;
 
-            session()->flash('success', 'News article updated successfully.');
 
         } catch (\Exception $e) {
             Log::error('News Update Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update news article. Please try again.');
         }
     }
 
@@ -235,13 +233,14 @@ class Index extends Component
     {
         try {
             $news = News::findOrFail($newsId);
+            $newsTitle = $news->title;
             $news->delete();
 
-            session()->flash('success', 'News article deleted successfully.');
+            $this->dispatchDeleteEvent("News article '{$newsTitle}' has been successfully deleted.");
 
         } catch (\Exception $e) {
             Log::error('News Delete Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to delete news article.');
+            $this->dispatchErrorEvent('Failed to delete news article. Please try again.');
         }
     }
 
@@ -259,11 +258,9 @@ class Index extends Component
             $news->update(['featured' => !$news->featured]);
 
             $message = $news->featured ? 'News marked as featured.' : 'News removed from featured.';
-            session()->flash('success', $message);
 
         } catch (\Exception $e) {
             Log::error('News Toggle Featured Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update featured status.');
         }
     }
 
@@ -274,11 +271,9 @@ class Index extends Component
             $news->update(['status' => $status]);
 
             $message = ucfirst($status) . ' status applied successfully.';
-            session()->flash('success', $message);
 
         } catch (\Exception $e) {
             Log::error('News Change Status Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update status.');
         }
     }
 
@@ -330,7 +325,6 @@ class Index extends Component
 
         } catch (\Exception $e) {
             Log::error('News - Media selection error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to select media. Please try again.');
         }
     }
 

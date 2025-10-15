@@ -233,26 +233,26 @@ function About() {
                                 {/* Mission Skeleton */}
                                 <div>
                                     <div className="mb-6">
-                                        <div className={`w-12 h-12 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-10 w-48 mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`w-12 h-12 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-10 w-48 mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                     <div className="space-y-4">
-                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-5/6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-5/6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
 
                                 {/* Vision Skeleton */}
                                 <div>
                                     <div className="mb-6">
-                                        <div className={`w-12 h-12 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-10 w-48 mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`w-12 h-12 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-10 w-48 mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                     <div className="space-y-4">
-                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-4/5 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-4/5 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-2/3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
                             </div>
@@ -368,11 +368,11 @@ function About() {
                             {[1, 2, 3, 4].map((i) => (
                                 <div key={i} className={`p-8 rounded-2xl border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'}`}>
                                     <div className="flex items-start space-x-4">
-                                        <div className={`w-12 h-12 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse flex-shrink-0`}></div>
+                                        <div className={`w-12 h-12 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast flex-shrink-0`}></div>
                                         <div className="flex-1">
-                                            <div className={`h-6 w-32 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                            <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                            <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                            <div className={`h-6 w-32 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                            <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                            <div className={`h-4 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                         </div>
                                     </div>
                                 </div>

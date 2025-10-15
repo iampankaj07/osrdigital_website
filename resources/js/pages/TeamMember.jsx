@@ -12,7 +12,7 @@ function TeamMember() {
     useEffect(() => {
         const fetchMember = async () => {
             try {
-                const response = await fetch(`/api/team/${slug}`);
+                const response = await fetch(`/api/team-member/${slug}`);
                 if (!response.ok) {
                     if (response.status === 404) {
                         setError('Team member not found');

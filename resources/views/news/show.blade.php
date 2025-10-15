@@ -8,10 +8,10 @@
         <meta name="description" content="{{ $news->excerpt ?? strip_tags($news->content) }}">
 
         @php
-            $favicon = \App\Helpers\SettingsHelper::get('favicon');
+            $favicon = \App\Helpers\ThemeHelper::favicon();
         @endphp
         @if($favicon)
-            <link rel="icon" type="image/x-icon" href="{{ Storage::url($favicon) }}">
+            <link rel="icon" type="image/x-icon" href="{{ $favicon }}">
         @endif
 
         <!-- Fonts -->

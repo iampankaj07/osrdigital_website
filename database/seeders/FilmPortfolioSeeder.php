@@ -34,6 +34,7 @@ class FilmPortfolioSeeder extends Seeder
                 'is_featured' => true,
                 'is_published' => true,
                 'sort_order' => 1,
+                'views' => 1250,
             ],
             [
                 'title' => 'Urban Legends',
@@ -48,6 +49,7 @@ class FilmPortfolioSeeder extends Seeder
                 'is_featured' => true,
                 'is_published' => true,
                 'sort_order' => 2,
+                'views' => 980,
             ],
             [
                 'title' => 'Rising Stars',

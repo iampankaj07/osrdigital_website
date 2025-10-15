@@ -61,15 +61,15 @@ function OurImpact({ content, title, subtitle }) {
             <section className={`py-24 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                        <div className={`h-6 w-96 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-12 w-64 mx-auto mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                        <div className={`h-6 w-96 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                         {[1, 2, 3, 4].map((i) => (
                             <div key={i} className="text-center">
-                                <div className={`h-16 w-16 mx-auto mb-4 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                <div className={`h-12 w-24 mx-auto mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                <div className={`h-6 w-32 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                <div className={`h-16 w-16 mx-auto mb-4 rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-12 w-24 mx-auto mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-6 w-32 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                             </div>
                         ))}
                     </div>

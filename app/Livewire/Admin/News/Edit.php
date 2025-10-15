@@ -10,10 +10,11 @@ use Spatie\LivewireFilepond\WithFilePond;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Traits\DispatchesAlertEvents;
 
 class Edit extends Component
 {
-    use WithFileUploads, WithFilePond;
+    use WithFileUploads, WithFilePond, DispatchesAlertEvents;
 
     public $newsId;
     public $news;
@@ -103,7 +104,7 @@ class Edit extends Component
 
         } catch (\Exception $e) {
             Log::error('News Edit Load Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to load news article data.');
+            $this->dispatchErrorEvent('Failed to load news article data.');
             return redirect()->route('admin.news.index');
         }
     }
@@ -147,14 +148,19 @@ class Edit extends Component
 
             $this->news->update($newsData);
 
-            session()->flash('success', 'News article updated successfully.');
+            // Ensure the form content is synced with the updated data
+            $this->form['content'] = $this->news->fresh()->content;
 
-            // Redirect to news index
-            return redirect()->route('admin.news.index');
+            // Dispatch event to refresh Quill editor content without destroying it
+            $this->dispatch('refreshEditorContent', [
+                'content' => $this->form['content']
+            ]);
+
+            $this->flashSuccess('News article updated successfully.');
 
         } catch (\Exception $e) {
             Log::error('News Update Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update news article. Please try again.');
+            $this->dispatchErrorEvent('Failed to update news article. Please try again.');
         }
     }
 
@@ -196,7 +202,7 @@ class Edit extends Component
 
         } catch (\Exception $e) {
             Log::error('News Edit - Media selection error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to select media. Please try again.');
+            $this->dispatchErrorEvent('Failed to select media. Please try again.');
         }
     }
 

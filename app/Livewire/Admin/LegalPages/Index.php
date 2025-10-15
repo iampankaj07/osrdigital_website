@@ -7,6 +7,7 @@ use App\Models\LegalPage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+
 class Index extends Component
 {
     public $selectedPageType = 'privacy_policy';
@@ -107,9 +108,15 @@ class Index extends Component
                 $page = LegalPage::findOrFail($this->editingId);
                 $page->update($pageData);
                 $message = 'Legal page updated successfully.';
+                
+                // Dispatch update event
+                $this->dispatch('update');
             } else {
                 LegalPage::create($pageData);
                 $message = 'Legal page created successfully.';
+                
+                // Dispatch save event
+                $this->dispatch('save');
             }
 
             session()->flash('success', $message);
@@ -120,6 +127,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Legal Page Save Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to save legal page. Please try again.');
+            
         }
     }
 
@@ -127,7 +135,7 @@ class Index extends Component
     {
         if ($this->editingId) {
             $page = LegalPage::findOrFail($this->editingId);
-            return redirect()->route('legal.show', $page->slug);
+            $this->redirect(route('legal.show', $page->slug));
         }
     }
 

@@ -20,6 +20,7 @@ class FilmPortfolio extends Model
         'media_id',
         'gallery_images',
         'video_url',
+        'link',
         'rating',
         'duration',
         'category_id',
@@ -27,6 +28,7 @@ class FilmPortfolio extends Model
         'is_published',
         'sort_order',
         'metadata',
+        'views',
     ];
 
     protected $casts = [

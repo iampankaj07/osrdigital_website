@@ -20,7 +20,7 @@ class Edit extends Component
     public $sort_order = 0;
 
     protected $rules = [
-        'page' => 'required|string|in:home,about,partners,team,news,portfolio,contact,business|unique:hero_sections,page,' . 'heroSection.id',
+        'page' => 'required|string|in:home,about,partners,team,news,portfolio,contact|unique:hero_sections,page,' . 'heroSection.id',
         'title' => 'required|string|max:255',
         'subtitle' => 'nullable|string|max:500',
         'content' => 'required|string',
@@ -71,7 +71,7 @@ class Edit extends Component
             ]);
 
             session()->flash('success', 'Hero section updated successfully!');
-            return redirect()->route('admin.hero-sections.index');
+            $this->redirect(route('admin.hero-sections.index'));
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to update hero section: ' . $e->getMessage());

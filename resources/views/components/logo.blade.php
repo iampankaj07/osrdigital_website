@@ -1,12 +1,12 @@
 @props(['type' => 'auto', 'class' => '', 'width' => null, 'height' => null])
 
 @php
-    $logoLight = \App\Helpers\SettingsHelper::get('logo_light');
-    $logoDark = \App\Helpers\SettingsHelper::get('logo_dark');
-    $logoAdmin = \App\Helpers\SettingsHelper::get('logo_admin');
-    $logoMobile = \App\Helpers\SettingsHelper::get('logo_mobile');
-    $logoFooter = \App\Helpers\SettingsHelper::get('logo_footer');
-    $logoEmail = \App\Helpers\SettingsHelper::get('logo_email');
+    $logoLight = \App\Helpers\SettingsHelper::logo('light');
+    $logoDark = \App\Helpers\SettingsHelper::logo('dark');
+    $logoAdmin = \App\Helpers\SettingsHelper::logo('admin');
+    $logoMobile = \App\Helpers\SettingsHelper::logo('mobile');
+    $logoFooter = \App\Helpers\SettingsHelper::logo('footer');
+    $logoEmail = \App\Helpers\SettingsHelper::logo('email');
     $siteName = \App\Helpers\SettingsHelper::getSiteTitle();
 
     // Determine which logo to show
@@ -46,17 +46,17 @@
 <div class="logo {{ $class }}">
     @if($type === 'auto' && $logoLight && $logoDark)
         <!-- Show different logos for light/dark themes -->
-        <img src="{{ Storage::url($logoLight) }}"
+        <img src="{{ $logoLight }}"
              alt="{{ $siteName }}"
              class="{{ $defaultClass }} block dark:hidden"
              @if($style) style="{{ $style }}" @endif>
-        <img src="{{ Storage::url($logoDark) }}"
+        <img src="{{ $logoDark }}"
              alt="{{ $siteName }}"
              class="{{ $defaultClass }} hidden dark:block"
              @if($style) style="{{ $style }}" @endif>
     @elseif($logo)
         <!-- Single logo -->
-        <img src="{{ Storage::url($logo) }}"
+        <img src="{{ $logo }}"
              alt="{{ $siteName }}"
              class="{{ $defaultClass }}"
              @if($style) style="{{ $style }}" @endif>

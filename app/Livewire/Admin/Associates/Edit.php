@@ -143,7 +143,7 @@ class Edit extends Component
             $this->associate->save();
 
             session()->flash('success', 'Associate updated successfully!');
-            return redirect()->route('admin.associates.index');
+            $this->redirect(route('admin.associates.index'));
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to update associate: ' . $e->getMessage());

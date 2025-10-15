@@ -130,7 +130,7 @@
 
                                 </div>
                             </div>
-                            <div class="border rounded bg-white quill-container-legal" style="min-height: 400px; position: relative; z-index: 1;">
+                            <div class="border rounded bg-white quill-container-legal" style="min-height: 400px; position: relative; z-index: 1;" wire:ignore>
                                 <div id="quill-editor-legal" class="quill-editor-legal" style="height: 400px; min-height: 400px; background: white; position: relative; z-index: 2;"></div>
                             </div>
                             <textarea wire:model.defer="form.content" id="quill-textarea-legal" style="display: none;"></textarea>
@@ -226,21 +226,27 @@
 
         // Initialize Quill editor
         let quillLegal = null;
+        let isInitializingLegal = false;
 
         function initializeQuillEditor() {
-            // Destroy existing editor if it exists
-            if (quillLegal) {
-                try {
-                    quillLegal = null;
-                } catch (e) {
-                    console.log('Error destroying existing legal editor:', e);
-                }
+            // Prevent multiple simultaneous initializations
+            if (isInitializingLegal) {
+                console.log('Legal editor initialization already in progress');
+                return;
             }
+
+            // Don't destroy existing editor if it's working
+            if (quillLegal && quillLegal.container && document.getElementById('quill-editor-legal')) {
+                console.log('Legal editor already exists and is working');
+                return;
+            }
+
+            isInitializingLegal = true;
 
             // Wait for DOM to be ready and Quill to be available
             function tryInitialize() {
                 const editorElement = document.getElementById('quill-editor-legal');
-                if (editorElement && typeof Quill !== 'undefined' && !quillLegal) {
+                if (editorElement && typeof Quill !== 'undefined') {
                     console.log('Initializing Quill editor for legal pages');
 
                     try {
@@ -382,8 +388,10 @@
                         });
 
                         console.log('Legal Quill editor initialized successfully');
+                        isInitializingLegal = false;
                     } catch (error) {
                         console.error('Error initializing Legal Quill editor:', error);
+                        isInitializingLegal = false;
                         // Retry after a short delay
                         setTimeout(tryInitialize, 100);
                     }
@@ -457,6 +465,23 @@
             }
         };
 
+        // Handle specific legal page events to preserve editor
+        Livewire.on('update', function() {
+            console.log('Legal update event detected, preserving editor');
+            // Don't reinitialize editor during updates
+            if (quillLegal && quillLegal.container) {
+                console.log('Legal editor preserved during update');
+            }
+        });
+
+        Livewire.on('save', function() {
+            console.log('Legal save event detected, preserving editor');
+            // Don't reinitialize editor during save operations
+            if (quillLegal && quillLegal.container) {
+                console.log('Legal editor preserved during save');
+            }
+        });
+
         // Handle content loading when page type changes
         Livewire.on('legalPageContentLoaded', function(data) {
             console.log('Legal page content loaded:', data);
@@ -490,7 +515,7 @@
         Livewire.on('$refresh', function() {
             console.log('Legal Livewire refresh detected');
             // Don't reinitialize editor, just ensure it's still visible
-            if (quillLegal) {
+            if (quillLegal && quillLegal.container) {
                 setTimeout(() => {
                     // Restore focus if we had a cursor position
                     if (window.quillLegalCursorPosition) {
@@ -513,23 +538,7 @@
                             quillLegal.container.style.zIndex = '2';
                         }
                     }
-
-                    // Additional check after longer delay to catch any hiding
-                    setTimeout(() => {
-                        const editorCheck = document.getElementById('quill-editor-legal');
-                        if (editorCheck) {
-                            const computedStyle = window.getComputedStyle(editorCheck);
-                            if (computedStyle.display === 'none' ||
-                                computedStyle.visibility === 'hidden' ||
-                                computedStyle.opacity === '0') {
-                                console.log('Legal editor hidden after refresh, forcing visibility');
-                                editorCheck.style.display = 'block !important';
-                                editorCheck.style.visibility = 'visible !important';
-                                editorCheck.style.opacity = '1 !important';
-                                editorCheck.style.zIndex = '2 !important';
-                            }
-                        }
-                    }, 200);
+                    console.log('Legal editor maintained after Livewire refresh');
                 }, 100);
             } else {
                 // Only reinitialize if editor doesn't exist

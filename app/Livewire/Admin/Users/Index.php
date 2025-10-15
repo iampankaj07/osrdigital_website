@@ -8,10 +8,11 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -19,12 +20,12 @@ class Index extends Component
     public $sortDirection = 'asc';
     public $filterRole = '';
     public $filterStatus = '';
-    
+
     // Bulk operations
     public $selectedItems = [];
     public $selectAll = false;
     public $showBulkDeleteModal = false;
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -98,7 +99,8 @@ class Index extends Component
     public function openBulkDeleteModal()
     {
         if (empty($this->selectedItems)) {
-            session()->flash('error', 'Please select items to delete.');
+            $this->dispatchErrorEvent('Please select items to delete.');
+            
             return;
         }
         $this->showBulkDeleteModal = true;
@@ -112,24 +114,26 @@ class Index extends Component
     public function bulkDelete()
     {
         if (empty($this->selectedItems)) {
-            session()->flash('error', 'No items selected for deletion.');
+            $this->dispatchErrorEvent('No items selected for deletion.');
+            
             return;
         }
 
         // Check if any selected users are the last admin
         $adminUsers = User::role('admin')->whereIn('id', $this->selectedItems);
         if ($adminUsers->count() > 0 && User::role('admin')->count() <= $adminUsers->count()) {
-            session()->flash('error', 'Cannot delete all admin users!');
+            $this->dispatchErrorEvent('Cannot delete all admin users!');
+            
             return;
         }
 
         User::whereIn('id', $this->selectedItems)->delete();
-        
+
         $this->selectedItems = [];
         $this->selectAll = false;
         $this->showBulkDeleteModal = false;
-        
-        session()->flash('success', 'Selected users deleted successfully!');
+
+        $this->flashSuccess('Selected users deleted successfully!');
     }
 
     public function sortBy($field)
@@ -161,11 +165,11 @@ class Index extends Component
         // Close any existing edit forms
         $this->editingId = null;
         $this->isCreating = false;
-        
+
         // Set the new editing ID
         $this->editingId = $id;
         $user = User::findOrFail($id);
-        
+
         $this->form = [
             'name' => $user->name,
             'email' => $user->email,
@@ -202,17 +206,17 @@ class Index extends Component
                 $user->assignRole($this->form['roles']);
             }
         });
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
-        session()->flash('success', 'User created successfully!');
+
+        $this->flashSuccess('User created successfully!');
     }
 
     public function update()
     {
         $user = User::findOrFail($this->editingId);
-        
+
         $this->validate([
             'form.name' => 'required|string|max:255',
             'form.email' => 'required|string|email|max:255|unique:users,email,' . $this->editingId,
@@ -233,41 +237,44 @@ class Index extends Component
             $user->update($updateData);
             $user->syncRoles($this->form['roles'] ?? []);
         });
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
-        session()->flash('success', 'User updated successfully!');
+
+        $this->flashSuccess('User updated successfully!');
     }
 
     public function delete($id)
     {
         $user = User::findOrFail($id);
-        
+
         // Prevent deleting the last admin user
         if ($user->hasRole('admin') && User::role('admin')->count() <= 1) {
-            session()->flash('error', 'Cannot delete the last admin user!');
+            $this->dispatchErrorEvent('Cannot delete the last admin user!');
+            
             return;
         }
-        
+
+        $userName = $user->name;
         $user->delete();
-        
-        session()->flash('success', 'User deleted successfully!');
+
+        $this->flashDelete("User '{$userName}' has been successfully deleted.");
     }
 
     public function toggleStatus($id)
     {
         $user = User::findOrFail($id);
-        
+
         // Prevent deactivating the last admin user
         if ($user->hasRole('admin') && User::role('admin')->count() <= 1) {
-            session()->flash('error', 'Cannot deactivate the last admin user!');
+            $this->dispatchErrorEvent('Cannot deactivate the last admin user!');
+            
             return;
         }
-        
+
         $user->update(['is_active' => !$user->is_active]);
-        
-        session()->flash('success', 'User status updated successfully!');
+        $status = $user->is_active ? 'activated' : 'deactivated';
+        $this->dispatchSuccessEvent("User '{$user->name}' has been {$status}.");
     }
 
     public function openRoleModal($userId)
@@ -288,19 +295,20 @@ class Index extends Component
     public function updateUserRoles()
     {
         $user = User::findOrFail($this->selectedUserId);
-        
+
         // Prevent removing admin role from the last admin user
         if ($user->hasRole('admin') && !in_array(Role::where('name', 'admin')->first()->id, $this->userRoles)) {
             if (User::role('admin')->count() <= 1) {
-                session()->flash('error', 'Cannot remove admin role from the last admin user!');
+                $this->dispatchErrorEvent('Cannot remove admin role from the last admin user!');
+            
                 return;
             }
         }
-        
+
         $user->syncRoles($this->userRoles);
         $this->closeRoleModal();
-        
-        session()->flash('success', 'User roles updated successfully!');
+
+        $this->flashSuccess('User roles updated successfully!');
     }
 
     public function render()
@@ -324,7 +332,6 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.admin.users.index', compact('users'))
-            ->layout('admin.layout', ['title' => 'Users Management']);
+        return view('livewire.admin.users.index', compact('users'));
     }
 }
