@@ -69,7 +69,7 @@ your-subdomain/
 ├── bootstrap/
 ├── config/
 ├── database/
-├── public/          # Document root should point here
+├── public/          # Contains assets and public files
 │   ├── index.php
 │   ├── .htaccess
 │   ├── build/
@@ -79,10 +79,14 @@ your-subdomain/
 ├── storage/
 ├── vendor/
 ├── .env
+├── .htaccess        # Root-level .htaccess for root directory setup
+├── index.php        # Root-level index.php for root directory setup
 ├── artisan
 ├── composer.json
 └── composer.lock
 ```
+
+**Note**: When using root directory setup, the subdomain points to the main folder, not the `public` folder.
 
 ### Files to Exclude
 - `.git/`
@@ -97,6 +101,15 @@ your-subdomain/
 ## ⚙️ Server Configuration
 
 ### 1. Document Root
+You have two options for document root:
+
+**Option A: Root Directory (Recommended)**
+Point your subdomain's document root to the main application folder:
+```
+Document Root: /path/to/your-subdomain
+```
+
+**Option B: Public Folder**
 Point your subdomain's document root to the `public` folder:
 ```
 Document Root: /path/to/your-subdomain/public

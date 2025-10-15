@@ -23,6 +23,12 @@ Upload all files to your shared hosting **except**:
 - `storage/logs/` (will be created automatically)
 
 ### 3. Configure Server
+**Option A: Root Directory (Recommended)**
+- Point your subdomain's document root to the main application folder
+- Ensure PHP 8.1+ is enabled
+- Create a MySQL database
+
+**Option B: Public Folder**
 - Point your subdomain's document root to the `public/` folder
 - Ensure PHP 8.1+ is enabled
 - Create a MySQL database
@@ -89,9 +95,9 @@ your-subdomain/
 ├── bootstrap/              # Bootstrap files
 ├── config/                 # Configuration files
 ├── database/               # Migrations and seeders
-├── public/                 # ← Document root
-│   ├── index.php          # Laravel entry point
-│   ├── .htaccess          # Apache configuration
+├── public/                 # Public assets and files
+│   ├── index.php          # Laravel entry point (for public folder setup)
+│   ├── .htaccess          # Apache configuration (for public folder setup)
 │   ├── build/             # Compiled assets
 │   └── storage -> ../storage/app/public
 ├── resources/              # Views, CSS, JS
@@ -99,10 +105,16 @@ your-subdomain/
 ├── storage/                # File storage
 ├── vendor/                 # Composer dependencies
 ├── .env                    # Environment configuration
+├── .htaccess               # Root-level Apache configuration (for root setup)
+├── index.php               # Root-level Laravel entry point (for root setup)
 ├── artisan                 # Laravel command line
 ├── composer.json           # PHP dependencies
 └── composer.lock           # Locked PHP dependencies
 ```
+
+**Document Root Options:**
+- **Root Directory**: Point to main folder (recommended)
+- **Public Folder**: Point to `public/` folder
 
 ## 🚀 Deployment Scripts
 
