@@ -86,13 +86,8 @@ class HostingHelper
             $protocol = request()->secure() ? 'https' : 'http';
             $host = request()->getHost();
             
-            // Check if we're running from root directory (no /public in URL)
-            $currentPath = request()->getPathInfo();
-            if (!str_contains($currentPath, '/public/')) {
-                // Running from root, assets are in /public/build/
-                return "{$protocol}://{$host}/public";
-            }
-            
+            // For subdomain setup, assets are served from the same domain
+            // The document root should point to the public directory
             return "{$protocol}://{$host}";
         }
 
