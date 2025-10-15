@@ -5,16 +5,17 @@ namespace App\Livewire\Admin\PartnershipBenefits;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\PartnershipBenefit;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -66,7 +67,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $partnershipBenefit = PartnershipBenefit::findOrFail($id);
-        
+
         $this->form = [
             'title' => $partnershipBenefit->title,
             'description' => $partnershipBenefit->description,
@@ -94,11 +95,11 @@ class Index extends Component
         ]);
 
         PartnershipBenefit::create($this->form);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
-        session()->flash('success', 'Partnership Benefit created successfully!');
+
+        $this->flashSuccess('Partnership Benefit created successfully!');
     }
 
     public function update()
@@ -113,26 +114,27 @@ class Index extends Component
 
         $partnershipBenefit = PartnershipBenefit::findOrFail($this->editingId);
         $partnershipBenefit->update($this->form);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
-        session()->flash('success', 'Partnership Benefit updated successfully!');
+
+        $this->flashSuccess('Partnership Benefit updated successfully!');
     }
 
     public function delete($id)
     {
         $partnershipBenefit = PartnershipBenefit::findOrFail($id);
+        $benefitTitle = $partnershipBenefit->title;
         $partnershipBenefit->delete();
-        
-        session()->flash('success', 'Partnership Benefit deleted successfully!');
+
+        $this->flashDelete("Partnership Benefit '{$benefitTitle}' has been successfully deleted.");
     }
 
     public function toggleActive($id)
     {
         $partnershipBenefit = PartnershipBenefit::findOrFail($id);
         $partnershipBenefit->update(['is_active' => !$partnershipBenefit->is_active]);
-        
+
         session()->flash('success', 'Partnership Benefit status updated successfully!');
     }
 
@@ -146,7 +148,6 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.admin.partnership-benefits.index', compact('partnershipBenefits'))
-            ->layout('admin.layout', ['title' => 'Partnership Benefits']);
+        return view('livewire.admin.partnership-benefits.index', compact('partnershipBenefits'));
     }
 }

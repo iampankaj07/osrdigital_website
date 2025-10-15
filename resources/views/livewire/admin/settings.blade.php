@@ -83,16 +83,42 @@
                                     <label>Site Logo</label>
                                     @if($old_site_logo)
                                         <div class="mb-2">
-                                            <img src="{{ Storage::url($old_site_logo) }}" alt="Current Logo" class="img-fluid" style="max-height: 100px;">
+                                            <img src="{{ \App\Helpers\ThemeHelper::logo() }}" alt="Current Logo" class="img-fluid" style="max-height: 100px;">
                                             <p class="text-muted small mt-1">Current logo</p>
                                         </div>
                                     @endif
-                                    <div class="custom-file">
-                                        <input type="file" wire:model="site_logo" class="custom-file-input @error('site_logo') is-invalid @enderror" accept="image/*">
-                                        <label class="custom-file-label">
-                                            {{ $site_logo ? $site_logo->getClientOriginalName() : 'Choose new logo' }}
-                                        </label>
+
+                                    <!-- Show selected media preview -->
+                                    @if($selectedLogoMediaUrl)
+                                        <div class="mb-3 p-3 border rounded bg-light text-center">
+                                            <div class="mb-2">
+                                                <img src="{{ $selectedLogoMediaUrl }}" class="img-fluid rounded" style="max-height: 100px;">
+                                            </div>
+                                            <button type="button" wire:click="clearSelectedLogoMedia" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-times mr-1"></i>Remove Selected
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    <!-- FilePond Upload Area -->
+                                    <div class="mb-3 position-relative">
+                                        <x-filepond::upload
+                                            wire:model="filepondLogoUploads"
+                                            multiple="false"
+                                            accepted-file-types="image/*"
+                                            max-file-size="2MB"
+                                            placeholder="Drag & Drop your image or <span class='filepond--label-action'>Browse</span>"
+                                        />
+                                        <div class="position-absolute" style="bottom: 8px; right: 12px; font-size: 10px; color: #999;">
+                                            Powered by PQINA
+                                        </div>
                                     </div>
+
+                                    <!-- Media Library Button -->
+                                    <button type="button" wire:click="openLogoMediaSelector" class="btn btn-outline-secondary btn-block mb-2">
+                                        <i class="fas fa-folder-open mr-2"></i>Select from Media Library
+                                    </button>
+
                                     @error('site_logo')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
@@ -106,16 +132,42 @@
                                     <label>Site Favicon</label>
                                     @if($old_site_favicon)
                                         <div class="mb-2">
-                                            <img src="{{ Storage::url($old_site_favicon) }}" alt="Current Favicon" class="img-fluid" style="max-height: 32px;">
+                                            <img src="{{ \App\Helpers\ThemeHelper::favicon() }}" alt="Current Favicon" class="img-fluid" style="max-height: 32px;">
                                             <p class="text-muted small mt-1">Current favicon</p>
                                         </div>
                                     @endif
-                                    <div class="custom-file">
-                                        <input type="file" wire:model="site_favicon" class="custom-file-input @error('site_favicon') is-invalid @enderror" accept="image/*">
-                                        <label class="custom-file-label">
-                                            {{ $site_favicon ? $site_favicon->getClientOriginalName() : 'Choose new favicon' }}
-                                        </label>
+
+                                    <!-- Show selected media preview -->
+                                    @if($selectedFaviconMediaUrl)
+                                        <div class="mb-3 p-3 border rounded bg-light text-center">
+                                            <div class="mb-2">
+                                                <img src="{{ $selectedFaviconMediaUrl }}" class="img-fluid rounded" style="max-height: 32px;">
+                                            </div>
+                                            <button type="button" wire:click="clearSelectedFaviconMedia" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-times mr-1"></i>Remove Selected
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    <!-- FilePond Upload Area -->
+                                    <div class="mb-3 position-relative">
+                                        <x-filepond::upload
+                                            wire:model="filepondFaviconUploads"
+                                            multiple="false"
+                                            accepted-file-types="image/*"
+                                            max-file-size="1MB"
+                                            placeholder="Drag & Drop your image or <span class='filepond--label-action'>Browse</span>"
+                                        />
+                                        <div class="position-absolute" style="bottom: 8px; right: 12px; font-size: 10px; color: #999;">
+                                            Powered by PQINA
+                                        </div>
                                     </div>
+
+                                    <!-- Media Library Button -->
+                                    <button type="button" wire:click="openFaviconMediaSelector" class="btn btn-outline-secondary btn-block mb-2">
+                                        <i class="fas fa-folder-open mr-2"></i>Select from Media Library
+                                    </button>
+
                                     @error('site_favicon')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
@@ -138,18 +190,19 @@
                 <!-- Contact Page Settings -->
                 @if($activeTab === 'contact')
                 <div class="tab-pane fade show active" id="contact" role="tabpanel">
-                    <form wire:submit.prevent="saveContactPage">
-                        <!-- Hero Section -->
+                    <!-- Contact Hero Section Form -->
+                    <form wire:submit.prevent="saveContactHeroSection">
                         <div class="card mb-4">
-                            <div class="card-header">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0"><i class="fas fa-star mr-2"></i>Contact Hero Section</h5>
+
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="contact_hero_title">Hero Title</label>
-                                            <input type="text" wire:model="contact_hero_title" class="form-control @error('contact_hero_title') is-invalid @enderror" placeholder="Contact Us">
+                                            <label for="contact_hero_title">Hero Title <span class="text-danger">*</span></label>
+                                            <input type="text" wire:model="contact_hero_title" class="form-control @error('contact_hero_title') is-invalid @enderror" placeholder="Let's Connect">
                                             @error('contact_hero_title')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -158,7 +211,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="contact_hero_subtitle">Hero Subtitle</label>
-                                            <input type="text" wire:model="contact_hero_subtitle" class="form-control @error('contact_hero_subtitle') is-invalid @enderror" placeholder="Get in Touch">
+                                            <input type="text" wire:model="contact_hero_subtitle" class="form-control @error('contact_hero_subtitle') is-invalid @enderror" placeholder="Get In Touch">
                                             @error('contact_hero_subtitle')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -167,45 +220,50 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="contact_hero_description">Hero Description</label>
-                                    <textarea wire:model="contact_hero_description" class="form-control @error('contact_hero_description') is-invalid @enderror" rows="3" placeholder="Contact description..."></textarea>
+                                    <textarea wire:model="contact_hero_description" class="form-control @error('contact_hero_description') is-invalid @enderror" rows="4" placeholder="Ready to bring your content to global audiences? Get in touch with our team and let's discuss how we can help you achieve your distribution goals."></textarea>
                                     @error('contact_hero_description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                <button type="submit" class="btn btn-dark btn-sm">
+                                    <i class="fas fa-save mr-2"></i>Save Hero Section
+                                </button>
                             </div>
                         </div>
+                    </form>
 
-                        <!-- Contact Form Section -->
+                    <!-- Contact Form Section Form -->
+                    <form wire:submit.prevent="saveContactFormSection">
                         <div class="card mb-4">
-                            <div class="card-header">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0"><i class="fas fa-envelope mr-2"></i>Contact Form Section</h5>
+
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="contact_form_title">Form Title</label>
+                                            <label for="contact_form_title">Form Title <span class="text-danger">*</span></label>
                                             <input type="text" wire:model="contact_form_title" class="form-control @error('contact_form_title') is-invalid @enderror" placeholder="Send us a Message">
                                             @error('contact_form_title')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="contact_form_description">Form Description</label>
+                                            <textarea wire:model="contact_form_description" class="form-control @error('contact_form_description') is-invalid @enderror" rows="3" placeholder="Fill out the form below and we'll get back to you within 24 hours"></textarea>
+                                            @error('contact_form_description')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="contact_form_description">Form Description</label>
-                                    <textarea wire:model="contact_form_description" class="form-control @error('contact_form_description') is-invalid @enderror" rows="3" placeholder="Form description..."></textarea>
-                                    @error('contact_form_description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                   <button type="submit" class="btn btn-dark btn-sm">
+                                    <i class="fas fa-save mr-2"></i>Save Form Section
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-dark btn-sm">
-                                <i class="fas fa-save mr-2"></i>Save Contact Page Settings
-                            </button>
                         </div>
                     </form>
                 </div>
@@ -273,182 +331,270 @@
                 <!-- Footer Settings -->
                 @if($activeTab === 'footer')
                 <div class="tab-pane fade show active" id="footer" role="tabpanel">
-                    <form wire:submit.prevent="saveFooter">
-                        <div class="row">
-                            <div class="col-12">
-                                <h5 class="mb-3">Company Information</h5>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
+                    <!-- Company Information Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-building mr-2"></i>Company Information
+                            </h5>
+                            <small class="text-muted">This information will be displayed in the website footer</small>
+                        </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="saveCompanyInfo">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="footer_company_name">Company Name <span class="text-danger">*</span></label>
+                                            <input type="text" wire:model="footer_company_name" class="form-control @error('footer_company_name') is-invalid @enderror" placeholder="OSR Digital">
+                                            @error('footer_company_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="footer_email">Email</label>
+                                            <input type="email" wire:model="footer_email" class="form-control @error('footer_email') is-invalid @enderror" placeholder="info@osrdigital.com">
+                                            @error('footer_email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
-                                    <label for="footer_company_name">Company Name</label>
-                                    <input type="text" wire:model="footer_company_name" class="form-control @error('footer_company_name') is-invalid @enderror" placeholder="OSR Digital">
-                                    @error('footer_company_name')
+                                    <label for="footer_company_description">Company Description</label>
+                                    <textarea wire:model="footer_company_description" class="form-control @error('footer_company_description') is-invalid @enderror" rows="3" placeholder="Brief description of your company"></textarea>
+                                    @error('footer_company_description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="footer_phone">Phone</label>
+                                            <input type="text" wire:model="footer_phone" class="form-control @error('footer_phone') is-invalid @enderror" placeholder="+1 (555) 123-4567">
+                                            @error('footer_phone')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="footer_website">Website</label>
+                                            <input type="url" wire:model="footer_website" class="form-control @error('footer_website') is-invalid @enderror" placeholder="https://osrdigital.com">
+                                            @error('footer_website')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
-                                    <label for="footer_email">Email</label>
-                                    <input type="email" wire:model="footer_email" class="form-control @error('footer_email') is-invalid @enderror" placeholder="info@osrdigital.com">
-                                    @error('footer_email')
+                                    <label for="footer_address">Address</label>
+                                    <textarea wire:model="footer_address" class="form-control @error('footer_address') is-invalid @enderror" rows="2" placeholder="Company address"></textarea>
+                                    @error('footer_address')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="footer_company_description">Company Description</label>
-                            <textarea wire:model="footer_company_description" class="form-control @error('footer_company_description') is-invalid @enderror" rows="3" placeholder="Brief description of your company"></textarea>
-                            @error('footer_company_description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="footer_phone">Phone</label>
-                                    <input type="text" wire:model="footer_phone" class="form-control @error('footer_phone') is-invalid @enderror" placeholder="+1 (555) 123-4567">
-                                    @error('footer_phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="footer_website">Website</label>
-                                    <input type="url" wire:model="footer_website" class="form-control @error('footer_website') is-invalid @enderror" placeholder="https://osrdigital.com">
-                                    @error('footer_website')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="footer_address">Address</label>
-                            <textarea wire:model="footer_address" class="form-control @error('footer_address') is-invalid @enderror" rows="2" placeholder="Company address"></textarea>
-                            @error('footer_address')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <hr class="my-4">
-
-                        <!-- Services -->
-                        <div class="row">
-                            <div class="col-12">
-                                <h5 class="mb-3">Services</h5>
-                                <p class="text-muted small">Manage the services displayed in the footer</p>
-                            </div>
-                        </div>
-
-                        <div id="servicesContainer">
-                            @foreach($footer_services as $index => $service)
-                            <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <input type="text" wire:model="footer_services.{{ $index }}.text" class="form-control" placeholder="Service name (e.g., Digital Streaming)">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" wire:model="footer_services.{{ $index }}.icon" class="form-control" placeholder="Icon name">
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" wire:click="removeService({{ $index }})" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
+                                    <button type="submit" class="btn btn-primary btn-sm" wire:loading.attr="disabled" wire:target="saveCompanyInfo">
+                                        <span wire:loading.remove wire:target="saveCompanyInfo">
+                                            <i class="fas fa-save mr-2"></i>Save Company Information
+                                        </span>
+                                        <span wire:loading wire:target="saveCompanyInfo">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i>Saving...
+                                        </span>
                                     </button>
                                 </div>
-                            </div>
-                            @endforeach
+                            </form>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <button type="button" wire:click="addService" class="btn btn-secondary btn-sm">
-                                <i class="fas fa-plus mr-2"></i>Add Service
-                            </button>
+                    <!-- Services Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cogs mr-2"></i>Services
+                            </h5>
+                            <small class="text-muted">Add services to display in the footer. Icon names should be FontAwesome classes (e.g., "fas fa-film")</small>
                         </div>
-
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            <strong>Social Media Links:</strong> Social media links are managed from the "Social Media" tab above and will automatically appear in the footer.
-                        </div>
-
-                        <hr class="my-4">
-
-                        <!-- Quick Links -->
-                        <div class="row">
-                            <div class="col-12">
-                                <h5 class="mb-3">Quick Links</h5>
-                            </div>
-                        </div>
-
-                        <div id="quickLinksContainer">
-                            @foreach($footer_quick_links as $index => $link)
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <input type="text" wire:model="footer_quick_links.{{ $index }}.title" class="form-control" placeholder="Link Title">
+                        <div class="card-body">
+                            <form wire:submit.prevent="saveServices">
+                                <div id="servicesContainer">
+                                    @if(empty($footer_services))
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-2"></i>
+                                            No services added yet. Click "Add Service" below to get started.
+                                        </div>
+                                    @else
+                                        @foreach($footer_services as $index => $service)
+                                        <div class="row mb-3">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <input type="text" wire:model="footer_services.{{ $index }}.text" class="form-control @error('footer_services.' . $index . '.text') is-invalid @enderror" placeholder="Service name (e.g., Digital Streaming)">
+                                                    @error('footer_services.' . $index . '.text')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <input type="text" wire:model="footer_services.{{ $index }}.icon" class="form-control @error('footer_services.' . $index . '.icon') is-invalid @enderror" placeholder="Icon name">
+                                                    @error('footer_services.' . $index . '.icon')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" wire:click="removeService({{ $index }})" class="btn btn-danger btn-sm" title="Remove Service">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    @endif
                                 </div>
-                                <div class="col-md-6">
-                                    <input type="url" wire:model="footer_quick_links.{{ $index }}.url" class="form-control" placeholder="URL">
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" wire:click="removeQuickLink({{ $index }})" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
+
+                                <div class="form-group">
+                                    <button type="button" wire:click="addService" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-plus mr-2"></i>Add Service
                                     </button>
                                 </div>
-                            </div>
-                            @endforeach
-                        </div>
 
-                        <div class="form-group">
-                            <button type="button" wire:click="addQuickLink" class="btn btn-secondary btn-sm">
-                                <i class="fas fa-plus mr-2"></i>Add Quick Link
-                            </button>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-sm" wire:loading.attr="disabled" wire:target="saveServices">
+                                        <span wire:loading.remove wire:target="saveServices">
+                                            <i class="fas fa-save mr-2"></i>Save Services
+                                        </span>
+                                        <span wire:loading wire:target="saveServices">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i>Saving...
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
+                    </div>
 
-                        <hr class="my-4">
-
-                        <!-- Legacy Footer Settings (keep for compatibility) -->
-                        <div class="row">
-                            <div class="col-12">
-                                <h5 class="mb-3">Additional Settings</h5>
-                            </div>
+                    <!-- Quick Links Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-link mr-2"></i>Quick Links
+                            </h5>
+                            <small class="text-muted">Add navigation links for the footer. URLs must be complete (including http:// or https://)</small>
                         </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="saveQuickLinks">
+                                <div id="quickLinksContainer">
+                                    @if(empty($footer_quick_links))
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-2"></i>
+                                            No quick links added yet. Click "Add Quick Link" below to get started.
+                                        </div>
+                                    @else
+                                        @foreach($footer_quick_links as $index => $link)
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="text" wire:model="footer_quick_links.{{ $index }}.title" class="form-control @error('footer_quick_links.' . $index . '.title') is-invalid @enderror" placeholder="Link Title">
+                                                    @error('footer_quick_links.' . $index . '.title')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input type="url" wire:model="footer_quick_links.{{ $index }}.url" class="form-control @error('footer_quick_links.' . $index . '.url') is-invalid @enderror" placeholder="https://example.com">
+                                                    @error('footer_quick_links.' . $index . '.url')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" wire:click="removeQuickLink({{ $index }})" class="btn btn-danger btn-sm" title="Remove Link">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    @endif
+                                </div>
 
-                        <div class="form-group">
-                            <label for="footer_copyright_text">Copyright Text</label>
-                            <input type="text" wire:model="footer_copyright_text" class="form-control @error('footer_copyright_text') is-invalid @enderror" placeholder="© 2024 Your Company Name. All rights reserved.">
-                            @error('footer_copyright_text')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                                <div class="form-group">
+                                    <button type="button" wire:click="addQuickLink" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-plus mr-2"></i>Add Quick Link
+                                    </button>
+                                </div>
 
-                        <div class="form-group">
-                            <label for="footer_text">Footer Text (Legacy)</label>
-                            <textarea wire:model="footer_text" class="form-control @error('footer_text') is-invalid @enderror" rows="4" placeholder="Enter footer description or additional information"></textarea>
-                            @error('footer_text')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-sm" wire:loading.attr="disabled" wire:target="saveQuickLinks">
+                                        <span wire:loading.remove wire:target="saveQuickLinks">
+                                            <i class="fas fa-save mr-2"></i>Save Quick Links
+                                        </span>
+                                        <span wire:loading wire:target="saveQuickLinks">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i>Saving...
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="footer_copyright">Footer Copyright (Legacy)</label>
-                            <input type="text" wire:model="footer_copyright" class="form-control @error('footer_copyright') is-invalid @enderror" placeholder="© 2024 Your Company Name. All rights reserved.">
-                            @error('footer_copyright')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                    <!-- Additional Settings Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cog mr-2"></i>Additional Settings
+                            </h5>
                         </div>
+                        <div class="card-body">
+                            <form wire:submit.prevent="saveAdditionalSettings">
+                                <div class="form-group">
+                                    <label for="footer_copyright_text">Copyright Text</label>
+                                    <input type="text" wire:model="footer_copyright_text" class="form-control @error('footer_copyright_text') is-invalid @enderror" placeholder="© 2024 Your Company Name. All rights reserved.">
+                                    @error('footer_copyright_text')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-dark">
-                                <i class="fas fa-save mr-2"></i>Save Footer Settings
-                            </button>
+                                <div class="form-group">
+                                    <label for="footer_text">Footer Text (Legacy)</label>
+                                    <textarea wire:model="footer_text" class="form-control @error('footer_text') is-invalid @enderror" rows="4" placeholder="Enter footer description or additional information"></textarea>
+                                    @error('footer_text')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="footer_copyright">Footer Copyright (Legacy)</label>
+                                    <input type="text" wire:model="footer_copyright" class="form-control @error('footer_copyright') is-invalid @enderror" placeholder="© 2024 Your Company Name. All rights reserved.">
+                                    @error('footer_copyright')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-sm" wire:loading.attr="disabled" wire:target="saveAdditionalSettings">
+                                        <span wire:loading.remove wire:target="saveAdditionalSettings">
+                                            <i class="fas fa-save mr-2"></i>Save Additional Settings
+                                        </span>
+                                        <span wire:loading wire:target="saveAdditionalSettings">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i>Saving...
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>Social Media Links:</strong> Social media links are managed from the "Social Media" tab above and will automatically appear in the footer.
+                    </div>
                 </div>
                 @endif
 
@@ -580,4 +726,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Media Selector Component -->
+    @livewire('components.media-selector')
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('livewire:initialized', function() {
+    console.log('Settings - Livewire initialized');
+
+    // Handle media selection events
+    window.addEventListener('mediaSelected', function(event) {
+        @this.call('handleMediaSelection', event.detail);
+    });
+});
+</script>
+@endpush

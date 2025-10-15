@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\CoreValueController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TrustedPartnerController;
 use App\Http\Controllers\Api\PartnershipBenefitController;
-use App\Http\Controllers\Api\TeamMemberController;
+use App\Http\Controllers\API\TeamMemberController;
 use App\Http\Controllers\Api\TeamValueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -110,6 +110,45 @@ Route::get('/film-portfolios/featured', [FilmPortfolioController::class, 'featur
 Route::get('/film-portfolios/category/{filmCategory}', [FilmPortfolioController::class, 'byCategory']);
 Route::get('/film-portfolios/{filmPortfolio}', [FilmPortfolioController::class, 'show']);
 
+// Portfolio API (for frontend compatibility)
+Route::get('/portfolio/{slug}', function ($slug) {
+    $film = \App\Models\FilmPortfolio::with('category')->where('slug', $slug)->where('is_published', true)->first();
+    
+    if (!$film) {
+        return response()->json(['error' => 'Portfolio item not found'], 404);
+    }
+    
+    // Increment view count
+    $film->increment('views');
+    
+    // Transform FilmPortfolio data to match frontend expectations
+    return response()->json([
+        'id' => $film->id,
+        'title' => $film->title,
+        'slug' => $film->slug,
+        'description' => $film->description,
+        'content' => $film->description, // Use description as content
+        'image_url' => $film->image_url,
+        'video_url' => $film->video_url,
+        'link' => $film->link,
+        'type' => $film->category ? $film->category->name : 'Film',
+        'category' => $film->category ? $film->category->name : null,
+        'category_id' => $film->category_id,
+        'release_year' => $film->year,
+        'year' => $film->year,
+        'genre' => $film->genre,
+        'rating' => $film->rating,
+        'duration' => $film->duration,
+        'views' => $film->views ?? 0,
+        'is_featured' => $film->is_featured,
+        'is_published' => $film->is_published,
+        'tags' => $film->genre ? [$film->genre] : [], // Convert genre to tags array
+        'metadata' => $film->metadata,
+        'created_at' => $film->created_at,
+        'updated_at' => $film->updated_at,
+    ]);
+});
+
 // Testimonials API
 Route::get('/testimonials', [TestimonialController::class, 'index']);
 Route::get('/testimonials/featured', [TestimonialController::class, 'featured']);
@@ -132,13 +171,11 @@ Route::get('/partnership-benefits', [PartnershipBenefitController::class, 'index
 
 // Team Members API
 Route::get('/team-members', [TeamMemberController::class, 'index']);
+Route::get('/team-member/{slug}', [TeamMemberController::class, 'show']);
 
 // Team Values API
 Route::get('/team-values', [TeamValueController::class, 'index']);
 
-// Business Page API
-Route::get('/business-page', [\App\Http\Controllers\API\BusinessPageController::class, 'index']);
-Route::get('/business-page/{id}', [\App\Http\Controllers\API\BusinessPageController::class, 'show']);
 
 // News API
 Route::get('/news', [\App\Http\Controllers\API\NewsController::class, 'index']);

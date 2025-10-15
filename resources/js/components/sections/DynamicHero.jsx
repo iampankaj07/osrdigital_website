@@ -46,21 +46,21 @@ function DynamicHero({ page = 'home' }) {
                     <div className="text-center max-w-4xl mx-auto">
                         {/* Skeleton Subtitle */}
                         <div className="mb-8">
-                            <div className={`h-6 w-48 mx-auto rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-6 w-48 mx-auto rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
 
                         {/* Skeleton Title */}
                         <div className="mb-12">
-                            <div className={`h-16 w-full mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-12 w-3/4 mx-auto mb-8 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-16 w-full mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-12 w-3/4 mx-auto mb-8 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-6 w-2/3 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
 
                         {/* Skeleton Buttons */}
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <div className={`h-12 w-32 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-12 w-36 rounded-lg ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-12 w-32 rounded-lg ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-12 w-36 rounded-lg ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
                     </div>
                 </div>

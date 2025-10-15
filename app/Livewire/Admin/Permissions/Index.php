@@ -5,10 +5,12 @@ namespace App\Livewire\Admin\Permissions;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
+use App\Traits\DispatchesAlertEvents;
+
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -93,7 +95,7 @@ class Index extends Component
         $this->isCreating = false;
         $this->reset('form');
         
-        session()->flash('success', 'Permission created successfully!');
+        $this->flashSuccess('Permission created successfully!');
     }
 
     public function update()
@@ -109,15 +111,16 @@ class Index extends Component
         $this->editingId = null;
         $this->reset('form');
         
-        session()->flash('success', 'Permission updated successfully!');
+        $this->flashSuccess('Permission updated successfully!');
     }
 
     public function delete($id)
     {
         $permission = Permission::findOrFail($id);
+        $permissionName = $permission->name;
         $permission->delete();
         
-        session()->flash('success', 'Permission deleted successfully!');
+        $this->flashDelete("Permission '{$permissionName}' has been successfully deleted.");
     }
 
     public function updatedSelectAll($value)
@@ -138,6 +141,7 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             session()->flash('error', 'Please select items to delete.');
+            
             return;
         }
         $this->showBulkDeleteModal = true;
@@ -152,6 +156,7 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             session()->flash('error', 'No items selected for deletion.');
+            
             return;
         }
 

@@ -35,39 +35,22 @@ class ThemeHelper
      */
     public static function logo(): ?string
     {
-        // First try to get logo from media library via Settings model
-        try {
-            $settingsModel = \App\Models\Setting::where('key', 'app_settings')->first();
-            if ($settingsModel) {
-                $logoMedia = $settingsModel->getFirstMedia('logo');
-                if ($logoMedia) {
-                    return $logoMedia->getUrl();
-                }
-            }
-        } catch (\Exception $e) {
-            Log::warning("Failed to get logo from media library", ['error' => $e->getMessage()]);
-        }
-
-        // Fallback to Settings model value
-        $logoUrl = \App\Models\Setting::getValue('site_logo');
-        if ($logoUrl && str_starts_with($logoUrl, 'http')) {
-            return $logoUrl;
-        }
-
-        // Always use static logo file for cloud deployment reliability
-        if (file_exists(public_path('images/logo.png'))) {
-            return asset('images/logo.png');
-        }
-
-        // Fallback to database settings if static file doesn't exist
-        $logoPath = static::get('site_logo');
+        // Get logo from Settings model
+        $logoPath = \App\Models\Setting::getValue('site_logo');
+        
         if ($logoPath) {
-            // Handle both relative and absolute paths
+            // Handle full URLs (legacy)
             if (str_starts_with($logoPath, 'http')) {
                 return $logoPath;
             }
 
-            // Check if file exists and generate appropriate URL
+            // Handle new relative path format (media_id/filename)
+            if (preg_match('/^\d+\/[^\/]+$/', $logoPath)) {
+                // This is the new format: media_id/filename
+                return asset('storage/' . $logoPath);
+            }
+
+            // Handle old relative paths
             $fullPath = storage_path('app/public/' . $logoPath);
             if (file_exists($fullPath)) {
                 return asset('storage/' . $logoPath);
@@ -75,6 +58,11 @@ class ThemeHelper
 
             // Log missing file for debugging
             Log::warning('Logo file not found: ' . $fullPath);
+        }
+
+        // Always use static logo file for cloud deployment reliability
+        if (file_exists(public_path('images/logo.png'))) {
+            return asset('images/logo.png');
         }
 
         // Return a placeholder or null if no default logo exists
@@ -86,34 +74,31 @@ class ThemeHelper
      */
     public static function favicon(): ?string
     {
-        // First try to get favicon from media library via Settings model
-        try {
-            $settingsModel = \App\Models\Setting::where('key', 'app_settings')->first();
-            if ($settingsModel) {
-                $faviconMedia = $settingsModel->getFirstMedia('favicon');
-                if ($faviconMedia) {
-                    return $faviconMedia->getUrl();
-                }
-            }
-        } catch (\Exception $e) {
-            Log::warning("Failed to get favicon from media library", ['error' => $e->getMessage()]);
-        }
-
-        // Fallback to Settings model value
-        $faviconUrl = \App\Models\Setting::getValue('site_favicon');
-        if ($faviconUrl && str_starts_with($faviconUrl, 'http')) {
-            return $faviconUrl;
-        }
-
-        $faviconPath = static::get('site_favicon');
+        // Get favicon from Settings model
+        $faviconPath = \App\Models\Setting::getValue('site_favicon');
+        
         if ($faviconPath) {
-            // Handle both relative and absolute paths
+            // Handle full URLs (legacy)
             if (str_starts_with($faviconPath, 'http')) {
                 return $faviconPath;
             }
-            // Generate the correct storage URL
-            return asset('storage/' . $faviconPath);
+
+            // Handle new relative path format (media_id/filename)
+            if (preg_match('/^\d+\/[^\/]+$/', $faviconPath)) {
+                // This is the new format: media_id/filename
+                return asset('storage/' . $faviconPath);
+            }
+
+            // Handle old relative paths
+            $fullPath = storage_path('app/public/' . $faviconPath);
+            if (file_exists($fullPath)) {
+                return asset('storage/' . $faviconPath);
+            }
+
+            // Log missing file for debugging
+            Log::warning('Favicon file not found: ' . $fullPath);
         }
+
         return null;
     }
 

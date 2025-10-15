@@ -11,7 +11,6 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7",
-        "masmerise/livewire-toaster": "^2.8",
         "phiki/phiki": "^2.0",
         "scrivo/highlight.php": "^9.18",
         "spatie/laravel-medialibrary": "^11.15",

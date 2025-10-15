@@ -63,7 +63,7 @@ function Contact() {
 
         try {
             // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Removed artificial delay for faster response
 
             // Reset form
             setFormData({

@@ -33,7 +33,7 @@ function DynamicFeaturedContent() {
             <section className={`py-20 ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-pulse">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 skeleton-fast">
                             <span className={isDark ? 'text-white' : 'text-gray-900'}>Featured</span>{' '}
                             <span style={{ color: '#ff6b35' }}>Content</span>
                         </h2>
@@ -45,7 +45,7 @@ function DynamicFeaturedContent() {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="animate-pulse">
+                            <div key={i} className="skeleton-fast">
                                 <div className={`${isDark ? 'bg-gray-800' : 'bg-gray-200'} aspect-video rounded-lg mb-4`}></div>
                                 <div className={`h-6 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded mb-2`}></div>
                                 <div className={`h-4 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded w-1/2`}></div>

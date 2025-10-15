@@ -44,8 +44,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Services Management (Livewire)
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 
-    // Business Pages Management (Livewire)
-    Route::get('/business-pages', [\App\Http\Controllers\Admin\BusinessPageController::class, 'index'])->name('business-pages.index');
 
     // Distribution Services Management (Livewire)
     Route::get('/distribution-services', [DistributionServiceController::class, 'index'])->name('distribution-services.index');
@@ -124,4 +122,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Hero Slider Image Upload Route
     Route::post('/upload/hero-slider-image', [\App\Http\Controllers\Admin\MediaUploadController::class, 'upload'])->name('hero-slider-image.upload');
+
+    // Alert Test Page (for development/testing)
+    Route::get('/alert-test', \App\Livewire\Admin\AlertTestPage::class)->name('alert-test');
 });

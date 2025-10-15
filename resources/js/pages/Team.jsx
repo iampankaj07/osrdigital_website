@@ -28,63 +28,7 @@ function Team() {
             setTeamMembers(data.teamMembers || []);
         } catch (error) {
             console.error('Error fetching team members:', error);
-            // Fallback to static data
-            setTeamMembers([
-                {
-                    name: "Sarah Chen",
-                    position: "CEO & Founder",
-                    department: "Leadership",
-                    avatar: "https://via.placeholder.com/300x300/EC681D/FFFFFF?text=SC",
-                    linkedin: "https://linkedin.com/in/sarahchen",
-                    twitter: "https://twitter.com/sarahchen",
-                    email: "sarah@osrdigital.com"
-                },
-                {
-                    name: "Michael Rodriguez",
-                    position: "CTO",
-                    department: "Technology",
-                    avatar: "https://via.placeholder.com/300x300/EC681D/FFFFFF?text=MR",
-                    linkedin: "https://linkedin.com/in/michaelrodriguez",
-                    twitter: "https://twitter.com/michaelrod",
-                    email: "michael@osrdigital.com"
-                },
-                {
-                    name: "Emma Thompson",
-                    position: "Head of Content Strategy",
-                    department: "Content",
-                    avatar: "https://via.placeholder.com/300x300/EC681D/FFFFFF?text=ET",
-                    linkedin: "https://linkedin.com/in/emmathompson",
-                    twitter: "https://twitter.com/emmathompson",
-                    email: "emma@osrdigital.com"
-                },
-                {
-                    name: "David Park",
-                    position: "Head of Partnerships",
-                    department: "Business Development",
-                    avatar: "https://via.placeholder.com/300x300/EC681D/FFFFFF?text=DP",
-                    linkedin: "https://linkedin.com/in/davidpark",
-                    twitter: "https://twitter.com/davidpark",
-                    email: "david@osrdigital.com"
-                },
-                {
-                    name: "Lisa Wang",
-                    position: "Head of Marketing",
-                    department: "Marketing",
-                    avatar: "https://via.placeholder.com/300x300/EC681D/FFFFFF?text=LW",
-                    linkedin: "https://linkedin.com/in/lisawang",
-                    twitter: "https://twitter.com/lisawang",
-                    email: "lisa@osrdigital.com"
-                },
-                {
-                    name: "James Wilson",
-                    position: "Head of Operations",
-                    department: "Operations",
-                    avatar: "https://via.placeholder.com/300x300/EC681D/FFFFFF?text=JW",
-                    linkedin: "https://linkedin.com/in/jameswilson",
-                    twitter: "https://twitter.com/jameswilson",
-                    email: "james@osrdigital.com"
-                }
-            ]);
+            setTeamMembers([]);
         }
     };
 
@@ -200,19 +144,19 @@ function Team() {
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div key={i} className={`p-8 rounded-lg shadow-lg ${isDark ? 'bg-gray-700' : 'bg-white'}`}>
                                     <div className="text-center mb-6">
-                                        <div className={`w-24 h-24 rounded-full mx-auto mb-4 ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-6 w-32 mx-auto mb-2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-40 mx-auto mb-2 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-24 mx-auto rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`w-24 h-24 rounded-full mx-auto mb-4 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-6 w-32 mx-auto mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-40 mx-auto mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-24 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                     <div className="space-y-3">
-                                        <div className={`h-4 w-full rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                     <div className="flex justify-center space-x-4 mt-6">
-                                        <div className={`w-8 h-8 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`w-8 h-8 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`w-8 h-8 rounded ${isDark ? 'bg-gray-600' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`w-8 h-8 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`w-8 h-8 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`w-8 h-8 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
                             ))}
@@ -296,10 +240,10 @@ function Team() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {[1, 2, 3, 4].map((i) => (
                                 <div key={i} className={`p-6 rounded-lg shadow-lg text-center ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                                    <div className={`w-12 h-12 mx-auto mb-4 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                    <div className={`h-6 w-24 mx-auto mb-3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                    <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                    <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`w-12 h-12 mx-auto mb-4 rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                    <div className={`h-6 w-24 mx-auto mb-3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                    <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                    <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                 </div>
                             ))}
                         </div>

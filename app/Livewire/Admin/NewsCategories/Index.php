@@ -5,10 +5,11 @@ namespace App\Livewire\Admin\NewsCategories;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\NewsCategory;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -91,6 +92,23 @@ class Index extends Component
             'form.description' => 'nullable|string',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
+        ], [
+            'form.name.required' => 'The category name is required.',
+            'form.name.string' => 'The category name must be a valid text.',
+            'form.name.max' => 'The category name may not be greater than 255 characters.',
+            'form.slug.string' => 'The slug must be a valid text.',
+            'form.slug.max' => 'The slug may not be greater than 255 characters.',
+            'form.description.string' => 'The description must be a valid text.',
+            'form.sort_order.required' => 'The sort order is required.',
+            'form.sort_order.integer' => 'The sort order must be a valid number.',
+            'form.sort_order.min' => 'The sort order must be at least 0.',
+            'form.is_active.boolean' => 'The active status must be true or false.',
+        ], [
+            'form.name' => 'category name',
+            'form.slug' => 'slug',
+            'form.description' => 'description',
+            'form.sort_order' => 'sort order',
+            'form.is_active' => 'active status',
         ]);
 
         NewsCategory::create($this->form);
@@ -98,7 +116,7 @@ class Index extends Component
         $this->isCreating = false;
         $this->reset('form');
 
-        session()->flash('success', 'News Category created successfully!');
+        $this->flashSuccess('News Category created successfully!');
     }
 
     public function update()
@@ -109,6 +127,23 @@ class Index extends Component
             'form.description' => 'nullable|string',
             'form.sort_order' => 'required|integer|min:0',
             'form.is_active' => 'boolean',
+        ], [
+            'form.name.required' => 'The category name is required.',
+            'form.name.string' => 'The category name must be a valid text.',
+            'form.name.max' => 'The category name may not be greater than 255 characters.',
+            'form.slug.string' => 'The slug must be a valid text.',
+            'form.slug.max' => 'The slug may not be greater than 255 characters.',
+            'form.description.string' => 'The description must be a valid text.',
+            'form.sort_order.required' => 'The sort order is required.',
+            'form.sort_order.integer' => 'The sort order must be a valid number.',
+            'form.sort_order.min' => 'The sort order must be at least 0.',
+            'form.is_active.boolean' => 'The active status must be true or false.',
+        ], [
+            'form.name' => 'category name',
+            'form.slug' => 'slug',
+            'form.description' => 'description',
+            'form.sort_order' => 'sort order',
+            'form.is_active' => 'active status',
         ]);
 
         $category = NewsCategory::findOrFail($this->editingId);
@@ -117,7 +152,7 @@ class Index extends Component
         $this->editingId = null;
         $this->reset('form');
 
-        session()->flash('success', 'News Category updated successfully!');
+        $this->flashSuccess('News Category updated successfully!');
     }
 
     public function delete($id)
@@ -125,7 +160,7 @@ class Index extends Component
         $category = NewsCategory::findOrFail($id);
         $category->delete();
 
-        session()->flash('success', 'News Category deleted successfully!');
+        $this->flashDelete('News Category has been successfully deleted.');
     }
 
     public function toggleActive($id)
@@ -133,7 +168,7 @@ class Index extends Component
         $category = NewsCategory::findOrFail($id);
         $category->update(['is_active' => !$category->is_active]);
 
-        session()->flash('success', 'News Category status updated successfully!');
+        $this->dispatchSuccessEvent('News Category status updated successfully!');
     }
 
     public function render()

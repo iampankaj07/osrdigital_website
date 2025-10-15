@@ -7,12 +7,19 @@ use Livewire\WithFileUploads;
 use App\Models\Setting;
 use App\Models\FooterSettings as FooterSettingsModel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Spatie\LivewireFilepond\WithFilePond;
+use App\Traits\DispatchesAlertEvents;
 
 class Settings extends Component
 {
-    use WithFileUploads, WithFilePond;
+    use WithFileUploads, WithFilePond, DispatchesAlertEvents;
+
+    protected $listeners = [
+        'mediaSelected' => 'handleMediaSelection',
+    ];
 
     // General Settings
     public $site_name = '';
@@ -23,6 +30,19 @@ class Settings extends Component
     public $old_site_logo = '';
     public $old_site_favicon = '';
     public $company_name = '';
+
+    // FilePond uploads for logo and favicon
+    public $filepondLogoUploads = [];
+    public $filepondFaviconUploads = [];
+
+    // Media library selection for logo and favicon
+    public $selectedLogoMediaId = null;
+    public $selectedLogoMediaUrl = null;
+    public $selectedFaviconMediaId = null;
+    public $selectedFaviconMediaUrl = null;
+
+    // Track which media selector is active
+    public $activeMediaSelector = null;
 
     // Contact Settings
     public $contact_email = '';
@@ -59,8 +79,11 @@ class Settings extends Component
     public $contact_hero_title = '';
     public $contact_hero_subtitle = '';
     public $contact_hero_description = '';
+    public $contact_hero_background_image = '';
     public $contact_form_title = '';
     public $contact_form_description = '';
+    public $contact_form_success_message = '';
+    public $contact_form_button_text = '';
 
     // Statistics Settings
     public $stats_movies_count = '';
@@ -212,12 +235,97 @@ class Settings extends Component
 
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName);
+        // Add specific validation for footer fields
+        if (str_starts_with($propertyName, 'footer_')) {
+            $this->validateFooterField($propertyName);
+        } else {
+            $this->validateOnly($propertyName);
+        }
+    }
+
+    protected function validateFooterField($field)
+    {
+        $rules = [
+            'footer_company_name' => 'required|string|max:255|min:2',
+            'footer_company_description' => 'nullable|string|max:1000|min:10',
+            'footer_email' => 'nullable|email|max:255',
+            'footer_phone' => 'nullable|string|max:20|regex:/^[\+]?[0-9\(\)\-\s]+$/',
+            'footer_website' => 'nullable|url|max:255',
+            'footer_address' => 'nullable|string|max:500|min:5',
+            'footer_copyright_text' => 'nullable|string|max:255',
+        ];
+
+        $messages = [
+            'footer_company_name.required' => 'Company name is required.',
+            'footer_company_name.min' => 'Company name must be at least 2 characters.',
+            'footer_company_description.min' => 'Company description must be at least 10 characters when provided.',
+            'footer_email.email' => 'Please enter a valid email address.',
+            'footer_phone.regex' => 'Please enter a valid phone number format.',
+            'footer_website.url' => 'Please enter a valid website URL.',
+            'footer_address.min' => 'Address must be at least 5 characters when provided.',
+        ];
+
+        if (isset($rules[$field])) {
+            $this->validateOnly($field, [$field => $rules[$field]], $messages);
+        }
     }
 
     public function switchTab($tab)
     {
         $this->activeTab = $tab;
+    }
+
+    public function openMediaSelector()
+    {
+        $this->dispatch('openMediaSelector');
+    }
+
+    public function handleMediaSelection($data)
+    {
+        try {
+            // Handle case where data is an indexed array containing the media data
+            if (is_array($data) && isset($data[0]) && is_array($data[0])) {
+                $data = $data[0];
+            }
+
+            // Assign media based on which selector was opened
+            if (isset($data['mediaId']) && isset($data['mediaUrl'])) {
+                if ($this->activeMediaSelector === 'logo') {
+                    $this->selectedLogoMediaId = $data['mediaId'];
+                    $this->selectedLogoMediaUrl = $data['mediaUrl'];
+                } elseif ($this->activeMediaSelector === 'favicon') {
+                    $this->selectedFaviconMediaId = $data['mediaId'];
+                    $this->selectedFaviconMediaUrl = $data['mediaUrl'];
+                }
+                $this->activeMediaSelector = null; // Reset after selection
+            }
+        } catch (\Exception $e) {
+            Log::error('Settings - Media selection error: ' . $e->getMessage());
+        }
+    }
+
+    public function clearSelectedLogoMedia()
+    {
+        $this->selectedLogoMediaId = null;
+        $this->selectedLogoMediaUrl = null;
+    }
+
+    public function clearSelectedFaviconMedia()
+    {
+        $this->selectedFaviconMediaId = null;
+        $this->selectedFaviconMediaUrl = null;
+    }
+
+    public function openLogoMediaSelector()
+    {
+        $this->activeMediaSelector = 'logo';
+        $this->dispatch('openMediaSelector');
+    }
+
+    public function openFaviconMediaSelector()
+    {
+        $this->activeMediaSelector = 'favicon';
+        $this->dispatch('openMediaSelector');
     }
 
     public function saveGeneral()
@@ -226,8 +334,6 @@ class Settings extends Component
             'site_name' => 'required|string|max:255',
             'site_title' => 'nullable|string|max:255',
             'site_description' => 'nullable|string|max:500',
-            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'site_favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:512',
             'company_name' => 'nullable|string|max:255',
         ]);
 
@@ -235,33 +341,77 @@ class Settings extends Component
             // Get or create the settings instance for media library
             $settingsModel = Setting::firstOrCreate(['key' => 'app_settings']);
 
-            // Handle logo upload via media library
-            if ($this->site_logo) {
-                // Remove old logo if exists
+            // Handle logo - prioritize media library selection, then FilePond uploads
+            if ($this->selectedLogoMediaId) {
+                // Use selected media from media library
+                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($this->selectedLogoMediaId);
+                if ($media) {
+                    // Store the relative path instead of full URL to avoid double URL issues
+                    $this->updateSetting('site_logo', $media->id . '/' . $media->file_name);
+                    \App\Helpers\ThemeHelper::clearCache();
+                    \Illuminate\Support\Facades\Cache::flush();
+                    \Illuminate\Support\Facades\Cache::flush();
+                }
+            } elseif (!empty($this->filepondLogoUploads)) {
+                // Process FilePond uploads for logo
                 $settingsModel->clearMediaCollection('logo');
+                foreach ($this->filepondLogoUploads as $upload) {
+                    $media = $settingsModel->addMedia($upload->getRealPath())
+                        ->usingName('Site Logo')
+                        ->usingFileName($upload->getClientOriginalName())
+                        ->toMediaCollection('logo');
 
-                // Add new logo from Livewire upload
+                    $this->updateSetting('site_logo', $media->id . '/' . $media->file_name);
+                    \App\Helpers\ThemeHelper::clearCache();
+                    \Illuminate\Support\Facades\Cache::flush();
+                    break; // Only take the first file
+                }
+            } elseif ($this->site_logo) {
+                // Fallback to traditional Livewire upload
+                $settingsModel->clearMediaCollection('logo');
                 $media = $settingsModel->addMedia($this->site_logo->getRealPath())
                     ->usingName('Site Logo')
                     ->usingFileName($this->site_logo->getClientOriginalName())
                     ->toMediaCollection('logo');
 
-                $this->updateSetting('site_logo', $media->getUrl());
+                $this->updateSetting('site_logo', $media->id . '/' . $media->file_name);
                 \App\Helpers\ThemeHelper::clearCache();
             }
 
-            // Handle favicon upload via media library
-            if ($this->site_favicon) {
-                // Remove old favicon if exists
+            // Handle favicon - prioritize media library selection, then FilePond uploads
+            if ($this->selectedFaviconMediaId) {
+                // Use selected media from media library
+                $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($this->selectedFaviconMediaId);
+                if ($media) {
+                    // Store the relative path instead of full URL to avoid double URL issues
+                    $this->updateSetting('site_favicon', $media->id . '/' . $media->file_name);
+                    \App\Helpers\ThemeHelper::clearCache();
+                    \Illuminate\Support\Facades\Cache::flush();
+                    \Illuminate\Support\Facades\Cache::flush();
+                }
+            } elseif (!empty($this->filepondFaviconUploads)) {
+                // Process FilePond uploads for favicon
                 $settingsModel->clearMediaCollection('favicon');
+                foreach ($this->filepondFaviconUploads as $upload) {
+                    $media = $settingsModel->addMedia($upload->getRealPath())
+                        ->usingName('Site Favicon')
+                        ->usingFileName($upload->getClientOriginalName())
+                        ->toMediaCollection('favicon');
 
-                // Add new favicon from Livewire upload
+                    $this->updateSetting('site_favicon', $media->id . '/' . $media->file_name);
+                    \App\Helpers\ThemeHelper::clearCache();
+                    \Illuminate\Support\Facades\Cache::flush();
+                    break; // Only take the first file
+                }
+            } elseif ($this->site_favicon) {
+                // Fallback to traditional Livewire upload
+                $settingsModel->clearMediaCollection('favicon');
                 $media = $settingsModel->addMedia($this->site_favicon->getRealPath())
                     ->usingName('Site Favicon')
                     ->usingFileName($this->site_favicon->getClientOriginalName())
                     ->toMediaCollection('favicon');
 
-                $this->updateSetting('site_favicon', $media->getUrl());
+                $this->updateSetting('site_favicon', $media->id . '/' . $media->file_name);
                 \App\Helpers\ThemeHelper::clearCache();
             }
 
@@ -270,36 +420,40 @@ class Settings extends Component
             $this->updateSetting('site_description', $this->site_description);
             $this->updateSetting('company_name', $this->company_name);
 
-            session()->flash('success', 'General settings updated successfully!');
+            // Reset upload states after successful save
+            $this->filepondLogoUploads = [];
+            $this->filepondFaviconUploads = [];
+            $this->selectedLogoMediaId = null;
+            $this->selectedLogoMediaUrl = null;
+            $this->selectedFaviconMediaId = null;
+            $this->selectedFaviconMediaUrl = null;
+
+            $this->flashSuccess('General settings updated successfully!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update general settings: ' . $e->getMessage());
+            $this->flashError('Failed to update general settings: ' . $e->getMessage());
         }
     }
 
     public function saveContact()
     {
         $this->validate([
-            'contact_email' => 'nullable|email|max:255',
-            'contact_phone' => 'nullable|string|max:50',
-            'contact_address' => 'nullable|string|max:255',
-            'contact_city' => 'nullable|string|max:100',
-            'contact_state' => 'nullable|string|max:100',
-            'contact_zip' => 'nullable|string|max:20',
-            'contact_country' => 'nullable|string|max:100',
+            'company_email' => 'nullable|email|max:255',
+            'company_phone' => 'nullable|string|max:20',
+            'company_address' => 'nullable|string|max:500',
+            'secondary_phone' => 'nullable|string|max:20',
+            'whatsapp_number' => 'nullable|string|max:20',
         ]);
 
         try {
-            $this->updateSetting('contact_email', $this->contact_email);
-            $this->updateSetting('contact_phone', $this->contact_phone);
-            $this->updateSetting('contact_address', $this->contact_address);
-            $this->updateSetting('contact_city', $this->contact_city);
-            $this->updateSetting('contact_state', $this->contact_state);
-            $this->updateSetting('contact_zip', $this->contact_zip);
-            $this->updateSetting('contact_country', $this->contact_country);
+            $this->updateSetting('company_email', $this->company_email);
+            $this->updateSetting('company_phone', $this->company_phone);
+            $this->updateSetting('company_address', $this->company_address);
+            $this->updateSetting('secondary_phone', $this->secondary_phone);
+            $this->updateSetting('whatsapp_number', $this->whatsapp_number);
 
-            session()->flash('success', 'Contact settings updated successfully!');
+            $this->flashSuccess('Contact information updated successfully!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update contact settings: ' . $e->getMessage());
+            $this->flashError('Failed to update contact information: ' . $e->getMessage());
         }
     }
 
@@ -320,9 +474,11 @@ class Settings extends Component
             $this->updateSetting('linkedin_url', $this->linkedin_url);
             $this->updateSetting('youtube_url', $this->youtube_url);
 
-            session()->flash('success', 'Social media settings updated successfully!');
+            $this->flashSuccess('Social media settings saved successfully!');
+
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update social media settings: ' . $e->getMessage());
+            Log::error('Social Media Settings Save Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to save social media settings. Please try again.');
         }
     }
 
@@ -418,9 +574,194 @@ class Settings extends Component
             // Clear cache
             \Illuminate\Support\Facades\Cache::forget('footer_settings');
 
-            session()->flash('success', 'Footer settings updated successfully!');
+            $this->flashSuccess('Footer settings updated successfully!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update footer settings: ' . $e->getMessage());
+            $this->flashError('Failed to update footer settings: ' . $e->getMessage());
+        }
+    }
+
+    public function saveCompanyInfo()
+    {
+        $this->validate([
+            'footer_company_name' => 'required|string|max:255|min:2',
+            'footer_company_description' => 'nullable|string|max:1000|min:10',
+            'footer_email' => 'nullable|email|max:255',
+            'footer_phone' => 'nullable|string|max:20|regex:/^[\+]?[0-9\(\)\-\s]+$/',
+            'footer_website' => 'nullable|url|max:255|active_url',
+            'footer_address' => 'nullable|string|max:500|min:5',
+        ], [
+            'footer_company_name.required' => 'Company name is required.',
+            'footer_company_name.min' => 'Company name must be at least 2 characters.',
+            'footer_company_description.min' => 'Company description must be at least 10 characters when provided.',
+            'footer_email.email' => 'Please enter a valid email address.',
+            'footer_phone.regex' => 'Please enter a valid phone number format.',
+            'footer_website.active_url' => 'Please enter a valid and reachable website URL.',
+            'footer_address.min' => 'Address must be at least 5 characters when provided.',
+        ]);
+
+        try {
+            // Update or create footer settings
+            $data = [
+                'company_name' => $this->footer_company_name,
+                'company_description' => $this->footer_company_description,
+                'email' => $this->footer_email,
+                'phone' => $this->footer_phone,
+                'website' => $this->footer_website,
+                'address' => $this->footer_address,
+                'is_active' => $this->footer_is_active,
+            ];
+
+            // Preserve existing data if updating
+            if ($this->footerSettings) {
+                $data['copyright_text'] = $this->footerSettings->copyright_text;
+                $data['quick_links'] = $this->footerSettings->quick_links;
+                $data['services'] = $this->footerSettings->services;
+                $this->footerSettings->update($data);
+            } else {
+                $data['copyright_text'] = $this->footer_copyright_text;
+                $data['quick_links'] = [];
+                $data['services'] = [];
+                FooterSettingsModel::create($data);
+                $this->footerSettings = FooterSettingsModel::getActive();
+            }
+
+            // Clear cache
+            \Illuminate\Support\Facades\Cache::forget('footer_settings');
+
+            $this->dispatchSuccessEvent('Company information updated successfully!');
+        } catch (\Exception $e) {
+            $this->dispatchErrorEvent('Failed to update company information: ' . $e->getMessage());
+        }
+    }
+
+    public function saveServices()
+    {
+        // Check if there are any services to save
+        if (empty($this->footer_services)) {
+            $this->dispatchErrorEvent('Please add at least one service before saving.');
+            return;
+        }
+
+        // Validate services array
+        $this->validate([
+            'footer_services' => 'array|min:1',
+            'footer_services.*.text' => 'required|string|max:255|min:2',
+            'footer_services.*.icon' => 'nullable|string|max:50|regex:/^[a-zA-Z0-9\-\s]+$/',
+        ], [
+            'footer_services.min' => 'At least one service is required.',
+            'footer_services.*.text.required' => 'Service name is required.',
+            'footer_services.*.text.min' => 'Service name must be at least 2 characters.',
+            'footer_services.*.icon.regex' => 'Icon name can only contain letters, numbers, hyphens, and spaces.',
+        ]);
+
+        try {
+            $formattedServices = $this->formatServices();
+
+            // Update only the services field
+            if ($this->footerSettings) {
+                $this->footerSettings->update(['services' => $formattedServices]);
+            } else {
+                // Create new record if doesn't exist
+                FooterSettingsModel::create([
+                    'company_name' => $this->footer_company_name ?: 'Default Company',
+                    'services' => $formattedServices,
+                    'is_active' => true,
+                ]);
+                $this->footerSettings = FooterSettingsModel::getActive();
+            }
+
+            // Clear cache
+            \Illuminate\Support\Facades\Cache::forget('footer_settings');
+
+            $this->flashSuccess('Services saved successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Services Save Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to save services. Please try again.');
+        }
+    }
+
+    public function saveQuickLinks()
+    {
+        // Check if there are any links to save
+        if (empty($this->footer_quick_links)) {
+            $this->dispatchErrorEvent('Please add at least one quick link before saving.');
+            return;
+        }
+
+        // Validate quick links array (remove active_url for now as it might be too strict)
+        $this->validate([
+            'footer_quick_links' => 'array|min:1',
+            'footer_quick_links.*.title' => 'required|string|max:255|min:2',
+            'footer_quick_links.*.url' => 'required|url|max:255',
+        ], [
+            'footer_quick_links.min' => 'At least one quick link is required.',
+            'footer_quick_links.*.title.required' => 'Link title is required.',
+            'footer_quick_links.*.title.min' => 'Link title must be at least 2 characters.',
+            'footer_quick_links.*.url.required' => 'Link URL is required.',
+            'footer_quick_links.*.url.url' => 'Please enter a valid URL format.',
+        ]);
+
+        try {
+            $formattedLinks = $this->formatQuickLinks();
+
+            // Update only the quick_links field
+            if ($this->footerSettings) {
+                $this->footerSettings->update(['quick_links' => $formattedLinks]);
+            } else {
+                // Create new record if doesn't exist
+                FooterSettingsModel::create([
+                    'company_name' => $this->footer_company_name ?: 'Default Company',
+                    'quick_links' => $formattedLinks,
+                    'is_active' => true,
+                ]);
+                $this->footerSettings = FooterSettingsModel::getActive();
+            }
+
+            // Clear cache
+            \Illuminate\Support\Facades\Cache::forget('footer_settings');
+
+            $this->flashSuccess('Quick links saved successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Quick Links Save Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to save quick links. Please try again.');
+        }
+    }
+
+    public function saveAdditionalSettings()
+    {
+        $this->validate([
+            'footer_copyright_text' => 'nullable|string|max:255',
+            'footer_text' => 'nullable|string|max:1000',
+            'footer_copyright' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            // Save basic footer settings to Settings table
+            $this->updateSetting('footer_text', $this->footer_text);
+            $this->updateSetting('footer_copyright', $this->footer_copyright);
+
+            // Update copyright text in FooterSettings
+            if ($this->footerSettings) {
+                $this->footerSettings->update(['copyright_text' => $this->footer_copyright_text]);
+            } else {
+                FooterSettingsModel::create([
+                    'company_name' => $this->footer_company_name ?: 'Default Company',
+                    'copyright_text' => $this->footer_copyright_text,
+                    'is_active' => true,
+                ]);
+                $this->footerSettings = FooterSettingsModel::getActive();
+            }
+
+            // Clear cache
+            \Illuminate\Support\Facades\Cache::forget('footer_settings');
+
+            $this->flashSuccess('Additional settings saved successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Additional Settings Save Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to save additional settings. Please try again.');
         }
     }
 
@@ -445,6 +786,8 @@ class Settings extends Component
             'url' => '',
             'icon' => ''
         ];
+        // Clear validation errors when adding new items
+        $this->resetValidation(['footer_quick_links']);
     }
 
     public function removeQuickLink($index)
@@ -452,6 +795,8 @@ class Settings extends Component
         if (isset($this->footer_quick_links[$index])) {
             unset($this->footer_quick_links[$index]);
             $this->footer_quick_links = array_values($this->footer_quick_links);
+            // Clear validation errors when removing items
+            $this->resetValidation(['footer_quick_links']);
         }
     }
 
@@ -461,6 +806,8 @@ class Settings extends Component
             'text' => '',
             'icon' => ''
         ];
+        // Clear validation errors when adding new items
+        $this->resetValidation(['footer_services']);
     }
 
     public function removeService($index)
@@ -468,101 +815,90 @@ class Settings extends Component
         if (isset($this->footer_services[$index])) {
             unset($this->footer_services[$index]);
             $this->footer_services = array_values($this->footer_services);
+            // Clear validation errors when removing items
+            $this->resetValidation(['footer_services']);
         }
     }
 
     public function saveStats()
     {
         $this->validate([
-            'stats_movies_count' => 'nullable|string|max:50',
-            'stats_movies_label' => 'nullable|string|max:255',
-            'stats_songs_count' => 'nullable|string|max:50',
-            'stats_songs_label' => 'nullable|string|max:255',
-            'stats_films_count' => 'nullable|string|max:50',
-            'stats_films_label' => 'nullable|string|max:255',
-            'stats_views_count' => 'nullable|string|max:50',
-            'stats_views_label' => 'nullable|string|max:255',
-            'stats_section_title' => 'nullable|string|max:255',
-            'stats_section_highlighted_title' => 'nullable|string|max:255',
-            'stats_section_description' => 'nullable|string|max:1000',
+            'google_analytics_id' => 'nullable|string|max:50',
+            'google_tag_manager_id' => 'nullable|string|max:50',
+            'facebook_pixel_id' => 'nullable|string|max:50',
         ]);
 
         try {
-            $this->updateSetting('stats_movies_count', $this->stats_movies_count);
-            $this->updateSetting('stats_movies_label', $this->stats_movies_label);
-            $this->updateSetting('stats_songs_count', $this->stats_songs_count);
-            $this->updateSetting('stats_songs_label', $this->stats_songs_label);
-            $this->updateSetting('stats_films_count', $this->stats_films_count);
-            $this->updateSetting('stats_films_label', $this->stats_films_label);
-            $this->updateSetting('stats_views_count', $this->stats_views_count);
-            $this->updateSetting('stats_views_label', $this->stats_views_label);
-            $this->updateSetting('stats_section_title', $this->stats_section_title);
-            $this->updateSetting('stats_section_highlighted_title', $this->stats_section_highlighted_title);
-            $this->updateSetting('stats_section_description', $this->stats_section_description);
+            $this->updateSetting('google_analytics_id', $this->google_analytics_id);
+            $this->updateSetting('google_tag_manager_id', $this->google_tag_manager_id);
+            $this->updateSetting('facebook_pixel_id', $this->facebook_pixel_id);
 
-            session()->flash('success', 'Statistics settings updated successfully!');
+            $this->flashSuccess('Analytics settings saved successfully!');
+
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update statistics settings: ' . $e->getMessage());
+            Log::error('Analytics Settings Save Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to save analytics settings. Please try again.');
         }
     }
 
     public function saveCta()
     {
         $this->validate([
-            'cta_badge_text' => 'nullable|string|max:255',
-            'cta_main_title' => 'nullable|string|max:255',
-            'cta_highlighted_title' => 'nullable|string|max:255',
-            'cta_description' => 'nullable|string|max:1000',
-            'cta_primary_button_text' => 'nullable|string|max:255',
-            'cta_secondary_button_text' => 'nullable|string|max:255',
-            'cta_feature_1_title' => 'nullable|string|max:255',
-            'cta_feature_1_description' => 'nullable|string|max:500',
-            'cta_feature_2_title' => 'nullable|string|max:255',
-            'cta_feature_2_description' => 'nullable|string|max:500',
-            'cta_feature_3_title' => 'nullable|string|max:255',
-            'cta_feature_3_description' => 'nullable|string|max:500',
+            'cta_text' => 'nullable|string|max:255',
+            'cta_button_text' => 'nullable|string|max:100',
+            'cta_button_url' => 'nullable|url|max:255',
+            'cta_background_color' => 'nullable|string|max:7',
+            'cta_text_color' => 'nullable|string|max:7',
         ]);
 
         try {
-            $this->updateSetting('cta_badge_text', $this->cta_badge_text);
-            $this->updateSetting('cta_main_title', $this->cta_main_title);
-            $this->updateSetting('cta_highlighted_title', $this->cta_highlighted_title);
-            $this->updateSetting('cta_description', $this->cta_description);
-            $this->updateSetting('cta_primary_button_text', $this->cta_primary_button_text);
-            $this->updateSetting('cta_secondary_button_text', $this->cta_secondary_button_text);
-            $this->updateSetting('cta_feature_1_title', $this->cta_feature_1_title);
-            $this->updateSetting('cta_feature_1_description', $this->cta_feature_1_description);
-            $this->updateSetting('cta_feature_2_title', $this->cta_feature_2_title);
-            $this->updateSetting('cta_feature_2_description', $this->cta_feature_2_description);
-            $this->updateSetting('cta_feature_3_title', $this->cta_feature_3_title);
-            $this->updateSetting('cta_feature_3_description', $this->cta_feature_3_description);
+            $this->updateSetting('cta_text', $this->cta_text);
+            $this->updateSetting('cta_button_text', $this->cta_button_text);
+            $this->updateSetting('cta_button_url', $this->cta_button_url);
+            $this->updateSetting('cta_background_color', $this->cta_background_color);
+            $this->updateSetting('cta_text_color', $this->cta_text_color);
 
-            session()->flash('success', 'Call to Action settings updated successfully!');
+            $this->flashSuccess('Call to Action settings saved successfully!');
+
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update call to action settings: ' . $e->getMessage());
+            Log::error('CTA Settings Save Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to save call to action settings. Please try again.');
         }
     }
 
-    public function saveContactPage()
+    public function saveContactHeroSection()
     {
         $this->validate([
-            'contact_hero_title' => 'nullable|string|max:255',
-            'contact_hero_subtitle' => 'nullable|string|max:255',
+            'contact_hero_title' => 'required|string|max:255',
+            'contact_hero_subtitle' => 'nullable|string|max:500',
             'contact_hero_description' => 'nullable|string|max:1000',
-            'contact_form_title' => 'nullable|string|max:255',
-            'contact_form_description' => 'nullable|string|max:1000',
         ]);
 
         try {
             $this->updateSetting('contact_hero_title', $this->contact_hero_title);
             $this->updateSetting('contact_hero_subtitle', $this->contact_hero_subtitle);
             $this->updateSetting('contact_hero_description', $this->contact_hero_description);
+
+            $this->flashSuccess('Contact Hero Section updated successfully!');
+        } catch (\Exception $e) {
+            $this->flashError('Failed to update Contact Hero Section: ' . $e->getMessage());
+        }
+    }
+
+    public function saveContactFormSection()
+    {
+        $this->validate([
+            'contact_form_title' => 'required|string|max:255',
+            'contact_form_description' => 'nullable|string|max:1000',
+        ]);
+
+        try {
             $this->updateSetting('contact_form_title', $this->contact_form_title);
             $this->updateSetting('contact_form_description', $this->contact_form_description);
 
-            session()->flash('success', 'Contact page settings updated successfully!');
+            $this->flashSuccess('Contact Form Section updated successfully!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update contact settings: ' . $e->getMessage());
+            $this->flashError('Failed to update Contact Form Section: ' . $e->getMessage());
         }
     }
 

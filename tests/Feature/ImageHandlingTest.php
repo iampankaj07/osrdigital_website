@@ -12,13 +12,13 @@ class ImageHandlingTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Test ImageHelper basic functionality
+     * Test ImageHelper returns empty string for null path
      */
-    public function test_image_helper_returns_placeholder_for_empty_path()
+    public function test_image_helper_returns_empty_for_null_path()
     {
         $url = ImageHelper::getImageUrl(null);
-        
-        $this->assertStringContainsString('via.placeholder.com', $url);
+
+        $this->assertEquals('', $url);
     }
 
     /**
@@ -28,12 +28,12 @@ class ImageHandlingTest extends TestCase
     {
         // Create a test image file
         Storage::disk('public')->put('test-image.jpg', 'fake-image-content');
-        
+
         $url = ImageHelper::getImageUrl('test-image.jpg');
-        
+
         $this->assertStringContainsString('/images/', $url);
         $this->assertStringContainsString('test-image.jpg', $url);
-        
+
         // Clean up
         Storage::disk('public')->delete('test-image.jpg');
     }
@@ -45,7 +45,7 @@ class ImageHandlingTest extends TestCase
     {
         $originalUrl = 'https://example.com/image.jpg';
         $url = ImageHelper::getImageUrl($originalUrl);
-        
+
         $this->assertEquals($originalUrl, $url);
     }
 
@@ -56,22 +56,24 @@ class ImageHandlingTest extends TestCase
     {
         $avatarUrl = ImageHelper::getContextualImage(null, 'avatar');
         $this->assertStringContainsString('100x100', $avatarUrl);
-        
+
         $heroUrl = ImageHelper::getContextualImage(null, 'hero');
         $this->assertStringContainsString('1200x600', $heroUrl);
-        
+
         $logoUrl = ImageHelper::getContextualImage(null, 'logo');
         $this->assertStringContainsString('200x100', $logoUrl);
     }
 
     /**
-     * Test ImageHelper placeholder detection
+     * Test ImageHelper placeholder detection (still functional for detection purposes)
      */
     public function test_image_helper_placeholder_detection()
     {
         $this->assertTrue(ImageHelper::isPlaceholderUrl('https://via.placeholder.com/400x300'));
         $this->assertTrue(ImageHelper::isPlaceholderUrl('https://ui-avatars.com/api/?name=Test'));
         $this->assertFalse(ImageHelper::isPlaceholderUrl('https://example.com/image.jpg'));
+        $this->assertFalse(ImageHelper::isPlaceholderUrl(''));
+        $this->assertFalse(ImageHelper::isPlaceholderUrl(null));
     }
 
     /**
@@ -81,12 +83,12 @@ class ImageHandlingTest extends TestCase
     {
         // Create a test image file
         Storage::disk('public')->put('test-route-image.jpg', 'fake-image-content');
-        
+
         $response = $this->get('/images/test-route-image.jpg');
-        
+
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'image/jpeg');
-        
+
         // Clean up
         Storage::disk('public')->delete('test-route-image.jpg');
     }
@@ -97,20 +99,18 @@ class ImageHandlingTest extends TestCase
     public function test_image_route_returns_404_for_missing_images()
     {
         $response = $this->get('/images/non-existent-image.jpg');
-        
+
         $response->assertStatus(404);
     }
 
     /**
-     * Test placeholder route
+     * Test placeholder route returns 404 (disabled)
      */
-    public function test_placeholder_route()
+    public function test_placeholder_route_disabled()
     {
         $response = $this->get('/placeholder/400x300?text=Test');
-        
-        $response->assertRedirect();
-        $this->assertStringContainsString('via.placeholder.com', $response->headers->get('Location'));
-        $this->assertStringContainsString('400x300', $response->headers->get('Location'));
+
+        $response->assertStatus(404); // Placeholder functionality disabled
     }
 
     /**
@@ -120,12 +120,12 @@ class ImageHandlingTest extends TestCase
     {
         // Create a test image file
         Storage::disk('public')->put('test-optimized.jpg', 'fake-image-content');
-        
+
         $response = $this->get('/images/optimized/400x300/test-optimized.jpg');
-        
+
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'image/jpeg');
-        
+
         // Clean up
         Storage::disk('public')->delete('test-optimized.jpg');
     }
@@ -139,13 +139,13 @@ class ImageHandlingTest extends TestCase
             'title' => 'Test Film',
             'featured_image' => 'test-film.jpg'
         ]);
-        
+
         // Mock the image exists
         Storage::disk('public')->put('test-film.jpg', 'fake-image-content');
-        
+
         $imageUrl = $film->image_url;
         $this->assertStringContainsString('/images/', $imageUrl);
-        
+
         // Clean up
         Storage::disk('public')->delete('test-film.jpg');
     }
@@ -159,13 +159,13 @@ class ImageHandlingTest extends TestCase
             'title' => 'Test Portfolio',
             'featured_image' => 'test-portfolio.jpg'
         ]);
-        
+
         // Mock the image exists
         Storage::disk('public')->put('test-portfolio.jpg', 'fake-image-content');
-        
+
         $imageUrl = $portfolio->image_url;
         $this->assertStringContainsString('/images/', $imageUrl);
-        
+
         // Clean up
         Storage::disk('public')->delete('test-portfolio.jpg');
     }
@@ -180,13 +180,13 @@ class ImageHandlingTest extends TestCase
             'key' => 'site_logo',
             'value' => 'test-logo.jpg'
         ]);
-        
+
         // Mock the image exists
         Storage::disk('public')->put('test-logo.jpg', 'fake-image-content');
-        
+
         $logoUrl = \App\Helpers\ContentManager::getLogoUrl();
         $this->assertStringContainsString('/images/', $logoUrl);
-        
+
         // Clean up
         Storage::disk('public')->delete('test-logo.jpg');
         \App\Models\Setting::where('key', 'site_logo')->delete();

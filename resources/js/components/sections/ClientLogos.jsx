@@ -51,14 +51,14 @@ function ClientLogos() {
             <section className={`py-16 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
-                        <div className={`h-8 w-64 mx-auto mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                        <div className={`h-4 w-96 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-8 w-64 mx-auto mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                        <div className={`h-4 w-96 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
                             <div key={i} className="flex justify-center">
-                                <div className={`h-16 w-32 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                <div className={`h-16 w-32 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                             </div>
                         ))}
                     </div>

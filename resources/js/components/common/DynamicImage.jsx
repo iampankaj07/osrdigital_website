@@ -114,7 +114,7 @@ const DynamicImage = ({
             {...props}
         >
             {isLoading && placeholder && (
-                <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                <div className="absolute inset-0 skeleton-wave skeleton-fast flex items-center justify-center">
                     <div className="text-gray-400 text-sm">Loading...</div>
                 </div>
             )}

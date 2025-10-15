@@ -116,20 +116,20 @@ function PortfolioItem() {
             <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
                 {/* Hero Skeleton */}
                 <div className="relative h-96 md:h-[500px] overflow-hidden">
-                    <div className={`absolute inset-0 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+                    <div className={`absolute inset-0 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
 
                     {/* Navigation Skeleton */}
                     <nav className="relative z-20 p-4">
-                        <div className={`h-4 w-24 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} rounded animate-pulse`}></div>
+                        <div className={`h-4 w-24 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} rounded skeleton-fast`}></div>
                     </nav>
 
                     {/* Content Skeleton */}
                     <div className="absolute bottom-0 left-0 right-0 p-8">
                         <div className="container mx-auto">
                             <div className="max-w-4xl">
-                                <div className={`h-8 w-32 mb-4 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} rounded animate-pulse`}></div>
-                                <div className={`h-12 w-3/4 mb-6 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} rounded animate-pulse`}></div>
-                                <div className={`h-6 w-1/2 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} rounded animate-pulse`}></div>
+                                <div className={`h-8 w-32 mb-4 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} rounded skeleton-fast`}></div>
+                                <div className={`h-12 w-3/4 mb-6 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} rounded skeleton-fast`}></div>
+                                <div className={`h-6 w-1/2 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} rounded skeleton-fast`}></div>
                             </div>
                         </div>
                     </div>
@@ -141,11 +141,11 @@ function PortfolioItem() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                             <div className="lg:col-span-2 space-y-6">
                                 {[1, 2, 3, 4, 5].map((i) => (
-                                    <div key={i} className={`h-4 w-full ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded animate-pulse`}></div>
+                                    <div key={i} className={`h-4 w-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} rounded skeleton-fast`}></div>
                                 ))}
                             </div>
                             <div className="lg:col-span-1">
-                                <div className={`h-64 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} rounded-lg animate-pulse`}></div>
+                                <div className={`h-64 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} rounded-lg skeleton-fast`}></div>
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ function PortfolioItem() {
                             onLoad={() => setIsImageLoaded(true)}
                         />
                         {!isImageLoaded && (
-                            <div className={`absolute inset-0 ${isDark ? 'bg-gray-800' : 'bg-gray-200'} animate-pulse`}></div>
+                            <div className={`absolute inset-0 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         )}
                     </>
                 ) : (

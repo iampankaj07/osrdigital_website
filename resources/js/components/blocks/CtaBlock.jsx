@@ -73,7 +73,7 @@ function CtaBlock({ data, settings, pageSettings }) {
                 {[...Array(30)].map((_, i) => (
                     <div
                         key={i}
-                        className="absolute w-1 h-1 bg-white/20 rounded-full animate-pulse"
+                        className="absolute w-1 h-1 bg-white/20 rounded-full skeleton-fast"
                         style={{
                             left: `${Math.random() * 100}%`,
                             top: `${Math.random() * 100}%`,
@@ -126,7 +126,7 @@ function CtaBlock({ data, settings, pageSettings }) {
                                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 
                                 {/* Animated border */}
-                                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 skeleton-fast"></div>
                             </a>
                         )}
                         

@@ -14,7 +14,7 @@ class AssociateImageDisplayTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Use fake storage
         Storage::fake('public');
     }
@@ -26,7 +26,7 @@ class AssociateImageDisplayTest extends TestCase
     {
         // Create a fake file in storage
         Storage::disk('public')->put('associates/test-logo.png', 'fake image content');
-        
+
         // Create an associate with a logo
         $associate = Associate::create([
             'name' => 'Test Associate',
@@ -43,33 +43,29 @@ class AssociateImageDisplayTest extends TestCase
     }
 
     /**
-     * Test associate model returns placeholder when no logo
+     * Test associate model returns empty string when no logo
      */
-    public function test_associate_model_returns_placeholder_when_no_logo()
+    public function test_associate_model_returns_empty_when_no_logo()
     {
-        // Create an associate without a logo
-        $associate = Associate::create([
-            'name' => 'Test Associate',
+        // Create associate without logo
+        $associate = Associate::factory()->create([
+            'name' => 'Test Associate Without Logo',
             'logo' => null,
-            'website' => 'https://example.com',
             'is_active' => true,
-            'sort_order' => 1
         ]);
 
-        // Test that placeholder URLs are returned
-        $this->assertStringContainsString('via.placeholder.com', $associate->logo_url);
-        $this->assertStringContainsString('via.placeholder.com', $associate->admin_logo_url);
-        $this->assertStringContainsString('via.placeholder.com', $associate->frontend_logo_url);
-    }
-
-    /**
+        // Test that empty strings are returned when no logo
+        $this->assertEquals('', $associate->logo_url);
+        $this->assertEquals('', $associate->admin_logo_url);
+        $this->assertEquals('', $associate->frontend_logo_url);
+    }    /**
      * Test associates API returns proper logo URLs
      */
     public function test_associates_api_returns_proper_logo_urls()
     {
         // Create fake files in storage
         Storage::disk('public')->put('associates/test1.png', 'fake image content');
-        
+
         // Create test associates
         Associate::create([
             'name' => 'Test Associate 1',
@@ -110,7 +106,7 @@ class AssociateImageDisplayTest extends TestCase
 
         $data = $response->json('data');
         $this->assertCount(2, $data);
-        
+
         // Check that logo URLs are properly formatted
         foreach ($data as $associate) {
             if ($associate['name'] === 'Test Associate 1') {
@@ -129,7 +125,7 @@ class AssociateImageDisplayTest extends TestCase
     {
         // Create fake file in storage
         Storage::disk('public')->put('associates/test.png', 'fake image content');
-        
+
         // Create test associate
         $associate = Associate::create([
             'name' => 'Test Associate',
@@ -160,7 +156,7 @@ class AssociateImageDisplayTest extends TestCase
     {
         // Create fake file in storage
         Storage::disk('public')->put('associates/test.png', 'fake image content');
-        
+
         // Create test associate
         $associate = Associate::create([
             'name' => 'Test Associate',
@@ -191,7 +187,7 @@ class AssociateImageDisplayTest extends TestCase
     {
         // Create fake file in storage
         Storage::disk('public')->put('associates/test.png', 'fake image content');
-        
+
         $associate = Associate::create([
             'name' => 'Test Associate',
             'logo' => 'associates/test.png',

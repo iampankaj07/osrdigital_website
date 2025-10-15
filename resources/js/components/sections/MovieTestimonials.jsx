@@ -28,90 +28,14 @@ function MovieTestimonials() {
                     console.log('Using API data:', data.data.length, 'testimonials');
                     setTestimonials(data.data);
                 } else {
-                    console.log('API returned no data, using fallback');
+                    console.log('API returned no data');
                     setError('No testimonials available');
-                    // Use fallback data
-                    setTestimonials([
-                        {
-                            id: 1,
-                            name: "Sarah Chen",
-                            role: "Producer, Indie Films Co.",
-                            company: "Indie Films Co.",
-                            content: "Working with OSR Digital has been transformative for our independent films. Their distribution network helped us reach audiences we never thought possible.",
-                            project: "The Last Horizon",
-                            avatar_url: "https://ui-avatars.com/api/?name=S&background=ec681b&color=fff&size=64"
-                        },
-                        {
-                            id: 2,
-                            name: "Michael Rodriguez",
-                            role: "Director, Creative Studios",
-                            company: "Creative Studios",
-                            content: "The marketing strategy they developed for our documentary was brilliant. We saw a 300% increase in viewership across all platforms.",
-                            project: "Rising Stars",
-                            avatar_url: "https://ui-avatars.com/api/?name=M&background=ec681b&color=fff&size=64"
-                        },
-                        {
-                            id: 3,
-                            name: "Emma Thompson",
-                            role: "Executive Producer, Global Media",
-                            company: "Global Media",
-                            content: "OSR Digital's approach to content acquisition and distribution is both strategic and creative. They've helped us build a strong presence in new markets.",
-                            project: "Digital Dreams",
-                            avatar_url: "https://ui-avatars.com/api/?name=E&background=ec681b&color=fff&size=64"
-                        },
-                        {
-                            id: 4,
-                            name: "David Park",
-                            role: "Founder, New Wave Cinema",
-                            company: "New Wave Cinema",
-                            content: "Their team's passion for storytelling and commitment to quality distribution is evident in everything they do. Highly recommended.",
-                            project: "Urban Legends",
-                            avatar_url: "https://ui-avatars.com/api/?name=D&background=ec681b&color=fff&size=64"
-                        }
-                    ]);
+                    setTestimonials([]);
                 }
             } catch (err) {
                 console.error('Error fetching testimonials:', err);
                 setError(`Failed to load testimonials: ${err.message}`);
-                // Still show fallback data even on error
-                setTestimonials([
-                    {
-                        id: 1,
-                        name: "Sarah Chen",
-                        role: "Producer, Indie Films Co.",
-                        company: "Indie Films Co.",
-                        content: "Working with OSR Digital has been transformative for our independent films. Their distribution network helped us reach audiences we never thought possible.",
-                        project: "The Last Horizon",
-                        avatar_url: "https://ui-avatars.com/api/?name=S&background=ec681b&color=fff&size=64"
-                    },
-                    {
-                        id: 2,
-                        name: "Michael Rodriguez",
-                        role: "Director, Creative Studios",
-                        company: "Creative Studios",
-                        content: "The marketing strategy they developed for our documentary was brilliant. We saw a 300% increase in viewership across all platforms.",
-                        project: "Rising Stars",
-                        avatar_url: "https://ui-avatars.com/api/?name=M&background=ec681b&color=fff&size=64"
-                    },
-                    {
-                        id: 3,
-                        name: "Emma Thompson",
-                        role: "Executive Producer, Global Media",
-                        company: "Global Media",
-                        content: "OSR Digital's approach to content acquisition and distribution is both strategic and creative. They've helped us build a strong presence in new markets.",
-                        project: "Digital Dreams",
-                        avatar_url: "https://ui-avatars.com/api/?name=E&background=ec681b&color=fff&size=64"
-                    },
-                    {
-                        id: 4,
-                        name: "David Park",
-                        role: "Founder, New Wave Cinema",
-                        company: "New Wave Cinema",
-                        content: "Their team's passion for storytelling and commitment to quality distribution is evident in everything they do. Highly recommended.",
-                        project: "Urban Legends",
-                        avatar_url: "https://ui-avatars.com/api/?name=D&background=ec681b&color=fff&size=64"
-                    }
-                ]);
+                setTestimonials([]);
             } finally {
                 setLoading(false);
             }
@@ -125,21 +49,21 @@ function MovieTestimonials() {
             <section className={`section-minimal ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
                 <div className="container-minimal">
                     <div className="text-center mb-16">
-                        <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                        <div className={`h-6 w-96 mx-auto rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                        <div className={`h-10 w-80 mx-auto mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                        <div className={`h-6 w-96 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-8">
                         {[1, 2, 3, 4].map((i) => (
                             <div key={i} className={`p-8 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                                 <div className="flex items-start space-x-4">
-                                    <div className={`w-16 h-16 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse flex-shrink-0`}></div>
+                                    <div className={`w-16 h-16 rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast flex-shrink-0`}></div>
                                     <div className="flex-1">
-                                        <div className={`h-5 w-32 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-24 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-3/4 mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-5 w-32 mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-24 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-3/4 mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-2/3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
                             </div>

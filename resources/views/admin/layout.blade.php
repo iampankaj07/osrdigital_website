@@ -326,6 +326,198 @@
                 transform: translateY(0);
             }
         }
+
+        /* Custom Toast Notifications */
+        .custom-toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .custom-toast {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            margin-bottom: 10px;
+            overflow: hidden;
+            border-left: 4px solid;
+            max-width: 400px;
+            position: relative;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .custom-toast-success {
+            border-left-color: #28a745;
+        }
+
+        .custom-toast-warning {
+            border-left-color: #ffc107;
+        }
+
+        .custom-toast-error {
+            border-left-color: #dc3545;
+        }
+
+        .custom-toast-delete {
+            border-left-color: #e74c3c;
+        }
+
+        .custom-toast-content {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .custom-toast-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .custom-toast-success .custom-toast-icon {
+            color: #28a745;
+        }
+
+        .custom-toast-warning .custom-toast-icon {
+            color: #f39c12;
+        }
+
+        .custom-toast-error .custom-toast-icon {
+            color: #dc3545;
+        }
+
+        .custom-toast-delete .custom-toast-icon {
+            color: #e74c3c;
+        }
+
+        .custom-toast-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .custom-toast-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .custom-toast-message {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .custom-toast-close {
+            background: none;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .custom-toast-close:hover {
+            color: #495057;
+        }
+
+        .custom-toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-toast-progress-bar {
+            height: 100%;
+            transition: width 0.1s linear;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .custom-toast-success .custom-toast-progress-bar {
+            background-color: #28a745;
+        }
+
+        .custom-toast-warning .custom-toast-progress-bar {
+            background-color: #ffc107;
+        }
+
+        .custom-toast-error .custom-toast-progress-bar {
+            background-color: #dc3545;
+        }
+
+        .custom-toast-delete .custom-toast-progress-bar {
+            background-color: #e74c3c;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .custom-toast-container {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+                width: auto;
+            }
+
+            .custom-toast {
+                max-width: none;
+            }
+        }
+
+        /* Dark theme adjustments for toast */
+        .dark-mode .custom-toast {
+            background: #343a40;
+            color: #ffffff;
+        }
+
+        .dark-mode .custom-toast-title {
+            color: #ffffff;
+        }
+
+        .dark-mode .custom-toast-message {
+            color: #adb5bd;
+        }
+
+        .dark-mode .custom-toast-close {
+            color: #6c757d;
+        }
+
+        .dark-mode .custom-toast-close:hover {
+            color: #adb5bd;
+        }
     </style>
 </head>
 
@@ -413,13 +605,6 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="{{ route('admin.business-pages.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.business-pages*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-building"></i>
-                                <p>Business Pages</p>
-                            </a>
-                        </li>
 
                         <li class="nav-item">
                             <a href="{{ route('admin.media-library.index') }}"
@@ -710,6 +895,9 @@
     <!-- Livewire Scripts FIRST -->
     @livewireScripts
 
+    <!-- Custom Toast Component -->
+    <livewire:components.custom-toast />
+
     <!-- FilePond Scripts AFTER Livewire -->
     <script src="{{ asset('vendor/livewire-filepond/filepond.js') }}"></script>
 
@@ -862,10 +1050,33 @@
                 clearInterval(filepond);
             }
         }, 100);
+
+        // Event Dispatching System for Confirmation Dialogs
+        document.addEventListener('livewire:initialized', function() {
+            // Listen for confirmation events (using browser confirm for now)
+            Livewire.on('confirmation-event', (event) => {
+                console.log('Confirmation event received:', event);
+                const confirmed = confirm(event.message || 'Are you sure?');
+                if (confirmed) {
+                    // Call the Livewire method with parameters
+                    if (event.confirmMethod) {
+                        if (event.parameters && event.parameters.length > 0) {
+                            Livewire.dispatch(event.confirmMethod, event.parameters);
+                        } else {
+                            Livewire.dispatch(event.confirmMethod);
+                        }
+                    }
+                }
+            });
+        });
     </script>
+
+
 
     @yield('scripts')
     @stack('scripts')
+
+
 </body>
 
 </html>

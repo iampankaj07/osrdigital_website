@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\TeamValue;
 
+
 class Index extends Component
 {
     use WithPagination;

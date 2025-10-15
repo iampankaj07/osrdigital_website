@@ -5,15 +5,14 @@ namespace App\Livewire\Admin\HeroSliders;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\HeroSlider;
 use Spatie\LivewireFilepond\WithFilePond;
-use Illuminate\Support\Facades\Auth;
+use App\Models\HeroSlider;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
 
     // Form properties
     public $form = [
@@ -131,7 +130,7 @@ class Index extends Component
 
                 $this->resetForm();
                 $this->isCreating = false;
-                session()->flash('success', 'Hero slide created successfully.');
+                $this->flashSuccess('Hero slide created successfully.');
                 return;
 
             } elseif ($this->uploadMethod === 'media_library' && $this->selectedMediaId) {
@@ -143,11 +142,12 @@ class Index extends Component
             $this->resetForm();
             $this->isCreating = false;
 
-            session()->flash('success', 'Hero slide created successfully.');
+            $this->flashSuccess('Hero slide created successfully.');
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Creation Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to create hero slide. Please try again.');
+            $this->flashError('Failed to create hero slide. Please try again.');
+            
         }
     }
 
@@ -180,7 +180,8 @@ class Index extends Component
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Edit Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to load hero slide data.');
+            $this->flashError('Failed to load hero slide data.');
+            
         }
     }
 
@@ -225,11 +226,12 @@ class Index extends Component
             $this->resetForm();
             $this->editingId = null;
 
-            session()->flash('success', 'Hero slide updated successfully.');
+            $this->flashSuccess('Hero slide updated successfully.');
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Update Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update hero slide. Please try again.');
+            $this->flashError('Failed to update hero slide. Please try again.');
+            
         }
     }
 
@@ -239,11 +241,12 @@ class Index extends Component
             $slider = HeroSlider::findOrFail($sliderId);
             $slider->delete();
 
-            session()->flash('success', 'Hero slide deleted successfully.');
+            $this->flashSuccess('Hero slide deleted successfully.');
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Delete Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to delete hero slide.');
+            $this->flashError('Failed to delete hero slide.');
+            
         }
     }
 
@@ -261,11 +264,12 @@ class Index extends Component
             $slider->update(['is_active' => !$slider->is_active]);
 
             $message = $slider->is_active ? 'Hero slide activated.' : 'Hero slide deactivated.';
-            session()->flash('success', $message);
+            $this->flashSuccess($message);
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Toggle Active Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to update slide status.');
+            $this->flashError('Failed to update slide status.');
+            
         }
     }
 
@@ -317,7 +321,8 @@ class Index extends Component
 
         } catch (\Exception $e) {
             Log::error('Hero Slider - Media selection error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to select media. Please try again.');
+            $this->flashError('Failed to select media. Please try again.');
+            
         }
     }
 

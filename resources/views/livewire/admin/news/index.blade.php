@@ -82,149 +82,163 @@
 
 
     <!-- Articles Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th wire:click="sortBy('title')" class="border-0 py-2 px-3 text-muted font-weight-normal" style="cursor: pointer; width: 35%;">
-                                <span class="d-flex align-items-center">
-                                    Title
-                                    @if($sortField === 'title')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Category</th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal" style="width: 15%;">Author</th>
-                            <th wire:click="sortBy('status')" class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="cursor: pointer; width: 10%;">
-                                <span class="d-flex align-items-center justify-content-center">
-                                    Status
-                                    @if($sortField === 'status')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th wire:click="sortBy('published_at')" class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="cursor: pointer; width: 10%;">
-                                <span class="d-flex align-items-center justify-content-center">
-                                    Published
-                                    @if($sortField === 'published_at')
-                                        <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1 text-primary"></i>
-                                    @else
-                                        <i class="fas fa-sort ml-1 text-muted"></i>
-                                    @endif
-                                </span>
-                            </th>
-                            <th class="border-0 py-2 px-3 text-muted font-weight-normal text-center" style="width: 15%;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($news as $article)
-                            <tr class="border-bottom">
-                                <td class="py-3 px-3">
-                                    <div class="d-flex align-items-start">
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50/50 border-b border-gray-100">
+                    <tr>
+                        <th wire:click="sortBy('title')" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center space-x-1">
+                                <span>Article</span>
+                                @if($sortField === 'title')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                        <th wire:click="sortBy('status')" class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center justify-center space-x-1">
+                                <span>Status</span>
+                                @if($sortField === 'status')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th wire:click="sortBy('published_at')" class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100/50 transition-colors duration-150">
+                            <div class="flex items-center justify-center space-x-1">
+                                <span>Published</span>
+                                @if($sortField === 'published_at')
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand-orange-500"></i>
+                                @else
+                                    <i class="fas fa-sort text-gray-300"></i>
+                                @endif
+                            </div>
+                        </th>
+                        <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-100">
+                    @forelse($news as $article)
+                        <tr class="hover:bg-gray-50/50 transition-colors duration-150 group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
                                         @if($article->featured_image_url)
-                                            <img src="{{ $article->featured_image_url }}"
-                                                 class="rounded mr-3" style="width: 40px; height: 40px; object-fit: cover;"
-                                                 alt="{{ $article->title }}">
+                                            <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-12 h-12 rounded-lg object-cover shadow-sm">
                                         @else
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center mr-3"
-                                                 style="width: 40px; height: 40px;">
-                                                <i class="fas fa-image text-muted small"></i>
+                                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-newspaper text-gray-400 text-sm"></i>
                                             </div>
                                         @endif
-                                        <div class="flex-grow-1">
-                                            <div class="font-weight-medium text-dark">{{ Str::limit($article->title, 50) }}</div>
-                                            @if($article->excerpt)
-                                                <div class="text-muted small">{{ Str::limit($article->excerpt, 60) }}</div>
-                                            @endif
-                                            @if($article->featured)
-                                                <span class="badge badge-warning badge-sm mt-1">Featured</span>
-                                            @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-gray-900 truncate">
+                                            {{ Str::limit($article->title, 50) }}
                                         </div>
+                                        @if($article->excerpt)
+                                            <div class="text-sm text-gray-500 truncate">
+                                                {{ Str::limit($article->excerpt, 60) }}
+                                            </div>
+                                        @endif
+                                        @if($article->featured)
+                                            <div class="flex items-center mt-1">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <i class="fas fa-star mr-1"></i>
+                                                    Featured
+                                                </span>
+                                            </div>
+                                        @endif
                                     </div>
-                                </td>
-                                <td class="py-3 px-3">
-                                    @if($article->category)
-                                        <span class="badge badge-info badge-sm">{{ $article->category->name }}</span>
-                                    @else
-                                        <span class="text-muted small">Uncategorized</span>
-                                    @endif
-                                </td>
-                                <td class="py-3 px-3">
-                                    <div class="text-muted small">{{ $article->author_name }}</div>
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <span class="badge badge-{{ $article->status === 'published' ? 'success' : ($article->status === 'draft' ? 'warning' : 'secondary') }} badge-sm">
-                                        {{ ucfirst($article->status) }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($article->category)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ $article->category->name }}
                                     </span>
-                                </td>
-                                <td class="py-3 px-3 text-center">
+                                @else
+                                    <span class="text-sm text-gray-400">Uncategorized</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $article->author_name }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $article->status === 'published' ? 'bg-green-100 text-green-800' : ($article->status === 'draft' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800') }}">
+                                    {{ ucfirst($article->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="text-sm text-gray-900">
                                     @if($article->published_at)
-                                        <div class="text-muted small">{{ $article->published_at->format('M j, Y') }}</div>
+                                        {{ $article->published_at->format('M j, Y') }}
                                     @else
-                                        <span class="text-muted small">Not set</span>
+                                        <span class="text-gray-400">Not set</span>
                                     @endif
-                                </td>
-                                <td class="py-3 px-3 text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ route('admin.news.edit', $article->id) }}"
-                                                class="btn btn-dark btn-sm border-0" 
-                                                title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button wire:click="toggleFeatured({{ $article->id }})" 
-                                                class="btn btn-outline-{{ $article->featured ? 'warning' : 'secondary' }} btn-sm border-0" 
-                                                title="{{ $article->featured ? 'Remove from Featured' : 'Mark as Featured' }}">
-                                            <i class="fas fa-star"></i>
-                                        </button>
-                                        <button wire:click="delete({{ $article->id }})" 
-                                                class="btn btn-danger btn-sm border-0"
-                                                title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this article?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="flex items-center justify-center space-x-1">
+                                    <a href="{{ route('admin.news.edit', $article->id) }}"
+                                       class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                       title="Edit">
+                                        <i class="fas fa-edit text-sm"></i>
+                                    </a>
+                                    <button wire:click="toggleFeatured({{ $article->id }})"
+                                            class="inline-flex items-center p-2 {{ $article->featured ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-gray-600' }} hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                            title="{{ $article->featured ? 'Remove from Featured' : 'Mark as Featured' }}">
+                                        <i class="fas fa-star text-sm"></i>
+                                    </button>
+                                    <button wire:click="delete({{ $article->id }})"
+                                            class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                                            title="Delete"
+                                            onclick="return confirm('Are you sure you want to delete this article?')">
+                                        <i class="fas fa-trash text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <i class="fas fa-newspaper text-gray-400 text-xl"></i>
                                     </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-newspaper fa-lg mb-2 opacity-50"></i>
-                                        <p class="mb-1 small">No articles found</p>
-                                        <small class="text-muted">
-                                            @if($search || $statusFilter || $categoryFilter)
-                                                No articles match your current filters.
-                                            @else
-                                                Click "Add New Article" to create your first one
-                                            @endif
-                                        </small>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                    <h3 class="text-sm font-medium text-gray-900 mb-1">No articles found</h3>
+                                    <p class="text-sm text-gray-500">
+                                        @if($search || $statusFilter || $categoryFilter)
+                                            No articles match your current filters.
+                                        @else
+                                            Create your first article to get started.
+                                        @endif
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-            <!-- Pagination -->
-            @if($news->hasPages())
-                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-top bg-light">
-                    <div class="text-muted small">
-                        {{ $news->firstItem() }}-{{ $news->lastItem() }} of {{ $news->total() }}
+        <!-- Pagination -->
+        @if($news->hasPages())
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-500">
+                        Showing {{ $news->firstItem() }} to {{ $news->lastItem() }} of {{ $news->total() }} results
                     </div>
                     <div>
                         {{ $news->links() }}
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 
     <!-- Media Selector Component -->

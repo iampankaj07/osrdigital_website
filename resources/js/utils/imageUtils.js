@@ -10,7 +10,7 @@
  */
 export const isPlaceholderImage = (url) => {
     if (!url) return true;
-    
+
     const placeholderDomains = [
         'via.placeholder.com',
         'ui-avatars.com',
@@ -24,36 +24,36 @@ export const isPlaceholderImage = (url) => {
 };
 
 /**
- * Get placeholder image URL
+ * Get placeholder image URL - returns null instead of generating placeholders
  * @param {string} text - Text for placeholder
  * @param {number} width - Image width
  * @param {number} height - Image height
  * @param {string} bgColor - Background color (hex)
  * @param {string} textColor - Text color (hex)
- * @returns {string} - Placeholder URL
+ * @returns {string} - Returns null instead of placeholder URL
  */
 export const getPlaceholderImage = (text = 'Image', width = 400, height = 300, bgColor = '6366f1', textColor = 'ffffff') => {
-    return `https://via.placeholder.com/${width}x${height}/${bgColor}/${textColor}?text=${encodeURIComponent(text)}`;
+    return null;
 };
 
 /**
- * Get a safe image URL with fallback
+ * Get a safe image URL with fallback - returns empty string instead of placeholder
  * @param {string} url - Original image URL
  * @param {string} fallbackText - Text for fallback placeholder
  * @param {number} width - Image width
  * @param {number} height - Image height
- * @returns {string} - Safe image URL
+ * @returns {string} - Safe image URL or empty string
  */
 export const getSafeImageUrl = (url, fallbackText = 'Image', width = 400, height = 300) => {
     if (!url || url.trim() === '') {
-        return getPlaceholderImage(fallbackText, width, height);
+        return '';
     }
-    
-    // If it's already a placeholder, return as is
+
+    // If it's already a placeholder, return empty string
     if (isPlaceholderImage(url)) {
-        return url;
+        return '';
     }
-    
+
     return url;
 };
 
@@ -70,15 +70,15 @@ export const getResponsiveImageUrls = (baseUrl, sizes = {
     xl: 1200
 }) => {
     const urls = {};
-    
+
     Object.entries(sizes).forEach(([breakpoint, size]) => {
-        if (isPlaceholderImage(baseUrl)) {
-            urls[breakpoint] = getPlaceholderImage('Image', size, size);
+        if (isPlaceholderImage(baseUrl) || !baseUrl) {
+            urls[breakpoint] = '';
         } else {
             urls[breakpoint] = baseUrl;
         }
     });
-    
+
     return urls;
 };
 
@@ -154,23 +154,28 @@ export const getImageDimensions = (url) => {
  */
 export const createLazyImage = (src, alt = '', options = {}) => {
     const img = document.createElement('img');
-    img.src = getPlaceholderImage('Loading...', options.width || 400, options.height || 300);
     img.alt = alt;
     img.loading = 'lazy';
     img.className = options.className || '';
-    
-    // Use Intersection Observer for lazy loading
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                img.src = getSafeImageUrl(src, alt, options.width || 400, options.height || 300);
-                observer.unobserve(img);
-            }
+
+    // Only create image if src is valid
+    const safeUrl = getSafeImageUrl(src, alt, options.width || 400, options.height || 300);
+    if (safeUrl) {
+        // Use Intersection Observer for lazy loading
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    img.src = safeUrl;
+                    observer.unobserve(img);
+                }
+            });
         });
-    });
-    
-    observer.observe(img);
-    
+
+        observer.observe(img);
+    } else {
+        img.style.display = 'none';
+    }
+
     return img;
 };
 
@@ -201,11 +206,11 @@ export const resizeImageFile = (file, maxWidth = 800, maxHeight = 600, quality =
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
-        
+
         img.onload = () => {
             // Calculate new dimensions
             let { width, height } = img;
-            
+
             if (width > height) {
                 if (width > maxWidth) {
                     height = (height * maxWidth) / width;
@@ -217,10 +222,10 @@ export const resizeImageFile = (file, maxWidth = 800, maxHeight = 600, quality =
                     height = maxHeight;
                 }
             }
-            
+
             canvas.width = width;
             canvas.height = height;
-            
+
             // Draw and compress
             ctx.drawImage(img, 0, 0, width, height);
             canvas.toBlob((blob) => {
@@ -231,7 +236,7 @@ export const resizeImageFile = (file, maxWidth = 800, maxHeight = 600, quality =
                 resolve(resizedFile);
             }, file.type, quality);
         };
-        
+
         img.onerror = () => reject(new Error('Failed to load image'));
         img.src = URL.createObjectURL(file);
     });
@@ -250,19 +255,19 @@ export const validateImageFile = (file, options = {}) => {
         maxWidth = 4000,
         maxHeight = 4000
     } = options;
-    
+
     const errors = [];
-    
+
     // Check file size
     if (file.size > maxSize) {
         errors.push(`File size must be less than ${Math.round(maxSize / 1024 / 1024)}MB`);
     }
-    
+
     // Check file type
     if (!allowedTypes.includes(file.type)) {
         errors.push(`File type must be one of: ${allowedTypes.join(', ')}`);
     }
-    
+
     return {
         isValid: errors.length === 0,
         errors
@@ -270,7 +275,7 @@ export const validateImageFile = (file, options = {}) => {
 };
 
 /**
- * Handle image error by setting a fallback image
+ * Handle image error by hiding the image
  * @param {Event} event - Error event
  * @param {string} text - Text for fallback image
  * @param {number} width - Image width
@@ -278,19 +283,19 @@ export const validateImageFile = (file, options = {}) => {
  */
 export const handleImageError = (event, text = 'Image', width = 400, height = 300) => {
     const img = event.target;
-    img.src = getPlaceholderImage(text, width, height);
+    img.style.display = 'none';
     img.onerror = null; // Prevent infinite loop
 };
 
 /**
- * Handle avatar error by setting a fallback avatar
+ * Handle avatar error by hiding the avatar
  * @param {Event} event - Error event
  * @param {string} text - Text for fallback avatar
  * @param {number} size - Avatar size
  */
 export const handleAvatarError = (event, text = 'Avatar', size = 100) => {
     const img = event.target;
-    img.src = getPlaceholderImage(text, size, size);
+    img.style.display = 'none';
     img.onerror = null; // Prevent infinite loop
 };
 

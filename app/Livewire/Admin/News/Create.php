@@ -8,9 +8,11 @@ use App\Models\NewsCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Traits\DispatchesAlertEvents;
 
 class Create extends Component
 {
+    use DispatchesAlertEvents;
     // Form properties
     public $form = [
         'title' => '',
@@ -81,16 +83,22 @@ class Create extends Component
 
             News::create($newsData);
 
+            // Dispatch event for create operation
+            $this->dispatch('create');
+
             $this->resetForm();
 
-            session()->flash('success', 'News article created successfully.');
+            // Dispatch event to reset Quill editor
+            $this->dispatch('formReset');
 
-            // Redirect to news index
-            return redirect()->route('admin.news.index');
+            $this->flashSuccess('News article created successfully.');
+
+            // Redirect to news index using Livewire redirect
+            $this->redirect(route('admin.news.index'));
 
         } catch (\Exception $e) {
             Log::error('News Creation Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to create news article. Please try again.');
+            $this->dispatchErrorEvent('Failed to create news article. Please try again.');
         }
     }
 

@@ -10,10 +10,11 @@ use Spatie\LivewireFilepond\WithFilePond;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -191,9 +192,9 @@ class Index extends Component
             $this->reset('form');
             $this->resetUploadStates();
 
-            session()->flash('success', 'Associate created successfully!');
+            $this->flashSuccess('Associate created successfully!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to create associate: ' . $e->getMessage());
+            $this->flashError('Failed to create associate: ' . $e->getMessage());
         }
     }
 
@@ -236,18 +237,19 @@ class Index extends Component
             $this->reset('form');
             $this->resetUploadStates();
 
-            session()->flash('success', 'Associate updated successfully!');
+            $this->flashSuccess('Associate updated successfully!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to update associate: ' . $e->getMessage());
+            $this->flashError('Failed to update associate: ' . $e->getMessage());
         }
     }
 
     public function delete($id)
     {
         $associate = Associate::findOrFail($id);
+        $associateName = $associate->name;
         $associate->delete();
 
-        session()->flash('success', 'Associate deleted successfully!');
+        $this->dispatchDeleteEvent("Associate '{$associateName}' has been successfully deleted.");
     }
 
     public function toggleActive($id)
@@ -255,7 +257,7 @@ class Index extends Component
         $associate = Associate::findOrFail($id);
         $associate->update(['is_active' => !$associate->is_active]);
 
-        session()->flash('success', 'Associate status updated successfully!');
+        $this->dispatchSuccessEvent('Associate status updated successfully!');
     }
 
     public function render()

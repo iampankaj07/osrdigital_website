@@ -5,9 +5,13 @@ namespace App\Livewire\Admin\GlobalImpact;
 use Livewire\Component;
 use App\Models\AdminSettings;
 use Illuminate\Support\Facades\Log;
+use App\Traits\DispatchesAlertEvents;
+
 
 class Index extends Component
 {
+    use DispatchesAlertEvents;
+
     public $form = [
         'title' => '',
         'subtitle' => '',
@@ -138,14 +142,15 @@ class Index extends Component
             \Illuminate\Support\Facades\Cache::forget('public_settings');
             \Illuminate\Support\Facades\Cache::forget('admin_settings_group_global_impact');
 
-            session()->flash('success', 'Global Impact settings saved successfully!');
+            $this->flashSuccess('Global Impact settings saved successfully!');
 
             // Reload the data to reflect changes
             $this->loadGlobalImpact();
 
         } catch (\Exception $e) {
             Log::error('Global Impact save error: ' . $e->getMessage());
-            session()->flash('error', 'Error saving Global Impact settings: ' . $e->getMessage());
+            $this->flashError('Error saving Global Impact settings: ' . $e->getMessage());
+            
         }
     }
 

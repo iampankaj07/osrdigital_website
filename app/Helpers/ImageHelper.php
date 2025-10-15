@@ -17,19 +17,23 @@ class ImageHelper
      */
     public static function getImageUrl(?string $path, string $fallback = '', string $disk = 'public'): string
     {
-        // If no path provided, return fallback
+        // If no path provided, return fallback or empty string
         if (empty($path)) {
-            return $fallback ?: self::getPlaceholderImage();
+            return $fallback;
         }
 
-        // If it's already a full URL, return as is
+        // If it's already a full URL, return as is (unless it's a placeholder)
         if (filter_var($path, FILTER_VALIDATE_URL)) {
+            // If it's a placeholder URL, return empty string
+            if (self::isPlaceholderUrl($path)) {
+                return '';
+            }
             return $path;
         }
 
-        // If it's a placeholder URL, return as is
+        // If it's a placeholder URL, return empty string
         if (self::isPlaceholderUrl($path)) {
-            return $path;
+            return '';
         }
 
         // Check if file exists in storage
@@ -51,8 +55,8 @@ class ImageHelper
             }
         }
 
-        // Return fallback if nothing found
-        return $fallback ?: self::getPlaceholderImage();
+        // Return fallback or empty string if nothing found
+        return $fallback;
     }
 
     /**
@@ -101,7 +105,7 @@ class ImageHelper
     }
 
     /**
-     * Get placeholder image URL
+     * Get placeholder image URL - returns empty string (placeholders disabled)
      * 
      * @param string $text
      * @param int $width
@@ -110,7 +114,7 @@ class ImageHelper
      */
     public static function getPlaceholderImage(string $text = 'Image', int $width = 400, int $height = 300): string
     {
-        return "https://via.placeholder.com/{$width}x{$height}/6366f1/ffffff?text=" . urlencode($text);
+        return '';
     }
 
     /**
@@ -126,9 +130,9 @@ class ImageHelper
     {
         $url = self::getImageUrl($path, $fallback);
         
-        // If it's a placeholder, update the size
-        if (self::isPlaceholderUrl($url)) {
-            return "https://via.placeholder.com/{$width}x{$height}/6366f1/ffffff?text=" . urlencode('Image');
+        // If it's a placeholder or empty, return empty string
+        if (self::isPlaceholderUrl($url) || empty($url)) {
+            return '';
         }
 
         return $url;
@@ -218,11 +222,10 @@ class ImageHelper
             'banner' => ['width' => 800, 'height' => 400, 'text' => 'Banner'],
         ];
 
-        $config = $contextConfigs[$context] ?? $contextConfigs['default'];
+        $config = $contextConfigs[$context] ?? ['width' => 400, 'height' => 300, 'text' => 'Image'];
         $width = $options['width'] ?? $config['width'];
         $height = $options['height'] ?? $config['height'];
-        $text = $options['text'] ?? $config['text'];
 
-        return self::getOptimizedImageUrl($path, $width, $height, self::getPlaceholderImage($text, $width, $height));
+        return self::getOptimizedImageUrl($path, $width, $height, '');
     }
 }

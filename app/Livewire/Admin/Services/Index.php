@@ -5,16 +5,17 @@ namespace App\Livewire\Admin\Services;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Service;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -192,7 +193,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $service = Service::findOrFail($id);
-        
+
         $this->form = [
             'title' => $service->title,
             'description' => $service->description,
@@ -228,11 +229,11 @@ class Index extends Component
         ]);
 
         Service::create($this->form);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
-        session()->flash('success', 'Service created successfully!');
+
+        $this->dispatchSuccessEvent('Service created successfully!');
     }
 
     public function update()
@@ -251,35 +252,34 @@ class Index extends Component
 
         $service = Service::findOrFail($this->editingId);
         $service->update($this->form);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
-        session()->flash('success', 'Service updated successfully!');
+
+        $this->dispatchSuccessEvent('Service updated successfully!');
     }
 
     public function delete($id)
     {
         $service = Service::findOrFail($id);
+        $serviceName = $service->title;
         $service->delete();
-        
-        session()->flash('success', 'Service deleted successfully!');
+
+        $this->dispatchDeleteEvent("Service '{$serviceName}' has been successfully deleted.");
     }
 
     public function toggleActive($id)
     {
         $service = Service::findOrFail($id);
         $service->update(['is_active' => !$service->is_active]);
-        
-        session()->flash('success', 'Service status updated successfully!');
+
     }
 
     public function toggleFeatured($id)
     {
         $service = Service::findOrFail($id);
         $service->update(['is_featured' => !$service->is_featured]);
-        
-        session()->flash('success', 'Service featured status updated successfully!');
+
     }
 
     public function openIconDropdown()
@@ -313,7 +313,7 @@ class Index extends Component
 
         return collect($this->availableIcons)
             ->filter(function ($name, $iconClass) {
-                return stripos($name, $this->iconSearch) !== false || 
+                return stripos($name, $this->iconSearch) !== false ||
                        stripos($iconClass, $this->iconSearch) !== false;
             })
             ->toArray();
@@ -330,7 +330,6 @@ class Index extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.admin.services.index', compact('services'))
-            ->layout('admin.layout', ['title' => 'Services']);
+        return view('livewire.admin.services.index', compact('services'));
     }
 }

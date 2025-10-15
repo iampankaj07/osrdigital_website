@@ -5,14 +5,15 @@ namespace App\Livewire\Admin\TeamMembers;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\TeamMember;
 use Spatie\LivewireFilepond\WithFilePond;
+use App\Models\TeamMember;
+use App\Traits\DispatchesAlertEvents;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -222,10 +223,11 @@ class Index extends Component
             $this->reset('form');
             $this->resetUploadStates();
 
-            session()->flash('success', 'Team Member created successfully!');
+            $this->flashSuccess('Team Member created successfully!');
 
         } catch (\Exception $e) {
-            session()->flash('error', 'Error creating team member: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Error creating team member: ' . $e->getMessage());
+            
         }
     }
 
@@ -272,10 +274,11 @@ class Index extends Component
             $this->reset('form');
             $this->resetUploadStates();
 
-            session()->flash('success', 'Team Member updated successfully!');
+            $this->flashSuccess('Team Member updated successfully!');
 
         } catch (\Exception $e) {
-            session()->flash('error', 'Error updating team member: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Error updating team member: ' . $e->getMessage());
+            
         }
     }
 
@@ -284,7 +287,7 @@ class Index extends Component
         $teamMember = TeamMember::findOrFail($id);
         $teamMember->delete();
 
-        session()->flash('success', 'Team Member deleted successfully!');
+        $this->flashDelete('Team Member has been successfully deleted.');
     }
 
     public function toggleActive($id)
@@ -292,7 +295,7 @@ class Index extends Component
         $teamMember = TeamMember::findOrFail($id);
         $teamMember->update(['is_active' => !$teamMember->is_active]);
 
-        session()->flash('success', 'Team Member status updated successfully!');
+        $this->dispatchSuccessEvent('Team Member status updated successfully!');
     }
 
     public function render()

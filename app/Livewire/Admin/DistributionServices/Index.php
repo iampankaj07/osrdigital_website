@@ -5,16 +5,17 @@ namespace App\Livewire\Admin\DistributionServices;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\DistributionService;
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -181,7 +182,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $service = DistributionService::findOrFail($id);
-        
+
         $this->form = [
             'title' => $service->title,
             'description' => $service->description,
@@ -213,11 +214,11 @@ class Index extends Component
         ]);
 
         DistributionService::create($this->form);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
-        session()->flash('success', 'Distribution Service created successfully!');
+
+        $this->flashSuccess('Distribution Service created successfully!');
     }
 
     public function update()
@@ -234,26 +235,27 @@ class Index extends Component
 
         $service = DistributionService::findOrFail($this->editingId);
         $service->update($this->form);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
-        session()->flash('success', 'Distribution Service updated successfully!');
+
+        $this->flashSuccess('Distribution Service updated successfully!');
     }
 
     public function delete($id)
     {
         $service = DistributionService::findOrFail($id);
+        $serviceName = $service->title;
         $service->delete();
-        
-        session()->flash('success', 'Distribution Service deleted successfully!');
+
+        $this->flashDelete("Distribution Service '{$serviceName}' has been successfully deleted.");
     }
 
     public function toggleActive($id)
     {
         $service = DistributionService::findOrFail($id);
         $service->update(['is_active' => !$service->is_active]);
-        
+
         session()->flash('success', 'Distribution Service status updated successfully!');
     }
 
@@ -288,7 +290,7 @@ class Index extends Component
 
         return collect($this->availableIcons)
             ->filter(function ($name, $iconClass) {
-                return stripos($name, $this->iconSearch) !== false || 
+                return stripos($name, $this->iconSearch) !== false ||
                        stripos($iconClass, $this->iconSearch) !== false;
             })
             ->toArray();

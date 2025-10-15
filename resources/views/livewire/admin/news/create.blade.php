@@ -26,8 +26,16 @@
     @endif
 
     <!-- Create Article Form -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-plus text-brand-orange-600 text-sm"></i>
+                </div>
+                <h5 class="text-lg font-medium text-gray-900">Create New Article</h5>
+            </div>
+        </div>
+        <div class="p-6">
             <form wire:submit="store">
                 <div class="row">
                     <!-- Left Column - Main Content -->
@@ -77,7 +85,7 @@
                                     <i class="fas fa-sync mr-1"></i>Refresh Editor
                                 </button>
                             </div>
-                            <div class="border rounded bg-white quill-container-create" style="min-height: 400px; position: relative; z-index: 1;">
+                            <div class="border rounded bg-white quill-container-create" style="min-height: 400px; position: relative; z-index: 1;" wire:ignore>
                                 <div id="quill-editor-create" class="quill-editor-create" style="height: 400px; min-height: 400px; background: white; position: relative; z-index: 2;"></div>
                             </div>
                             <textarea wire:model.defer="form.content" id="quill-textarea-create" style="display: none;"></textarea>
@@ -180,12 +188,12 @@
                     <a href="{{ route('admin.news.index') }}" class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-arrow-left mr-1"></i>Back to News
                     </a>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="window.location.reload()">
-                            <i class="fas fa-undo mr-1"></i>Reset
+                    <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+                        <button type="button" class="btn-slate" onclick="window.location.reload()">
+                            <i class="fas fa-undo mr-2"></i>Reset
                         </button>
-                        <button type="submit" class="btn btn-dark">
-                            <i class="fas fa-plus mr-1"></i>Create Article
+                        <button type="submit" class="btn btn-dark px-6 py-2">
+                            <i class="fas fa-plus mr-2"></i>Create Article
                         </button>
                     </div>
                 </div>
@@ -198,21 +206,27 @@
         console.log('News Create - Livewire initialized');
 
         let quillCreate = null;
+        let isInitializingCreate = false;
 
         function initializeQuillEditor() {
-            // Destroy existing editor if it exists
-            if (quillCreate) {
-                try {
-                    quillCreate = null;
-                } catch (e) {
-                    console.log('Error destroying existing editor:', e);
-                }
+            // Prevent multiple simultaneous initializations
+            if (isInitializingCreate) {
+                console.log('Create editor initialization already in progress');
+                return;
             }
+
+            // Don't destroy existing editor if it's working
+            if (quillCreate && quillCreate.container && document.getElementById('quill-editor-create')) {
+                console.log('Create editor already exists and is working');
+                return;
+            }
+
+            isInitializingCreate = true;
 
             // Wait for DOM to be ready and Quill to be available
             function tryInitialize() {
                 const editorElement = document.getElementById('quill-editor-create');
-                if (editorElement && typeof Quill !== 'undefined' && !quillCreate) {
+                if (editorElement && typeof Quill !== 'undefined') {
                     console.log('Initializing Quill editor for create page');
 
                     try {
@@ -327,8 +341,10 @@
                         });
 
                         console.log('Quill create editor initialized successfully');
+                        isInitializingCreate = false;
                     } catch (error) {
                         console.error('Error initializing Quill create editor:', error);
+                        isInitializingCreate = false;
                         // Retry after a short delay
                         setTimeout(tryInitialize, 100);
                     }
@@ -402,7 +418,7 @@
         Livewire.on('$refresh', function() {
             console.log('Create Livewire refresh detected');
             // Don't reinitialize editor, just ensure it's still visible
-            if (quillCreate) {
+            if (quillCreate && quillCreate.container) {
                 setTimeout(() => {
                     // Restore focus if we had a cursor position
                     if (window.quillCreateCursorPosition) {
@@ -417,10 +433,21 @@
                         editorContainer.style.opacity = '1';
                         editorContainer.style.zIndex = '1';
                     }
+                    console.log('Create editor maintained after Livewire refresh');
                 }, 100);
             } else {
                 // Only reinitialize if editor doesn't exist
+                console.log('Create editor not found after refresh, reinitializing...');
                 setTimeout(initializeQuillEditor, 500);
+            }
+        });
+
+        // Handle specific create events to preserve editor
+        Livewire.on('create', function() {
+            console.log('Create event detected, preserving editor');
+            // Don't reinitialize editor during create operations
+            if (quillCreate && quillCreate.container) {
+                console.log('Create editor preserved during create operation');
             }
         });
 

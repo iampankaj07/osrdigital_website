@@ -8,7 +8,7 @@ class Edit extends Component
 {
     public function mount()
     {
-        return redirect()->route('admin.mission-vision.index');
+        $this->redirect(route('admin.mission-vision.index'));
     }
 
     public function render()

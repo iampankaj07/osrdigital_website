@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+
 class Index extends Component
 {
     use WithPagination, WithFileUploads, WithFilePond;
@@ -219,6 +220,7 @@ class Index extends Component
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error creating trusted partner: ' . $e->getMessage());
+            
         }
     }
 
@@ -266,6 +268,7 @@ class Index extends Component
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error updating trusted partner: ' . $e->getMessage());
+            
         }
     }
 

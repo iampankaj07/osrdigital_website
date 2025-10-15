@@ -70,189 +70,7 @@ function News() {
         fetchNewsData();
     }, []);
 
-    // News articles are now fetched from API
-    const hardcodedNewsArticles = [
-        {
-            id: 1,
-            title: "OSR Digital Expands Global Distribution Network to 50+ Countries",
-            excerpt: "We're excited to announce the expansion of our YouTube distribution network, bringing exceptional content to audiences across 50+ countries worldwide.",
-            content: "Complete article content...",
-            category: "company",
-            image: "https://via.placeholder.com/600x400/EC681D/FFFFFF?text=Global+Expansion",
-            published_at: "2024-01-15",
-            author: "OSR Team",
-            readTime: "5 min read",
-            featured: true
-        },
-        {
-            id: 2,
-            title: "New Partnership with Major Streaming Platforms",
-            excerpt: "Strategic partnerships with leading streaming platforms to enhance content distribution and reach new audiences globally.",
-            content: "Complete article content...",
-            category: "partnership",
-            image: "https://via.placeholder.com/600x400/3B82F6/FFFFFF?text=Partnerships",
-            published_at: "2024-01-12",
-            author: "Business Development",
-            readTime: "4 min read",
-            featured: false
-        },
-        {
-            id: 3,
-            title: "Industry Trends: The Future of Digital Content Distribution",
-            excerpt: "Exploring emerging trends in digital content distribution and how they're shaping the future of media consumption.",
-            content: "Complete article content...",
-            category: "industry",
-            image: "https://via.placeholder.com/600x400/10B981/FFFFFF?text=Industry+Trends",
-            published_at: "2024-01-10",
-            author: "Industry Analysis",
-            readTime: "7 min read",
-            featured: false
-        },
-        {
-            id: 4,
-            title: "Creator Economy Reaches $104 Billion Globally",
-            excerpt: "New research shows the creator economy continues to grow rapidly, with significant opportunities for content creators and distributors.",
-            content: "Complete article content...",
-            category: "industry",
-            image: "https://via.placeholder.com/600x400/8B5CF6/FFFFFF?text=Creator+Economy",
-            published_at: "2024-01-08",
-            author: "Research Team",
-            readTime: "6 min read",
-            featured: false
-        },
-        {
-            id: 5,
-            title: "OSR Digital Launches New Content Strategy Services",
-            excerpt: "Introducing comprehensive content strategy services to help creators maximize their reach and engagement across platforms.",
-            content: "Complete article content...",
-            category: "company",
-            image: "https://via.placeholder.com/600x400/F59E0B/FFFFFF?text=New+Services",
-            published_at: "2024-01-05",
-            author: "Product Team",
-            readTime: "3 min read",
-            featured: false
-        },
-        {
-            id: 6,
-            title: "AI-Powered Content Recommendations Drive 40% More Engagement",
-            excerpt: "Our latest AI implementation has resulted in significantly higher engagement rates across all content categories.",
-            content: "Complete article content...",
-            category: "technology",
-            image: "https://via.placeholder.com/600x400/EF4444/FFFFFF?text=AI+Technology",
-            published_at: "2024-01-03",
-            author: "Tech Team",
-            readTime: "5 min read",
-            featured: false
-        },
-        {
-            id: 7,
-            title: "Mobile Content Consumption Surges 35% in Q4 2023",
-            excerpt: "Latest data shows mobile devices now account for 78% of all digital content consumption, driving new distribution strategies.",
-            content: "Complete article content...",
-            category: "industry",
-            image: "https://via.placeholder.com/600x400/06B6D4/FFFFFF?text=Mobile+Growth",
-            published_at: "2024-01-01",
-            author: "Analytics Team",
-            readTime: "4 min read",
-            featured: false
-        },
-        {
-            id: 8,
-            title: "OSR Digital Partners with Independent Film Festivals",
-            excerpt: "New partnerships with major film festivals to discover and distribute award-winning independent content globally.",
-            content: "Complete article content...",
-            category: "partnership",
-            image: "https://via.placeholder.com/600x400/84CC16/FFFFFF?text=Film+Festivals",
-            published_at: "2023-12-28",
-            author: "Partnership Team",
-            readTime: "6 min read",
-            featured: false
-        },
-        {
-            id: 9,
-            title: "Blockchain Technology Revolutionizes Content Rights Management",
-            excerpt: "Innovative blockchain solutions are transforming how content rights are tracked and managed across distribution networks.",
-            content: "Complete article content...",
-            category: "technology",
-            image: "https://via.placeholder.com/600x400/8B5CF6/FFFFFF?text=Blockchain",
-            published_at: "2023-12-25",
-            author: "Tech Innovation",
-            readTime: "8 min read",
-            featured: false
-        },
-        {
-            id: 10,
-            title: "OSR Digital Wins 'Best Content Distributor' Award 2023",
-            excerpt: "We're honored to receive the prestigious 'Best Content Distributor' award for our innovative approach to global content distribution.",
-            content: "Complete article content...",
-            category: "company",
-            image: "https://via.placeholder.com/600x400/F59E0B/FFFFFF?text=Award+2023",
-            published_at: "2023-12-22",
-            author: "OSR Team",
-            readTime: "3 min read",
-            featured: false
-        },
-        {
-            id: 11,
-            title: "Short-Form Content Drives 60% of Platform Engagement",
-            excerpt: "Analysis reveals short-form content continues to dominate user engagement, with significant implications for content strategy.",
-            content: "Complete article content...",
-            category: "industry",
-            image: "https://via.placeholder.com/600x400/EC4899/FFFFFF?text=Short+Form",
-            published_at: "2023-12-20",
-            author: "Content Strategy",
-            readTime: "5 min read",
-            featured: false
-        },
-        {
-            id: 12,
-            title: "New AI Tools Enhance Content Localization Process",
-            excerpt: "Advanced AI-powered tools are making content localization faster and more accurate across multiple languages and cultures.",
-            content: "Complete article content...",
-            category: "technology",
-            image: "https://via.placeholder.com/600x400/10B981/FFFFFF?text=AI+Localization",
-            published_at: "2023-12-18",
-            author: "AI Research",
-            readTime: "7 min read",
-            featured: false
-        },
-        {
-            id: 13,
-            title: "OSR Digital Expands into Asian Markets",
-            excerpt: "Strategic expansion into key Asian markets brings our content distribution network to over 1 billion potential viewers.",
-            content: "Complete article content...",
-            category: "company",
-            image: "https://via.placeholder.com/600x400/DC2626/FFFFFF?text=Asia+Expansion",
-            published_at: "2023-12-15",
-            author: "Global Expansion",
-            readTime: "6 min read",
-            featured: false
-        },
-        {
-            id: 14,
-            title: "Interactive Content Shows 200% Higher Engagement Rates",
-            excerpt: "New research demonstrates that interactive content formats significantly outperform traditional passive content in user engagement.",
-            content: "Complete article content...",
-            category: "industry",
-            image: "https://via.placeholder.com/600x400/7C3AED/FFFFFF?text=Interactive",
-            published_at: "2023-12-12",
-            author: "Engagement Research",
-            readTime: "5 min read",
-            featured: false
-        },
-        {
-            id: 15,
-            title: "OSR Digital Launches Creator Education Program",
-            excerpt: "New educational initiative helps content creators understand distribution strategies and maximize their global reach.",
-            content: "Complete article content...",
-            category: "company",
-            image: "https://via.placeholder.com/600x400/059669/FFFFFF?text=Education",
-            published_at: "2023-12-10",
-            author: "Education Team",
-            readTime: "4 min read",
-            featured: false
-        }
-    ];
+    // News articles are now fetched from API - no hardcoded fallback data
 
     // Dynamic categories from API data
     const categories = [
@@ -334,24 +152,24 @@ function News() {
                     <div className="container-minimal">
                         {/* Featured Article Skeleton */}
                         <div className="mb-16">
-                            <div className={`h-8 w-48 mb-6 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-96 rounded-lg mb-6 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-8 w-3/4 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                            <div className={`h-6 w-2/3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                            <div className={`h-8 w-48 mb-6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-96 rounded-lg mb-6 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-8 w-3/4 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-6 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            <div className={`h-6 w-2/3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                         </div>
 
                         {/* Articles Grid Skeleton */}
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div key={i} className={`rounded-lg overflow-hidden ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                                    <div className={`h-48 ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                    <div className={`h-48 ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     <div className="p-6">
-                                        <div className={`h-4 w-20 mb-3 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-6 w-full mb-3 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-3/4 mb-4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
-                                        <div className={`h-4 w-24 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`}></div>
+                                        <div className={`h-4 w-20 mb-3 rounded-full ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-6 w-full mb-3 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-full mb-2 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-3/4 mb-4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                        <div className={`h-4 w-24 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                     </div>
                                 </div>
                             ))}
@@ -401,7 +219,7 @@ function News() {
                             <div className="lg:flex">
                                 <div className="lg:w-1/2">
                                     <img
-                                        src={featuredArticle.featured_image_url || 'https://via.placeholder.com/800x400/EC681D/FFFFFF?text=Featured+Article'}
+                                        src={featuredArticle.featured_image_url || ''}
                                         alt={featuredArticle.title}
                                         className="w-full h-64 lg:h-full object-cover"
                                     />
@@ -479,7 +297,7 @@ function News() {
                                 }`}>
                                     <div className="relative">
                                         <img
-                                            src={article.featured_image_url || 'https://via.placeholder.com/400x300/EC681D/FFFFFF?text=News+Article'}
+                                            src={article.featured_image_url || ''}
                                             alt={article.title}
                                             className="w-full h-48 object-cover"
                                         />
