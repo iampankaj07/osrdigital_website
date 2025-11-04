@@ -16,7 +16,7 @@ class Index extends Component
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Form properties
     public $isCreating = false;
     public $editingId = null;
@@ -35,7 +35,7 @@ class Index extends Component
         'sort_order' => 0,
         'is_active' => true
     ];
-    
+
     public $backgroundImage;
     public $showImageUpload = false;
 
@@ -94,7 +94,7 @@ class Index extends Component
 
         $this->resetForm();
         $this->isCreating = false;
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Hero section created successfully!');
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Hero section created successfully!']);
     }
 
     public function update()
@@ -115,27 +115,27 @@ class Index extends Component
 
         $this->resetForm();
         $this->editingId = null;
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Hero section updated successfully!');
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Hero section updated successfully!']);
     }
 
     public function delete($id)
     {
         $heroSection = HeroSection::findOrFail($id);
-        
+
         // Delete background image if exists
         if ($heroSection->background_image) {
             Storage::disk('public')->delete($heroSection->background_image);
         }
-        
+
         $heroSection->delete();
-        $this->dispatch('toast', ['type' => 'success', 'message' => 'Hero section deleted successfully!');
+        $this->dispatch('toast', ['type' => 'success', 'message' => 'Hero section deleted successfully!']);
     }
 
     public function toggleActive($id)
     {
         $heroSection = HeroSection::findOrFail($id);
-        $heroSection->update(['is_active' => !$heroSection->is_active);
-        $this->dispatch('toast', ['type' => 'info', 'message' => 'Hero section status updated!');
+        $heroSection->update(['is_active' => !$heroSection->is_active]);
+        $this->dispatch('toast', ['type' => 'info', 'message' => 'Hero section status updated!']);
     }
 
     public function cancelEdit()
