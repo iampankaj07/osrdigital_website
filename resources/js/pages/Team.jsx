@@ -281,28 +281,7 @@ function Team() {
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-900' : 'bg-white'}`}>
-                <div className="container-minimal text-center max-w-4xl mx-auto">
-                    <div className={`p-12 rounded-2xl ${isDark ? 'bg-gradient-to-br from-gray-800 to-gray-700' : 'bg-gradient-to-br from-gray-50 to-gray-100'
-                        }`}>
-                        <h2 className={`text-4xl font-extrabold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            Ready to Join Our Team?
-                        </h2>
-                        <p className={`text-xl mb-10 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                            We're always looking for talented individuals who share our passion for content distribution and global impact.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <Link to="/contact" className="btn-minimal">
-                                View Open Positions
-                            </Link>
-                            <Link to="/about" className="btn-minimal-outline">
-                                Learn More About Us
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* CTA removed as per design request */}
         </div>
     );
 }

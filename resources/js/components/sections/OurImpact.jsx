@@ -140,17 +140,6 @@ function OurImpact({ content, title, subtitle }) {
                         </div>
                     ))}
                 </div>
-
-                {/* Optional decorative elements */}
-                <div className="mt-16 text-center">
-                    <div className="inline-flex items-center space-x-2">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: primaryColor }}></div>
-                        <div className="w-1 h-1 rounded-full bg-gray-400"></div>
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: primaryColor }}></div>
-                        <div className="w-1 h-1 rounded-full bg-gray-400"></div>
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: primaryColor }}></div>
-                    </div>
-                </div>
             </div>
         </section>
     );

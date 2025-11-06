@@ -203,7 +203,9 @@ class Index extends Component
             ]);
 
             if (!empty($this->form['roles'])) {
-                $user->assignRole($this->form['roles']);
+                // Convert role IDs to role names or role objects
+                $roles = Role::whereIn('id', $this->form['roles'])->get();
+                $user->assignRole($roles);
             }
         });
 
@@ -235,7 +237,14 @@ class Index extends Component
             }
 
             $user->update($updateData);
-            $user->syncRoles($this->form['roles'] ?? []);
+            
+            // Convert role IDs to role objects
+            if (!empty($this->form['roles'])) {
+                $roles = Role::whereIn('id', $this->form['roles'])->get();
+                $user->syncRoles($roles);
+            } else {
+                $user->syncRoles([]);
+            }
         });
 
         $this->editingId = null;
@@ -297,7 +306,8 @@ class Index extends Component
         $user = User::findOrFail($this->selectedUserId);
 
         // Prevent removing admin role from the last admin user
-        if ($user->hasRole('admin') && !in_array(Role::where('name', 'admin')->first()->id, $this->userRoles)) {
+        $adminRole = Role::where('name', 'admin')->first();
+        if ($user->hasRole('admin') && $adminRole && !in_array($adminRole->id, $this->userRoles)) {
             if (User::role('admin')->count() <= 1) {
                 $this->dispatchErrorEvent('Cannot remove admin role from the last admin user!');
             
@@ -305,7 +315,14 @@ class Index extends Component
             }
         }
 
-        $user->syncRoles($this->userRoles);
+        // Convert role IDs to role objects
+        if (!empty($this->userRoles)) {
+            $roles = Role::whereIn('id', $this->userRoles)->get();
+            $user->syncRoles($roles);
+        } else {
+            $user->syncRoles([]);
+        }
+        
         $this->closeRoleModal();
 
         $this->flashSuccess('User roles updated successfully!');

@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Funnel Display', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
         'brand-orange': {

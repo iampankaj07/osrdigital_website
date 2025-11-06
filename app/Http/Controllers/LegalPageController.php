@@ -17,17 +17,26 @@ class LegalPageController extends Controller
             abort(404, 'Privacy Policy not found');
         }
 
-        return response()->json([
-            'page' => [
-                'id' => $page->id,
-                'title' => $page->title,
-                'slug' => $page->slug,
-                'content' => $page->content,
-                'excerpt' => $page->excerpt,
-                'meta_title' => $page->meta_title,
-                'meta_description' => $page->meta_description,
-                'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
-            ]
+        // Return JSON for API requests
+        if (request()->wantsJson()) {
+            return response()->json([
+                'page' => [
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'slug' => $page->slug,
+                    'content' => $page->content,
+                    'excerpt' => $page->excerpt,
+                    'meta_title' => $page->meta_title,
+                    'meta_description' => $page->meta_description,
+                    'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
+                ]
+            ]);
+        }
+
+        // Return HTML view for browser requests
+        return view('legal.show', [
+            'page' => $page,
+            'type' => 'privacy-policy'
         ]);
     }
 
@@ -41,17 +50,26 @@ class LegalPageController extends Controller
             abort(404, 'Terms of Service not found');
         }
 
-        return response()->json([
-            'page' => [
-                'id' => $page->id,
-                'title' => $page->title,
-                'slug' => $page->slug,
-                'content' => $page->content,
-                'excerpt' => $page->excerpt,
-                'meta_title' => $page->meta_title,
-                'meta_description' => $page->meta_description,
-                'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
-            ]
+        // Return JSON for API requests
+        if (request()->wantsJson()) {
+            return response()->json([
+                'page' => [
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'slug' => $page->slug,
+                    'content' => $page->content,
+                    'excerpt' => $page->excerpt,
+                    'meta_title' => $page->meta_title,
+                    'meta_description' => $page->meta_description,
+                    'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
+                ]
+            ]);
+        }
+
+        // Return HTML view for browser requests
+        return view('legal.show', [
+            'page' => $page,
+            'type' => 'terms-of-service'
         ]);
     }
 
@@ -65,17 +83,26 @@ class LegalPageController extends Controller
             abort(404, 'Cookies Policy not found');
         }
 
-        return response()->json([
-            'page' => [
-                'id' => $page->id,
-                'title' => $page->title,
-                'slug' => $page->slug,
-                'content' => $page->content,
-                'excerpt' => $page->excerpt,
-                'meta_title' => $page->meta_title,
-                'meta_description' => $page->meta_description,
-                'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
-            ]
+        // Return JSON for API requests
+        if (request()->wantsJson()) {
+            return response()->json([
+                'page' => [
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'slug' => $page->slug,
+                    'content' => $page->content,
+                    'excerpt' => $page->excerpt,
+                    'meta_title' => $page->meta_title,
+                    'meta_description' => $page->meta_description,
+                    'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
+                ]
+            ]);
+        }
+
+        // Return HTML view for browser requests
+        return view('legal.show', [
+            'page' => $page,
+            'type' => 'cookies-policy'
         ]);
     }
 
@@ -89,18 +116,27 @@ class LegalPageController extends Controller
             abort(404, 'Legal page not found');
         }
 
-        return response()->json([
-            'page' => [
-                'id' => $page->id,
-                'title' => $page->title,
-                'slug' => $page->slug,
-                'page_type' => $page->page_type,
-                'content' => $page->content,
-                'excerpt' => $page->excerpt,
-                'meta_title' => $page->meta_title,
-                'meta_description' => $page->meta_description,
-                'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
-            ]
+        // Return JSON for API requests
+        if (request()->wantsJson()) {
+            return response()->json([
+                'page' => [
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'slug' => $page->slug,
+                    'page_type' => $page->page_type,
+                    'content' => $page->content,
+                    'excerpt' => $page->excerpt,
+                    'meta_title' => $page->meta_title,
+                    'meta_description' => $page->meta_description,
+                    'last_updated_at' => $page->last_updated_at?->format('F j, Y'),
+                ]
+            ]);
+        }
+
+        // Return HTML view for browser requests
+        return view('legal.show', [
+            'page' => $page,
+            'type' => $slug
         ]);
     }
 }

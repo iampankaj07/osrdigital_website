@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, useLocation, Navigate, Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import CompactHero from '../components/sections/CompactHero';
 
 const LegalPage = () => {
     const { slug } = useParams();
+    const location = useLocation();
     const [page, setPage] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { isDark } = useTheme();
+
+    // Determine the page type from URL path if slug is not available
+    const pageType = React.useMemo(() => {
+        if (slug) {
+            return slug;
+        }
+        // Extract page type from pathname
+        const path = location.pathname.replace('/', '');
+        return path || null;
+    }, [slug, location.pathname]);
 
     // Update document head for SEO
     useEffect(() => {
@@ -58,18 +70,42 @@ const LegalPage = () => {
                 let response;
 
                 // Map common slugs to specific endpoints
-                switch (slug) {
+                switch (pageType) {
                     case 'privacy-policy':
-                        response = await fetch('/privacy-policy');
+                        response = await fetch('/privacy-policy', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
                         break;
                     case 'terms-of-service':
-                        response = await fetch('/terms-of-service');
+                        response = await fetch('/terms-of-service', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
                         break;
                     case 'cookies-policy':
-                        response = await fetch('/cookies-policy');
+                        response = await fetch('/cookies-policy', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
                         break;
                     default:
-                        response = await fetch(`/legal/${slug}`);
+                        if (pageType) {
+                            response = await fetch(`/legal/${pageType}`, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            });
+                        } else {
+                            throw new Error('Page type not found');
+                        }
                 }
 
                 if (!response.ok) {
@@ -86,20 +122,41 @@ const LegalPage = () => {
             }
         };
 
-        if (slug) {
+        if (pageType) {
             fetchPage();
+        } else {
+            setLoading(false);
+            setError('Page type not found');
         }
-    }, [slug]);
+    }, [pageType, location.pathname]);
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-orange-500 mx-auto mb-4"></div>
-                    <p className={`text-lg ${isDark ? 'text-white' : 'text-gray-600'}`}>
-                        Loading...
-                    </p>
-                </div>
+            <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                <CompactHero
+                    page={pageType || 'legal'}
+                    title="Loading..."
+                />
+                <section className={`py-16 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className={`rounded-xl p-8 md:p-12 shadow-lg ${
+                            isDark
+                                ? 'bg-gray-800'
+                                : 'bg-white'
+                        }`}>
+                            <div className="space-y-4">
+                                <div className={`h-6 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-5/6 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-4/5 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-full rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                                <div className={`h-4 w-3/4 rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         );
     }
@@ -135,34 +192,18 @@ const LegalPage = () => {
 
     return (
         <div className={`min-h-screen ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-
             {/* Hero Section */}
-            <section className={`py-16 md:py-24 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-8">
-                        <h1 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                            {page.title}
-                        </h1>
-                        {page.excerpt && (
-                            <p className={`text-xl leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                {page.excerpt}
-                            </p>
-                        )}
-                        {page.last_updated_at && (
-                            <div className={`mt-6 pt-6 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                    <i className="fas fa-calendar-alt mr-2"></i>
-                                    Last updated: {page.last_updated_at}
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </section>
+            <CompactHero
+                page={pageType || 'legal'}
+                title={page.title}
+                description={page.excerpt}
+            />
+            
+      
 
             {/* Content Section */}
-            <section className={`py-16 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className={`${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className={`rounded-xl p-8 md:p-12 shadow-lg ${
                         isDark
                             ? 'bg-gray-800 text-gray-300'
@@ -181,8 +222,8 @@ const LegalPage = () => {
             </section>
 
             {/* Contact Section */}
-            <section className={`py-16 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <section className={`${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className=" mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <div className={`p-8 rounded-xl ${isDark ? 'bg-gray-700' : 'bg-gray-50'}`}>
                         <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             Questions About This Policy?
@@ -208,7 +249,7 @@ const LegalPage = () => {
                         <Link
                             to="/privacy-policy"
                             className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                                slug === 'privacy-policy'
+                                pageType === 'privacy-policy'
                                     ? 'bg-brand-orange-500 text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -220,7 +261,7 @@ const LegalPage = () => {
                         <Link
                             to="/terms-of-service"
                             className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                                slug === 'terms-of-service'
+                                pageType === 'terms-of-service'
                                     ? 'bg-brand-orange-500 text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -232,7 +273,7 @@ const LegalPage = () => {
                         <Link
                             to="/cookies-policy"
                             className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                                slug === 'cookies-policy'
+                                pageType === 'cookies-policy'
                                     ? 'bg-brand-orange-500 text-white'
                                     : isDark
                                         ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'

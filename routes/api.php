@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\WebAssetsController;
 use App\Http\Controllers\Api\PageController;
-use App\Http\Controllers\Api\HeroSectionController;
 use App\Http\Controllers\Api\HeroSliderController;
 use App\Http\Controllers\Api\AssociateController;
 use App\Http\Controllers\Api\ImageUploadController;
@@ -85,9 +84,6 @@ Route::get('/content-blocks', function() {
     return response()->json(\App\Helpers\ContentManager::getAllContentBlocks());
 });
 
-// Hero Sections API
-Route::get('/hero-sections', [HeroSectionController::class, 'index']);
-Route::get('/hero-sections/page/{page}', [HeroSectionController::class, 'getByPage']);
 
 // Associates API
 Route::get('/associates', [AssociateController::class, 'index']);

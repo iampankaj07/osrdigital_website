@@ -31,6 +31,9 @@ return [
             '192.168.',
             '10.0.',
             '172.16.',
+            '.test',
+            '.local',
+            '.localhost',
         ],
         'shared_hosting_indicators' => [
             'cpanel',

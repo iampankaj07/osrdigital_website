@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\View\Composers\SettingsComposer;
 use App\Helpers\HostingHelper;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -25,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
     {
         // Apply hosting environment optimizations
         HostingHelper::applyOptimizations();
+        
+        // Force HTTP on localhost, HTTPS in production
+        if (HostingHelper::isLocalhost() || app()->isLocal()) {
+            URL::forceScheme('http');
+        } elseif (!HostingHelper::isLocalhost() && !app()->isLocal()) {
+            URL::forceScheme('https');
+        }
         
         // Register view composer for settings
         View::composer('*', SettingsComposer::class);

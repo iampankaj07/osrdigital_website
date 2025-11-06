@@ -34,9 +34,9 @@ class WebAssetsController extends Controller
             'services' => $this->formatServices($footer->services ?? []),
             'social_links' => $socialMediaSettings,
             'legal_links' => [
-                ['text' => 'Privacy Policy', 'url' => '/privacy', 'icon' => 'faShieldAlt'],
-                ['text' => 'Terms of Service', 'url' => '/terms', 'icon' => 'faShieldAlt'],
-                ['text' => 'Cookie Policy', 'url' => '/cookies', 'icon' => 'faShieldAlt']
+                ['text' => 'Privacy Policy', 'url' => '/privacy-policy', 'icon' => 'faShieldAlt'],
+                ['text' => 'Terms of Service', 'url' => '/terms-of-service', 'icon' => 'faShieldAlt'],
+                ['text' => 'Cookie Policy', 'url' => '/cookies-policy', 'icon' => 'faShieldAlt']
             ],
             'copyright_text' => $footer->copyright_text ?? '© 2025 OSR Digital. All rights reserved.'
         ];

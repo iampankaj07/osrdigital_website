@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -934,7 +935,7 @@
 
 /* Additional custom styles */
 body {
-    font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Funnel Display', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Hero Slider Swiper Customization */
@@ -1105,23 +1106,23 @@ html {
         transform: translateZ(0);
         will-change: transform;
     }
-    
+
     /* Optimize repaints */
     .optimize-repaint {
         contain: layout style paint;
     }
-    
+
     /* Critical above-the-fold styles */
     .critical-content {
         content-visibility: auto;
         contain-intrinsic-size: 0 500px;
     }
-    
+
     /* Optimize font loading */
     .font-display-optimized {
         font-display: swap;
     }
-    
+
     /* Reduce motion for accessibility */
     @media (prefers-reduced-motion: reduce) {
         * {
@@ -1130,18 +1131,18 @@ html {
             transition-duration: 0.01ms !important;
         }
     }
-    
+
     /* Optimize images */
     img {
         content-visibility: auto;
     }
-    
+
     /* Lazy loading styles */
     .lazy-load {
         opacity: 0;
         transition: opacity 0.3s ease-in-out;
     }
-    
+
     .lazy-load.loaded {
         opacity: 1;
     }

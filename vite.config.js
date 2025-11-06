@@ -47,6 +47,10 @@ export default defineConfig({
     },
     server: {
         middlewareMode: false,
+        // Use IPv4 instead of IPv6 to avoid CSP issues
+        host: '127.0.0.1',
+        // Support both HTTP and HTTPS
+        https: process.env.NODE_ENV === 'production' ? false : undefined,
     },
     // Base URL for production builds
     base: process.env.NODE_ENV === 'production' ? '/' : '/',
