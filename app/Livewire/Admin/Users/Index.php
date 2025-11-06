@@ -29,6 +29,8 @@ class Index extends Component
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
+    public $showSlidePanel = false;
+    public $isClosing = false;
     public $form = [
         'name' => '',
         'email' => '',
@@ -148,16 +150,18 @@ class Index extends Component
 
     public function create()
     {
+        $this->resetForm();
         $this->isCreating = true;
         $this->editingId = null;
-        $this->reset('form');
+        $this->showSlidePanel = true;
     }
 
     public function closeAllForms()
     {
         $this->editingId = null;
         $this->isCreating = false;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
     }
 
     public function edit($id)
@@ -177,13 +181,42 @@ class Index extends Component
             'password_confirmation' => '',
             'roles' => $user->roles->pluck('id')->toArray(),
         ];
+
+        $this->showSlidePanel = true;
     }
 
     public function cancelEdit()
     {
         $this->editingId = null;
         $this->isCreating = false;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+    }
+
+    private function resetForm()
+    {
+        $this->form = [
+            'name' => '',
+            'email' => '',
+            'password' => '',
+            'password_confirmation' => '',
+            'roles' => [],
+        ];
     }
 
     public function store()
@@ -210,7 +243,8 @@ class Index extends Component
         });
 
         $this->isCreating = false;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
 
         $this->flashSuccess('User created successfully!');
     }
@@ -248,7 +282,8 @@ class Index extends Component
         });
 
         $this->editingId = null;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
 
         $this->flashSuccess('User updated successfully!');
     }

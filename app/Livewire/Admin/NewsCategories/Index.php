@@ -19,6 +19,8 @@ class Index extends Component
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
+    public $showSlidePanel = false;
+    public $isClosing = false;
     public $form = [
         'name' => '',
         'slug' => '',
@@ -44,6 +46,13 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updated($property)
+    {
+        if ($property === 'form.name') {
+            $this->form['slug'] = \Illuminate\Support\Str::slug($this->form['name']);
+        }
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -60,6 +69,7 @@ class Index extends Component
         $this->editingId = null;
         $this->reset('form');
         $this->form['sort_order'] = NewsCategory::max('sort_order') + 1;
+        $this->showSlidePanel = true;
     }
 
     public function edit($id)
@@ -75,6 +85,7 @@ class Index extends Component
             'sort_order' => $category->sort_order,
             'is_active' => $category->is_active,
         ];
+        $this->showSlidePanel = true;
     }
 
     public function cancelEdit()
@@ -82,6 +93,22 @@ class Index extends Component
         $this->editingId = null;
         $this->isCreating = false;
         $this->reset('form');
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->reset('form');
+        $this->editingId = null;
+        $this->isCreating = false;
     }
 
     public function store()
@@ -114,6 +141,7 @@ class Index extends Component
         NewsCategory::create($this->form);
 
         $this->isCreating = false;
+        $this->showSlidePanel = false;
         $this->reset('form');
 
         $this->flashSuccess('News Category created successfully!');
@@ -150,6 +178,7 @@ class Index extends Component
         $category->update($this->form);
 
         $this->editingId = null;
+        $this->showSlidePanel = false;
         $this->reset('form');
 
         $this->flashSuccess('News Category updated successfully!');

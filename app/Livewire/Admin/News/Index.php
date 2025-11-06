@@ -36,6 +36,8 @@ class Index extends Component
     // Component state
     public $isCreating = false;
     public $editingId = null;
+    public $showSlidePanel = false;
+    public $isClosing = false;
 
     // Search and filtering
     public $search = '';
@@ -110,6 +112,8 @@ class Index extends Component
         $this->form['published_at'] = now()->format('Y-m-d\TH:i');
         $this->isCreating = true;
         $this->editingId = null;
+        $this->showSlidePanel = true;
+        $this->dispatch('slidePanelOpened');
     }
 
     public function store()
@@ -145,6 +149,7 @@ class Index extends Component
 
             $this->resetForm();
             $this->isCreating = false;
+            $this->showSlidePanel = false;
 
             $this->dispatchSuccessEvent('News article created successfully!');
 
@@ -182,10 +187,12 @@ class Index extends Component
 
             $this->editingId = $newsId;
             $this->isCreating = false;
+            $this->showSlidePanel = true;
+            $this->dispatch('slidePanelOpened');
 
-            // Dispatch event to populate Quill editor
+            // Dispatch event to populate Quill editor after a short delay to ensure panel is rendered
             $this->dispatch('editFormPopulated', [
-                'content' => $news->content
+                'content' => $news->content ?? ''
             ]);
 
         } catch (\Exception $e) {
@@ -222,7 +229,9 @@ class Index extends Component
 
             $this->resetForm();
             $this->editingId = null;
+            $this->showSlidePanel = false;
 
+            $this->dispatchSuccessEvent('News article updated successfully!');
 
         } catch (\Exception $e) {
             Log::error('News Update Error: ' . $e->getMessage());
@@ -246,6 +255,22 @@ class Index extends Component
 
     public function cancelEdit()
     {
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
         $this->resetForm();
         $this->editingId = null;
         $this->isCreating = false;

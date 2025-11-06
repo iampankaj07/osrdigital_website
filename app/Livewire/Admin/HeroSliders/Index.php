@@ -31,6 +31,8 @@ class Index extends Component
     // Component state
     public $isCreating = false;
     public $editingId = null;
+    public $showSlidePanel = false;
+    public $isClosing = false;
 
     // Search and filtering
     public $search = '';
@@ -91,6 +93,7 @@ class Index extends Component
         $this->form['sort_order'] = HeroSlider::max('sort_order') + 1 ?? 1;
         $this->isCreating = true;
         $this->editingId = null;
+        $this->showSlidePanel = true;
     }
 
     public function store()
@@ -130,6 +133,7 @@ class Index extends Component
 
                 $this->resetForm();
                 $this->isCreating = false;
+                $this->showSlidePanel = false;
                 $this->flashSuccess('Hero slide created successfully.');
                 return;
 
@@ -141,6 +145,7 @@ class Index extends Component
 
             $this->resetForm();
             $this->isCreating = false;
+            $this->showSlidePanel = false;
 
             $this->flashSuccess('Hero slide created successfully.');
 
@@ -177,6 +182,7 @@ class Index extends Component
 
             $this->editingId = $sliderId;
             $this->isCreating = false;
+            $this->showSlidePanel = true;
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Edit Error: ' . $e->getMessage());
@@ -225,6 +231,7 @@ class Index extends Component
 
             $this->resetForm();
             $this->editingId = null;
+            $this->showSlidePanel = false;
 
             $this->flashSuccess('Hero slide updated successfully.');
 
@@ -252,6 +259,22 @@ class Index extends Component
 
     public function cancelEdit()
     {
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
         $this->resetForm();
         $this->editingId = null;
         $this->isCreating = false;

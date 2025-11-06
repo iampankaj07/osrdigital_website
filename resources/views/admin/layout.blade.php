@@ -15,7 +15,7 @@
     <!-- AdminLTE 3.2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Bootstrap 4 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
@@ -55,6 +55,59 @@
         /* Sidebar Customizations */
         .main-sidebar {
             background: #343a40 !important;
+            position: relative;
+        }
+
+        /* Sidebar Footer - Logout Button */
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: #dc3545;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            z-index: 1000;
+        }
+
+        .sidebar-footer .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .sidebar-footer .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+        }
+
+        .sidebar-footer .nav-link .nav-icon {
+            margin-right: 0.5rem;
+            width: 1.2rem;
+        }
+
+        .sidebar-footer .nav-link p {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Adjust sidebar content to account for fixed footer */
+        .sidebar {
+            padding-bottom: 80px;
+        }
+
+        /* Adjust footer when sidebar is collapsed */
+        body.sidebar-collapse .sidebar-footer .nav-link p {
+            display: none;
+        }
+
+        body.sidebar-collapse .sidebar-footer .nav-link {
+            justify-content: center;
         }
 
         .sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link {
@@ -540,15 +593,6 @@
 
 
 
-                <!-- User Menu -->
-                <li class="nav-item dropdown">
-       {{-- //logout --}}
-                    <a class="nav-link" href="{{ route('logout') }}" role="button">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-
-
-                </li>
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -598,8 +642,8 @@
                         <li class="nav-header">Content Management</li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.hero-slider.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.hero-slider*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.hero-sliders.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.hero-sliders*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-images"></i>
                                 <p>Hero Slider / Home</p>
                             </a>
@@ -803,6 +847,14 @@
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
+
+                <!-- Logout Button - Fixed at Bottom -->
+                <div class="sidebar-footer">
+                    <a href="{{ route('logout') }}" class="nav-link text-white">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <p>Logout</p>
+                    </a>
+                </div>
             </div>
             <!-- /.sidebar -->
 

@@ -1,265 +1,149 @@
 <div>
+    <style>
+        .stat-card {
+            background: #343a40;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Ensure Font Awesome icons are visible */
+        .stat-card i.fas,
+        .stat-card i.fa {
+            display: inline-block !important;
+            font-style: normal !important;
+            font-variant: normal !important;
+            text-rendering: auto !important;
+            line-height: 1 !important;
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900 !important;
+        }
+    </style>
+
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h4 mb-1 font-weight-normal">Dashboard</h1>
-            <p class="text-muted small mb-0">Welcome to the OSR Admin Panel</p>
-        </div>
-        <div class="text-muted small">
-            <i class="fas fa-calendar-alt mr-1"></i>
-            {{ now()->format('M d, Y') }}
-        </div>
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <p class="text-gray-600">Welcome back! Here's an overview of your content.</p>
     </div>
 
     <!-- Stats Overview -->
-    <div class="row mb-4">
+    <div class="row mb-6">
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-film text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">Film Portfolios</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['film_portfolios'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Film Portfolios</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['film_portfolios'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-film text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-handshake text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">Associates</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['associates'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Associates</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['associates'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-handshake text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-quote-left text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">Testimonials</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['testimonials'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Testimonials</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['testimonials'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-quote-left text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-newspaper text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">News Articles</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['news'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">News Articles</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['news'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-newspaper text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Additional Stats -->
-    <div class="row mb-4">
+    <!-- Additional Stats Row -->
+    <div class="row mb-6">
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-cogs text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">Services</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['services'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Services</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['services'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-briefcase text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-users text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">Team Members</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['team_members'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Team Members</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['team_members'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-users text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-tags text-muted" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">Film Categories</div>
-                            <div class="h4 mb-0 text-dark">{{ $stats['film_categories'] }}</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Hero Sliders</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['hero_sliders'] }}</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-images text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-check-circle text-success" style="font-size: 2rem;"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <div class="text-muted small">System Status</div>
-                            <div class="h6 mb-0 text-success">Active</div>
-                        </div>
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50 small mb-1" style="opacity: 0.9;">Core Values</div>
+                        <div class="h3 mb-0 text-white font-bold">{{ $stats['core_values'] }}</div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white border-0 py-3">
-            <h5 class="mb-0 font-weight-normal">
-                <i class="fas fa-bolt mr-2 text-warning"></i>
-                Quick Actions
-            </h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-3">
-                    <a href="{{ route('admin.film-portfolios.index') }}" class="btn btn-outline-primary btn-block d-flex align-items-center justify-content-center py-3">
-                        <i class="fas fa-film mr-2"></i>
-                        <div class="text-left">
-                            <div class="font-weight-semibold">Film Portfolios</div>
-                            <small class="text-muted">Manage films</small>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-3">
-                    <a href="{{ route('admin.associates.index') }}" class="btn btn-outline-success btn-block d-flex align-items-center justify-content-center py-3">
-                        <i class="fas fa-handshake mr-2"></i>
-                        <div class="text-left">
-                            <div class="font-weight-semibold">Associates</div>
-                            <small class="text-muted">Manage partners</small>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-3">
-                    <a href="{{ route('admin.news.index') }}" class="btn btn-outline-info btn-block d-flex align-items-center justify-content-center py-3">
-                        <i class="fas fa-newspaper mr-2"></i>
-                        <div class="text-left">
-                            <div class="font-weight-semibold">News</div>
-                            <small class="text-muted">Manage articles</small>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-3">
-                    <a href="{{ route('admin.testimonials.index') }}" class="btn btn-outline-warning btn-block d-flex align-items-center justify-content-center py-3">
-                        <i class="fas fa-quote-left mr-2"></i>
-                        <div class="text-left">
-                            <div class="font-weight-semibold">Testimonials</div>
-                            <small class="text-muted">Manage reviews</small>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- System Overview -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white border-0 py-3">
-            <h5 class="mb-0 font-weight-normal">
-                <i class="fas fa-chart-pie mr-2 text-info"></i>
-                System Overview
-            </h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <h6 class="text-muted mb-3">Content Management</h6>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Film Portfolios</span>
-                        <span class="badge badge-primary">{{ $stats['film_portfolios'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">News Articles</span>
-                        <span class="badge badge-info">{{ $stats['news'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Testimonials</span>
-                        <span class="badge badge-warning">{{ $stats['testimonials'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Film Categories</span>
-                        <span class="badge badge-warning">{{ $stats['film_categories'] }}</span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h6 class="text-muted mb-3">Team & Partners</h6>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Team Members</span>
-                        <span class="badge badge-dark">{{ $stats['team_members'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Associates</span>
-                        <span class="badge badge-success">{{ $stats['associates'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Trusted Partners</span>
-                        <span class="badge badge-success">{{ $stats['trusted_partners'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Services</span>
-                        <span class="badge badge-secondary">{{ $stats['services'] }}</span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h6 class="text-muted mb-3">System Components</h6>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Distribution Services</span>
-                        <span class="badge badge-info">{{ $stats['distribution_services'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Partnership Benefits</span>
-                        <span class="badge badge-success">{{ $stats['partnership_benefits'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Team Values</span>
-                        <span class="badge badge-primary">{{ $stats['team_values'] }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small">Core Values</span>
-                        <span class="badge badge-primary">{{ $stats['core_values'] }}</span>
+                    <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; min-width: 60px; min-height: 60px;">
+                        <i class="fas fa-heart text-dark" style="font-size: 1.5rem; display: inline-block !important;"></i>
                     </div>
                 </div>
             </div>

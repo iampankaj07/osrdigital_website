@@ -35,67 +35,6 @@
         </div>
     </div>
 
-    <!-- Create Form -->
-    @if($isCreating)
-        <div class="card mb-4">
-            <div class="card-body inline-edit-form">
-                <h5 class="mb-3">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create New Partnership Benefit
-                </h5>
-                
-                <form wire:submit.prevent="store">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="form.title">Benefit Title</label>
-                                <input type="text" wire:model="form.title" class="form-control" placeholder="Enter benefit title">
-                                @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="form.sort_order">Sort Order</label>
-                                <input type="number" wire:model="form.sort_order" class="form-control" min="0">
-                                @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-check-label">
-                                    <input type="checkbox" wire:model="form.is_active" class="form-check-input">
-                                    Active
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="form.icon">Icon (FontAwesome class)</label>
-                        <input type="text" wire:model="form.icon" class="form-control" placeholder="e.g., fas fa-gift">
-                        @error('form.icon') <span class="text-danger small">{{ $message }}</span> @enderror
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="form.description">Description</label>
-                        <textarea wire:model="form.description" class="form-control" rows="3" placeholder="Enter benefit description"></textarea>
-                        @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
-                    </div>
-                    
-                    <div class="form-group text-right">
-                        <button type="button" wire:click="cancelEdit" class="btn btn-secondary mr-2">
-                            <i class="fas fa-times mr-1"></i>
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save mr-1"></i>
-                            Create Partnership Benefit
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endif
 
     <!-- Partnership Benefits Table -->
     <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
@@ -182,75 +121,6 @@
                                 </div>
                             </td>
                         </tr>
-                        
-                        <!-- Inline Edit Form -->
-                        @if($editingId === $benefit->id)
-                            <tr class="bg-gray-50/50">
-                                <td colspan="6" class="px-0">
-                                    <div class="bg-white border border-gray-200 rounded-lg mx-6 my-4 shadow-sm">
-                                        <div class="px-6 py-4 border-b border-gray-100">
-                                            <div class="flex items-center">
-                                                <div class="w-8 h-8 bg-brand-orange-100 rounded-lg flex items-center justify-center mr-3">
-                                                    <i class="fas fa-edit text-brand-orange-600 text-sm"></i>
-                                                </div>
-                                                <h5 class="text-lg font-medium text-gray-900">Edit Partnership Benefit</h5>
-                                            </div>
-                                        </div>
-                                        <div class="p-6">
-                                            <form wire:submit.prevent="update">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="form.title">Benefit Title</label>
-                                                            <input type="text" wire:model="form.title" class="form-control">
-                                                            @error('form.title') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label for="form.sort_order">Sort Order</label>
-                                                            <input type="number" wire:model="form.sort_order" class="form-control" min="0">
-                                                            @error('form.sort_order') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-check-label">
-                                                                <input type="checkbox" wire:model="form.is_active" class="form-check-input">
-                                                                Active
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <label for="form.icon">Icon (FontAwesome class)</label>
-                                                    <input type="text" wire:model="form.icon" class="form-control" placeholder="e.g., fas fa-gift">
-                                                    @error('form.icon') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <label for="form.description">Description</label>
-                                                    <textarea wire:model="form.description" class="form-control" rows="3"></textarea>
-                                                    @error('form.description') <span class="text-danger small">{{ $message }}</span> @enderror
-                                                </div>
-
-                                                <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
-                                                    <button type="button" wire:click="cancelEdit" class="btn-slate">
-                                                        <i class="fas fa-times mr-2"></i>
-                                                        Cancel
-                                                    </button>
-                                                    <button type="submit" class="btn btn-dark px-6 py-2">
-                                                        <i class="fas fa-save mr-2"></i>
-                                                        Update Benefit
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
                     @empty
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center">
@@ -282,4 +152,203 @@
             </div>
         @endif
     </div>
+
+    <!-- Slide Panel -->
+    @if($showSlidePanel)
+        <!-- Backdrop -->
+        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}" 
+             wire:click="closeSlidePanel"
+             wire:key="backdrop-{{ $showSlidePanel }}"></div>
+        
+        <!-- Slide Panel -->
+        <div class="slide-panel {{ $isClosing ? 'slide-out-right' : '' }}"
+             wire:key="panel-{{ $showSlidePanel }}">
+            <div class="slide-panel-header">
+                <h5 class="mb-0">
+                    @if($isCreating)
+                        <i class="fas fa-plus mr-2"></i>Create New Partnership Benefit
+                    @else
+                        <i class="fas fa-edit mr-2"></i>Edit Partnership Benefit
+                    @endif
+                </h5>
+                <button type="button" wire:click="closeSlidePanel" class="btn btn-sm btn-link text-muted p-0" style="font-size: 1.5rem; line-height: 1;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="slide-panel-body">
+                <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Benefit Title <span class="text-danger">*</span></label>
+                        <input type="text" wire:model="form.title" class="form-control @error('form.title') is-invalid @enderror" placeholder="Enter benefit title">
+                        @error('form.title') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea wire:model="form.description" class="form-control @error('form.description') is-invalid @enderror" rows="4" placeholder="Enter benefit description"></textarea>
+                        @error('form.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Icon</label>
+                        <select wire:model="form.icon" class="form-control @error('form.icon') is-invalid @enderror">
+                            @foreach($availableIcons as $iconClass => $iconName)
+                                <option value="{{ $iconClass }}">{{ $iconName }}</option>
+                            @endforeach
+                        </select>
+                        @error('form.icon') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @if($form['icon'])
+                            <div class="mt-2">
+                                <small class="text-muted">Preview: </small>
+                                <i class="{{ $form['icon'] }} text-primary fa-lg"></i>
+                                <code class="ml-2 small">{{ $form['icon'] }}</code>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Sort Order</label>
+                        <input type="number" wire:model="form.sort_order" class="form-control @error('form.sort_order') is-invalid @enderror" min="0">
+                        @error('form.sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" wire:model="form.is_active" id="is_active_slide">
+                        <label class="form-check-label" for="is_active_slide">
+                            Active
+                        </label>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between pt-3 border-top mt-4">
+                        <button type="button" wire:click="closeSlidePanel" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>{{ $isCreating ? 'Create' : 'Update' }} Benefit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    @script
+    <script>
+        $wire.on('close-panel-animation', () => {
+            setTimeout(() => {
+                $wire.finishClosing();
+            }, 300);
+        });
+
+        Livewire.hook('morph.updated', ({ el, component }) => {
+            const panel = el.querySelector('.slide-panel.slide-out-right');
+            if (panel && !panel.dataset.closingHandled) {
+                panel.dataset.closingHandled = 'true';
+                setTimeout(() => {
+                    $wire.finishClosing();
+                }, 300);
+            }
+        });
+    </script>
+    @endscript
+
+<style>
+    /* Slide Panel Styles */
+    .slide-panel-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .slide-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 600px;
+        max-width: 90vw;
+        background: white;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1050;
+        display: flex;
+        flex-direction: column;
+        animation: slideInRight 0.3s ease-out;
+        overflow-y: auto;
+    }
+
+    .slide-panel-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .slide-panel-body {
+        padding: 1.5rem;
+        flex: 1;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(100%);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    .slide-panel-backdrop.fade-out {
+        animation: fadeOut 0.3s ease-out forwards;
+    }
+
+    .slide-panel.slide-out-right {
+        animation: slideOutRight 0.3s ease-out forwards;
+    }
+
+    @media (max-width: 768px) {
+        .slide-panel {
+            width: 100vw;
+            max-width: 100vw;
+        }
+    }
+</style>
 </div>

@@ -19,6 +19,8 @@ class Index extends Component
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
+    public $showSlidePanel = false;
+    public $isClosing = false;
     public $form = [
         'title' => '',
         'description' => '',
@@ -60,6 +62,7 @@ class Index extends Component
         $this->editingId = null;
         $this->reset('form');
         $this->form['sort_order'] = TeamValue::max('sort_order') + 1;
+        $this->showSlidePanel = true;
     }
 
     public function edit($id)
@@ -75,6 +78,7 @@ class Index extends Component
             'sort_order' => $teamValue->sort_order,
             'is_active' => $teamValue->is_active,
         ];
+        $this->showSlidePanel = true;
     }
 
     public function cancelEdit()
@@ -82,6 +86,22 @@ class Index extends Component
         $this->editingId = null;
         $this->isCreating = false;
         $this->reset('form');
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->reset('form');
+        $this->editingId = null;
+        $this->isCreating = false;
     }
 
     public function store()
@@ -97,6 +117,7 @@ class Index extends Component
         TeamValue::create($this->form);
         
         $this->isCreating = false;
+        $this->showSlidePanel = false;
         $this->reset('form');
         
         session()->flash('success', 'Team Value created successfully!');
@@ -116,6 +137,7 @@ class Index extends Component
         $teamValue->update($this->form);
         
         $this->editingId = null;
+        $this->showSlidePanel = false;
         $this->reset('form');
         
         session()->flash('success', 'Team Value updated successfully!');

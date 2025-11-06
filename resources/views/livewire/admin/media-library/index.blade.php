@@ -9,9 +9,6 @@
             <button wire:click="refreshMedia" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
                 <i class="fas fa-sync-alt mr-2"></i>Refresh
             </button>
-            <button wire:click="testConnection" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
-                <i class="fas fa-wifi mr-2"></i>Test Connection
-            </button>
         </div>
     </div>
 
@@ -124,7 +121,7 @@
         </div>
 
         @if(count($mediaItems) > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="media-grid">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2" id="media-grid">
                 @foreach ($mediaItems as $media)
                     <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-media-id="{{ $media->id }}">
                         <!-- Media Preview -->
@@ -133,39 +130,39 @@
                                 <img src="{{ $media->getFullUrl() }}" alt="{{ $media->name }}" class="w-full h-full object-cover" />
                             @elseif(str_starts_with($media->mime_type, 'video/'))
                                 <div class="flex flex-col items-center text-gray-500">
-                                    <i class="fas fa-video text-3xl mb-2"></i>
+                                    <i class="fas fa-video text-lg mb-1"></i>
                                     <span class="text-xs">Video</span>
                                 </div>
                             @elseif(str_starts_with($media->mime_type, 'audio/'))
                                 <div class="flex flex-col items-center text-gray-500">
-                                    <i class="fas fa-music text-3xl mb-2"></i>
+                                    <i class="fas fa-music text-lg mb-1"></i>
                                     <span class="text-xs">Audio</span>
                                 </div>
                             @else
                                 <div class="flex flex-col items-center text-gray-500">
-                                    <i class="fas fa-file text-3xl mb-2"></i>
+                                    <i class="fas fa-file text-lg mb-1"></i>
                                     <span class="text-xs">{{ strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION)) }}</span>
                                 </div>
                             @endif
                         </div>
 
                         <!-- Media Info -->
-                        <div class="p-3">
-                            <div class="text-sm font-medium text-gray-900 truncate" title="{{ $media->name }}">
+                        <div class="p-2">
+                            <div class="text-xs font-medium text-gray-900 truncate" title="{{ $media->name }}">
                                 {{ $media->name }}
                             </div>
-                            <div class="text-xs text-gray-500 mt-1">
-                                {{ $media->human_readable_size }} • {{ $media->created_at->diffForHumans() }}
+                            <div class="text-xs text-gray-500 mt-1 truncate">
+                                {{ $media->human_readable_size }}
                             </div>
-                            <div class="flex justify-between items-center mt-3">
+                            <div class="flex justify-between items-center mt-2">
                                 <a href="{{ $media->getFullUrl() }}" target="_blank"
                                    class="text-blue-600 hover:text-blue-800 text-xs">
-                                    <i class="fas fa-external-link-alt mr-1"></i>View
+                                    <i class="fas fa-external-link-alt"></i>
                                 </a>
                                 <button wire:click="deleteMedia({{ $media->id }})"
-                                        onclick="confirm('Are you sure you want to delete this file?') || event.stopImmediatePropagation()"
+                                        onclick="return confirm('Are you sure you want to delete this file?')"
                                         class="text-red-600 hover:text-red-800 text-xs">
-                                    <i class="fas fa-trash mr-1"></i>Delete
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>

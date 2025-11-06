@@ -8,7 +8,7 @@ function CompactHero({ page = 'page', title, subtitle, description, breadcrumbs 
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        setIsVisible(true);
+            setIsVisible(true);
     }, []);
 
     // Use props or fallback data

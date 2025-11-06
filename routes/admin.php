@@ -29,9 +29,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Hero Slider Management (Livewire)
-    Route::get('/hero-slider', function() {
+    Route::get('/hero-sliders', function() {
         return view('admin.hero-sliders.index');
-    })->name('hero-slider.index');
+    })->name('hero-sliders.index');
 
     // Associates Management
     Route::get('/associates', [AssociateController::class, 'index'])->name('associates.index');

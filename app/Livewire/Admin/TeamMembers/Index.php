@@ -23,6 +23,8 @@ class Index extends Component
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
+    public $showSlidePanel = false;
+    public $isClosing = false;
     public $form = [
         'name' => '',
         'position' => '',
@@ -84,6 +86,7 @@ class Index extends Component
         $this->reset('form');
         $this->resetUploadStates();
         $this->form['sort_order'] = TeamMember::max('sort_order') + 1;
+        $this->showSlidePanel = true;
     }
 
     public function resetUploadStates()
@@ -127,6 +130,7 @@ class Index extends Component
             // Default to filepond for existing members without media
             $this->uploadMethod = 'filepond';
         }
+        $this->showSlidePanel = true;
     }
 
     public function cancelEdit()
@@ -135,6 +139,23 @@ class Index extends Component
         $this->isCreating = false;
         $this->reset('form');
         $this->resetUploadStates();
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->reset('form');
+        $this->resetUploadStates();
+        $this->editingId = null;
+        $this->isCreating = false;
     }
 
     public function validateUploadedFile($filename)
@@ -220,6 +241,7 @@ class Index extends Component
             TeamMember::create($memberData);
 
             $this->isCreating = false;
+            $this->showSlidePanel = false;
             $this->reset('form');
             $this->resetUploadStates();
 
@@ -271,6 +293,7 @@ class Index extends Component
             $teamMember->update($memberData);
 
             $this->editingId = null;
+            $this->showSlidePanel = false;
             $this->reset('form');
             $this->resetUploadStates();
 

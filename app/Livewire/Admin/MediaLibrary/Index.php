@@ -61,11 +61,6 @@ class Index extends Component
         $this->errorMessage = '';
     }
 
-    public function testConnection()
-    {
-        $this->errorMessage = 'Test connection successful at ' . now()->format('H:i:s');
-    }
-
     public function validateUploadedFile($filename)
     {
         // Validation logic for uploaded files - images only

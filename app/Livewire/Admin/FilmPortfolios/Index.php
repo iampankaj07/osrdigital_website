@@ -35,6 +35,8 @@ class Index extends Component
     // Component state
     public $isCreating = false;
     public $editingId = null;
+    public $showSlidePanel = false;
+    public $isClosing = false;
 
     // Search and filtering
     public $search = '';
@@ -150,6 +152,7 @@ class Index extends Component
         $this->form['sort_order'] = FilmPortfolio::max('sort_order') + 1 ?? 0;
         $this->isCreating = true;
         $this->editingId = null;
+        $this->showSlidePanel = true;
     }
 
     public function store()
@@ -171,6 +174,7 @@ class Index extends Component
 
             $this->resetForm();
             $this->isCreating = false;
+            $this->showSlidePanel = false;
 
             session()->flash('success', 'Film portfolio created successfully.');
 
@@ -210,6 +214,7 @@ class Index extends Component
 
             $this->editingId = $filmId;
             $this->isCreating = false;
+            $this->showSlidePanel = true;
 
             // Form populated with film data
 
@@ -240,6 +245,7 @@ class Index extends Component
 
             $this->resetForm();
             $this->editingId = null;
+            $this->showSlidePanel = false;
 
             session()->flash('success', 'Film portfolio updated successfully.');
 
@@ -267,6 +273,22 @@ class Index extends Component
 
     public function cancelEdit()
     {
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
         $this->resetForm();
         $this->editingId = null;
         $this->isCreating = false;

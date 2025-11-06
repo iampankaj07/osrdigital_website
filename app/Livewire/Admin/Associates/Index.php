@@ -24,6 +24,8 @@ class Index extends Component
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
+    public $showSlidePanel = false;
+    public $isClosing = false;
     public $form = [
         'name' => '',
         'logo' => '',
@@ -81,6 +83,7 @@ class Index extends Component
         $this->reset('form');
         $this->resetUploadStates();
         $this->form['sort_order'] = Associate::max('sort_order') + 1;
+        $this->showSlidePanel = true;
     }
 
     public function resetUploadStates()
@@ -120,6 +123,7 @@ class Index extends Component
             // Default to filepond for existing associates without media
             $this->uploadMethod = 'filepond';
         }
+        $this->showSlidePanel = true;
     }
 
     public function cancelEdit()
@@ -128,6 +132,23 @@ class Index extends Component
         $this->isCreating = false;
         $this->reset('form');
         $this->resetUploadStates();
+        $this->showSlidePanel = false;
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->reset('form');
+        $this->resetUploadStates();
+        $this->editingId = null;
+        $this->isCreating = false;
     }
 
     public function validateUploadedFile($filename)
@@ -189,6 +210,7 @@ class Index extends Component
             Associate::create($associateData);
 
             $this->isCreating = false;
+            $this->showSlidePanel = false;
             $this->reset('form');
             $this->resetUploadStates();
 
@@ -234,6 +256,7 @@ class Index extends Component
             $associate->update($associateData);
 
             $this->editingId = null;
+            $this->showSlidePanel = false;
             $this->reset('form');
             $this->resetUploadStates();
 

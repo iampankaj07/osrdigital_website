@@ -78,15 +78,15 @@ class SecurityHeaders
                    "form-action 'self';";
         } else {
             // Production CSP (includes admin CDNs)
-            $csp = "default-src 'self'; " .
+        $csp = "default-src 'self'; " .
                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                    "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                    "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "img-src 'self' data: https: http: blob:; " .
-                   "connect-src 'self' http: https:; " .
-                   "frame-ancestors 'self'; " .
-                   "base-uri 'self'; " .
-                   "form-action 'self';";
+               "img-src 'self' data: https: http: blob:; " .
+               "connect-src 'self' http: https:; " .
+               "frame-ancestors 'self'; " .
+               "base-uri 'self'; " .
+               "form-action 'self';";
         }
 
         $response->headers->set('Content-Security-Policy', $csp);

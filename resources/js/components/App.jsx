@@ -44,8 +44,8 @@ const PageLoaderWrapper = () => {
                     </div>
                 </div>
             </div>
-        </div>
-    );
+    </div>
+);
 };
 
 function AppContent() {

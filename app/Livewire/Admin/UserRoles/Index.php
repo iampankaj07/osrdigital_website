@@ -20,6 +20,8 @@ class Index extends Component
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
+    public $showSlidePanel = false;
+    public $isClosing = false;
     public $form = [
         'name' => '',
         'guard_name' => 'web',
@@ -70,9 +72,10 @@ class Index extends Component
 
     public function create()
     {
+        $this->resetForm();
         $this->isCreating = true;
         $this->editingId = null;
-        $this->reset('form');
+        $this->showSlidePanel = true;
     }
 
     public function edit($id)
@@ -86,13 +89,40 @@ class Index extends Component
             'guard_name' => $role->guard_name,
             'permissions' => $role->permissions->pluck('id')->toArray(),
         ];
+
+        $this->showSlidePanel = true;
     }
 
     public function cancelEdit()
     {
         $this->editingId = null;
         $this->isCreating = false;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
+    }
+
+    public function closeSlidePanel()
+    {
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+    }
+
+    private function resetForm()
+    {
+        $this->form = [
+            'name' => '',
+            'guard_name' => 'web',
+            'permissions' => [],
+        ];
     }
 
     public function store()
@@ -115,7 +145,8 @@ class Index extends Component
         }
         
         $this->isCreating = false;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
         
         $this->flashSuccess('Role created successfully!');
     }
@@ -144,7 +175,8 @@ class Index extends Component
         }
         
         $this->editingId = null;
-        $this->reset('form');
+        $this->showSlidePanel = false;
+        $this->resetForm();
         
         $this->flashSuccess('Role updated successfully!');
     }
