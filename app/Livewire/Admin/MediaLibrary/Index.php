@@ -7,7 +7,6 @@ use Livewire\WithFileUploads;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Spatie\LivewireFilepond\WithFilePond;
 
 class Index extends Component
@@ -20,6 +19,9 @@ class Index extends Component
 
     // FilePond properties
     public $uploads = [];
+    
+    // Property to force refresh after upload
+    public $refreshKey = 0;
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
@@ -29,6 +31,8 @@ class Index extends Component
             $media = Media::find($mediaId);
             if ($media) {
                 $media->delete();
+                // Increment refresh key to force component re-render
+                $this->refreshKey++;
                 $this->dispatch('mediaDeleted');
             }
         } catch (\Exception $e) {
@@ -38,7 +42,16 @@ class Index extends Component
 
     public function render()
     {
-        $mediaItems = Media::where('collection_name', 'media-library')->latest()->get();
+        // Get all media items from media-library collection
+        // This includes files uploaded from:
+        // - Media Library page itself
+        // - Hero Slider (FilePond uploads)
+        // - Other components (Associates, TeamMembers, TrustedPartners, etc.)
+        // - Any other source that saves to 'media-library' collection
+        $mediaItems = Media::where('collection_name', 'media-library')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
         return view('livewire.admin.media-library.index', [
             'mediaItems' => $mediaItems,
         ]);
@@ -63,14 +76,11 @@ class Index extends Component
 
     public function validateUploadedFile($filename)
     {
-        // Validation logic for uploaded files - images only
-        Log::info('Validating uploaded file: ' . $filename);
-
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+        // Validation logic for uploaded files - only jpg, png, gif, webp
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
         if (!in_array($extension, $allowedExtensions)) {
-            Log::warning('Invalid file type uploaded: ' . $extension);
             return false;
         }
 
@@ -79,10 +89,7 @@ class Index extends Component
 
     public function updatedUploads()
     {
-        Log::info('Uploads updated. Count: ' . count($this->uploads));
-        foreach ($this->uploads as $index => $upload) {
-            Log::info("Upload {$index}: " . ($upload ? $upload->getClientOriginalName() : 'null'));
-        }
+        // Uploads property updated
     }
 
     public function uploadFiles()
@@ -92,8 +99,19 @@ class Index extends Component
             $uploadedCount = 0;
 
             foreach ($this->uploads as $upload) {
+                if (!$upload) {
+                    continue;
+                }
+
+                // Validate file exists and is readable
+                $filePath = $upload->getRealPath();
+                if (!file_exists($filePath) || !is_readable($filePath)) {
+                    throw new \Exception('Uploaded file is not accessible');
+                }
+
                 // Add media to user using spatie/laravel-medialibrary
-                $media = $user->addMedia($upload->getRealPath())
+                // Use addMedia with the temporary file path from Livewire
+                $media = $user->addMedia($filePath)
                     ->usingName(pathinfo($upload->getClientOriginalName(), PATHINFO_FILENAME))
                     ->usingFileName($upload->getClientOriginalName())
                     ->toMediaCollection('media-library');
@@ -106,6 +124,12 @@ class Index extends Component
 
             $this->uploadSuccess = true;
             $this->errorMessage = '';
+
+            // Increment refresh key to force component re-render
+            $this->refreshKey++;
+
+            // Dispatch event to refresh media grid (for JavaScript listeners)
+            $this->dispatch('mediaUploaded');
 
             // Reset success message after delay
             $this->dispatch('resetSuccessMessage');

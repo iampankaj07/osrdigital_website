@@ -47,7 +47,7 @@ class HeroSlider extends Model implements HasMedia
         }
 
         // Fallback to Spatie media collection
-        $media = $this->getFirstMedia('hero-images');
+        $media = $this->getFirstMedia('media-library');
         if ($media) {
             return $media->getFullUrl();
         }

@@ -116,7 +116,7 @@ class Index extends Component
                         // Store the file and create media record
                         $media = $slider->addMedia($uploadedFile)
                             ->usingName(pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME))
-                            ->toMediaCollection('hero-images');
+                            ->toMediaCollection('media-library');
 
                         // Update slider with media_id
                         $slider->update(['media_id' => $media->id]);
@@ -209,7 +209,7 @@ class Index extends Component
                         // Store the file and create media record
                         $media = $slider->addMedia($uploadedFile)
                             ->usingName(pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME))
-                            ->toMediaCollection('hero-images');
+                            ->toMediaCollection('media-library');
 
                         // Update slider with new media_id
                         $sliderData['media_id'] = $media->id;

@@ -66,15 +66,16 @@
                         allowMultiple: true,
                         maxFiles: 20,
                         maxFileSize: '10MB',
-                        acceptedFileTypes: ['image/*'],
-                        labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span><br><small>Supports: Images only (JPG, PNG, GIF, WebP - Max: 10MB each)</small>',
+                        acceptedFileTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+                        labelIdle: 'Drag & Drop your images or <span class="filepond--label-action">Browse</span><br><small>Supports: JPG, PNG, GIF, WebP only (Max: 10MB each)</small>',
                         server: {
                             process: async (fieldName, file, metadata, load, error, progress) => {
                                 console.log('Processing file:', file.name);
 
-                                // Check if it's an image file
-                                if (!file.type.startsWith('image/')) {
-                                    error('Only image files are allowed');
+                                // Check if it's an allowed image file type (jpg, png, gif, webp)
+                                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                                if (!allowedTypes.includes(file.type)) {
+                                    error('Only JPG, PNG, GIF, and WebP files are allowed');
                                     return;
                                 }
 
@@ -86,7 +87,7 @@
                                         console.log('Upload successful:', response);
                                         load(response);
                                     } else {
-                                        error('Invalid image file type');
+                                        error('Only JPG, PNG, GIF, and WebP files are allowed');
                                     }
                                 }, error, (event) => {
                                     progress(event.detail.progress, event.detail.progress, 100);
@@ -121,7 +122,7 @@
         </div>
 
         @if(count($mediaItems) > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2" id="media-grid">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2" id="media-grid" wire:key="media-grid-{{ $refreshKey }}">
                 @foreach ($mediaItems as $media)
                     <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow" data-media-id="{{ $media->id }}">
                         <!-- Media Preview -->
@@ -189,6 +190,14 @@ document.addEventListener('livewire:initialized', function() {
         setTimeout(() => {
             @this.call('$refresh');
         }, 100);
+    });
+
+    // Listen for media upload completion
+    Livewire.on('mediaUploaded', () => {
+        console.log('Media uploaded, refreshing component...');
+        setTimeout(() => {
+            @this.call('$refresh');
+        }, 500);
     });
 
     // Listen for reset success message event
