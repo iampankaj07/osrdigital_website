@@ -14,60 +14,37 @@ function Team() {
     const [teamMembers, setTeamMembers] = useState([]);
     const [values, setValues] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     // Fetch team members data
     const fetchTeamMembers = async () => {
         try {
-            console.log('Fetching team members...');
             const response = await fetch('/api/team-members');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log('Team members data:', data);
             setTeamMembers(data.teamMembers || []);
         } catch (error) {
-            console.error('Error fetching team members:', error);
+            console.error('Failed to load team members:', error);
+            setError('Unable to load team members. Please try again later.');
             setTeamMembers([]);
         }
     };
 
-    // Fetch team values data
+    // Fetch team values data - only from API
     const fetchTeamValues = async () => {
         try {
-            console.log('Fetching team values...');
             const response = await fetch('/api/team-values');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log('Team values data:', data);
             setValues(data.values || []);
         } catch (error) {
-            console.error('Error fetching team values:', error);
-            // Fallback to static data
-            setValues([
-                {
-                    title: "Innovation",
-                    description: "We constantly push boundaries and explore new technologies to stay ahead in the rapidly evolving digital landscape.",
-                    icon: "fas fa-lightbulb"
-                },
-                {
-                    title: "Collaboration",
-                    description: "We believe in the power of teamwork and foster an environment where every voice is heard and valued.",
-                    icon: "fas fa-handshake"
-                },
-                {
-                    title: "Excellence",
-                    description: "We strive for the highest standards in everything we do, from content curation to client service.",
-                    icon: "fas fa-chart-line"
-                },
-                {
-                    title: "Global Impact",
-                    description: "We're committed to making content accessible worldwide and celebrating diverse voices and cultures.",
-                    icon: "fas fa-globe"
-                }
-            ]);
+            // Show error - no fallback data
+            console.error('Failed to load team values:', error);
+            setValues([]);
         }
     };
 
@@ -161,6 +138,11 @@ function Team() {
                                 </div>
                             ))}
                         </div>
+                    ) : teamMembers.length === 0 ? (
+                        <div className={`p-8 rounded-lg text-center ${isDark ? 'bg-gray-800 text-red-400' : 'bg-red-50 text-red-600'}`}>
+                            <p className="text-lg font-semibold">No team members found</p>
+                            <p className="text-sm">Please add team members in the admin panel</p>
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {teamMembers.map((member, index) => (
@@ -241,6 +223,11 @@ function Team() {
                                     <div className={`h-4 w-3/4 mx-auto rounded ${isDark ? 'skeleton-wave-dark' : 'skeleton-wave'} skeleton-fast`}></div>
                                 </div>
                             ))}
+                        </div>
+                    ) : values.length === 0 ? (
+                        <div className={`p-8 rounded-lg text-center ${isDark ? 'bg-gray-800 text-red-400' : 'bg-red-50 text-red-600'}`}>
+                            <p className="text-lg font-semibold">No team values found</p>
+                            <p className="text-sm">Please add team values in the admin panel</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

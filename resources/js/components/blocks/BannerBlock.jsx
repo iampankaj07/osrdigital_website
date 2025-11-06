@@ -2,7 +2,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 function BannerBlock({ data, settings, pageSettings }) {
     const { isDark } = useTheme();
-    
+
     const {
         title = 'Important Notice',
         description = 'This is an important banner message.',
@@ -61,7 +61,6 @@ function BannerBlock({ data, settings, pageSettings }) {
                                 className={`ml-4 ${textColorClasses[textColor]} hover:opacity-75`}
                                 onClick={() => {
                                     // Handle dismiss
-                                    console.log('Banner dismissed');
                                 }}
                             >
                                 <span className="sr-only">Dismiss</span>

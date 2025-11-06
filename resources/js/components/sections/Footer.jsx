@@ -82,84 +82,45 @@ const getSocialIcon = (platform) => {
 function Footer() {
     const { isDark } = useTheme();
 
-    // Default footer data with icons (fallback only)
-    const defaultData = {
-        company: {
-            name: 'OSR Digital',
-            description: 'Premium movie distribution company bringing exceptional films to global audiences through strategic digital and theatrical distribution.'
-        },
-        contact: {
-            email: 'hello@osrdigital.com',
-            phone: '+1 (555) 123-4567',
-            address: 'Los Angeles, CA'
-        },
-        quick_links: [
-            { text: 'Home', url: '/', icon: faGlobe },
-            { text: 'About', url: '/about', icon: faUsers },
-            { text: 'Films', url: '/portfolio', icon: faFilm },
-            { text: 'Partners', url: '/partners', icon: faHandshake },
-            { text: 'Team', url: '/team', icon: faUsers },
-            { text: 'News', url: '/news', icon: faNewspaper },
-            { text: 'Contact', url: '/contact', icon: faEnvelope }
-        ],
-        services: [
-            { text: 'Digital Streaming', icon: faPlay },
-            { text: 'Theatrical Release', icon: faFilm },
-            { text: 'Global Distribution', icon: faGlobeAmericas },
-            { text: 'Content Acquisition', icon: faShoppingCart },
-            { text: 'Marketing Strategy', icon: faChartLine },
-            { text: 'Rights Management', icon: faShieldAlt }
-        ],
-        social_links: {
-            facebook: 'https://facebook.com/osrdigital',
-            twitter: 'https://twitter.com/osrdigital',
-            linkedin: 'https://linkedin.com/company/osrdigital',
-            youtube: 'https://youtube.com/osrdigital',
-            instagram: 'https://instagram.com/osrdigital'
-        },
-        legal_links: [
-            { text: 'Privacy Policy', url: '/privacy', icon: faShieldAlt },
-            { text: 'Terms of Service', url: '/terms', icon: faShieldAlt },
-            { text: 'Cookie Policy', url: '/cookies', icon: faShieldAlt }
-        ],
-        copyright_text: '© 2025 OSR Digital. All rights reserved.'
-    };
-
-    const [footerData, setFooterData] = useState(defaultData);
+    // Empty initial state - will be populated from API
+    const [footerData, setFooterData] = useState({
+        company: { name: '', description: '' },
+        contact: { email: '', phone: '', address: '' },
+        quick_links: [],
+        services: [],
+        social_links: {},
+        legal_links: [],
+        copyright_text: ''
+    });
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchFooterData = async () => {
             try {
                 const response = await fetch('/api/footer');
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        // Merge API data with default icons for quick links
-                        const apiData = result.data;
-
-                        // Add icons to quick links if they don't have them
-                        if (apiData.quick_links && Array.isArray(apiData.quick_links)) {
-                            apiData.quick_links = apiData.quick_links.map((link, index) => ({
-                                ...link,
-                                icon: link.icon || defaultData.quick_links[index]?.icon || faGlobe
-                            }));
-                        }
-
-                        // Ensure social links are properly formatted
-                        if (apiData.social_links && typeof apiData.social_links === 'object') {
-                            // Keep the original format with url and icon properties
-                            // The component can handle both formats
-                        }
-                        setFooterData({
-                            ...defaultData,
-                            ...apiData
-                        });
-                    }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                if (result.success && result.data) {
+                    setFooterData(result.data);
+                    setError(null);
+                } else {
+                    throw new Error('Invalid response format');
                 }
             } catch (error) {
                 console.error('Failed to fetch footer data:', error);
-                // Keep default data on error
+                setError('Unable to load footer data. Please check admin panel.');
+                setFooterData({
+                    company: { name: '', description: '' },
+                    contact: { email: '', phone: '', address: '' },
+                    quick_links: [],
+                    services: [],
+                    social_links: {},
+                    legal_links: [],
+                    copyright_text: ''
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -179,6 +140,37 @@ function Footer() {
 
     return (
         <footer className={`${isDark ? 'bg-gray-900' : 'bg-white'} relative overflow-hidden`}>
+            {/* Show error if data failed to load */}
+            {error && (
+                <div className={`py-4 px-6 ${isDark ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-600'}`}>
+                    <div className="container-minimal text-center">
+                        <p className="text-sm font-medium">{error}</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Show loading or empty state */}
+            {isLoading && (
+                <div className="container-minimal py-16 text-center">
+                    <p className={isDark ? 'text-gray-400' : 'text-gray-500'}>Loading footer...</p>
+                </div>
+            )}
+
+            {/* Only show footer content if data loaded and no error */}
+            {!isLoading && !error && !footerData.company.name && (
+                <div className="container-minimal py-16 text-center">
+                    <p className={`${isDark ? 'text-red-400' : 'text-red-600'} font-medium`}>
+                        No footer data available
+                    </p>
+                    <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Please add footer settings in the admin panel
+                    </p>
+                </div>
+            )}
+
+            {/* Normal footer content - only show if data loaded */}
+            {!isLoading && footerData.company.name && (
+            <>
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute inset-0" style={{
@@ -389,7 +381,7 @@ function Footer() {
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             {copyrightText}
                         </p>
-                  
+
                         <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                             Built with
                         </span>
@@ -401,7 +393,7 @@ function Footer() {
                             by
                         </span>
                         <a
-                            href="https://codebundles.com"
+                            href="https://teknologia.studio"
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`text-sm font-medium transition-colors duration-200 ${
@@ -410,7 +402,7 @@ function Footer() {
                                     : 'text-brand-orange-600 hover:text-brand-orange-700'
                             }`}
                         >
-                            CodeBundles
+                            Teknologia.Studio
                         </a>
                     </div>
 
@@ -426,14 +418,18 @@ function Footer() {
                                             : 'text-gray-500 hover:text-brand-orange-600'
                                     }`}
                                 >
-                                 
+
                                     <span>{link.text}</span>
                                 </a>
                             ))}
                         </div>
                     )}
                 </div>
+                {/* End container-minimal */}
             </div>
+            {/* End normal footer content conditional */}
+            </>
+            )}
         </footer>
     );
 }

@@ -3317,40 +3317,6 @@ namespace App\Models {
     /**
      * App\Models\HeroSection
      *
-     * @property \Illuminate\Support\Carbon|null $updated_at
-     * @property \Illuminate\Support\Carbon|null $created_at
-     * @property integer $sort_order
-     * @property boolean $is_active
-     * @property string $text_color
-     * @property string|null $background_image
-     * @property string|null $background_color
-     * @property mixed $background_type
-     * @property string|null $button_url_secondary
-     * @property string|null $button_text_secondary
-     * @property string|null $button_url
-     * @property string|null $button_text
-     * @property string $content
-     * @property string|null $subtitle
-     * @property string $title
-     * @property string|null $page
-     * @property int $id
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection wherePage($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereTitle($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereSubtitle($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereContent($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereButtonText($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereButtonUrl($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereButtonTextSecondary($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereButtonUrlSecondary($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereBackgroundType($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereBackgroundColor($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereBackgroundImage($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereTextColor($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereIsActive($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereSortOrder($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection active()
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection ordered()
      * @method static \Illuminate\Database\Eloquent\Builder<HeroSection>|HeroSection newModelQuery()

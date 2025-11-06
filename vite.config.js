@@ -40,18 +40,13 @@ export default defineConfig({
         // Ensure assets are built for production
         assetsDir: 'assets',
         sourcemap: false,
+        // Optimize output
+        cssCodeSplit: true,
+        // Report compressed size
+        reportCompressedSize: false,
     },
     server: {
-        hmr: {
-            host: 'localhost',
-        },
-        proxy: {
-            '/api': {
-                target: 'http://localhost:8003',
-                changeOrigin: true,
-                secure: false,
-            },
-        },
+        middlewareMode: false,
     },
     // Base URL for production builds
     base: process.env.NODE_ENV === 'production' ? '/' : '/',

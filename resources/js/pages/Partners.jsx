@@ -56,50 +56,11 @@ function Partners() {
                 setBenefits(data.benefits || []);
             } else {
                 console.error('Failed to fetch benefits');
-                // Fallback to static data
-                setBenefits([
-                    {
-                        title: "Global Reach",
-                        description: "Access to 200+ countries and territories worldwide through our extensive partner network.",
-                        icon: "fas fa-globe"
-                    },
-                    {
-                        title: "Revenue Growth",
-                        description: "Proven track record of increasing content revenue by 300% on average for our partners.",
-                        icon: "fas fa-chart-line"
-                    },
-                    {
-                        title: "Secure Distribution",
-                        description: "Advanced rights management and security protocols to protect your intellectual property.",
-                        icon: "fas fa-shield-alt"
-                    },
-                    {
-                        title: "Strategic Insights",
-                        description: "Data-driven recommendations and market insights to optimize your content strategy.",
-                        icon: "fas fa-lightbulb"
-                    },
-                    {
-                        title: "Dedicated Support",
-                        description: "24/7 dedicated account management and technical support for all partners.",
-                        icon: "fas fa-users"
-                    },
-                    {
-                        title: "Quality Assurance",
-                        description: "Rigorous quality control processes to ensure your content meets platform standards.",
-                        icon: "fas fa-award"
-                    }
-                ]);
+                setBenefits([]);
             }
         } catch (error) {
             console.error('Error fetching benefits:', error);
-            // Fallback to static data
-            setBenefits([
-                {
-                    title: "Global Reach",
-                    description: "Access to 200+ countries and territories worldwide through our extensive partner network.",
-                    icon: "fas fa-globe"
-                }
-            ]);
+            setBenefits([]);
         }
     };
 

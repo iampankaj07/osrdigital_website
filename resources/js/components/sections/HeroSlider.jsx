@@ -31,7 +31,6 @@ function HeroSlider() {
 
                 const data = await response.json();
                 if (data.success) {
-                    console.log('Hero Slider data received:', data.data);
                     setSliders(data.data);
                 } else {
                     throw new Error(data.message || 'Failed to fetch slider data');
@@ -158,12 +157,6 @@ function HeroSlider() {
                 className="w-full h-full hero-slider"
             >
                 {sliders.map((slider, index) => {
-                    console.log(`Slider ${index}:`, {
-                        id: slider.id,
-                        title: slider.title,
-                        image_url: slider.image_url,
-                        media_id: slider.media_id
-                    });
                     return (
                     <SwiperSlide key={slider.id || index} className="w-full h-screen">
                         <div className="relative w-full h-full min-h-screen">

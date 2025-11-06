@@ -96,16 +96,18 @@ function ClientLogos() {
                         >
                             <div className="flex flex-col items-center text-center">
                                 <div className="mb-4">
-                                    <img
-                                        src={associate.logo}
-                                        alt={associate.name}
-                                        className="h-16 w-auto object-contain"
-                                        onError={(e) => {
-                                            e.target.style.display = 'none';
-                                            e.target.nextSibling.style.display = 'flex';
-                                        }}
-                                    />
-                                    <div className="hidden items-center justify-center h-16 w-24 bg-gradient-to-r from-brand-orange-500 to-red-600 rounded text-white font-bold text-sm">
+                                    {associate.logo ? (
+                                        <img
+                                            src={associate.logo}
+                                            alt={associate.name}
+                                            className="h-16 w-auto object-contain"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                            }}
+                                        />
+                                    ) : null}
+                                    <div className={`${associate.logo ? 'hidden' : ''} items-center justify-center h-16 w-24 bg-gradient-to-r from-brand-orange-500 to-red-600 rounded text-white font-bold text-sm`}>
                                         {associate.name.split(' ')[0]}
                                     </div>
                                 </div>

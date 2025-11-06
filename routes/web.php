@@ -77,7 +77,7 @@ Route::get('/news/{slug}', function ($slug) {
 });
 
 // API Routes for React - Unified Content Management
-use App\Http\Controllers\API\ContentController;
+use App\Http\Controllers\Api\ContentController;
 
 Route::prefix('api')->group(function () {
 

@@ -9,7 +9,7 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\Setting;
-use App\Models\HeroSection;
+
 use App\Models\HeroSlider;
 use App\Models\FilmCategory;
 use App\Models\FilmPortfolio;
@@ -41,15 +41,15 @@ class InstallationSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🚀 Starting OSR Digital installation...');
-        
+
         // Clear existing data
         $this->clearExistingData();
-        
+
         // Create core data
         $this->createAdminUser();
         $this->createRolesAndPermissions();
         $this->createSettings();
-        $this->createHeroSections();
+
         $this->createHeroSliders();
         $this->createFilmCategories();
         $this->createFilmPortfolios();
@@ -70,7 +70,7 @@ class InstallationSeeder extends Seeder
         $this->createPortfolio();
         $this->createMissionVision();
         $this->createAssociates();
-        
+
         $this->command->info('✅ OSR Digital installation completed successfully!');
         $this->command->info('📧 Admin Login: admin@osrdigital.com');
         $this->command->info('🔑 Admin Password: password');
@@ -80,10 +80,10 @@ class InstallationSeeder extends Seeder
     private function clearExistingData()
     {
         $this->command->info('🧹 Clearing existing data...');
-        
+
         // Clear all tables in reverse dependency order
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        
+
         $tables = [
             'associates', 'mission_visions', 'portfolios', 'legal_pages',
             'content_blocks', 'dynamic_pages', 'testimonials', 'partnership_benefits',
@@ -93,18 +93,18 @@ class InstallationSeeder extends Seeder
             'settings', 'footer_settings', 'general_settings', 'permissions', 'roles',
             'users'
         ];
-        
+
         foreach ($tables as $table) {
             DB::table($table)->truncate();
         }
-        
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     private function createAdminUser()
     {
         $this->command->info('👤 Creating admin user...');
-        
+
         User::create([
             'name' => 'Admin User',
             'email' => 'admin@osrdigital.com',
@@ -116,26 +116,26 @@ class InstallationSeeder extends Seeder
     private function createRolesAndPermissions()
     {
         $this->command->info('🔐 Creating roles and permissions...');
-        
+
         // Create roles
         $adminRole = Role::create(['name' => 'admin', 'display_name' => 'Administrator']);
         $editorRole = Role::create(['name' => 'editor', 'display_name' => 'Editor']);
         $userRole = Role::create(['name' => 'user', 'display_name' => 'User']);
-        
+
         // Create permissions
         $permissions = [
             'manage-users', 'manage-roles', 'manage-settings', 'manage-content',
             'manage-films', 'manage-news', 'manage-team', 'manage-testimonials',
             'manage-hero', 'manage-pages', 'view-admin'
         ];
-        
+
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission, 'display_name' => ucwords(str_replace('-', ' ', $permission))]);
         }
-        
+
         // Assign all permissions to admin
         $adminRole->givePermissionTo(Permission::all());
-        
+
         // Assign admin role to admin user
         User::first()->assignRole('admin');
     }
@@ -143,101 +143,52 @@ class InstallationSeeder extends Seeder
     private function createSettings()
     {
         $this->command->info('⚙️ Creating settings...');
-        
+
         $settings = [
             // Branding
             ['key' => 'company_name', 'value' => 'OSR Digital', 'type' => 'text', 'group' => 'branding', 'description' => 'Company Name', 'is_public' => true],
             ['key' => 'site_tagline', 'value' => 'Your digital partner', 'type' => 'text', 'group' => 'branding', 'description' => 'Site Tagline', 'is_public' => true],
             ['key' => 'primary_color', 'value' => '#EC681D', 'type' => 'color', 'group' => 'branding', 'description' => 'Primary Brand Color', 'is_public' => true],
             ['key' => 'secondary_color', 'value' => '#64748b', 'type' => 'color', 'group' => 'branding', 'description' => 'Secondary Color', 'is_public' => true],
-            
+
             // Contact
             ['key' => 'contact_email', 'value' => 'info@osrdigital.com', 'type' => 'email', 'group' => 'contact', 'description' => 'Contact Email', 'is_public' => true],
             ['key' => 'contact_phone', 'value' => '+1 (555) 123-4567', 'type' => 'text', 'group' => 'contact', 'description' => 'Contact Phone', 'is_public' => true],
             ['key' => 'contact_address', 'value' => '123 Digital Street, Los Angeles, CA 90210', 'type' => 'textarea', 'group' => 'contact', 'description' => 'Office Address', 'is_public' => true],
-            
+
             // Social Media
             ['key' => 'facebook_url', 'value' => 'https://facebook.com/osrdigital', 'type' => 'url', 'group' => 'social', 'description' => 'Facebook URL', 'is_public' => true],
             ['key' => 'twitter_url', 'value' => 'https://twitter.com/osrdigital', 'type' => 'url', 'group' => 'social', 'description' => 'Twitter URL', 'is_public' => true],
             ['key' => 'linkedin_url', 'value' => 'https://linkedin.com/company/osrdigital', 'type' => 'url', 'group' => 'social', 'description' => 'LinkedIn URL', 'is_public' => true],
             ['key' => 'instagram_url', 'value' => 'https://instagram.com/osrdigital', 'type' => 'url', 'group' => 'social', 'description' => 'Instagram URL', 'is_public' => true],
             ['key' => 'youtube_url', 'value' => 'https://youtube.com/channel/osrdigital', 'type' => 'url', 'group' => 'social', 'description' => 'YouTube URL', 'is_public' => true],
-            
+
             // SEO
             ['key' => 'site_title', 'value' => 'OSR Digital - Global Entertainment Distribution', 'type' => 'text', 'group' => 'seo', 'description' => 'Website Title', 'is_public' => true],
             ['key' => 'site_description', 'value' => 'OSR Digital specializes in acquiring exceptional entertainment content and strategically distributing it to worldwide audiences through cutting-edge digital platforms.', 'type' => 'textarea', 'group' => 'seo', 'description' => 'Website Description', 'is_public' => true],
-            
-            // Hero Section
-            ['key' => 'hero_main_title', 'value' => 'Bringing Stories to', 'type' => 'text', 'group' => 'hero', 'description' => 'Hero Main Title', 'is_public' => true],
-            ['key' => 'hero_highlighted_title', 'value' => 'Global Screens', 'type' => 'text', 'group' => 'hero', 'description' => 'Hero Highlighted Title', 'is_public' => true],
-            ['key' => 'hero_description', 'value' => 'OSR Digital specializes in acquiring exceptional entertainment content and strategically distributing it to worldwide audiences through cutting-edge digital platforms.', 'type' => 'textarea', 'group' => 'hero', 'description' => 'Hero Description', 'is_public' => true],
-            ['key' => 'hero_primary_button_text', 'value' => 'Partner With Us', 'type' => 'text', 'group' => 'hero', 'description' => 'Hero Primary Button', 'is_public' => true],
-            ['key' => 'hero_secondary_button_text', 'value' => 'Explore Portfolio', 'type' => 'text', 'group' => 'hero', 'description' => 'Hero Secondary Button', 'is_public' => true],
-            
+
+
             // Stats
             ['key' => 'stats_movies_count', 'value' => '500+', 'type' => 'text', 'group' => 'stats', 'description' => 'Movies Count', 'is_public' => true],
             ['key' => 'stats_songs_count', 'value' => '2,000+', 'type' => 'text', 'group' => 'stats', 'description' => 'Songs Count', 'is_public' => true],
             ['key' => 'stats_films_count', 'value' => '800+', 'type' => 'text', 'group' => 'stats', 'description' => 'Short Films Count', 'is_public' => true],
             ['key' => 'stats_views_count', 'value' => '50M+', 'type' => 'text', 'group' => 'stats', 'description' => 'Total Views Count', 'is_public' => true],
-            
+
             // Footer
             ['key' => 'footer_copyright', 'value' => '© 2025 OSR Digital. All rights reserved.', 'type' => 'text', 'group' => 'footer', 'description' => 'Footer Copyright', 'is_public' => true],
             ['key' => 'footer_description', 'value' => 'We are your trusted digital partner, providing innovative solutions for modern businesses.', 'type' => 'textarea', 'group' => 'footer', 'description' => 'Footer Description', 'is_public' => true],
         ];
-        
+
         foreach ($settings as $setting) {
             Setting::create($setting);
         }
     }
 
-    private function createHeroSections()
-    {
-        $this->command->info('🎬 Creating hero sections...');
-        
-        $heroSections = [
-            [
-                'page' => 'home',
-                'title' => 'Bringing Stories to Global Screens',
-                'subtitle' => 'Digital Media Excellence',
-                'content' => 'OSR Digital specializes in acquiring exceptional entertainment content and strategically distributing it to worldwide audiences through cutting-edge digital platforms.',
-                'button_text' => 'Partner With Us',
-                'button_url' => '/contact',
-                'button_text_secondary' => 'Explore Portfolio',
-                'button_url_secondary' => '/portfolio',
-                'is_active' => true,
-            ],
-            [
-                'page' => 'about',
-                'title' => 'About OSR Digital',
-                'subtitle' => 'Your Digital Partner',
-                'content' => 'We are passionate about helping creators and businesses reach their full potential through innovative digital solutions.',
-                'is_active' => true,
-            ],
-            [
-                'page' => 'portfolio',
-                'title' => 'Our Portfolio',
-                'subtitle' => 'Content Showcase',
-                'content' => 'Explore our diverse collection of movies, documentaries, short films, and series that we\'ve successfully distributed to global audiences.',
-                'is_active' => true,
-            ],
-            [
-                'page' => 'contact',
-                'title' => 'Get In Touch',
-                'subtitle' => 'We\'d love to hear from you',
-                'content' => 'Ready to start your digital content journey? Contact us today and let\'s discuss how we can help you reach your goals.',
-                'is_active' => true,
-            ]
-        ];
-        
-        foreach ($heroSections as $hero) {
-            HeroSection::create($hero);
-        }
-    }
 
     private function createHeroSliders()
     {
         $this->command->info('🎭 Creating hero sliders...');
-        
+
         $sliders = [
             [
                 'title' => 'Premium Movie Distribution',
@@ -270,7 +221,7 @@ class InstallationSeeder extends Seeder
                 'is_active' => true,
             ]
         ];
-        
+
         foreach ($sliders as $slider) {
             HeroSlider::create($slider);
         }
@@ -279,7 +230,7 @@ class InstallationSeeder extends Seeder
     private function createFilmCategories()
     {
         $this->command->info('🎬 Creating film categories...');
-        
+
         $categories = [
             ['name' => 'Feature Films', 'slug' => 'feature-films', 'description' => 'Full-length feature films and movies', 'color' => '#3B82F6', 'is_active' => true, 'sort_order' => 1],
             ['name' => 'Documentaries', 'slug' => 'documentaries', 'description' => 'Documentary films and non-fiction content', 'color' => '#10B981', 'is_active' => true, 'sort_order' => 2],
@@ -287,7 +238,7 @@ class InstallationSeeder extends Seeder
             ['name' => 'Series', 'slug' => 'series', 'description' => 'Television series and web series', 'color' => '#8B5CF6', 'is_active' => true, 'sort_order' => 4],
             ['name' => 'Music Videos', 'slug' => 'music-videos', 'description' => 'Music videos and promotional content', 'color' => '#EF4444', 'is_active' => true, 'sort_order' => 5]
         ];
-        
+
         foreach ($categories as $category) {
             FilmCategory::create($category);
         }
@@ -296,7 +247,7 @@ class InstallationSeeder extends Seeder
     private function createFilmPortfolios()
     {
         $this->command->info('🎥 Creating film portfolios...');
-        
+
         $films = [
             [
                 'title' => 'The Last Horizon',
@@ -374,7 +325,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 6
             ]
         ];
-        
+
         foreach ($films as $film) {
             FilmPortfolio::create($film);
         }
@@ -383,14 +334,14 @@ class InstallationSeeder extends Seeder
     private function createNewsCategories()
     {
         $this->command->info('📰 Creating news categories...');
-        
+
         $categories = [
             ['name' => 'Industry News', 'slug' => 'industry-news', 'description' => 'Latest industry updates and trends', 'is_active' => true, 'sort_order' => 1],
             ['name' => 'Company Updates', 'slug' => 'company-updates', 'description' => 'OSR Digital company news and announcements', 'is_active' => true, 'sort_order' => 2],
             ['name' => 'Partnerships', 'slug' => 'partnerships', 'description' => 'New partnerships and collaborations', 'is_active' => true, 'sort_order' => 3],
             ['name' => 'Awards', 'slug' => 'awards', 'description' => 'Awards and recognition', 'is_active' => true, 'sort_order' => 4]
         ];
-        
+
         foreach ($categories as $category) {
             NewsCategory::create($category);
         }
@@ -399,7 +350,7 @@ class InstallationSeeder extends Seeder
     private function createNews()
     {
         $this->command->info('📄 Creating news articles...');
-        
+
         $news = [
             [
                 'title' => 'OSR Digital Expands Global Distribution Network',
@@ -432,7 +383,7 @@ class InstallationSeeder extends Seeder
                 'published_at' => now()->subDays(15)
             ]
         ];
-        
+
         foreach ($news as $article) {
             News::create($article);
         }
@@ -441,7 +392,7 @@ class InstallationSeeder extends Seeder
     private function createTeams()
     {
         $this->command->info('👥 Creating teams...');
-        
+
         $teams = [
             [
                 'name' => 'Leadership Team',
@@ -459,7 +410,7 @@ class InstallationSeeder extends Seeder
                 'is_active' => true,
             ]
         ];
-        
+
         foreach ($teams as $team) {
             Team::create($team);
         }
@@ -468,7 +419,7 @@ class InstallationSeeder extends Seeder
     private function createTeamMembers()
     {
         $this->command->info('👤 Creating team members...');
-        
+
         $members = [
             [
                 'name' => 'Sarah Johnson',
@@ -499,7 +450,7 @@ class InstallationSeeder extends Seeder
                 'is_active' => true,
             ]
         ];
-        
+
         foreach ($members as $member) {
             TeamMember::create($member);
         }
@@ -508,7 +459,7 @@ class InstallationSeeder extends Seeder
     private function createTeamValues()
     {
         $this->command->info('💎 Creating team values...');
-        
+
         $values = [
             [
                 'title' => 'Innovation',
@@ -536,7 +487,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($values as $value) {
             TeamValue::create($value);
         }
@@ -545,7 +496,7 @@ class InstallationSeeder extends Seeder
     private function createCoreValues()
     {
         $this->command->info('🎯 Creating core values...');
-        
+
         $values = [
             [
                 'title' => 'Excellence',
@@ -573,7 +524,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($values as $value) {
             CoreValue::create($value);
         }
@@ -582,7 +533,7 @@ class InstallationSeeder extends Seeder
     private function createServices()
     {
         $this->command->info('🛠️ Creating services...');
-        
+
         $services = [
             [
                 'title' => 'Content Distribution',
@@ -614,7 +565,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($services as $service) {
             Service::create($service);
         }
@@ -623,7 +574,7 @@ class InstallationSeeder extends Seeder
     private function createDistributionServices()
     {
         $this->command->info('📡 Creating distribution services...');
-        
+
         $services = [
             [
                 'title' => 'Streaming Platforms',
@@ -655,7 +606,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($services as $service) {
             DistributionService::create($service);
         }
@@ -664,7 +615,7 @@ class InstallationSeeder extends Seeder
     private function createTrustedPartners()
     {
         $this->command->info('🤝 Creating trusted partners...');
-        
+
         $partners = [
             [
                 'name' => 'Netflix',
@@ -696,7 +647,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($partners as $partner) {
             TrustedPartner::create($partner);
         }
@@ -705,7 +656,7 @@ class InstallationSeeder extends Seeder
     private function createPartnershipBenefits()
     {
         $this->command->info('💼 Creating partnership benefits...');
-        
+
         $benefits = [
             [
                 'title' => 'Global Reach',
@@ -733,7 +684,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($benefits as $benefit) {
             PartnershipBenefit::create($benefit);
         }
@@ -742,7 +693,7 @@ class InstallationSeeder extends Seeder
     private function createTestimonials()
     {
         $this->command->info('💬 Creating testimonials...');
-        
+
         $testimonials = [
             [
                 'name' => 'John Smith',
@@ -769,7 +720,7 @@ class InstallationSeeder extends Seeder
                 'is_published' => true,
             ]
         ];
-        
+
         foreach ($testimonials as $testimonial) {
             Testimonial::create($testimonial);
         }
@@ -778,7 +729,7 @@ class InstallationSeeder extends Seeder
     private function createDynamicPages()
     {
         $this->command->info('📄 Creating dynamic pages...');
-        
+
         $pages = [
             [
                 'slug' => 'home',
@@ -844,7 +795,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 6
             ]
         ];
-        
+
         foreach ($pages as $page) {
             DynamicPage::create($page);
         }
@@ -853,7 +804,7 @@ class InstallationSeeder extends Seeder
     private function createContentBlocks()
     {
         $this->command->info('🧱 Creating content blocks...');
-        
+
         $blocks = [
             [
                 'type' => 'hero',
@@ -937,7 +888,7 @@ class InstallationSeeder extends Seeder
                 'sort_order' => 4
             ]
         ];
-        
+
         foreach ($blocks as $block) {
             ContentBlock::create($block);
         }
@@ -946,7 +897,7 @@ class InstallationSeeder extends Seeder
     private function createLegalPages()
     {
         $this->command->info('📋 Creating legal pages...');
-        
+
         $pages = [
             [
                 'slug' => 'privacy-policy',
@@ -970,7 +921,7 @@ class InstallationSeeder extends Seeder
                 'is_published' => true,
             ]
         ];
-        
+
         foreach ($pages as $page) {
             LegalPage::create($page);
         }
@@ -980,7 +931,7 @@ class InstallationSeeder extends Seeder
     private function createPortfolio()
     {
         $this->command->info('💼 Creating portfolio...');
-        
+
         Portfolio::create([
             'title' => 'Our Portfolio',
             'description' => 'Explore our diverse collection of movies, documentaries, short films, and series that we\'ve successfully distributed to global audiences.',
@@ -991,7 +942,7 @@ class InstallationSeeder extends Seeder
     private function createMissionVision()
     {
         $this->command->info('🎯 Creating mission and vision...');
-        
+
         MissionVision::create([
             'mission_title' => 'Our Mission',
             'mission_description' => 'To democratize content distribution and empower creators to reach global audiences through innovative digital solutions.',
@@ -1006,7 +957,7 @@ class InstallationSeeder extends Seeder
     private function createAssociates()
     {
         $this->command->info('🤝 Creating associates...');
-        
+
         $associates = [
             [
                 'name' => 'Creative Studios Alliance',
@@ -1027,7 +978,7 @@ class InstallationSeeder extends Seeder
                 'is_active' => true,
             ]
         ];
-        
+
         foreach ($associates as $associate) {
             Associate::create($associate);
         }

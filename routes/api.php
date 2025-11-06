@@ -1,24 +1,24 @@
 <?php
 
-use App\Http\Controllers\API\TeamController;
-use App\Http\Controllers\API\SettingsController;
-use App\Http\Controllers\API\WebAssetsController;
-use App\Http\Controllers\API\PageController;
+use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\WebAssetsController;
+use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\HeroSectionController;
-use App\Http\Controllers\API\HeroSliderController;
+use App\Http\Controllers\Api\HeroSliderController;
 use App\Http\Controllers\Api\AssociateController;
 use App\Http\Controllers\Api\ImageUploadController;
-use App\Http\Controllers\API\DistributionServiceController;
-use App\Http\Controllers\API\GlobalImpactController;
-use App\Http\Controllers\API\FilmCategoryController;
-use App\Http\Controllers\API\FilmPortfolioController;
-use App\Http\Controllers\API\TestimonialController;
+use App\Http\Controllers\Api\DistributionServiceController;
+use App\Http\Controllers\Api\GlobalImpactController;
+use App\Http\Controllers\Api\FilmCategoryController;
+use App\Http\Controllers\Api\FilmPortfolioController;
+use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\MissionVisionController;
 use App\Http\Controllers\Api\CoreValueController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TrustedPartnerController;
 use App\Http\Controllers\Api\PartnershipBenefitController;
-use App\Http\Controllers\API\TeamMemberController;
+use App\Http\Controllers\Api\TeamMemberController;
 use App\Http\Controllers\Api\TeamValueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -113,14 +113,14 @@ Route::get('/film-portfolios/{filmPortfolio}', [FilmPortfolioController::class, 
 // Portfolio API (for frontend compatibility)
 Route::get('/portfolio/{slug}', function ($slug) {
     $film = \App\Models\FilmPortfolio::with('category')->where('slug', $slug)->where('is_published', true)->first();
-    
+
     if (!$film) {
         return response()->json(['error' => 'Portfolio item not found'], 404);
     }
-    
+
     // Increment view count
     $film->increment('views');
-    
+
     // Transform FilmPortfolio data to match frontend expectations
     return response()->json([
         'id' => $film->id,
@@ -178,10 +178,10 @@ Route::get('/team-values', [TeamValueController::class, 'index']);
 
 
 // News API
-Route::get('/news', [\App\Http\Controllers\API\NewsController::class, 'index']);
-Route::get('/news/featured', [\App\Http\Controllers\API\NewsController::class, 'featured']);
-Route::get('/news/latest', [\App\Http\Controllers\API\NewsController::class, 'latest']);
-Route::get('/news/{slug}', [\App\Http\Controllers\API\NewsController::class, 'show']);
+Route::get('/news', [\App\Http\Controllers\Api\NewsController::class, 'index']);
+Route::get('/news/featured', [\App\Http\Controllers\Api\NewsController::class, 'featured']);
+Route::get('/news/latest', [\App\Http\Controllers\Api\NewsController::class, 'latest']);
+Route::get('/news/{slug}', [\App\Http\Controllers\Api\NewsController::class, 'show']);
 
 
 // Image Upload API - Admin only (Legacy - now using Livewire file uploads)

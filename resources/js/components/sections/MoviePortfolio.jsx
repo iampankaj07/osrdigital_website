@@ -137,23 +137,25 @@ function MoviePortfolio() {
                     {filteredMovies.map((movie) => {
                         const linkUrl = movie.link || `/portfolio/${movie.slug}`;
                         const isExternalLink = movie.link && (movie.link.startsWith('http://') || movie.link.startsWith('https://'));
-                        
+
                         const CardContent = () => (
                             <div className={`block group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${
                                 isDark ? 'bg-gray-800' : 'bg-white'
                             }`}>
                                 {/* Movie Poster */}
                                 <div className="relative overflow-hidden movie-poster">
-                                    <img
-                                        src={movie.image_url}
-                                        alt={movie.title}
-                                        className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-                                        onError={(e) => {
-                                            e.target.style.display = 'none';
-                                            e.target.nextSibling.style.display = 'flex';
-                                        }}
-                                    />
-                                    <div className={`hidden absolute inset-0 items-center justify-center ${
+                                    {movie.image_url ? (
+                                        <img
+                                            src={movie.image_url}
+                                            alt={movie.title}
+                                            className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                            }}
+                                        />
+                                    ) : null}
+                                    <div className={`${movie.image_url ? 'hidden' : 'flex'} absolute inset-0 items-center justify-center ${
                                         isDark ? 'bg-gray-700' : 'bg-gray-200'
                                     }`}>
                                         <div className={`text-center ${

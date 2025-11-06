@@ -14,7 +14,6 @@ function MovieTestimonials() {
                 setLoading(true);
                 setError(null);
 
-                console.log('Fetching testimonials from API...');
                 const response = await fetch('/api/testimonials/featured?limit=4');
 
                 if (!response.ok) {
@@ -22,18 +21,14 @@ function MovieTestimonials() {
                 }
 
                 const data = await response.json();
-                console.log('API Response:', data);
 
                 if (data.success && data.data && data.data.length > 0) {
-                    console.log('Using API data:', data.data.length, 'testimonials');
                     setTestimonials(data.data);
                 } else {
-                    console.log('API returned no data');
                     setError('No testimonials available');
                     setTestimonials([]);
                 }
             } catch (err) {
-                console.error('Error fetching testimonials:', err);
                 setError(`Failed to load testimonials: ${err.message}`);
                 setTestimonials([]);
             } finally {
@@ -156,11 +151,19 @@ function MovieTestimonials() {
                             {/* Author Info */}
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 mr-4">
-                                    <img
-                                        src={getSafeImageUrl(testimonial.avatar_url, testimonial.name, 64, 64)}
-                                        alt={testimonial.name}
-                                        className="w-12 h-12 rounded-full object-cover"
-                                    />
+                                    {testimonial.avatar_url && getSafeImageUrl(testimonial.avatar_url) ? (
+                                        <img
+                                            src={getSafeImageUrl(testimonial.avatar_url, testimonial.name, 64, 64)}
+                                            alt={testimonial.name}
+                                            className="w-12 h-12 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white ${
+                                            isDark ? 'bg-brand-orange-500' : 'bg-brand-orange-600'
+                                        }`}>
+                                            {testimonial.name?.charAt(0) || 'A'}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex-1">
                                     <h4 className={`text-lg font-semibold mb-1 text-minimal-bold ${

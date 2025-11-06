@@ -74,8 +74,6 @@ function About() {
 
     const fetchServices = async () => {
         try {
-            console.log('Fetching services data...');
-
             // Create AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -90,31 +88,22 @@ function About() {
             });
 
             clearTimeout(timeoutId);
-            console.log('Services response status:', response.status);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Services data received:', data);
                 setServices(data);
-                console.log('Services state updated successfully!');
             } else {
-                console.error('Failed to fetch services data:', response.status);
                 const errorText = await response.text();
-                console.error('Error response:', errorText);
             }
         } catch (error) {
             if (error.name === 'AbortError') {
-                console.error('Services request timed out');
             } else {
-                console.error('Error fetching services:', error);
             }
         }
     };
 
     const fetchCoreValues = async () => {
         try {
-            console.log('Fetching core values data...');
-
             // Create AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -129,30 +118,22 @@ function About() {
             });
 
             clearTimeout(timeoutId);
-            console.log('Core Values response status:', response.status);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Core Values data received:', data);
                 setCoreValues(data);
-                console.log('Core Values state updated successfully!');
             } else {
-                console.error('Failed to fetch core values data:', response.status);
                 const errorText = await response.text();
-                console.error('Error response:', errorText);
             }
         } catch (error) {
             if (error.name === 'AbortError') {
-                console.error('Core Values request timed out');
             } else {
-                console.error('Error fetching core values:', error);
             }
         }
     };
 
     const fetchMissionVision = async () => {
         try {
-            console.log('Fetching mission & vision data...');
             setIsLoading(true);
 
             // Create AbortController for timeout
@@ -169,24 +150,16 @@ function About() {
             });
 
             clearTimeout(timeoutId);
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Mission & Vision data received:', data);
                 setMissionVision(data);
-                console.log('Mission & Vision state updated successfully!');
             } else {
-                console.error('Failed to fetch mission & vision data:', response.status);
                 const errorText = await response.text();
-                console.error('Error response:', errorText);
             }
         } catch (error) {
             if (error.name === 'AbortError') {
-                console.error('Request timed out');
             } else {
-                console.error('Error fetching mission & vision:', error);
             }
         } finally {
             setIsLoading(false);
