@@ -444,7 +444,7 @@
                                         <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 150px;">
                                     </div>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
                                             <i class="fas fa-images mr-1"></i>Change Image
                                         </button>
                                         <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm">
@@ -455,7 +455,7 @@
                                     <div class="py-4">
                                         <i class="fas fa-cloud-upload-alt text-muted mb-3" style="font-size: 2rem;"></i>
                                         <p class="text-muted mb-3">No image selected</p>
-                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
                                             <i class="fas fa-images mr-1"></i>Select Image
                                         </button>
                                     </div>

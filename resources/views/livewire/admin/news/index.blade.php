@@ -463,31 +463,105 @@
                     <!-- Featured Image Upload -->
                     <div class="form-group mb-3">
                         <label class="form-label">Featured Image</label>
-                        <div class="border rounded p-3" style="border-style: dashed !important;">
-                            <div class="text-center">
-                                @if($selectedMediaUrl)
-                                    <div class="mb-3">
-                                        <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 150px;">
-                                    </div>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+
+                        @if($selectedMediaUrl)
+                            <div class="mb-3 p-3 border rounded bg-gray-50">
+                                <div class="flex justify-between items-start">
+                                    <img src="{{ $selectedMediaUrl }}" alt="Selected Image" class="img-thumbnail" style="max-height: 150px; max-width: 150px;">
+                                    <div class="flex flex-col gap-2">
+                                        <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
                                             <i class="fas fa-images mr-1"></i>Change Image
                                         </button>
                                         <button type="button" wire:click="clearSelectedMedia" class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-trash mr-1"></i>Remove
                                         </button>
                                     </div>
-                                @else
-                                    <div class="py-4">
-                                        <i class="fas fa-cloud-upload-alt text-muted mb-3" style="font-size: 2rem;"></i>
-                                        <p class="text-muted mb-3">No image selected</p>
-                                        <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-images mr-1"></i>Select Image
-                                        </button>
-                                    </div>
-                                @endif
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <!-- Tab Navigation -->
+                            <div class="btn-group w-100 mb-3" role="tablist" style="display: flex;">
+                                <button type="button" class="btn btn-outline-primary" id="upload-tab" wire:click="$set('imageUploadMethod', 'upload')" style="flex: 1; {{ $imageUploadMethod === 'upload' ? 'background-color: #0d6efd; color: white; border-color: #0d6efd;' : '' }}">
+                                    <i class="fas fa-cloud-upload-alt mr-2"></i>Upload New
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" id="library-tab" wire:click="$set('imageUploadMethod', 'library')" style="flex: 1; {{ $imageUploadMethod === 'library' ? 'background-color: #0d6efd; color: white; border-color: #0d6efd;' : '' }}">
+                                    <i class="fas fa-images mr-2"></i>Media Library
+                                </button>
+                            </div>
+
+                            <!-- Upload Tab -->
+                            @if($imageUploadMethod === 'upload')
+                                <div class="border rounded p-4" style="border-style: dashed !important; background-color: #f9fafb;">
+                                    <div id="featured-image-filepond" wire:ignore>
+                                        <input type="file" id="featured-image-input" accept="image/*">
+                                    </div>
+                                    <div class="mt-2 text-center">
+                                        <small class="text-muted">Supported formats: JPG, PNG, GIF, WebP (Max: 10MB)</small>
+                                    </div>
+
+                                    <script>
+                                    document.addEventListener('livewire:initialized', function() {
+                                        let featuredFilePond = null;
+
+                                        function initFeaturedFilePond() {
+                                            if (typeof LivewireFilePond === 'undefined' || typeof @this === 'undefined') {
+                                                setTimeout(initFeaturedFilePond, 200);
+                                                return;
+                                            }
+
+                                            const input = document.getElementById('featured-image-input');
+                                            if (!input) return;
+
+                                            if (featuredFilePond) {
+                                                return; // Already initialized
+                                            }
+
+                                            featuredFilePond = LivewireFilePond.create(input);
+                                            featuredFilePond.setOptions({
+                                                allowMultiple: false,
+                                                maxFiles: 1,
+                                                maxFileSize: '10MB',
+                                                acceptedFileTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+                                                labelIdle: 'Drag & Drop image or <span class="filepond--label-action">Browse</span>',
+                                                server: {
+                                                    process: async (fieldName, file, metadata, load, error, progress) => {
+                                                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                                                        if (!allowedTypes.includes(file.type)) {
+                                                            error('Only JPG, PNG, GIF, and WebP files are allowed');
+                                                            return;
+                                                        }
+
+                                                        await @this.upload('featuredImageFile', file, async (response) => {
+                                                            let validationResult = await @this.call('validateUploadedFile', response);
+                                                            if (validationResult === true) {
+                                                                console.log('Featured image uploaded successfully');
+                                                                load(response);
+                                                            } else {
+                                                                error('Only JPG, PNG, GIF, and WebP files are allowed');
+                                                            }
+                                                        }, error, (event) => {
+                                                            progress(event.detail.progress, event.detail.progress, 100);
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        setTimeout(initFeaturedFilePond, 500);
+                                    });
+                                    </script>
+                                </div>
+                            @endif
+
+                            <!-- Media Library Tab -->
+                            @if($imageUploadMethod === 'library')
+                                <div class="border rounded p-4">
+                                    <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-images mr-2"></i>Select Image from Media Library
+                                    </button>
+                                </div>
+                            @endif
+                        @endif
                     </div>
 
                     <div class="form-check mb-3">

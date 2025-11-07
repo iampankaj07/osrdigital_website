@@ -274,10 +274,10 @@
                     <div class="form-group mb-3">
                         <label class="form-label">Avatar Upload Method</label>
                         <div class="btn-group d-block">
-                            <label class="btn btn-slate btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                            <label class="btn btn-dark btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
                                 <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                             </label>
-                            <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                            <label class="btn btn-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
                                 <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                             </label>
                         </div>
@@ -287,7 +287,7 @@
                         <div class="form-group mb-3">
                             <label class="form-label">Select from Media Library</label>
                             <div class="d-flex align-items-center mb-2">
-                                <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
                                     <i class="fas fa-images mr-1"></i>Browse Media
                                 </button>
                                 @if($selectedMediaUrl)

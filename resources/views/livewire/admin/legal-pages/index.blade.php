@@ -6,7 +6,7 @@
             <p class="text-muted small mb-0">Manage Privacy Policy, Terms of Service, and Cookies Policy</p>
         </div>
         @if($editingId)
-            <button wire:click="preview" class="btn btn-outline-primary btn-sm" target="_blank">
+            <button wire:click="preview" class="btn btn-primary btn-sm" target="_blank">
                 <i class="fas fa-external-link-alt mr-1"></i>Preview Page
             </button>
         @endif

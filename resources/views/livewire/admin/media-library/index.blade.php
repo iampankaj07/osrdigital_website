@@ -6,7 +6,7 @@
             <p class="text-gray-600">Upload and manage your image files</p>
         </div>
         <div class="flex gap-2">
-            <button wire:click="refreshMedia" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            <button wire:click="refreshMedia" class="btn btn-dark btn-sm">
                 <i class="fas fa-sync-alt mr-2"></i>Refresh
             </button>
         </div>
@@ -31,7 +31,7 @@
             <h2 class="text-xl font-semibold">Upload Images</h2>
             @if(count($uploads) > 0)
                 <button wire:click="uploadFiles"
-                        class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        class="btn btn-primary btn-sm">
                     <i class="fas fa-cloud-upload-alt mr-2"></i>Upload {{ count($uploads) }} File{{ count($uploads) > 1 ? 's' : '' }}
                 </button>
             @endif

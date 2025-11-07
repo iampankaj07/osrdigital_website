@@ -47,8 +47,8 @@ class SecurityHeaders
 
         // Enhanced Content Security Policy - allow both http and https
         $csp = "default-src 'self'; " .
-               "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://127.0.0.1:5173 https://code.jquery.com https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tailwindcss.com http://code.jquery.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-               "style-src 'self' 'unsafe-inline' http://127.0.0.1:5173 https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.tailwindcss.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+               "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://127.0.0.1:5173 https://code.jquery.com https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tailwindcss.com https://cdn.quilljs.com https://unpkg.com http://code.jquery.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+               "style-src 'self' 'unsafe-inline' http://127.0.0.1:5173 https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdn.quilljs.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.gstatic.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "img-src 'self' data: https: http: blob:; " .
                "frame-src https://www.google.com/maps/ https://maps.google.com/; " .

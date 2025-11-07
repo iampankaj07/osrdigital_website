@@ -267,10 +267,10 @@
                         <!-- Upload Method Selection -->
                         <div class="mb-2">
                             <div class="btn-group d-block">
-                                <label class="btn btn-slate btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
+                                <label class="btn btn-dark btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'media_library')">
                                     <input type="radio" wire:model="uploadMethod" value="media_library" style="display: none;"> Media Library
                                 </label>
-                                <label class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
+                                <label class="btn btn-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}" wire:click="$set('uploadMethod', 'filepond')">
                                     <input type="radio" wire:model="uploadMethod" value="filepond" style="display: none;"> Upload New
                                 </label>
                             </div>
@@ -290,7 +290,7 @@
                                     <i class="fas fa-image fa-2x text-muted mb-2"></i>
                                     <p class="text-muted small">No image selected</p>
                                 @endif
-                                <button type="button" wire:click="openMediaSelector" class="btn btn-outline-primary btn-sm">
+                                <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
                                     <i class="fas fa-folder-open me-1"></i>Select from Library
                                 </button>
                             </div>

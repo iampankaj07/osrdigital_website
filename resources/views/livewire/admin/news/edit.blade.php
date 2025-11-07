@@ -124,7 +124,7 @@
                                 <div class="form-group mb-3">
                                     <div class="btn-group btn-group-sm w-100" role="group">
                                         <input type="radio" class="btn-check" wire:model="uploadMethod" value="media_library" id="media_library_edit" name="upload_method_edit">
-                                        <label class="btn btn-slate btn-sm" for="media_library_edit">
+                                        <label class="btn btn-dark btn-sm" for="media_library_edit">
                                             <i class="fas fa-folder mr-1"></i>Library
                                         </label>
 

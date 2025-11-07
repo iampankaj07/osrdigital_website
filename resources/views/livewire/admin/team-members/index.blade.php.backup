@@ -119,7 +119,7 @@
                                 <label>Avatar Upload Method</label>
                                 <div class="btn-group d-block" role="group">
                                     <label
-                                        class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}"
+                                        class="btn btn-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}"
                                         wire:click="$set('uploadMethod', 'media_library')">
                                         <input type="radio" wire:model="uploadMethod" value="media_library"
                                             style="display: none;">
@@ -127,7 +127,7 @@
                                         Media Library
                                     </label>
                                     <label
-                                        class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}"
+                                        class="btn btn-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}"
                                         wire:click="$set('uploadMethod', 'filepond')">
                                         <input type="radio" wire:model="uploadMethod" value="filepond"
                                             style="display: none;">
@@ -145,7 +145,7 @@
                                 <div class="form-group">
                                     <label>Select from Media Library</label>
                                     <div class="d-flex align-items-center">
-                                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                        <button type="button" class="btn btn-primary btn-sm"
                                             onclick="openMediaLibrary('avatar')">
                                             <i class="fas fa-folder-open mr-1"></i>
                                             Browse Media
@@ -461,7 +461,7 @@
                                                             <label>Avatar Upload Method</label>
                                                             <div class="btn-group d-block" role="group">
                                                                 <label
-                                                                    class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}"
+                                                                    class="btn btn-primary btn-sm {{ $uploadMethod === 'media_library' ? 'active' : '' }}"
                                                                     wire:click="$set('uploadMethod', 'media_library')">
                                                                     <input type="radio" wire:model="uploadMethod"
                                                                         value="media_library" style="display: none;">
@@ -469,7 +469,7 @@
                                                                     Media Library
                                                                 </label>
                                                                 <label
-                                                                    class="btn btn-outline-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}"
+                                                                    class="btn btn-primary btn-sm {{ $uploadMethod === 'filepond' ? 'active' : '' }}"
                                                                     wire:click="$set('uploadMethod', 'filepond')">
                                                                     <input type="radio" wire:model="uploadMethod"
                                                                         value="filepond" style="display: none;">
@@ -488,7 +488,7 @@
                                                                 <label>Select from Media Library</label>
                                                                 <div class="d-flex align-items-center">
                                                                     <button type="button"
-                                                                        class="btn btn-outline-primary btn-sm"
+                                                                        class="btn btn-primary btn-sm"
                                                                         onclick="openMediaLibrary('avatar')">
                                                                         <i class="fas fa-folder-open mr-1"></i>
                                                                         Browse Media

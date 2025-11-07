@@ -8,8 +8,10 @@ use Livewire\WithFileUploads;
 use App\Models\News;
 use App\Models\NewsCategory;
 use Spatie\LivewireFilepond\WithFilePond;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Traits\DispatchesAlertEvents;
 use App\Livewire\Admin\Traits\WithDeleteConfirmation;
@@ -53,6 +55,8 @@ class Index extends Component
     public $selectedMediaId = null;
     public $selectedMediaUrl = null;
     public $filepondUploads = [];
+    public $imageUploadMethod = 'library'; // 'upload' or 'library'
+    public $featuredImageFile = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -366,6 +370,8 @@ class Index extends Component
         $this->selectedMediaId = null;
         $this->selectedMediaUrl = null;
         $this->form['media_id'] = null;
+        $this->featuredImageFile = [];
+        $this->imageUploadMethod = 'library';
     }
 
     private function resetForm()
@@ -425,5 +431,25 @@ class Index extends Component
         $categories = NewsCategory::active()->ordered()->get();
 
         return view('livewire.admin.news.index', compact('news', 'categories'));
+    }
+
+    public function setFeaturedImageFromUpload()
+    {
+        if (!empty($this->featuredImageFile)) {
+            try {
+                // The file is already uploaded via FilePond, we just need to set it
+                // This is similar to how the media library handles uploads
+                $this->selectedMediaUrl = $this->featuredImageFile[0] ?? null;
+
+                if ($this->selectedMediaUrl) {
+                    // FilePond provides a temporary path, we can use it directly
+                    $this->imageUploadMethod = 'library'; // Switch to preview
+                    $this->featuredImageFile = [];
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to set featured image from upload: ' . $e->getMessage());
+                $this->dispatchErrorEvent('Failed to upload featured image. Please try again.');
+            }
+        }
     }
 }
