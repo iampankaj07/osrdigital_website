@@ -68,8 +68,8 @@ class SecurityHeaders
             // More permissive CSP for localhost/development (allows Vite dev server and admin CDNs)
             // Note: CSP doesn't support IPv6 addresses, so we only use IPv4 localhost
             $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "style-src 'self' 'unsafe-inline' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+                   "style-src 'self' 'unsafe-inline' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                    "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                    "img-src 'self' data: https: http: blob:; " .
                    "connect-src 'self' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 ws://localhost:5173 ws://localhost:5174 ws://127.0.0.1:5173 ws://127.0.0.1:5174 http: https:; " .
@@ -79,8 +79,8 @@ class SecurityHeaders
         } else {
             // Production CSP (includes admin CDNs)
         $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+                   "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                    "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "img-src 'self' data: https: http: blob:; " .
                "connect-src 'self' http: https:; " .

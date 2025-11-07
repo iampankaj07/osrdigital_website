@@ -10,6 +10,12 @@ Route::get('/', function () {
     return view('app'); // This should load your React app
 });
 
+// Storage serving route (for shared hosting without symlinks)
+// This route serves files from storage/app/public when symlinks are not available
+Route::get('/storage/{path}', [App\Http\Controllers\StorageController::class, 'serve'])
+    ->where('path', '.*')
+    ->name('storage.serve');
+
 // Image serving routes - MUST be before catch-all route
 Route::get('/images/{path}', [ImageController::class, 'serve'])->where('path', '.*');
 Route::get('/images/optimized/{width}x{height}/{path}', [ImageController::class, 'optimized'])->where('path', '.*');
