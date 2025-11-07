@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\HostingHelper;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,19 +15,6 @@ class SecurityHeaders
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if we're in local/development environment
-        $isLocal = app()->isLocal() || HostingHelper::isLocalhost();
-        
-        // Redirect HTTPS to HTTP for localhost/development
-        if ($request->isSecure() && $isLocal) {
-            return redirect('http://' . $request->getHttpHost() . $request->getRequestUri(), 301);
-        }
-
-        // Force HTTPS in production (redirect HTTP to HTTPS)
-        if (!$request->isSecure() && !$isLocal) {
-            return redirect('https://' . $request->getHttpHost() . $request->getRequestUri(), 301);
-        }
-
         $response = $next($request);
 
         // Prevent MIME type sniffing
@@ -50,44 +36,26 @@ class SecurityHeaders
         $response->headers->remove('X-Powered-By');
         $response->headers->remove('Server');
 
-        // Clear HSTS for localhost/development, enable for production
-        $isLocal = app()->isLocal() || HostingHelper::isLocalhost();
-        if ($isLocal) {
-            // Clear HSTS cache for localhost domains
-            $response->headers->set('Strict-Transport-Security', 'max-age=0');
-        } elseif ($request->isSecure()) {
-            // Enable HSTS in production (HTTPS only)
-            $response->headers->set(
-                'Strict-Transport-Security',
-                'max-age=31536000; includeSubDomains; preload'
-            );
-        }
+        // HTTPS/HSTS disabled for development - using HTTP only
+        // In production, uncomment these lines:
+        // if ($request->isSecure()) {
+        //     $response->headers->set(
+        //         'Strict-Transport-Security',
+        //         'max-age=31536000; includeSubDomains; preload'
+        //     );
+        // }
 
-        // Enhanced Content Security Policy
-        if ($isLocal) {
-            // More permissive CSP for localhost/development (allows Vite dev server and admin CDNs)
-            // Note: CSP doesn't support IPv6 addresses, so we only use IPv4 localhost
-            $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "style-src 'self' 'unsafe-inline' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "img-src 'self' data: https: http: blob:; " .
-                   "connect-src 'self' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 ws://localhost:5173 ws://localhost:5174 ws://127.0.0.1:5173 ws://127.0.0.1:5174 http: https:; " .
-                   "frame-ancestors 'self'; " .
-                   "base-uri 'self'; " .
-                   "form-action 'self';";
-        } else {
-            // Production CSP (includes admin CDNs)
+        // Enhanced Content Security Policy - allow both http and https
         $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://code.jquery.com https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdn.quilljs.com https://fonts.googleapis.com https://fonts.bunny.net https://cdnjs.cloudflare.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
-                   "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+               "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://127.0.0.1:5173 https://code.jquery.com https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tailwindcss.com http://code.jquery.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+               "style-src 'self' 'unsafe-inline' http://127.0.0.1:5173 https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.tailwindcss.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+               "font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.gstatic.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "img-src 'self' data: https: http: blob:; " .
-               "connect-src 'self' http: https:; " .
+               "frame-src https://www.google.com/maps/ https://maps.google.com/; " .
+               "connect-src 'self' http://127.0.0.1:5173 ws://127.0.0.1:5173 http: https:; " .
                "frame-ancestors 'self'; " .
                "base-uri 'self'; " .
                "form-action 'self';";
-        }
 
         $response->headers->set('Content-Security-Policy', $csp);
 

@@ -218,11 +218,17 @@ function News() {
                         }`}>
                             <div className="lg:flex">
                                 <div className="lg:w-1/2">
-                                    <img
-                                        src={featuredArticle.featured_image_url || ''}
-                                        alt={featuredArticle.title}
-                                        className="w-full h-64 lg:h-full object-cover"
-                                    />
+                                    {featuredArticle.featured_image_url ? (
+                                        <img
+                                            src={featuredArticle.featured_image_url}
+                                            alt={featuredArticle.title}
+                                            className="w-full h-64 lg:h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className={`w-full h-64 lg:h-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center`}>
+                                            <FontAwesomeIcon icon={faNewspaper} className={`text-4xl ${isDark ? 'text-gray-600' : 'text-gray-300'}`} />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="lg:w-1/2 p-8 lg:p-12">
                                     <div className="flex items-center mb-4">
@@ -296,11 +302,17 @@ function News() {
                                     isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
                                 }`}>
                                     <div className="relative">
-                                        <img
-                                            src={article.featured_image_url || ''}
-                                            alt={article.title}
-                                            className="w-full h-48 object-cover"
-                                        />
+                                        {article.featured_image_url ? (
+                                            <img
+                                                src={article.featured_image_url}
+                                                alt={article.title}
+                                                className="w-full h-48 object-cover"
+                                            />
+                                        ) : (
+                                            <div className={`w-full h-48 ${isDark ? 'bg-gray-600' : 'bg-gray-200'} flex items-center justify-center`}>
+                                                <FontAwesomeIcon icon={faNewspaper} className={`text-3xl ${isDark ? 'text-gray-500' : 'text-gray-300'}`} />
+                                            </div>
+                                        )}
                                         <div className="absolute top-4 left-4">
                                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                                                 isDark ? 'bg-brand-orange-500/20 text-brand-orange-400' : 'bg-brand-orange-100 text-brand-orange-600'

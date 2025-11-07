@@ -6,16 +6,17 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\FilmCategory;
 use Illuminate\Support\Str;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -78,7 +79,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $category = FilmCategory::findOrFail($id);
-        
+
         $this->form = [
             'name' => $category->name,
             'slug' => $category->slug,
@@ -146,11 +147,11 @@ class Index extends Component
         ]);
 
         FilmCategory::create($this->form);
-        
+
         $this->isCreating = false;
         $this->showSlidePanel = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'Film Category created successfully!');
     }
 
@@ -188,19 +189,26 @@ class Index extends Component
 
         $category = FilmCategory::findOrFail($this->editingId);
         $category->update($this->form);
-        
+
         $this->editingId = null;
         $this->showSlidePanel = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'Film Category updated successfully!');
     }
 
     public function delete($id)
     {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($id)
+    {
         $category = FilmCategory::findOrFail($id);
         $category->delete();
-        
+
         session()->flash('success', 'Film Category deleted successfully!');
     }
 
@@ -208,7 +216,7 @@ class Index extends Component
     {
         $category = FilmCategory::findOrFail($id);
         $category->update(['is_active' => !$category->is_active]);
-        
+
         session()->flash('success', 'Film Category status updated successfully!');
     }
 

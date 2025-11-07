@@ -5,17 +5,18 @@ namespace App\Livewire\Admin\TeamValues;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\TeamValue;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'sort_order';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -70,7 +71,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $teamValue = TeamValue::findOrFail($id);
-        
+
         $this->form = [
             'title' => $teamValue->title,
             'description' => $teamValue->description,
@@ -115,11 +116,11 @@ class Index extends Component
         ]);
 
         TeamValue::create($this->form);
-        
+
         $this->isCreating = false;
         $this->showSlidePanel = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'Team Value created successfully!');
     }
 
@@ -135,11 +136,11 @@ class Index extends Component
 
         $teamValue = TeamValue::findOrFail($this->editingId);
         $teamValue->update($this->form);
-        
+
         $this->editingId = null;
         $this->showSlidePanel = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'Team Value updated successfully!');
     }
 
@@ -147,7 +148,7 @@ class Index extends Component
     {
         $teamValue = TeamValue::findOrFail($id);
         $teamValue->delete();
-        
+
         session()->flash('success', 'Team Value deleted successfully!');
     }
 
@@ -155,7 +156,7 @@ class Index extends Component
     {
         $teamValue = TeamValue::findOrFail($id);
         $teamValue->update(['is_active' => !$teamValue->is_active]);
-        
+
         session()->flash('success', 'Team Value status updated successfully!');
     }
 

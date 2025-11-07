@@ -7,16 +7,17 @@ use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, DispatchesAlertEvents;
+    use WithPagination, DispatchesAlertEvents, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'name';
     public $sortDirection = 'asc';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -35,7 +36,7 @@ class Index extends Component
     public $availablePermissions = [];
     public $permissionSearch = '';
     public $permissionFilterCategory = '';
-    
+
     // Bulk operations
     public $selectedItems = [];
     public $selectAll = false;
@@ -83,7 +84,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $role = Role::findOrFail($id);
-        
+
         $this->form = [
             'name' => $role->name,
             'guard_name' => $role->guard_name,
@@ -143,11 +144,11 @@ class Index extends Component
             $validPermissionIds = Permission::whereIn('id', $this->form['permissions'])->pluck('id')->toArray();
             $role->syncPermissions($validPermissionIds);
         }
-        
+
         $this->isCreating = false;
         $this->showSlidePanel = false;
         $this->resetForm();
-        
+
         $this->flashSuccess('Role created successfully!');
     }
 
@@ -173,11 +174,11 @@ class Index extends Component
         } else {
             $role->syncPermissions([]);
         }
-        
+
         $this->editingId = null;
         $this->showSlidePanel = false;
         $this->resetForm();
-        
+
         $this->flashSuccess('Role updated successfully!');
     }
 
@@ -185,7 +186,7 @@ class Index extends Component
     {
         $role = Role::findOrFail($id);
         $role->delete();
-        
+
         $this->flashDelete('Role has been successfully deleted.');
     }
 
@@ -221,7 +222,7 @@ class Index extends Component
     public function updateRolePermissions()
     {
         $role = Role::findOrFail($this->selectedRoleId);
-        
+
         // Filter out invalid permission IDs and sync only existing permissions
         if (!empty($this->rolePermissions)) {
             $validPermissionIds = Permission::whereIn('id', $this->rolePermissions)->pluck('id')->toArray();
@@ -229,9 +230,9 @@ class Index extends Component
         } else {
             $role->syncPermissions([]);
         }
-        
+
         $this->closePermissionModal();
-        
+
         $this->flashSuccess('Role permissions updated successfully!');
     }
 
@@ -284,7 +285,7 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             $this->dispatchErrorEvent('Please select items to delete.');
-            
+
             return;
         }
         $this->showBulkDeleteModal = true;
@@ -299,16 +300,16 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             $this->dispatchErrorEvent('No items selected for deletion.');
-            
+
             return;
         }
 
         Role::whereIn('id', $this->selectedItems)->delete();
-        
+
         $this->selectedItems = [];
         $this->selectAll = false;
         $this->showBulkDeleteModal = false;
-        
+
         $this->flashSuccess('Selected roles deleted successfully!');
     }
 

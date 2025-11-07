@@ -16,6 +16,40 @@ Route::get('/storage/{path}', [App\Http\Controllers\StorageController::class, 's
     ->where('path', '.*')
     ->name('storage.serve');
 
+// Livewire minified asset route (serves static published assets)
+// This handles requests to /livewire/livewire.min.js with or without query parameters
+// MUST be before catch-all route to ensure it's matched
+Route::get('/livewire/livewire.min.js', function () {
+    // Try multiple possible locations
+    $possiblePaths = [
+        public_path('vendor/livewire/livewire.min.js'),
+        public_path('livewire/livewire.min.js'),
+        base_path('public/vendor/livewire/livewire.min.js'),
+    ];
+
+    $filePath = null;
+    foreach ($possiblePaths as $path) {
+        if (file_exists($path)) {
+            $filePath = $path;
+            break;
+        }
+    }
+
+    if (!$filePath || !file_exists($filePath)) {
+        // Log for debugging
+        abort(404, 'Livewire minified file not found');
+    }
+
+    $content = file_get_contents($filePath);
+    if ($content === false) {
+        abort(500, 'Failed to read Livewire file');
+    }
+
+    return response($content, 200)
+        ->header('Content-Type', 'application/javascript; charset=utf-8')
+        ->header('Cache-Control', 'public, max-age=31536000');
+})->name('livewire.min.js');
+
 // Image serving routes - MUST be before catch-all route
 Route::get('/images/{path}', [ImageController::class, 'serve'])->where('path', '.*');
 Route::get('/images/optimized/{width}x{height}/{path}', [ImageController::class, 'optimized'])->where('path', '.*');
@@ -275,6 +309,8 @@ Route::get('/cookies-policy', [App\Http\Controllers\LegalPageController::class, 
 Route::get('/legal/{slug}', [App\Http\Controllers\LegalPageController::class, 'show'])->name('legal.show');
 
 // Catch-all route for React SPA (place this at the end)
+// NOTE: This must come AFTER all other specific routes, but the web server should serve static assets
+// The web server (public/.htaccess or nginx) should handle /build/* and /storage/* before this
 Route::get('/{any}', function () {
     return view('app');
-})->where('any', '.*');
+})->where('any', '^(?!build/|storage/|assets/|api/|admin/|debug|images|livewire|\.well-known).*$');

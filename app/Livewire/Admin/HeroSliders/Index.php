@@ -9,10 +9,11 @@ use Spatie\LivewireFilepond\WithFilePond;
 use App\Models\HeroSlider;
 use Illuminate\Support\Facades\Log;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents, WithDeleteConfirmation;
 
     // Form properties
     public $form = [
@@ -152,7 +153,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Hero Slider Creation Error: ' . $e->getMessage());
             $this->flashError('Failed to create hero slide. Please try again.');
-            
+
         }
     }
 
@@ -187,7 +188,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Hero Slider Edit Error: ' . $e->getMessage());
             $this->flashError('Failed to load hero slide data.');
-            
+
         }
     }
 
@@ -238,11 +239,18 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Hero Slider Update Error: ' . $e->getMessage());
             $this->flashError('Failed to update hero slide. Please try again.');
-            
+
         }
     }
 
     public function delete($sliderId)
+    {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($sliderId);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($sliderId)
     {
         try {
             $slider = HeroSlider::findOrFail($sliderId);
@@ -253,7 +261,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Hero Slider Delete Error: ' . $e->getMessage());
             $this->flashError('Failed to delete hero slide.');
-            
+
         }
     }
 
@@ -292,7 +300,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Hero Slider Toggle Active Error: ' . $e->getMessage());
             $this->flashError('Failed to update slide status.');
-            
+
         }
     }
 
@@ -345,7 +353,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Hero Slider - Media selection error: ' . $e->getMessage());
             $this->flashError('Failed to select media. Please try again.');
-            
+
         }
     }
 

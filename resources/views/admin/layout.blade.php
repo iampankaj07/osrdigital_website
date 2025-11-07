@@ -15,7 +15,9 @@
     <!-- AdminLTE 3.2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Bootstrap 4 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
@@ -407,6 +409,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -601,8 +604,8 @@
         <aside class="main-sidebar sidebar-dark-white elevation-4">
             <!-- Brand Logo -->
             <a href="{{ route('admin.dashboard') }}" class="brand-link">
-                <img src="{{ asset('images/logo.png') }}" alt="OSR Logo"
-                    class="brand-image " style="opacity: .8; background: white;">
+                <img src="{{ asset('images/logo.png') }}" alt="OSR Logo" class="brand-image "
+                    style="opacity: .8; background: white;">
                 <span class="brand-text font-weight-light">OSR Digital</span>
             </a>
 
@@ -638,7 +641,7 @@
                         </li>
 
                         <!-- Content Management -->
-                                                <!-- Content Management -->
+                        <!-- Content Management -->
                         <li class="nav-header">Content Management</li>
 
                         <li class="nav-item">
@@ -850,10 +853,14 @@
 
                 <!-- Logout Button - Fixed at Bottom -->
                 <div class="sidebar-footer">
-                    <a href="{{ route('logout') }}" class="nav-link text-white">
-                        <i class="nav-icon fas fa-sign-out-alt"></i>
-                        <p>Logout</p>
-                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
+                        @csrf
+                        <button type="submit" class="nav-link text-white w-100 text-left bg-transparent border-0"
+                            style="cursor:pointer;">
+                            <i class="nav-icon fas fa-sign-out-alt"></i>
+                            <p class="d-inline">Logout</p>
+                        </button>
+                    </form>
                 </div>
             </div>
             <!-- /.sidebar -->
@@ -931,7 +938,8 @@
             <strong>Copyright &copy; {{ date('Y') }} <a href="#">OSR Digital</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 1 | <a href="https://codebundles.com" target="_blank" class="text-primary">Built by CodeBundles</a>
+                <b>Version</b> 1 | <a href="https://codebundles.com" target="_blank" class="text-primary">Built by
+                    CodeBundles</a>
             </div>
         </footer>
     </div>

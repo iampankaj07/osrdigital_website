@@ -5,17 +5,18 @@ namespace App\Livewire\Admin\Settings;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\AdminSettings;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'key';
     public $sortDirection = 'asc';
     public $groupFilter = '';
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -73,7 +74,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $setting = AdminSettings::findOrFail($id);
-        
+
         $this->form = [
             'key' => $setting->key,
             'value' => is_array($setting->value) ? json_encode($setting->value) : $setting->value,
@@ -119,10 +120,10 @@ class Index extends Component
             'description' => $this->form['description'],
             'is_public' => $this->form['is_public'],
         ]);
-        
+
         $this->isCreating = false;
         $this->reset('form');
-        
+
         session()->flash('success', 'Setting created successfully!');
     }
 
@@ -138,7 +139,7 @@ class Index extends Component
         ]);
 
         $setting = AdminSettings::findOrFail($this->editingId);
-        
+
         $value = $this->form['value'];
         if ($this->form['type'] === 'json') {
             $value = json_decode($value, true);
@@ -156,10 +157,10 @@ class Index extends Component
             'description' => $this->form['description'],
             'is_public' => $this->form['is_public'],
         ]);
-        
+
         $this->editingId = null;
         $this->reset('form');
-        
+
         session()->flash('success', 'Setting updated successfully!');
     }
 
@@ -167,7 +168,7 @@ class Index extends Component
     {
         $setting = AdminSettings::findOrFail($id);
         $setting->delete();
-        
+
         session()->flash('success', 'Setting deleted successfully!');
     }
 
@@ -175,7 +176,7 @@ class Index extends Component
     {
         $setting = AdminSettings::findOrFail($id);
         $setting->update(['is_public' => !$setting->is_public]);
-        
+
         session()->flash('success', 'Setting public status updated successfully!');
     }
 

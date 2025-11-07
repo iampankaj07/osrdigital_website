@@ -292,10 +292,9 @@
                                             title="{{ $film->is_published ? 'Unpublish' : 'Publish' }}">
                                         <i class="fas fa-{{ $film->is_published ? 'eye-slash' : 'eye' }} text-sm"></i>
                                     </button>
-                                    <button wire:click="delete({{ $film->id }})"
+                                    <button wire:click="confirmDelete({{ $film->id }}, 'film portfolio')"
                                             class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
-                                            title="Delete"
-                                            onclick="return confirm('Are you sure you want to delete this film portfolio?')">
+                                            title="Delete">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
@@ -338,10 +337,10 @@
     <!-- Slide Panel -->
     @if($showSlidePanel)
         <!-- Backdrop -->
-        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}" 
+        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}"
              wire:click="closeSlidePanel"
              wire:key="backdrop-{{ $showSlidePanel }}"></div>
-        
+
         <!-- Slide Panel -->
         <div class="slide-panel {{ $isClosing ? 'slide-out-right' : '' }}"
              wire:key="panel-{{ $showSlidePanel }}">
@@ -357,7 +356,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="slide-panel-body">
                 <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
                     <div class="form-group mb-3">
@@ -526,3 +525,5 @@ document.addEventListener('livewire:initialized', function() {
 });
 </script>
 @endpush
+
+@include('livewire.admin.partials.delete-confirm')

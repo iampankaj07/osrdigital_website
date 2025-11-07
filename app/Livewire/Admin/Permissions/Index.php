@@ -6,22 +6,23 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 
 class Index extends Component
 {
-    use WithPagination, DispatchesAlertEvents;
+    use WithPagination, DispatchesAlertEvents, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
     public $sortField = 'name';
     public $sortDirection = 'asc';
-    
+
     // Bulk operations
     public $selectedItems = [];
     public $selectAll = false;
     public $showBulkDeleteModal = false;
-    
+
     // Inline editing properties
     public $editingId = null;
     public $isCreating = false;
@@ -72,7 +73,7 @@ class Index extends Component
         $this->editingId = $id;
         $this->isCreating = false;
         $permission = Permission::findOrFail($id);
-        
+
         $this->form = [
             'name' => $permission->name,
             'guard_name' => $permission->guard_name,
@@ -120,11 +121,11 @@ class Index extends Component
         ]);
 
         Permission::create($this->form);
-        
+
         $this->isCreating = false;
         $this->showSlidePanel = false;
         $this->resetForm();
-        
+
         $this->flashSuccess('Permission created successfully!');
     }
 
@@ -137,20 +138,27 @@ class Index extends Component
 
         $permission = Permission::findOrFail($this->editingId);
         $permission->update($this->form);
-        
+
         $this->editingId = null;
         $this->showSlidePanel = false;
         $this->resetForm();
-        
+
         $this->flashSuccess('Permission updated successfully!');
     }
 
     public function delete($id)
     {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($id)
+    {
         $permission = Permission::findOrFail($id);
         $permissionName = $permission->name;
         $permission->delete();
-        
+
         $this->flashDelete("Permission '{$permissionName}' has been successfully deleted.");
     }
 
@@ -172,7 +180,7 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             session()->flash('error', 'Please select items to delete.');
-            
+
             return;
         }
         $this->showBulkDeleteModal = true;
@@ -187,16 +195,16 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             session()->flash('error', 'No items selected for deletion.');
-            
+
             return;
         }
 
         Permission::whereIn('id', $this->selectedItems)->delete();
-        
+
         $this->selectedItems = [];
         $this->selectAll = false;
         $this->showBulkDeleteModal = false;
-        
+
         session()->flash('success', 'Selected permissions deleted successfully!');
     }
 

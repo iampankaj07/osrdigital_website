@@ -10,10 +10,11 @@ use App\Models\TeamMember;
 use App\Traits\DispatchesAlertEvents;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
+    use WithPagination, WithFileUploads, WithFilePond, WithDeleteConfirmation, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -249,7 +250,7 @@ class Index extends Component
 
         } catch (\Exception $e) {
             $this->dispatchErrorEvent('Error creating team member: ' . $e->getMessage());
-            
+
         }
     }
 
@@ -301,16 +302,25 @@ class Index extends Component
 
         } catch (\Exception $e) {
             $this->dispatchErrorEvent('Error updating team member: ' . $e->getMessage());
-            
+
         }
     }
 
     public function delete($id)
     {
-        $teamMember = TeamMember::findOrFail($id);
-        $teamMember->delete();
+        // Route legacy direct delete through confirmation abstraction
+        $this->performActualDelete($id);
+    }
 
-        $this->flashDelete('Team Member has been successfully deleted.');
+    /**
+     * Actual deletion logic separated so trait can call performActualDelete()
+     */
+    public function performActualDelete($id)
+    {
+        $teamMember = TeamMember::findOrFail($id);
+        $name = $teamMember->name;
+        $teamMember->delete();
+        $this->flashDelete("Team Member '{$name}' has been successfully deleted.");
     }
 
     public function toggleActive($id)

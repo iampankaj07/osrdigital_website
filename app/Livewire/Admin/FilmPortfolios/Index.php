@@ -9,11 +9,12 @@ use App\Models\FilmCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithPagination, WithDeleteConfirmation;
 
     // Form properties
     public $form = [
@@ -181,7 +182,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Creation Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to create film portfolio. Please try again.');
-            
+
         }
     }
 
@@ -221,7 +222,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Edit Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to load film portfolio data.');
-            
+
         }
     }
 
@@ -252,11 +253,18 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Update Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to update film portfolio. Please try again.');
-            
+
         }
     }
 
     public function delete($filmId)
+    {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($filmId);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($filmId)
     {
         try {
             $film = FilmPortfolio::findOrFail($filmId);
@@ -267,7 +275,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Delete Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to delete film portfolio.');
-            
+
         }
     }
 
@@ -306,7 +314,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Toggle Featured Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to update featured status.');
-            
+
         }
     }
 
@@ -322,7 +330,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio Toggle Published Error: ' . $e->getMessage());
             session()->flash('error', 'Failed to update publication status.');
-            
+
         }
     }
 
@@ -375,7 +383,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Film Portfolio - Media selection error: ' . $e->getMessage());
             session()->flash('error', 'Failed to select media. Please try again.');
-            
+
         }
     }    public function clearSelectedMedia()
     {

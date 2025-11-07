@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
@@ -267,6 +268,13 @@ class Index extends Component
     }
 
     public function delete($id)
+    {
+        // legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($id)
     {
         $associate = Associate::findOrFail($id);
         $associateName = $associate->name;

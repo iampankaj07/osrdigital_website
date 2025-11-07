@@ -54,7 +54,7 @@
                     <i class="fas fa-plus mr-2"></i>
                     Create New Setting
                 </h5>
-                
+
                 <form wire:submit.prevent="store">
                     <div class="row">
                         <div class="col-md-6">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -105,7 +105,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -116,7 +116,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-right">
                         <button type="button" wire:click="cancelEdit" class="btn btn-secondary btn-sm mr-2">
                             <i class="fas fa-times mr-1"></i>
@@ -191,26 +191,25 @@
                                 </td>
                                 <td class="py-3 px-3 text-center">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button wire:click="edit({{ $setting->id }})" 
-                                                class="btn btn-dark btn-sm border-0" 
+                                        <button wire:click="edit({{ $setting->id }})"
+                                                class="btn btn-dark btn-sm border-0"
                                                 title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button wire:click="togglePublic({{ $setting->id }})" 
-                                                class="btn btn-outline-{{ $setting->is_public ? 'warning' : 'success' }} btn-sm border-0" 
+                                        <button wire:click="togglePublic({{ $setting->id }})"
+                                                class="btn btn-outline-{{ $setting->is_public ? 'warning' : 'success' }} btn-sm border-0"
                                                 title="{{ $setting->is_public ? 'Make Private' : 'Make Public' }}">
                                             <i class="fas fa-{{ $setting->is_public ? 'lock' : 'unlock' }}"></i>
                                         </button>
-                                        <button wire:click="delete({{ $setting->id }})" 
-                                                class="btn btn-danger btn-sm border-0"
-                                                title="Delete"
-                                                onclick="return confirm('Are you sure you want to delete this setting?')">
-                                            <i class="fas fa-trash"></i>
+                                        <button wire:click="confirmDelete({{ $setting->id }}, 'setting')"
+                                                class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                                                title="Delete">
+                                            <i class="fas fa-trash text-sm"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                            
+
                             <!-- Inline Edit Form -->
                             @if($editingId === $setting->id)
                                 <tr class="bg-light">
@@ -220,7 +219,7 @@
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit Setting
                                             </h5>
-                                            
+
                                             <form wire:submit.prevent="update">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -251,7 +250,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -261,7 +260,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -271,7 +270,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -282,7 +281,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="form-group text-right">
                                                     <button type="button" wire:click="cancelEdit" class="btn btn-secondary btn-sm mr-2">
                                                         <i class="fas fa-times mr-1"></i>
@@ -327,3 +326,4 @@
         </div>
     </div>
 </div>
+@include('livewire.admin.partials.delete-confirm')

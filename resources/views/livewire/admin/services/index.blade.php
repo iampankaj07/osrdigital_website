@@ -100,28 +100,27 @@
                                 <div class="text-sm text-gray-600 max-w-xs">{{ Str::limit($service->short_description, 50) }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <span wire:click="toggleActive({{ $service->id }})" 
+                                <span wire:click="toggleActive({{ $service->id }})"
                                       class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium cursor-pointer transition-colors duration-150 {{ $service->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' }}">
                                     {{ $service->is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <span wire:click="toggleFeatured({{ $service->id }})" 
+                                <span wire:click="toggleFeatured({{ $service->id }})"
                                       class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium cursor-pointer transition-colors duration-150 {{ $service->is_featured ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' }}">
                                     {{ $service->is_featured ? 'Featured' : 'Not Featured' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <div class="flex items-center justify-center space-x-2">
-                                    <button wire:click="edit({{ $service->id }})" 
-                                            class="w-8 h-8 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg flex items-center justify-center transition-colors duration-150" 
+                                    <button wire:click="edit({{ $service->id }})"
+                                            class="w-8 h-8 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-lg flex items-center justify-center transition-colors duration-150"
                                             title="Edit">
                                         <i class="fas fa-edit text-sm"></i>
                                     </button>
-                                    <button wire:click="delete({{ $service->id }})" 
+                                    <button wire:click="confirmDelete({{ $service->id }}, 'service')"
                                             class="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg flex items-center justify-center transition-colors duration-150"
-                                            title="Delete"
-                                            onclick="return confirm('Are you sure you want to delete this service?')">
+                                            title="Delete">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
@@ -174,14 +173,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="text" wire:model="iconSearch" 
-                                   class="form-control" 
+                            <input type="text" wire:model="iconSearch"
+                                   class="form-control"
                                    placeholder="Search icons by name or class...">
                         </div>
 
                         <div style="max-height: 400px; overflow-y: auto;">
                             @foreach($this->getFilteredIcons() as $iconClass => $iconName)
-                                <div class="icon-option-list" 
+                                <div class="icon-option-list"
                                      wire:click="selectIcon('{{ $iconClass }}')"
                                      style="cursor: pointer; transition: all 0.2s; padding: 10px; border: 1px solid #e9ecef; margin-bottom: 5px; border-radius: 5px;">
                                     <div class="d-flex align-items-center">
@@ -194,7 +193,7 @@
                                     </div>
                                 </div>
                             @endforeach
-                            
+
                             @if(empty($this->getFilteredIcons()))
                                 <div class="text-center py-4">
                                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
@@ -216,10 +215,10 @@
     <!-- Slide Panel -->
     @if($showSlidePanel)
         <!-- Backdrop -->
-        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}" 
+        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}"
              wire:click="closeSlidePanel"
              wire:key="backdrop-{{ $showSlidePanel }}"></div>
-        
+
         <!-- Slide Panel -->
         <div class="slide-panel {{ $isClosing ? 'slide-out-right' : '' }}"
              wire:key="panel-{{ $showSlidePanel }}">
@@ -235,7 +234,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="slide-panel-body">
                 <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
                     <div class="form-group mb-3">
@@ -443,18 +442,20 @@
         border-color: #007bff;
         transform: translateX(5px);
     }
-    
+
     .icon-option-list {
         transition: all 0.2s ease;
     }
-    
+
     .badge[style*="cursor: pointer"]:hover {
         opacity: 0.8;
         transform: scale(1.05);
     }
-    
+
     .badge[style*="cursor: pointer"] {
         transition: all 0.2s ease;
     }
 </style>
 </div>
+
+@include('livewire.admin.partials.delete-confirm')

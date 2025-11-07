@@ -9,10 +9,11 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, DispatchesAlertEvents;
+    use WithPagination, DispatchesAlertEvents, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
@@ -102,7 +103,7 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             $this->dispatchErrorEvent('Please select items to delete.');
-            
+
             return;
         }
         $this->showBulkDeleteModal = true;
@@ -117,7 +118,7 @@ class Index extends Component
     {
         if (empty($this->selectedItems)) {
             $this->dispatchErrorEvent('No items selected for deletion.');
-            
+
             return;
         }
 
@@ -125,7 +126,7 @@ class Index extends Component
         $adminUsers = User::role('admin')->whereIn('id', $this->selectedItems);
         if ($adminUsers->count() > 0 && User::role('admin')->count() <= $adminUsers->count()) {
             $this->dispatchErrorEvent('Cannot delete all admin users!');
-            
+
             return;
         }
 
@@ -271,7 +272,7 @@ class Index extends Component
             }
 
             $user->update($updateData);
-            
+
             // Convert role IDs to role objects
             if (!empty($this->form['roles'])) {
                 $roles = Role::whereIn('id', $this->form['roles'])->get();
@@ -290,12 +291,19 @@ class Index extends Component
 
     public function delete($id)
     {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($id)
+    {
         $user = User::findOrFail($id);
 
         // Prevent deleting the last admin user
         if ($user->hasRole('admin') && User::role('admin')->count() <= 1) {
             $this->dispatchErrorEvent('Cannot delete the last admin user!');
-            
+
             return;
         }
 
@@ -312,7 +320,7 @@ class Index extends Component
         // Prevent deactivating the last admin user
         if ($user->hasRole('admin') && User::role('admin')->count() <= 1) {
             $this->dispatchErrorEvent('Cannot deactivate the last admin user!');
-            
+
             return;
         }
 
@@ -345,7 +353,7 @@ class Index extends Component
         if ($user->hasRole('admin') && $adminRole && !in_array($adminRole->id, $this->userRoles)) {
             if (User::role('admin')->count() <= 1) {
                 $this->dispatchErrorEvent('Cannot remove admin role from the last admin user!');
-            
+
                 return;
             }
         }
@@ -357,7 +365,7 @@ class Index extends Component
         } else {
             $user->syncRoles([]);
         }
-        
+
         $this->closeRoleModal();
 
         $this->flashSuccess('User roles updated successfully!');

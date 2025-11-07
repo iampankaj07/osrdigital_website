@@ -117,10 +117,9 @@
                                             title="{{ $associate->is_active ? 'Deactivate' : 'Activate' }}">
                                         <i class="fas fa-{{ $associate->is_active ? 'pause' : 'play' }} text-sm"></i>
                                     </button>
-                                    <button wire:click="delete({{ $associate->id }})"
+                                    <button wire:click="confirmDelete({{ $associate->id }}, 'associate')"
                                             class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
-                                            title="Delete"
-                                            onclick="return confirm('Are you sure you want to delete this associate?')">
+                                            title="Delete">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
@@ -164,10 +163,10 @@
     <!-- Slide Panel -->
     @if($showSlidePanel)
         <!-- Backdrop -->
-        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}" 
+        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}"
              wire:click="closeSlidePanel"
              wire:key="backdrop-{{ $showSlidePanel }}"></div>
-        
+
         <!-- Slide Panel -->
         <div class="slide-panel {{ $isClosing ? 'slide-out-right' : '' }}"
              wire:key="panel-{{ $showSlidePanel }}">
@@ -183,7 +182,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="slide-panel-body">
                 <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
                     <div class="form-group mb-3">

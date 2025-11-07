@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Logo from '../Logo';
+import GoogleMap from './GoogleMap';
 import { useTheme } from '../../contexts/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -139,7 +140,7 @@ function Footer() {
     const copyrightText = data.copyright_text;
 
     return (
-        <footer className="bg-white relative overflow-hidden">
+        <footer className={`${isDark ? 'bg-gray-900' : 'bg-white'} relative overflow-hidden transition-colors duration-300`}>
             {/* Show error if data failed to load */}
             {error && (
                 <div className={`py-4 px-6 ${isDark ? 'bg-red-900/20 text-red-400' : 'bg-red-50 text-red-600'}`}>
@@ -171,12 +172,31 @@ function Footer() {
             {/* Normal footer content - only show if data loaded */}
             {!isLoading && footerData.company.name && (
             <>
-            {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-gray-50" />
+            {/* Google Map Section */}
+            <div className={`${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <div className="container-minimal py-16">
+                    <div className="mb-8 text-center">
+                        <h2 className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>Find Us On The Map</h2>
+                        <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>Visit our office or get in touch with us</p>
+                    </div>
+                    <div className="w-full rounded-lg overflow-hidden shadow-md" style={{ height: '450px' }}>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.452544419239!2d85.32644507618737!3d27.703310476184992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19a3efd6608b%3A0x84a682e2d161a5d6!2sOSR%20Digital!5e0!3m2!1sen!2sfi!4v1762545322817!5m2!1sen!2sfi"
+                            width="100%"
+                            height="100%"
+                            style={{ border: 'none', display: 'block' }}
+                            allowFullScreen=""
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            title="OSR Digital Location"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
 
             <div className="container-minimal relative z-10">
                 {/* Top Section with Logo and Description */}
-                <div className="py-20 border-b border-gray-200">
+                <div className={`py-20 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                         {/* Logo and Description */}
                         <div className="lg:col-span-2">
@@ -188,17 +208,17 @@ function Footer() {
                                     className=""
                                 />
                             </div>
-                            <p className="text-base leading-relaxed max-w-md text-gray-600">
+                            <p className={`text-base leading-relaxed max-w-md ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 {companyInfo.description}
                             </p>
                         </div>
 
                         {/* Quick Stats or Tagline */}
                         <div className="flex flex-col justify-center">
-                            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wider text-gray-700">
+                            <h4 className={`text-sm font-semibold mb-4 uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                 Get in Touch
                             </h4>
-                            <p className="text-sm leading-relaxed text-gray-600">
+                            <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Reach out to us for any inquiries or partnerships
                             </p>
                         </div>
@@ -206,21 +226,21 @@ function Footer() {
                 </div>
 
                 {/* Contact Information Section */}
-                <div className="py-12 border-b border-gray-200">
+                <div className={`py-12 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {/* Email */}
                         <div className="group">
-                            <div className="flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 hover:bg-gray-100">
+                            <div className={`flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}>
                                 <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-brand-orange-100 text-brand-orange-600">
                                     <FontAwesomeIcon icon={faEnvelope} className="w-5 h-5" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-xs font-semibold mb-1 uppercase tracking-wide text-gray-500">
+                                    <p className={`text-xs font-semibold mb-1 uppercase tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                         Email
                                     </p>
                                     <a
                                         href={`mailto:${contactInfo.email}`}
-                                        className="text-sm font-medium transition-colors duration-200 text-gray-900 group-hover:text-brand-orange-600"
+                                        className={`text-sm font-medium transition-colors duration-200 ${isDark ? 'text-gray-300 group-hover:text-brand-orange-400' : 'text-gray-900 group-hover:text-brand-orange-600'}`}
                                     >
                                         {contactInfo.email}
                                     </a>
@@ -230,17 +250,17 @@ function Footer() {
 
                         {/* Phone */}
                         <div className="group">
-                            <div className="flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 hover:bg-gray-100">
+                            <div className={`flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}>
                                 <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-brand-orange-100 text-brand-orange-600">
                                     <FontAwesomeIcon icon={faPhone} className="w-5 h-5" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-xs font-semibold mb-1 uppercase tracking-wide text-gray-500">
+                                    <p className={`text-xs font-semibold mb-1 uppercase tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                         Phone
                                     </p>
                                     <a
                                         href={`tel:${contactInfo.phone}`}
-                                        className="text-sm font-medium transition-colors duration-200 text-gray-900 group-hover:text-brand-orange-600"
+                                        className={`text-sm font-medium transition-colors duration-200 ${isDark ? 'text-gray-300 group-hover:text-brand-orange-400' : 'text-gray-900 group-hover:text-brand-orange-600'}`}
                                     >
                                         {contactInfo.phone}
                                     </a>
@@ -250,15 +270,15 @@ function Footer() {
 
                         {/* Address */}
                         <div className="group">
-                            <div className="flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 hover:bg-gray-100">
+                            <div className={`flex items-start space-x-4 p-4 rounded-lg transition-all duration-300 ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}>
                                 <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-brand-orange-100 text-brand-orange-600">
                                     <FontAwesomeIcon icon={faMapMarkerAlt} className="w-5 h-5" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-xs font-semibold mb-1 uppercase tracking-wide text-gray-500">
+                                    <p className={`text-xs font-semibold mb-1 uppercase tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                         Address
                                     </p>
-                                    <p className="text-sm font-medium text-gray-900">
+                                    <p className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-900'}`}>
                                         {contactInfo.address}
                                     </p>
                                 </div>
@@ -268,13 +288,13 @@ function Footer() {
                 </div>
 
                 {/* Social Links */}
-                <div className="py-12 border-b border-gray-200">
+                <div className={`py-12 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
                     <div className="flex items-center justify-between gap-8">
                         <div>
-                            <h4 className="text-sm font-semibold mb-2 uppercase tracking-wider text-gray-700">
+                            <h4 className={`text-sm font-semibold mb-2 uppercase tracking-wider ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                                 Follow Us
                             </h4>
-                            <p className="text-xs text-gray-500">
+                            <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                 Connect with us on social media
                             </p>
                         </div>
@@ -296,7 +316,7 @@ function Footer() {
                                             href={url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 bg-gray-100 text-gray-600 hover:bg-brand-orange-600 hover:text-white hover:scale-110"
+                                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${isDark ? 'bg-gray-800 text-gray-400 hover:bg-brand-orange-600 hover:text-white' : 'bg-gray-100 text-gray-600 hover:bg-brand-orange-600 hover:text-white'} hover:scale-110`}
                                             title={`Follow us on ${platform.charAt(0).toUpperCase() + platform.slice(1)}`}
                                         >
                                             <FontAwesomeIcon
@@ -307,7 +327,7 @@ function Footer() {
                                     );
                                 })
                             ) : (
-                                <p className="text-sm text-gray-400">
+                                <p className={`text-sm ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                                     No social media links
                                 </p>
                             )}
@@ -321,23 +341,22 @@ function Footer() {
                         {/* Copyright and Credits */}
                         <div className="flex items-center justify-start">
                             <div className="text-center md:text-left">
-                                <p className="text-xs text-gray-500">
+                                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                                     {copyrightText}
                                 </p>
-                                <p className="text-xs mt-2 flex items-center gap-1 text-gray-500">
-                                    Built with
-                                    <FontAwesomeIcon
-                                        icon={faHeart}
-                                        className="w-3 h-3 text-red-500 animate-pulse"
-                                    />
-                                    by
+                                <p className={`text-xs mt-2 flex items-center gap-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                   Designed by
                                     <a
                                         href="https://teknologia.studio"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="font-medium transition-colors duration-200 text-brand-orange-600 hover:text-brand-orange-700"
+                                        className={`font-medium transition-colors duration-200 ${isDark ? 'text-brand-orange-400 hover:text-brand-orange-300' : 'text-brand-orange-600 hover:text-brand-orange-700'}`}
                                     >
-                                        Teknologia.Studio
+                                    <img
+                                        src="/images/TEKNOLOGIA.png"
+                                        alt="Teknologia Studio"
+                                        className="h-3 w-auto inline-block"
+                                    />
                                     </a>
                                 </p>
                             </div>
@@ -350,11 +369,11 @@ function Footer() {
                                     {legalLinks.map((link, index) => (
                                         <React.Fragment key={index}>
                                             {index > 0 && (
-                                                <span className="text-gray-300">•</span>
+                                                <span className={isDark ? 'text-gray-600' : 'text-gray-300'}>•</span>
                                             )}
                                             <a
                                                 href={link.url}
-                                                className="text-xs transition-colors duration-200 text-gray-500 hover:text-brand-orange-600"
+                                                className={`text-xs transition-colors duration-200 ${isDark ? 'text-gray-400 hover:text-brand-orange-400' : 'text-gray-500 hover:text-brand-orange-600'}`}
                                             >
                                                 {link.text}
                                             </a>

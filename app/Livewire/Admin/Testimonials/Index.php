@@ -8,10 +8,12 @@ use Livewire\WithFileUploads;
 use Spatie\LivewireFilepond\WithFilePond;
 use App\Models\Testimonial;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
+use Illuminate\Support\Facades\Log;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents, WithDeleteConfirmation;
 
     // Form properties
     public $form = [
@@ -120,7 +122,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial Creation Error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to create testimonial. Please try again.');
-            
+
         }
     }
 
@@ -155,7 +157,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial Edit Error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to load testimonial data.');
-            
+
         }
     }
 
@@ -188,7 +190,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial Update Error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to update testimonial. Please try again.');
-            
+
         }
     }
 
@@ -203,7 +205,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial Delete Error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to delete testimonial.');
-            
+
         }
     }
 
@@ -242,7 +244,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial Toggle Featured Error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to update featured status.');
-            
+
         }
     }
 
@@ -258,7 +260,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial Toggle Published Error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to update publication status.');
-            
+
         }
     }
 
@@ -311,7 +313,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Testimonial - Media selection error: ' . $e->getMessage());
             $this->dispatchErrorEvent('Failed to select media. Please try again.');
-            
+
         }
     }
 

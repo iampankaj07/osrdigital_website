@@ -6,10 +6,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\DistributionService;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, DispatchesAlertEvents;
+    use WithPagination, DispatchesAlertEvents, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
@@ -152,6 +153,13 @@ class Index extends Component
     }
 
     public function delete($id)
+    {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($id)
     {
         $service = DistributionService::findOrFail($id);
         $serviceName = $service->title;

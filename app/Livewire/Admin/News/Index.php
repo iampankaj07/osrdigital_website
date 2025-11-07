@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents;
+    use WithPagination, WithFileUploads, WithFilePond, DispatchesAlertEvents, WithDeleteConfirmation;
 
     // Form properties
     public $form = [
@@ -239,6 +240,13 @@ class Index extends Component
     }
 
     public function delete($newsId)
+    {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($newsId);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($newsId)
     {
         try {
             $news = News::findOrFail($newsId);

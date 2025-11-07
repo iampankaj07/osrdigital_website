@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads, WithFilePond;
+    use WithPagination, WithFileUploads, WithFilePond, WithDeleteConfirmation;
 
     public $search = '';
     public $perPage = 10;
@@ -242,7 +243,7 @@ class Index extends Component
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error creating trusted partner: ' . $e->getMessage());
-            
+
         }
     }
 
@@ -291,11 +292,18 @@ class Index extends Component
 
         } catch (\Exception $e) {
             session()->flash('error', 'Error updating trusted partner: ' . $e->getMessage());
-            
+
         }
     }
 
     public function delete($id)
+    {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($id)
     {
         $trustedPartner = TrustedPartner::findOrFail($id);
         $trustedPartner->delete();

@@ -19,9 +19,12 @@ class Index extends Component
 
     // FilePond properties
     public $uploads = [];
-    
+
     // Property to force refresh after upload
     public $refreshKey = 0;
+
+    // Add property to track pending deletion id
+    public $confirmingDeleteId = null;
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
@@ -40,6 +43,33 @@ class Index extends Component
         }
     }
 
+    /**
+     * Start delete confirmation for a media item.
+     */
+    public function confirmDelete($mediaId)
+    {
+        $this->confirmingDeleteId = $mediaId;
+    }
+
+    /**
+     * Cancel the delete confirmation dialog.
+     */
+    public function cancelDelete()
+    {
+        $this->confirmingDeleteId = null;
+    }
+
+    /**
+     * Perform the deletion after user confirmation.
+     */
+    public function performDelete()
+    {
+        if ($this->confirmingDeleteId) {
+            $this->deleteMedia($this->confirmingDeleteId);
+            $this->confirmingDeleteId = null; // reset after deletion
+        }
+    }
+
     public function render()
     {
         // Get all media items from media-library collection
@@ -51,7 +81,7 @@ class Index extends Component
         $mediaItems = Media::where('collection_name', 'media-library')
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return view('livewire.admin.media-library.index', [
             'mediaItems' => $mediaItems,
         ]);

@@ -243,7 +243,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <span wire:click="toggleStatus({{ $user->id }})" 
+                                <span wire:click="toggleStatus({{ $user->id }})"
                                       class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} cursor-pointer hover:opacity-80 transition-opacity"
                                       title="{{ $user->is_active ? 'Click to deactivate' : 'Click to activate' }}">
                                     {{ $user->is_active ? 'Active' : 'Inactive' }}
@@ -264,10 +264,7 @@
                                             title="Manage Roles">
                                         <i class="fas fa-user-tag text-sm"></i>
                                     </button>
-                                    <button wire:click="delete({{ $user->id }})"
-                                            class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
-                                            title="Delete"
-                                            onclick="return confirm('Are you sure you want to delete this user?')">
+                                    <button wire:click="confirmDelete({{ $user->id }}, 'user')" class="inline-flex items-center p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150" title="Delete">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
@@ -314,10 +311,10 @@
     <!-- Slide Panel -->
     @if($showSlidePanel)
         <!-- Backdrop -->
-        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}" 
+        <div class="slide-panel-backdrop {{ $isClosing ? 'fade-out' : '' }}"
              wire:click="closeSlidePanel"
              wire:key="backdrop-{{ $showSlidePanel }}"></div>
-        
+
         <!-- Slide Panel -->
         <div class="slide-panel {{ $isClosing ? 'slide-out-right' : '' }}"
              wire:key="panel-{{ $showSlidePanel }}">
@@ -333,7 +330,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="slide-panel-body">
                 <form wire:submit="{{ $isCreating ? 'store' : 'update' }}">
                     <div class="form-group mb-3">
@@ -366,10 +363,10 @@
                             @foreach($availableRoles as $role)
                                 <div class="col-md-6 mb-2">
                                     <div class="form-check">
-                                        <input type="checkbox" 
-                                               wire:model="form.roles" 
+                                        <input type="checkbox"
+                                               wire:model="form.roles"
                                                value="{{ $role->id }}"
-                                               class="form-check-input @error('form.roles') is-invalid @enderror" 
+                                               class="form-check-input @error('form.roles') is-invalid @enderror"
                                                id="role_{{ $role->id }}_{{ $isCreating ? 'create' : 'edit' }}">
                                         <label class="form-check-label" for="role_{{ $role->id }}_{{ $isCreating ? 'create' : 'edit' }}">
                                             {{ $role->name }}
@@ -413,10 +410,10 @@
                             <label>Select Roles</label>
                             @foreach($availableRoles as $role)
                                 <div class="form-check">
-                                    <input type="checkbox" 
-                                           wire:model="userRoles" 
+                                    <input type="checkbox"
+                                           wire:model="userRoles"
                                            value="{{ $role->id }}"
-                                           class="form-check-input" 
+                                           class="form-check-input"
                                            id="modal_role_{{ $role->id }}">
                                     <label class="form-check-label" for="modal_role_{{ $role->id }}">
                                         {{ $role->name }}
@@ -458,3 +455,4 @@
     </script>
     @endscript
 </div>
+@include('livewire.admin.partials.delete-confirm')
