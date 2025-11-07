@@ -27,11 +27,15 @@ class AppServiceProvider extends ServiceProvider
         // Apply hosting environment optimizations
         HostingHelper::applyOptimizations();
         
-        // Force HTTP on localhost, HTTPS in production
-        if (HostingHelper::isLocalhost() || app()->isLocal()) {
-            URL::forceScheme('http');
-        } elseif (!HostingHelper::isLocalhost() && !app()->isLocal()) {
+        // Force HTTPS in production - check if request is secure or if APP_ENV is production
+        $isProduction = app()->environment('production');
+        $isSecure = request()->isSecure() || request()->header('X-Forwarded-Proto') === 'https';
+        $isLocalhost = HostingHelper::isLocalhost() || app()->isLocal();
+        
+        if ($isProduction || ($isSecure && !$isLocalhost)) {
             URL::forceScheme('https');
+        } else {
+            URL::forceScheme('http');
         }
         
         // Register view composer for settings

@@ -45,17 +45,22 @@ class SecurityHeaders
         //     );
         // }
 
-        // Enhanced Content Security Policy - allow both http and https
+        // Get base URL dynamically from request
+        $host = $request->getHost();
+        $baseUrlHttps = 'https://' . $host;
+        $baseUrlHttp = 'http://' . $host;
+
+        // Enhanced Content Security Policy - dynamically include base URL
         $csp = "default-src 'self'; " .
-               "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://127.0.0.1:5173 https://code.jquery.com https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tailwindcss.com https://cdn.quilljs.com https://unpkg.com http://code.jquery.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
+               "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://127.0.0.1:5173 {$baseUrlHttps} {$baseUrlHttp} https://code.jquery.com https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.tailwindcss.com https://cdn.quilljs.com https://unpkg.com http://code.jquery.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "style-src 'self' 'unsafe-inline' http://127.0.0.1:5173 https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdn.quilljs.com https://unpkg.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.gstatic.com http://fonts.bunny.net http://cdnjs.cloudflare.com; " .
                "img-src 'self' data: https: http: blob:; " .
                "frame-src https://www.google.com/maps/ https://maps.google.com/; " .
-               "connect-src 'self' http://127.0.0.1:5173 ws://127.0.0.1:5173 http: https:; " .
+               "connect-src 'self' http://127.0.0.1:5173 ws://127.0.0.1:5173 {$baseUrlHttps} {$baseUrlHttp} http: https:; " .
                "frame-ancestors 'self'; " .
                "base-uri 'self'; " .
-               "form-action 'self';";
+               "form-action 'self' {$baseUrlHttps} {$baseUrlHttp};";
 
         $response->headers->set('Content-Security-Policy', $csp);
 
