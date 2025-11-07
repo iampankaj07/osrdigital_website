@@ -196,15 +196,23 @@ class Index extends Component
 
     public function delete($testimonialId)
     {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($testimonialId);
+    }
+
+    // Renamed actual delete logic
+    public function performActualDelete($testimonialId)
+    {
         try {
             $testimonial = Testimonial::findOrFail($testimonialId);
+            $testimonialName = $testimonial->name;
             $testimonial->delete();
 
-            $this->flashDelete('Testimonial has been successfully deleted.');
+            $this->flashDelete("Testimonial '{$testimonialName}' has been successfully deleted.");
 
         } catch (\Exception $e) {
             Log::error('Testimonial Delete Error: ' . $e->getMessage());
-            $this->dispatchErrorEvent('Failed to delete testimonial.');
+            $this->dispatchErrorEvent('Failed to delete testimonial. Please try again.');
 
         }
     }

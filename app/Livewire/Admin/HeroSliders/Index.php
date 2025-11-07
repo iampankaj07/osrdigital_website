@@ -254,14 +254,14 @@ class Index extends Component
     {
         try {
             $slider = HeroSlider::findOrFail($sliderId);
+            $sliderTitle = $slider->title ?? 'Hero slide';
             $slider->delete();
 
-            $this->flashSuccess('Hero slide deleted successfully.');
+            $this->flashDelete("Hero slide '{$sliderTitle}' has been successfully deleted.");
 
         } catch (\Exception $e) {
             Log::error('Hero Slider Delete Error: ' . $e->getMessage());
-            $this->flashError('Failed to delete hero slide.');
-
+            $this->dispatchErrorEvent('Failed to delete hero slide. Please try again.');
         }
     }
 
@@ -421,5 +421,21 @@ class Index extends Component
         $heroSliders = $query->paginate($this->perPage);
 
         return view('livewire.admin.hero-sliders.index', compact('heroSliders'));
+    }
+
+    public function performDelete()
+    {
+        try {
+            $sliderId = $this->confirmingDeleteId;
+            $slider = HeroSlider::findOrFail($sliderId);
+            $sliderTitle = $slider->title;
+            $slider->delete();
+
+            $this->dispatchDeleteEvent("Hero slider '{$sliderTitle}' has been successfully deleted.");
+
+        } catch (\Exception $e) {
+            Log::error('Hero Slider Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete hero slider. Please try again.');
+        }
     }
 }

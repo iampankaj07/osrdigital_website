@@ -302,6 +302,7 @@
     </script>
     @endscript
 
+@include('livewire.admin.partials.delete-confirm')
 <style>
     /* Slide Panel Styles */
     .slide-panel-backdrop {
@@ -400,6 +401,7 @@
     }
 </style>
 </div>
+
 
 @push('scripts')
 <script>

@@ -34,14 +34,19 @@ trait WithDeleteConfirmation
             return;
         }
 
-        if (method_exists($this, 'performActualDelete')) {
-            $this->performActualDelete($this->confirmingDeleteId);
-        } elseif (method_exists($this, 'delete')) {
-            // Fallback to existing delete method name
-            $this->delete($this->confirmingDeleteId);
+        try {
+            if (method_exists($this, 'performActualDelete')) {
+                $this->performActualDelete($this->confirmingDeleteId);
+            } elseif (method_exists($this, 'delete')) {
+                // Fallback to existing delete method name
+                $this->delete($this->confirmingDeleteId);
+            }
+        } catch (\Exception $e) {
+            // Error handling is done in performActualDelete or delete method
+        } finally {
+            // Always reset the confirming state to close modal
+            $this->confirmingDeleteId = null;
+            $this->confirmingDeleteType = null;
         }
-
-        $this->confirmingDeleteId = null;
-        $this->confirmingDeleteType = null;
     }
 }

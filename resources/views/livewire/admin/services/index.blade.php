@@ -456,6 +456,5 @@
         transition: all 0.2s ease;
     }
 </style>
+    @include('livewire.admin.partials.delete-confirm')
 </div>
-
-@include('livewire.admin.partials.delete-confirm')

@@ -119,7 +119,7 @@
             <h1 class="h4 mb-1 font-weight-normal">News Management</h1>
             <p class="text-muted small mb-0">Create and manage news articles</p>
         </div>
-        <button wire:click="create" class="btn btn-dark btn-sm">
+        <button wire:click="create" class="btn btn-primary btn-sm">
             <i class="fas fa-plus mr-1"></i>
             Add New Article
         </button>
@@ -481,10 +481,10 @@
                         @else
                             <!-- Tab Navigation -->
                             <div class="btn-group w-100 mb-3" role="tablist" style="display: flex;">
-                                <button type="button" class="btn btn-outline-primary" id="upload-tab" wire:click="$set('imageUploadMethod', 'upload')" style="flex: 1; {{ $imageUploadMethod === 'upload' ? 'background-color: #0d6efd; color: white; border-color: #0d6efd;' : '' }}">
+                                <button type="button" class="btn btn-outline-secondary" id="upload-tab" wire:click="$set('imageUploadMethod', 'upload')" style="flex: 1; {{ $imageUploadMethod === 'upload' ? 'background-color: #6c757d; color: white; border-color: #6c757d;' : '' }}">
                                     <i class="fas fa-cloud-upload-alt mr-2"></i>Upload New
                                 </button>
-                                <button type="button" class="btn btn-outline-primary" id="library-tab" wire:click="$set('imageUploadMethod', 'library')" style="flex: 1; {{ $imageUploadMethod === 'library' ? 'background-color: #0d6efd; color: white; border-color: #0d6efd;' : '' }}">
+                                <button type="button" class="btn btn-primary" id="library-tab" wire:click="$set('imageUploadMethod', 'library')" style="flex: 1; {{ $imageUploadMethod === 'library' ? 'background-color: #0d6efd; color: white; border-color: #0d6efd;' : 'background-color: #e9ecef; color: #6c757d; border-color: #dee2e6;' }}">
                                     <i class="fas fa-images mr-2"></i>Media Library
                                 </button>
                             </div>
@@ -555,7 +555,7 @@
 
                             <!-- Media Library Tab -->
                             @if($imageUploadMethod === 'library')
-                                <div class="border rounded p-4">
+                                <div class="border rounded p-4" style="background-color: #f9fafb;">
                                     <button type="button" wire:click="openMediaSelector" class="btn btn-primary btn-sm">
                                         <i class="fas fa-images mr-2"></i>Select Image from Media Library
                                     </button>

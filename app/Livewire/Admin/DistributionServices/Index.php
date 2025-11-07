@@ -161,11 +161,16 @@ class Index extends Component
     // Renamed actual delete logic
     public function performActualDelete($id)
     {
-        $service = DistributionService::findOrFail($id);
-        $serviceName = $service->title;
-        $service->delete();
+        try {
+            $service = DistributionService::findOrFail($id);
+            $serviceName = $service->title;
+            $service->delete();
 
-        $this->flashDelete("Distribution Service '{$serviceName}' has been successfully deleted.");
+            $this->flashDelete("Distribution Service '{$serviceName}' has been successfully deleted.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Distribution Service Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete distribution service. Please try again.');
+        }
     }
 
     public function toggleActive($id)

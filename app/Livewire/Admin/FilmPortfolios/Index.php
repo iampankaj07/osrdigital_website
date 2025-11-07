@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Livewire\Admin\Traits\WithDeleteConfirmation;
-
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination, WithDeleteConfirmation;
+    use WithPagination, WithDeleteConfirmation, DispatchesAlertEvents;
 
     // Form properties
     public $form = [
@@ -268,13 +268,14 @@ class Index extends Component
     {
         try {
             $film = FilmPortfolio::findOrFail($filmId);
+            $filmTitle = $film->title;
             $film->delete();
 
-            session()->flash('success', 'Film portfolio deleted successfully.');
+            $this->flashDelete("Film portfolio '{$filmTitle}' has been successfully deleted.");
 
         } catch (\Exception $e) {
             Log::error('Film Portfolio Delete Error: ' . $e->getMessage());
-            session()->flash('error', 'Failed to delete film portfolio.');
+            $this->dispatchErrorEvent('Failed to delete film portfolio. Please try again.');
 
         }
     }

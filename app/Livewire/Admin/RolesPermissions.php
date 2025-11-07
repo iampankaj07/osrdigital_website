@@ -9,10 +9,11 @@ use Spatie\Permission\Models\Permission;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Traits\DispatchesAlertEvents;
 
 class RolesPermissions extends Component
 {
-    use WithPagination;
+    use WithPagination, DispatchesAlertEvents;
 
     // Tab Management
     public $activeTab = 'roles';
@@ -278,14 +279,19 @@ class RolesPermissions extends Component
             
             // Check if role has users
             if ($role->users()->count() > 0) {
-                session()->flash('error', 'Cannot delete role that has assigned users');
+                $this->dispatchErrorEvent('Cannot delete role that has assigned users.');
+                $this->closeRoleDeleteModal();
                 return;
             }
 
+            $roleName = $role->name;
             $role->delete();
-            session()->flash('success', 'Role deleted successfully!');
+            $this->closeRoleDeleteModal();
+            $this->flashDelete("Role '{$roleName}' has been successfully deleted.");
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to delete role: ' . $e->getMessage());
+            Log::error('Role Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete role. Please try again.');
+            $this->closeRoleDeleteModal();
         }
     }
 
@@ -360,10 +366,14 @@ class RolesPermissions extends Component
     {
         try {
             $permission = Permission::findOrFail($id);
+            $permissionName = $permission->name;
             $permission->delete();
-            session()->flash('success', 'Permission deleted successfully!');
+            $this->closePermissionDeleteModal();
+            $this->flashDelete("Permission '{$permissionName}' has been successfully deleted.");
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to delete permission: ' . $e->getMessage());
+            Log::error('Permission Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete permission. Please try again.');
+            $this->closePermissionDeleteModal();
         }
     }
 
@@ -434,10 +444,22 @@ class RolesPermissions extends Component
     {
         try {
             $user = User::findOrFail($id);
+            
+            // Prevent deleting the last admin user
+            if ($user->hasRole('admin') && User::role('admin')->count() <= 1) {
+                $this->dispatchErrorEvent('Cannot delete the last admin user!');
+                $this->closeUserDeleteModal();
+                return;
+            }
+            
+            $userName = $user->name;
             $user->delete();
-            session()->flash('success', 'User deleted successfully!');
+            $this->closeUserDeleteModal();
+            $this->flashDelete("User '{$userName}' has been successfully deleted.");
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to delete user: ' . $e->getMessage());
+            Log::error('User Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete user. Please try again.');
+            $this->closeUserDeleteModal();
         }
     }
 

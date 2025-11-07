@@ -338,5 +338,5 @@
         });
     </script>
     @endscript
+    @include('livewire.admin.partials.delete-confirm')
 </div>
-@include('livewire.admin.partials.delete-confirm')

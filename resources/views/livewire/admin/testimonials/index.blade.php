@@ -475,6 +475,7 @@
         });
     </script>
     @endscript
+    @include('livewire.admin.partials.delete-confirm')
 </div>
 
 @push('scripts')
@@ -489,4 +490,3 @@ document.addEventListener('livewire:initialized', function() {
 });
 </script>
 @endpush
-@include('livewire.admin.partials.delete-confirm')

@@ -7,11 +7,14 @@ use Livewire\WithFileUploads;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\LivewireFilepond\WithFilePond;
+use App\Traits\DispatchesAlertEvents;
+use App\Livewire\Admin\Traits\WithDeleteConfirmation;
 
 class Index extends Component
 {
-    use WithFileUploads, WithFilePond;
+    use WithFileUploads, WithFilePond, DispatchesAlertEvents, WithDeleteConfirmation;
 
     public $uploadedFiles = [];
     public $uploadSuccess = false;
@@ -23,50 +26,32 @@ class Index extends Component
     // Property to force refresh after upload
     public $refreshKey = 0;
 
-    // Add property to track pending deletion id
-    public $confirmingDeleteId = null;
-
     protected $listeners = ['refreshComponent' => '$refresh'];
 
-    public function deleteMedia($mediaId)
+    public function delete($mediaId)
+    {
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($mediaId);
+    }
+
+    /**
+     * Actual deletion logic separated so trait can call performActualDelete()
+     */
+    public function performActualDelete($mediaId)
     {
         try {
-            $media = Media::find($mediaId);
-            if ($media) {
-                $media->delete();
-                // Increment refresh key to force component re-render
-                $this->refreshKey++;
-                $this->dispatch('mediaDeleted');
-            }
+            $media = Media::findOrFail($mediaId);
+            $mediaName = $media->name;
+            $media->delete();
+            
+            // Increment refresh key to force component re-render
+            $this->refreshKey++;
+            $this->dispatch('mediaDeleted');
+            
+            $this->flashDelete("Media file '{$mediaName}' has been successfully deleted.");
         } catch (\Exception $e) {
-            $this->errorMessage = $e->getMessage();
-        }
-    }
-
-    /**
-     * Start delete confirmation for a media item.
-     */
-    public function confirmDelete($mediaId)
-    {
-        $this->confirmingDeleteId = $mediaId;
-    }
-
-    /**
-     * Cancel the delete confirmation dialog.
-     */
-    public function cancelDelete()
-    {
-        $this->confirmingDeleteId = null;
-    }
-
-    /**
-     * Perform the deletion after user confirmation.
-     */
-    public function performDelete()
-    {
-        if ($this->confirmingDeleteId) {
-            $this->deleteMedia($this->confirmingDeleteId);
-            $this->confirmingDeleteId = null; // reset after deletion
+            Log::error('Media Library Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete media file. Please try again.');
         }
     }
 

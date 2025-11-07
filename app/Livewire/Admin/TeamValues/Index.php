@@ -6,11 +6,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\TeamValue;
 use App\Livewire\Admin\Traits\WithDeleteConfirmation;
-
+use App\Traits\DispatchesAlertEvents;
 
 class Index extends Component
 {
-    use WithPagination, WithDeleteConfirmation;
+    use WithPagination, WithDeleteConfirmation, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -146,10 +146,23 @@ class Index extends Component
 
     public function delete($id)
     {
-        $teamValue = TeamValue::findOrFail($id);
-        $teamValue->delete();
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
 
-        session()->flash('success', 'Team Value deleted successfully!');
+    // Renamed actual delete logic
+    public function performActualDelete($id)
+    {
+        try {
+            $teamValue = TeamValue::findOrFail($id);
+            $teamValueTitle = $teamValue->title;
+            $teamValue->delete();
+
+            $this->flashDelete("Team Value '{$teamValueTitle}' has been successfully deleted.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Team Value Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete team value. Please try again.');
+        }
     }
 
     public function toggleActive($id)

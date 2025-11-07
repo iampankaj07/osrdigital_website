@@ -7,10 +7,12 @@ use Livewire\WithPagination;
 use App\Models\FilmCategory;
 use Illuminate\Support\Str;
 use App\Livewire\Admin\Traits\WithDeleteConfirmation;
+use App\Traits\DispatchesAlertEvents;
+use Illuminate\Support\Facades\Log;
 
 class Index extends Component
 {
-    use WithPagination, WithDeleteConfirmation;
+    use WithPagination, WithDeleteConfirmation, DispatchesAlertEvents;
 
     public $search = '';
     public $perPage = 10;
@@ -206,10 +208,16 @@ class Index extends Component
     // Renamed actual delete logic
     public function performActualDelete($id)
     {
-        $category = FilmCategory::findOrFail($id);
-        $category->delete();
+        try {
+            $category = FilmCategory::findOrFail($id);
+            $categoryName = $category->name;
+            $category->delete();
 
-        session()->flash('success', 'Film Category deleted successfully!');
+            $this->flashDelete("Film Category '{$categoryName}' has been successfully deleted.");
+        } catch (\Exception $e) {
+            Log::error('Film Category Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete film category. Please try again.');
+        }
     }
 
     public function toggleActive($id)

@@ -184,10 +184,30 @@ class Index extends Component
 
     public function delete($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+        // Legacy direct delete kept for backward compatibility; route through confirm system
+        $this->performActualDelete($id);
+    }
 
-        $this->flashDelete('Role has been successfully deleted.');
+    // Renamed actual delete logic
+    public function performActualDelete($id)
+    {
+        try {
+            $role = Role::findOrFail($id);
+            
+            // Check if role has users
+            if ($role->users()->count() > 0) {
+                $this->dispatchErrorEvent('Cannot delete role that has assigned users.');
+                return;
+            }
+            
+            $roleName = $role->name;
+            $role->delete();
+
+            $this->flashDelete("Role '{$roleName}' has been successfully deleted.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Role Delete Error: ' . $e->getMessage());
+            $this->dispatchErrorEvent('Failed to delete role. Please try again.');
+        }
     }
 
     public function mount()

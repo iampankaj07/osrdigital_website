@@ -160,7 +160,7 @@
                                    class="text-blue-600 hover:text-blue-800 text-xs">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>
-                                <button wire:click="confirmDelete({{ $media->id }})"
+                                <button wire:click="confirmDelete({{ $media->id }}, 'media file')"
                                         class="text-red-600 hover:text-red-800 text-xs">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -180,23 +180,7 @@
         @endif
     </div>
 
-    <!-- Confirmation Modal -->
-    @if($confirmingDeleteId)
-        <div class="fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0,0,0,0.5);">
-            <div class="bg-white rounded-lg shadow-xl max-w-sm w-full mx-4">
-                <div class="p-4 border-b">
-                    <h3 class="text-lg font-semibold">Delete file?</h3>
-                </div>
-                <div class="p-4 text-sm text-gray-700">
-                    This action will permanently remove the file from the media library. This cannot be undone.
-                </div>
-                <div class="p-4 flex justify-end gap-2 border-t">
-                    <button wire:click="cancelDelete" class="px-4 py-2 rounded border bg-white text-gray-700 hover:bg-gray-50">Cancel</button>
-                    <button wire:click="performDelete" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Delete</button>
-                </div>
-            </div>
-        </div>
-    @endif
+    @include('livewire.admin.partials.delete-confirm')
 </div>
 
 @push('scripts')

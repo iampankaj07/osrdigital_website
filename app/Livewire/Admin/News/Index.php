@@ -257,7 +257,7 @@ class Index extends Component
             $newsTitle = $news->title;
             $news->delete();
 
-            $this->dispatchDeleteEvent("News article '{$newsTitle}' has been successfully deleted.");
+            $this->flashDelete("News article '{$newsTitle}' has been successfully deleted.");
 
         } catch (\Exception $e) {
             Log::error('News Delete Error: ' . $e->getMessage());
