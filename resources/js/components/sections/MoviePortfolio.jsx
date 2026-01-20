@@ -17,9 +17,10 @@ function MoviePortfolio() {
                 setLoading(true);
 
                 // Fetch categories and films in parallel
+                // Add limit=999 to get all films instead of default 12
                 const [categoriesResponse, filmsResponse] = await Promise.all([
                     fetch('/api/film-categories'),
-                    fetch('/api/film-portfolios')
+                    fetch('/api/film-portfolios?limit=999')
                 ]);
 
                 const categoriesData = await categoriesResponse.json();
@@ -101,14 +102,12 @@ function MoviePortfolio() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
-                        isDark ? 'text-white' : 'text-gray-900'
-                    }`}>
+                    <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
                         Our Film Portfolio
                     </h2>
-                    <p className={`text-xl max-w-3xl mx-auto mb-8 ${
-                        isDark ? 'text-gray-300' : 'text-gray-600'
-                    }`}>
+                    <p className={`text-xl max-w-3xl mx-auto mb-8 ${isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
                         Discover our curated collection of exceptional films, documentaries, and series
                         that have captivated audiences worldwide.
                     </p>
@@ -119,11 +118,10 @@ function MoviePortfolio() {
                             <button
                                 key={category.id}
                                 onClick={() => setActiveFilter(category.id.toString())}
-                                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                                    activeFilter === category.id.toString()
-                                        ? 'bg-brand-orange-500 text-white shadow-lg'
-                                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-brand-orange-50 dark:hover:bg-brand-orange-900/20 hover:text-brand-orange-600 dark:hover:text-brand-orange-400'
-                                }`}
+                                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${activeFilter === category.id.toString()
+                                    ? 'bg-brand-orange-500 text-white shadow-lg'
+                                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-brand-orange-50 dark:hover:bg-brand-orange-900/20 hover:text-brand-orange-600 dark:hover:text-brand-orange-400'
+                                    }`}
                                 style={activeFilter !== category.id.toString() ? { borderColor: category.color } : {}}
                             >
                                 {category.name}
@@ -139,9 +137,8 @@ function MoviePortfolio() {
                         const isExternalLink = movie.link && (movie.link.startsWith('http://') || movie.link.startsWith('https://'));
 
                         const CardContent = () => (
-                            <div className={`block group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${
-                                isDark ? 'bg-gray-800' : 'bg-white'
-                            }`}>
+                            <div className={`block group rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${isDark ? 'bg-gray-800' : 'bg-white'
+                                }`}>
                                 {/* Movie Poster */}
                                 <div className="relative overflow-hidden movie-poster">
                                     {movie.image_url ? (
@@ -155,12 +152,10 @@ function MoviePortfolio() {
                                             }}
                                         />
                                     ) : null}
-                                    <div className={`${movie.image_url ? 'hidden' : 'flex'} absolute inset-0 items-center justify-center ${
-                                        isDark ? 'bg-gray-700' : 'bg-gray-200'
-                                    }`}>
-                                        <div className={`text-center ${
-                                            isDark ? 'text-gray-400' : 'text-gray-500'
+                                    <div className={`${movie.image_url ? 'hidden' : 'flex'} absolute inset-0 items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-gray-200'
                                         }`}>
+                                        <div className={`text-center ${isDark ? 'text-gray-400' : 'text-gray-500'
+                                            }`}>
                                             <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2M9 12h6m-6 4h6" />
                                             </svg>
@@ -200,15 +195,13 @@ function MoviePortfolio() {
                                         </span>
                                     </div>
 
-                                    <h3 className={`text-xl font-bold mb-3 group-hover:text-brand-orange-600 dark:group-hover:text-brand-orange-400 transition-colors duration-300 ${
-                                        isDark ? 'text-white' : 'text-gray-900'
-                                    }`}>
+                                    <h3 className={`text-xl font-bold mb-3 group-hover:text-brand-orange-600 dark:group-hover:text-brand-orange-400 transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-900'
+                                        }`}>
                                         {movie.title}
                                     </h3>
 
-                                    <p className={`mb-4 line-clamp-2 ${
-                                        isDark ? 'text-gray-300' : 'text-gray-600'
-                                    }`}>
+                                    <p className={`mb-4 line-clamp-2 ${isDark ? 'text-gray-300' : 'text-gray-600'
+                                        }`}>
                                         {movie.description}
                                     </p>
 
@@ -250,17 +243,24 @@ function MoviePortfolio() {
                 </div>
 
                 {/* CTA Section */}
-                <div className="text-center">
-                    <Link
-                        to="/portfolio"
-                        className="inline-flex items-center px-8 py-4 bg-brand-orange-500 hover:bg-brand-orange-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                    >
-                        <span>View All Films</span>
-                        <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </Link>
-                </div>
+                {filteredMovies.length > 0 && activeFilter !== 'all' && (
+                    <div className="text-center">
+                        <div className={`inline-block p-8 rounded-xl ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                            <p className={`text-lg font-semibold mb-4 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                Showing {filteredMovies.length} film{filteredMovies.length !== 1 ? 's' : ''}
+                            </p>
+                            <button
+                                onClick={() => setActiveFilter('all')}
+                                className="inline-flex items-center px-8 py-4 bg-brand-orange-500 hover:bg-brand-orange-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                            >
+                                <span>View All Films</span>
+                                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );
