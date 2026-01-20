@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, Suspense, lazy } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,21 +7,144 @@ import { faLinkedin as faLinkedinBrand, faTwitter as faTwitterBrand } from '@for
 import CompactHero from '../components/sections/CompactHero';
 import { getSafeImageUrl, handleAvatarError } from '../utils/imageUtils';
 
+// Team Card Component - Memoized for performance
+const TeamCard = React.memo(({ member, isDark }) => {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [imageError, setImageError] = useState(false);
+
+    const handleImageLoad = useCallback(() => {
+        setImageLoaded(true);
+    }, []);
+
+    const handleImageError = useCallback(() => {
+        setImageError(true);
+    }, []);
+
+    return (
+        <div className={`group p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'}`}>
+            <div className="text-center mb-6">
+                {/* Avatar with loading skeleton */}
+                <div className="relative w-24 h-24 mx-auto mb-4">
+                    {!imageLoaded && !imageError && (
+                        <div className={`absolute inset-0 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-300'} animate-pulse`} />
+                    )}
+                    <img
+                        src={getSafeImageUrl(member.avatar, member.name, 300, 300)}
+                        alt={`${member.name} avatar`}
+                        loading="lazy"
+                        className={`w-full h-full rounded-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        onLoad={handleImageLoad}
+                        onError={(e) => {
+                            setImageError(true);
+                            handleAvatarError(e, member.name, 300);
+                        }}
+                    />
+                    {imageError && (
+                        <div className={`absolute inset-0 rounded-full flex items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                            <span className={`text-2xl font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                                {member.name.charAt(0).toUpperCase()}
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                <h3 className={`text-xl font-bold mb-2 group-hover:text-brand-orange-600 dark:group-hover:text-brand-orange-400 transition-colors ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {member.name}
+                </h3>
+                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 ${isDark ? 'bg-brand-orange-500/20 text-brand-orange-400' : 'bg-brand-orange-100 text-brand-orange-600'}`}>
+                    {member.position || 'Team Member'}
+                </div>
+                <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {member.department || 'Department'}
+                </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex justify-center space-x-3">
+                {member.linkedin && (
+                    <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Visit ${member.name}'s LinkedIn`}
+                        className={`p-2 rounded-full transition-all duration-300 ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'}`}
+                    >
+                        <FontAwesomeIcon icon={faLinkedinBrand} />
+                    </a>
+                )}
+                {member.twitter && (
+                    <a
+                        href={member.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Visit ${member.name}'s Twitter`}
+                        className={`p-2 rounded-full transition-all duration-300 ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'}`}
+                    >
+                        <FontAwesomeIcon icon={faTwitterBrand} />
+                    </a>
+                )}
+                {member.email && (
+                    <a
+                        href={`mailto:${member.email}`}
+                        aria-label={`Email ${member.name}`}
+                        className={`p-2 rounded-full transition-all duration-300 ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-brand-orange-400' : 'hover:bg-gray-200 text-gray-500 hover:text-brand-orange-600'}`}
+                    >
+                        <FontAwesomeIcon icon={faEnvelope} />
+                    </a>
+                )}
+            </div>
+        </div>
+    );
+});
+
+TeamCard.displayName = 'TeamCard';
+
+// Values Card Component - Memoized
+const ValueCard = React.memo(({ value, isDark }) => (
+    <div className={`p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-50 hover:bg-white'}`}>
+        <div className="text-4xl mb-4 text-brand-orange-500">
+            <i className={value.icon}></i>
+        </div>
+        <h3 className={`text-lg font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {value.title}
+        </h3>
+        <p className={`text-sm line-clamp-3 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            {value.description}
+        </p>
+    </div>
+));
+
+ValueCard.displayName = 'ValueCard';
+
+// Culture Card Component - Memoized
+const CultureCard = React.memo(({ item, isDark }) => (
+    <div className={`p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center group ${isDark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'}`}>
+        <div className={`text-4xl mb-4 group-hover:scale-110 transition-transform duration-300 ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`}>
+            <FontAwesomeIcon icon={item.icon} />
+        </div>
+        <h3 className={`text-lg font-semibold mb-3 group-hover:text-brand-orange-600 dark:group-hover:text-brand-orange-400 transition-colors ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {item.title}
+        </h3>
+        <p className={`text-sm line-clamp-3 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            {item.description}
+        </p>
+    </div>
+));
+
+CultureCard.displayName = 'CultureCard';
+
 function Team() {
     const { isDark } = useTheme();
-    const [isVisible, setIsVisible] = useState(false);
     const [teamMembers, setTeamMembers] = useState([]);
     const [values, setValues] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     // Fetch team members data
-    const fetchTeamMembers = async () => {
+    const fetchTeamMembers = useCallback(async () => {
         try {
             const response = await fetch('/api/team-members');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             setTeamMembers(data.teamMembers || []);
         } catch (error) {
@@ -30,26 +152,22 @@ function Team() {
             setError('Unable to load team members. Please try again later.');
             setTeamMembers([]);
         }
-    };
+    }, []);
 
-    // Fetch team values data - only from API
-    const fetchTeamValues = async () => {
+    // Fetch team values data
+    const fetchTeamValues = useCallback(async () => {
         try {
             const response = await fetch('/api/team-values');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             setValues(data.values || []);
         } catch (error) {
-            // Show error - no fallback data
             console.error('Failed to load team values:', error);
             setValues([]);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        setIsVisible(true);
         document.title = "Our Team - OSR Digital";
         let metaDescription = document.querySelector('meta[name="description"]');
         if (!metaDescription) {
@@ -67,7 +185,7 @@ function Team() {
         };
 
         fetchData();
-    }, []);
+    }, [fetchTeamMembers, fetchTeamValues]);
 
 
 
@@ -139,62 +257,14 @@ function Team() {
                             ))}
                         </div>
                     ) : teamMembers.length === 0 ? (
-                        <div className={`p-8 rounded-lg text-center ${isDark ? 'bg-gray-800 text-red-400' : 'bg-red-50 text-red-600'}`}>
-                            <p className="text-lg font-semibold">No team members found</p>
-                            <p className="text-sm">Please add team members in the admin panel</p>
+                        <div className={`p-12 rounded-xl text-center ${isDark ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                            <p className={`text-lg font-semibold ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>No team members found</p>
+                            <p className={`text-sm mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Please add team members in the admin panel</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {teamMembers.map((member, index) => (
-                                <div key={index} className={`p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl ${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white hover:bg-gray-50'
-                                    }`}>
-                                    <div className="text-center mb-6">
-                                        <img
-                                            src={getSafeImageUrl(member.avatar, member.name, 300, 300)}
-                                            alt={`${member.name} avatar`}
-                                            className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                                            onError={(e) => handleAvatarError(e, member.name, 300)}
-                                        />
-                                        <h3 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                            {member.name}
-                                        </h3>
-                                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-2 ${isDark ? 'bg-brand-orange-500/20 text-brand-orange-400' : 'bg-brand-orange-100 text-brand-orange-600'
-                                            }`}>
-                                            {member.position}
-                                        </div>
-                                        <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            {member.department}
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-center space-x-4">
-                                        <a
-                                            href={member.linkedin}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
-                                                }`}
-                                        >
-                                            <FontAwesomeIcon icon={faLinkedinBrand} />
-                                        </a>
-                                        <a
-                                            href={member.twitter}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-blue-400' : 'hover:bg-gray-200 text-gray-500 hover:text-blue-600'
-                                                }`}
-                                        >
-                                            <FontAwesomeIcon icon={faTwitterBrand} />
-                                        </a>
-                                        <a
-                                            href={`mailto:${member.email}`}
-                                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-600 text-gray-400 hover:text-brand-orange-400' : 'hover:bg-gray-200 text-gray-500 hover:text-brand-orange-600'
-                                                }`}
-                                        >
-                                            <FontAwesomeIcon icon={faEnvelope} />
-                                        </a>
-                                    </div>
-                                </div>
+                            {teamMembers.map((member) => (
+                                <TeamCard key={member.id} member={member} isDark={isDark} />
                             ))}
                         </div>
                     )}
@@ -225,25 +295,14 @@ function Team() {
                             ))}
                         </div>
                     ) : values.length === 0 ? (
-                        <div className={`p-8 rounded-lg text-center ${isDark ? 'bg-gray-800 text-red-400' : 'bg-red-50 text-red-600'}`}>
-                            <p className="text-lg font-semibold">No team values found</p>
-                            <p className="text-sm">Please add team values in the admin panel</p>
+                        <div className={`p-12 rounded-xl text-center ${isDark ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                            <p className={`text-lg font-semibold ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>No team values found</p>
+                            <p className={`text-sm mt-2 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>Please add team values in the admin panel</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {values.map((value, index) => (
-                                <div key={index} className={`p-6 rounded-lg shadow-lg text-center ${isDark ? 'bg-gray-800' : 'bg-gray-50'
-                                    }`}>
-                                    <div className="text-4xl mb-4" style={{ color: '#EC681D' }}>
-                                        <i className={value.icon}></i>
-                                    </div>
-                                    <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                        {value.title}
-                                    </h3>
-                                    <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                        {value.description}
-                                    </p>
-                                </div>
+                            {values.map((value) => (
+                                <ValueCard key={value.id} value={value} isDark={isDark} />
                             ))}
                         </div>
                     )}
@@ -264,18 +323,7 @@ function Team() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {culture.map((item, index) => (
-                            <div key={index} className={`p-6 rounded-lg shadow-lg text-center ${isDark ? 'bg-gray-700' : 'bg-white'
-                                }`}>
-                                <div className={`text-4xl mb-4 ${isDark ? 'text-brand-orange-400' : 'text-brand-orange-600'}`}>
-                                    <FontAwesomeIcon icon={item.icon} />
-                                </div>
-                                <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                    {item.title}
-                                </h3>
-                                <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                                    {item.description}
-                                </p>
-                            </div>
+                            <CultureCard key={index} item={item} isDark={isDark} />
                         ))}
                     </div>
                 </div>
