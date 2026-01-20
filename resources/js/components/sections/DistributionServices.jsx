@@ -94,14 +94,12 @@ function DistributionServices() {
             <div className="container-minimal">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <h2 className={`text-3xl md:text-4xl font-bold mb-6 text-minimal-bold ${
-                        isDark ? 'text-white' : 'text-gray-900'
-                    }`}>
+                    <h2 className={`text-3xl md:text-4xl font-bold mb-6 text-minimal-bold ${isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
                         Our Distribution Services
                     </h2>
-                    <p className={`text-lg max-w-3xl mx-auto text-minimal ${
-                        isDark ? 'text-gray-300' : 'text-gray-600'
-                    }`}>
+                    <p className={`text-lg max-w-3xl mx-auto text-minimal ${isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>
                         We provide comprehensive movie distribution services across all platforms and markets,
                         ensuring your content reaches the right audience at the right time.
                     </p>
@@ -113,35 +111,34 @@ function DistributionServices() {
                         {services.map((service, index) => (
                             <div
                                 key={service.id || index}
-                                className={`group p-6 rounded-xl transition-all duration-200 hover-subtle ${
-                                    isDark
-                                        ? 'card-minimal-dark hover:border-brand-orange-500/30'
-                                        : 'card-minimal hover:border-brand-orange-200'
-                                }`}
+                                className={`group transform transition-all duration-1000 hover:-translate-y-2`}
+                                style={{ transitionDelay: `${index * 100}ms` }}
                             >
-                                <div className="flex items-start gap-4">
-                                    <div className={`p-3 rounded-lg ${
-                                        isDark
-                                            ? 'bg-brand-orange-500/10 text-brand-orange-400'
-                                            : 'bg-brand-orange-100 text-brand-orange-600'
+                                <div className={`h-full p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ${isDark
+                                        ? 'bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800'
+                                        : 'bg-gradient-to-br from-white to-gray-50 hover:to-white border border-gray-100'
                                     }`}>
-                                        {renderIcon(service)}
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <div className={`p-4 rounded-xl ${isDark
+                                                ? 'bg-brand-orange-500/20 text-brand-orange-400'
+                                                : 'bg-brand-orange-100 text-brand-orange-600'
+                                            } group-hover:scale-110 transition-transform duration-300`}>
+                                            <div className="text-3xl">
+                                                {renderIcon(service)}
+                                            </div>
+                                        </div>
+                                        <div className="w-12 h-1 bg-brand-orange-500 rounded-full mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     </div>
 
-                                    <div className="flex-1">
-                                        <h3 className={`text-lg font-semibold mb-3 text-minimal-bold ${
-                                            isDark ? 'text-white' : 'text-gray-900'
+                                    <h3 className={`text-xl font-bold mb-3 group-hover:text-brand-orange-600 dark:group-hover:text-brand-orange-400 transition-colors ${isDark ? 'text-white' : 'text-gray-900'
                                         }`}>
-                                            {service.title}
-                                        </h3>
+                                        {service.title}
+                                    </h3>
 
-                                        <p className={`text-sm text-minimal mb-4 ${
-                                            isDark ? 'text-gray-300' : 'text-gray-600'
+                                    <p className={`text-sm leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-600'
                                         }`}>
-                                            {service.description}
-                                        </p>
-
-                                    </div>
+                                        {service.description}
+                                    </p>
                                 </div>
                             </div>
                         ))}
