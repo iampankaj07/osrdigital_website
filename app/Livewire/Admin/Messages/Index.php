@@ -179,6 +179,23 @@ class Index extends Component
         $this->showSlidePanel = false;
     }
 
+    public function closeSlidePanel()
+    {
+        // Start the close animation flow used across admin components
+        $this->isClosing = true;
+        $this->dispatch('close-panel-animation');
+    }
+
+    public function finishClosing()
+    {
+        // Finalize closing: hide panel and reset state
+        $this->showSlidePanel = false;
+        $this->isClosing = false;
+        $this->resetForm();
+        $this->editingId = null;
+        $this->isCreating = false;
+    }
+
     public function render()
     {
         $query = Message::query();

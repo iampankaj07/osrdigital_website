@@ -133,4 +133,24 @@
             </div>
         </div>
     @endif
+
+    @script
+    <script>
+        $wire.on('close-panel-animation', () => {
+            setTimeout(() => {
+                $wire.finishClosing();
+            }, 300);
+        });
+
+        Livewire.hook('morph.updated', ({ el, component }) => {
+            const panel = el.querySelector('.slide-panel');
+            if (panel && !panel.dataset.closingHandled) {
+                panel.dataset.closingHandled = 'true';
+                setTimeout(() => {
+                    $wire.finishClosing();
+                }, 300);
+            }
+        });
+    </script>
+    @endscript
 </div>
