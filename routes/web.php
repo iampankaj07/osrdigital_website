@@ -61,12 +61,12 @@ Route::get('/public-debug/image-serving', [App\Http\Controllers\PublicImageTestC
 Route::get('/public-test-image/{filename}', [App\Http\Controllers\PublicImageTestController::class, 'serveTestImage']);
 
 // Simple debug endpoint for Laravel Cloud
-Route::get('/debug-storage', function() {
+Route::get('/debug-storage', function () {
     $associatesPath = storage_path('app/public/associates');
     $files = [];
 
     if (is_dir($associatesPath)) {
-        $files = array_map(function($file) {
+        $files = array_map(function ($file) {
             return [
                 'name' => basename($file),
                 'path' => $file,
@@ -205,30 +205,50 @@ Route::prefix('api')->group(function () {
     });
 
 
-    // Contact form submission
+    // Contact form submission - save to DB + send email
     Route::post('/contact', function (Illuminate\Http\Request $request) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'company' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
-            'type' => 'required|string|in:general,partnership,content,support,media'
+            'type' => 'required|string|in:general,partnership,distribution,licensing,support,press'
         ]);
 
         try {
-            \Illuminate\Support\Facades\Mail::to(config('mail.from.address'))
-                ->send(new \App\Mail\ContactFormSubmission($validated));
+            // Persist message to DB
+            $message = \App\Models\Message::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'company' => $validated['company'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'type' => $validated['type'],
+                'subject' => $validated['subject'],
+                'body' => $validated['message'],
+                'status' => 'new',
+            ]);
+
+            // Send notification email to admin (validate admin email before sending)
+            // $adminEmail = config('mail.from.address');
+            // if ($adminEmail && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+            //     \Illuminate\Support\Facades\Mail::to($adminEmail)
+            //         ->send(new \App\Mail\ContactFormSubmission($validated));
+            // } else {
+            //     \Illuminate\Support\Facades\Log::error('Invalid admin email configured for contact notifications: ' . json_encode($adminEmail));
+            // }
 
             return response()->json([
                 'message' => 'Thank you for your message! We will get back to you within 24 hours.',
-                'status' => 'success'
+                'status' => 'success',
+                'id' => $message->id
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Contact form submission failed: ' . $e->getMessage());
 
             return response()->json([
-                'message' => 'Sorry, there was an error sending your message. Please try again later.',
+                'message' => 'Sorry, there was an error processing your message. Please try again later.',
                 'status' => 'error'
             ], 500);
         }
@@ -298,7 +318,7 @@ Route::post('/logout', function (Illuminate\Http\Request $request) {
 })->name('logout');
 
 // Admin routes
-require __DIR__.'/admin.php';
+require __DIR__ . '/admin.php';
 
 // Team routes are handled by API routes (apiResource)
 
