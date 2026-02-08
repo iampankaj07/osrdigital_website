@@ -62,10 +62,44 @@ function Contact() {
         setSubmitStatus(null);
 
         try {
-            // Simulate API call
-            // Removed artificial delay for faster response
+            const csrfTokenEl = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = csrfTokenEl ? csrfTokenEl.getAttribute('content') : null;
 
-            // Reset form
+            const payload = {
+                name: formData.name,
+                email: formData.email,
+                company: formData.company,
+                phone: formData.phone,
+                subject: formData.subject,
+                message: formData.message,
+                type: formData.inquiryType,
+            };
+
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+                },
+                body: JSON.stringify(payload),
+            });
+
+            let data;
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                data = await res.json();
+            } else {
+                const text = await res.text();
+                throw new Error(text || `Unexpected non-JSON response (status ${res.status})`);
+            }
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Failed to submit');
+            }
+
+            // reset only on success
             setFormData({
                 name: '',
                 email: '',
@@ -76,9 +110,10 @@ function Contact() {
                 inquiryType: 'general'
             });
 
-            setSubmitStatus({ type: 'success', message: 'Message sent successfully! We\'ll get back to you soon.' });
+            setSubmitStatus({ type: 'success', message: data.message || 'Message sent successfully! We\'ll get back to you soon.' });
         } catch (error) {
-            setSubmitStatus({ type: 'error', message: 'There was an error sending your message. Please try again.' });
+            console.error('Contact submit error:', error);
+            setSubmitStatus({ type: 'error', message: error.message || 'There was an error sending your message. Please try again.' });
         } finally {
             setIsSubmitting(false);
         }
@@ -93,9 +128,8 @@ function Contact() {
                         <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
                             {/* Badge/Subtitle */}
                             <div className="mb-6">
-                                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
-                                    isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'
-                                }`}>
+                                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'
+                                    }`}>
                                     <div className="w-2 h-2 rounded-full bg-brand-orange-500 mr-2"></div>
                                     {contactData?.hero?.subtitle || 'Get In Touch'}
                                 </div>
@@ -103,14 +137,12 @@ function Contact() {
 
                             {/* Main Title */}
                             <div className="mb-8">
-                                <h1 className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                }`}>
+                                <h1 className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight ${isDark ? 'text-white' : 'text-gray-900'
+                                    }`}>
                                     {contactData?.hero?.title || 'Contact Us'}
                                 </h1>
-                                <div className={`text-lg md:text-xl leading-relaxed max-w-3xl mx-auto ${
-                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                }`}>
+                                <div className={`text-lg md:text-xl leading-relaxed max-w-3xl mx-auto ${isDark ? 'text-gray-300' : 'text-gray-600'
+                                    }`}>
                                     {contactData?.hero?.description || 'Get in touch with our team. We\'d love to hear from you and discuss how we can help.'}
                                 </div>
                             </div>
@@ -145,11 +177,10 @@ function Contact() {
                                             value={formData.name}
                                             onChange={handleInputChange}
                                             required
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
-                                                isDark
-                                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                                    : 'bg-white border-gray-300 text-gray-900'
-                                            }`}
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${isDark
+                                                ? 'bg-gray-700 border-gray-600 text-white'
+                                                : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
                                             placeholder="Your full name"
                                         />
                                     </div>
@@ -163,11 +194,10 @@ function Contact() {
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             required
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
-                                                isDark
-                                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                                    : 'bg-white border-gray-300 text-gray-900'
-                                            }`}
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${isDark
+                                                ? 'bg-gray-700 border-gray-600 text-white'
+                                                : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
                                             placeholder="your@email.com"
                                         />
                                     </div>
@@ -183,11 +213,10 @@ function Contact() {
                                             name="company"
                                             value={formData.company}
                                             onChange={handleInputChange}
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
-                                                isDark
-                                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                                    : 'bg-white border-gray-300 text-gray-900'
-                                            }`}
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${isDark
+                                                ? 'bg-gray-700 border-gray-600 text-white'
+                                                : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
                                             placeholder="Your company name"
                                         />
                                     </div>
@@ -200,11 +229,10 @@ function Contact() {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleInputChange}
-                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
-                                                isDark
-                                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                                    : 'bg-white border-gray-300 text-gray-900'
-                                            }`}
+                                            className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${isDark
+                                                ? 'bg-gray-700 border-gray-600 text-white'
+                                                : 'bg-white border-gray-300 text-gray-900'
+                                                }`}
                                             placeholder="+1 (555) 123-4567"
                                         />
                                     </div>
@@ -219,11 +247,10 @@ function Contact() {
                                         value={formData.inquiryType}
                                         onChange={handleInputChange}
                                         required
-                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
-                                            isDark
-                                                ? 'bg-gray-700 border-gray-600 text-white'
-                                                : 'bg-white border-gray-300 text-gray-900'
-                                        }`}
+                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${isDark
+                                            ? 'bg-gray-700 border-gray-600 text-white'
+                                            : 'bg-white border-gray-300 text-gray-900'
+                                            }`}
                                     >
                                         <option value="general">General Inquiry</option>
                                         <option value="partnership">Partnership Opportunity</option>
@@ -244,11 +271,10 @@ function Contact() {
                                         value={formData.subject}
                                         onChange={handleInputChange}
                                         required
-                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${
-                                            isDark
-                                                ? 'bg-gray-700 border-gray-600 text-white'
-                                                : 'bg-white border-gray-300 text-gray-900'
-                                        }`}
+                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 ${isDark
+                                            ? 'bg-gray-700 border-gray-600 text-white'
+                                            : 'bg-white border-gray-300 text-gray-900'
+                                            }`}
                                         placeholder="What's this about?"
                                     />
                                 </div>
@@ -263,21 +289,19 @@ function Contact() {
                                         onChange={handleInputChange}
                                         required
                                         rows="6"
-                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 resize-none ${
-                                            isDark
-                                                ? 'bg-gray-700 border-gray-600 text-white'
-                                                : 'bg-white border-gray-300 text-gray-900'
-                                        }`}
+                                        className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-brand-orange-500 resize-none ${isDark
+                                            ? 'bg-gray-700 border-gray-600 text-white'
+                                            : 'bg-white border-gray-300 text-gray-900'
+                                            }`}
                                         placeholder="Tell us more about your inquiry..."
                                     />
                                 </div>
 
                                 {submitStatus && (
-                                    <div className={`p-4 rounded-lg flex items-center ${
-                                        submitStatus.type === 'success'
-                                            ? 'bg-green-100 text-green-800 border border-green-200'
-                                            : 'bg-red-100 text-red-800 border border-red-200'
-                                    }`}>
+                                    <div className={`p-4 rounded-lg flex items-center ${submitStatus.type === 'success'
+                                        ? 'bg-green-100 text-green-800 border border-green-200'
+                                        : 'bg-red-100 text-red-800 border border-red-200'
+                                        }`}>
                                         <FontAwesomeIcon
                                             icon={submitStatus.type === 'success' ? faCheckCircle : faExclamationCircle}
                                             className="mr-2"
@@ -289,9 +313,8 @@ function Contact() {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className={`w-full bg-brand-orange-500 hover:bg-brand-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${
-                                        isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-                                    }`}
+                                    className={`w-full bg-brand-orange-500 hover:bg-brand-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                                        }`}
                                 >
                                     {isSubmitting ? (
                                         <>

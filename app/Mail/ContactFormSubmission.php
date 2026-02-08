@@ -28,9 +28,23 @@ class ContactFormSubmission extends Mailable
      */
     public function envelope(): Envelope
     {
+        // Validate reply-to email — if invalid, omit replyTo to avoid mailer exceptions
+        $replyTo = [];
+
+        if (!empty($this->contactData['email']) && filter_var($this->contactData['email'], FILTER_VALIDATE_EMAIL)) {
+            $name = $this->contactData['name'] ?? null;
+            $replyTo = [$this->contactData['email'] => $name];
+        } else {
+            // Log a warning for visibility — don't block email sending
+
+            if (!empty($this->contactData['email'])) {
+                \Illuminate\Support\Facades\Log::warning('Invalid reply-to email in contact submission: ' . $this->contactData['email']);
+            }
+        }
+
         return new Envelope(
             subject: 'New Contact Form Submission - ' . $this->contactData['subject'],
-            replyTo: [$this->contactData['email'] => $this->contactData['name']],
+            replyTo: $replyTo,
         );
     }
 

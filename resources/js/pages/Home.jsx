@@ -4,16 +4,15 @@ import HeroSlider from '../components/sections/HeroSlider';
 import ClientLogos from '../components/sections/ClientLogos';
 import DistributionServices from '../components/sections/DistributionServices';
 import OurImpact from '../components/sections/OurImpact';
-import MoviePortfolio from '../components/sections/MoviePortfolio';
+import FeaturedPortfolio from '../components/sections/FeaturedPortfolio';
 import MovieTestimonials from '../components/sections/MovieTestimonials';
 
 function Home() {
     const { isDark } = useTheme();
 
     return (
-        <div className={`transition-colors duration-300 ${
-            isDark ? 'bg-gray-900' : 'bg-white'
-        }`}>
+        <div className={`transition-colors duration-300 ${isDark ? 'bg-gray-900' : 'bg-white'
+            }`}>
             {/* Hero Slider Section */}
             <HeroSlider />
 
@@ -26,8 +25,8 @@ function Home() {
             {/* Global Impact Section */}
             <OurImpact />
 
-            {/* Movie Portfolio Section */}
-            <MoviePortfolio />
+            {/* Featured Portfolio Section */}
+            <FeaturedPortfolio />
 
             {/* Testimonials Section */}
             <MovieTestimonials />

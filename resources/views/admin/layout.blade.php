@@ -803,6 +803,17 @@
                             </a>
                         </li>
 
+                        <!-- Communication -->
+                        <li class="nav-header">COMMUNICATION</li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.messages.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.messages*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-envelope"></i>
+                                <p>Messages</p>
+                            </a>
+                        </li>
+
                         <!-- System Section -->
                         <li class="nav-header">Configuration</li>
 

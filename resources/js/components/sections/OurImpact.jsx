@@ -97,46 +97,59 @@ function OurImpact({ content, title, subtitle }) {
         <section className={`py-24 ${isDark ? 'bg-gray-900' : 'bg-gray-50'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${
-                        isDark ? 'text-white' : 'text-gray-900'
-                    }`}>
+                    <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
                         {sectionTitle.split(' ').slice(0, -1).join(' ')}{' '}
                         <span style={{ color: primaryColor }}>
                             {sectionTitle.split(' ').slice(-1)}
                         </span>
                     </h2>
-                    <p className={`text-xl max-w-3xl mx-auto ${
-                        isDark ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
+                    <p className={`text-xl max-w-3xl mx-auto ${isDark ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
                         {sectionSubtitle}
                     </p>
                 </div>
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     {stats.map((stat, index) => (
-                        <div key={index} className="text-center group">
-                            {/* Icon (if available) */}
-                            {stat.icon && (
-                                <div className="mb-4">
-                                    <i className={`${stat.icon} text-4xl group-hover:scale-110 transition-transform duration-300`}
-                                       style={{ color: primaryColor }}></i>
+                        <div
+                            key={index}
+                            className={`group transform transition-all duration-1000 hover:-translate-y-2`}
+                            style={{ transitionDelay: `${index * 100}ms` }}
+                        >
+                            <div className={`h-full p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 ${isDark
+                                    ? 'bg-gradient-to-br from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800'
+                                    : 'bg-gradient-to-br from-white to-gray-50 hover:to-white border border-gray-100'
+                                }`}>
+                                {/* Icon (if available) */}
+                                {stat.icon && (
+                                    <div className="mb-6 flex justify-center">
+                                        <div className={`p-4 rounded-xl ${isDark
+                                                ? 'bg-brand-orange-500/20 text-brand-orange-400'
+                                                : 'bg-brand-orange-100 text-brand-orange-600'
+                                            } group-hover:scale-125 transition-transform duration-300`}>
+                                            <i className={`${stat.icon} text-4xl`}></i>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Number */}
+                                <div
+                                    className="text-4xl lg:text-5xl font-bold mb-4 text-center group-hover:scale-105 transition-transform duration-300"
+                                    style={{ color: primaryColor }}
+                                >
+                                    {stat.number}
                                 </div>
-                            )}
 
-                            {/* Number */}
-                            <div
-                                className="text-4xl lg:text-5xl font-bold mb-3 group-hover:scale-105 transition-transform duration-300"
-                                style={{ color: primaryColor }}
-                            >
-                                {stat.number}
+                                {/* Label */}
+                                <p className={`text-center text-lg font-semibold ${isDark ? 'text-gray-300 group-hover:text-brand-orange-400' : 'text-gray-600 group-hover:text-brand-orange-600'
+                                    } transition-colors duration-300`}>
+                                    {stat.label}
+                                </p>
+
+                                {/* Decorative line */}
+                                <div className="w-12 h-1 bg-brand-orange-500 rounded-full mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             </div>
-
-                            {/* Label */}
-                            <p className={`text-lg font-medium ${
-                                isDark ? 'text-gray-300' : 'text-gray-600'
-                            } group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300`}>
-                                {stat.label}
-                            </p>
                         </div>
                     ))}
                 </div>

@@ -29,7 +29,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Hero Slider Management (Livewire)
-    Route::get('/hero-sliders', function() {
+    Route::get('/hero-sliders', function () {
         return view('admin.hero-sliders.index');
     })->name('hero-sliders.index');
 
@@ -78,11 +78,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
     Route::get('/news/{id}/edit', [NewsController::class, 'edit'])->name('news.edit');
 
+    // Messages Management
+    Route::get('/messages', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('messages.index');
+    Route::get('/messages/create', [\App\Http\Controllers\Admin\MessageController::class, 'create'])->name('messages.create');
+    Route::get('/messages/{id}/edit', [\App\Http\Controllers\Admin\MessageController::class, 'edit'])->name('messages.edit');
+
     // News Categories Management
     Route::get('/news-categories', [NewsCategoryController::class, 'index'])->name('news-categories.index');
 
     // Legal Pages Management (Livewire)
-    Route::get('/legal-pages', function() {
+    Route::get('/legal-pages', function () {
         return view('admin.legal-pages.index');
     })->name('legal-pages.index');
 
@@ -101,7 +106,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/mission-vision', [MissionVisionController::class, 'index'])->name('mission-vision.index');
 
     // Media Library (Livewire)
-    Route::get('/media-library', function() {
+    Route::get('/media-library', function () {
         return view('admin.media-library.index');
     })->name('media-library.index');
 
